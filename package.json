@@ -1,0 +1,17 @@
+{
+  "name": "monorepo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:next": "pnpm --filter next-app dev",
+    "dev:react": "pnpm --filter react-spa dev",
+    "dev:go": "cd apps/go-echo && go run main.go",
+    "dev:mobile": "cd apps/mobile && flutter run",
+    "test:e2e": "pnpm --filter e2e-tests test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
