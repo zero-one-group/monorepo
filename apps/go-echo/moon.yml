@@ -1,0 +1,7 @@
+project:
+  name: go-echo
+  description: 'Golang application'
+tasks:
+  start:
+    command: go
+    args: [run, main.go]

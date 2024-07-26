@@ -1,0 +1,8 @@
+# apps/react-spa/moon.yml
+project:
+  name: react-spa
+  description: 'React application'
+tasks:
+  start:
+    command: pnpm
+    args: [dev]
