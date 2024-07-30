@@ -8,6 +8,12 @@
 git submodule update --init --recursive
 ```
 
+Updating sutbmodules:
+
+```sh
+git submodule update --remote --recursive --merge
+```
+
 ## Start Next.js app
 
 moon run next-app:start
