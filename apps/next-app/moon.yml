@@ -1,8 +1,0 @@
-# apps/next-app/moon.yml
-project:
-  name: next-app
-  description: 'Next application'
-tasks:
-  start:
-    command: pnpm
-    args: [dev]

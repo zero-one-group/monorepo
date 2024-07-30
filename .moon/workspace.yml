@@ -1,5 +1,17 @@
 # https://moonrepo.dev/docs/config/workspace
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/workspace.json
 $schema: 'https://moonrepo.dev/schemas/workspace.json'
+
+vcs:
+  manager: 'git'
+  provider: gitlab
+  defaultBranch: 'main'
+
+hasher:
+  optimization: 'performance'
+
+runner:
+  cacheLifetime: '24 hours'
 
 # Require a specific version of moon while running commands, otherwise fail.
 # versionConstraint: '>=1.0.0'
@@ -14,3 +26,11 @@ $schema: 'https://moonrepo.dev/schemas/workspace.json'
 projects:
   - 'apps/*'
   - 'packages/*'
+
+generator:
+  templates:
+    - './templates'
+
+# When enabled, will check for a newer moon version and send anonymous usage data to the
+# moonrepo team. This data is used to improve the quality and reliability of the tool.
+telemetry: false

@@ -1,0 +1,20 @@
+{
+	"name": "workspace",
+	"private": true,
+	"scripts": {
+		"dev": "pnpm --recursive --parallel --stream run dev",
+		"lint": "biome lint --write .",
+		"format": "biome check --write . && biome format . --write",
+		"cleanup": "pnpm --recursive --parallel --stream run cleanup && pnpm run cleanup-workspace",
+		"cleanup-workspace": "rimraf pnpm-lock.yaml node_modules",
+		"update-deps": "npm-check-updates --configFileName .ncurc.json",
+		"preinstall": "moon setup && pnpm dlx only-allow pnpm"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.8.3",
+		"npm-check-updates": "^16.14.20",
+		"rimraf": "^6.0.1",
+		"typescript": "^5.5.4"
+	},
+	"packageManager": "pnpm@9.6.0"
+}

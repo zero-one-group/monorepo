@@ -1,7 +1,28 @@
+# https://moonrepo.dev/docs/config/project
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+type: application
+language: go
+platform: system
+
+stack: backend
+
 project:
   name: go-echo
   description: 'Golang application'
+
 tasks:
-  start:
+  dev:
     command: go
-    args: [run, main.go]
+    args: ['run', 'main.go']
+
+  build:
+    command: go
+    args: ['build', '-o build/go-echo']
+
+  start:
+    command: 'build/go-echo'
+    args: []
+    options:
+      cache: false

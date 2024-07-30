@@ -1,5 +1,13 @@
 # Zero One Group Monorepo
 
+## Quick Start
+
+### Initialize and update submodules:
+
+```sh
+git submodule update --init --recursive
+```
+
 ## Start Next.js app
 
 moon run next-app:start

@@ -1,8 +1,0 @@
-# apps/flutter-app/moon.yml
-project:
-  name: mobile
-  description: 'Flutter application'
-tasks:
-  start:
-    command: flutter
-    args: [run]

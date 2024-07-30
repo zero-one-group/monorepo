@@ -1,8 +1,28 @@
-# apps/react-spa/moon.yml
+# https://moonrepo.dev/docs/config/project
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+type: application
+language: typescript
+platform: node
+
+stack: frontend
+
 project:
   name: react-spa
-  description: 'React application'
+  description: 'React SPA application'
+
 tasks:
+  dev:
+    command: 'pnpm run dev'
+    args: []
+
+  build:
+    command: 'pnpm run build'
+    args: []
+
   start:
-    command: pnpm
-    args: [dev]
+    command: 'static-web-server'
+    args: ['-d', 'dist', '--page404', 'index.html', '-a', '127.0.0.1', '-p', '3000']
+    options:
+      cache: false

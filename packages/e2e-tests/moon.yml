@@ -1,8 +1,0 @@
-# packages/e2e-tests/moon.yml
-project:
-  name: e2e-tests
-  description: 'Playwright Test'
-tasks:
-  test:
-    command: pnpm
-    args: [test]
