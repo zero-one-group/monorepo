@@ -1,6 +1,10 @@
 [
     {
         "action": "remove",
-        "files": ["README.md", "apps/"]
+        "files": ["README.md", "apps", "templates"]
+    },
+    {
+        "action": "clone",
+        "src": "https://github.com/zero-one-group/templates"
     }
 ]
