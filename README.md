@@ -60,18 +60,18 @@ templates repository can be found at [`zero-one-group/templates`][zog-templates]
 
 ### Moon commands
 
-Once installed, run the following commands for common tasks:
+After setting up your project, use the following commands for common tasks:
 
 | Command                 | Description                      |
 |-------------------------|----------------------------------|
-| `moon check --all`      | Check all tasks                  |
 | `moon :dev`             | Start developing the project     |
 | `moon :build`           | Build all projects               |
-| `moon :lint`            | Lint code in all projects        |
 | `moon :test`            | Run tests in all projects        |
+| `moon :lint`            | Lint code in all projects        |
 | `moon :format`          | Format code in all projects      |
 | `moon <project>:<task>` | Run specific task by project     |
 | `moon check <project>`  | Run check for individual project |
+| `moon check --all`      | Run check for all tasks          |
 
 Refer to the [moon tasks documentation](https://moonrepo.dev/docs/run-task) for more details.
 
