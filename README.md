@@ -94,8 +94,33 @@ pnpm --filter <project> add -D <dependency>
 Example:
 
 ```sh
-pnpm --filter vite-react-tailwind add -D vitest
+pnpm --filter website add -D vitest
 ```
+
+### Updating dependencies
+
+To update all projects dependencies, you can use the following command:
+
+```sh
+pnpm run update-deps
+```
+
+### Cleanup Projects
+
+Sometimes it is necessary to clean up dependencies and build artifacts from the project.
+To do this, you can use the following command:
+
+```sh
+pnpm run cleanup
+```
+
+Cleanup workspace (optional):
+
+```sh
+pnpm run cleanup-workspace
+```
+
+After all, you can reinstall the dependencies and build the project.
 
 ## Tasks to Complete
 

@@ -4,7 +4,7 @@
     "scripts": {
         "lint": "biome lint --write .",
         "format": "biome check --write . && biome format . --write",
-        "cleanup": "pnpm --recursive --parallel --stream run cleanup && pnpm run cleanup-workspace",
+        "cleanup": "pnpm --recursive --parallel --stream run cleanup",
         "cleanup-workspace": "rimraf pnpm-lock.yaml node_modules",
         "update-deps": "npm-check-updates --configFileName .ncurc.json",
         "preinstall": "pnpm dlx only-allow pnpm && moon setup",
@@ -14,8 +14,7 @@
     "devDependencies": {
         "@biomejs/biome": "1.8.3",
         "npm-check-updates": "^17.0.2",
-        "rimraf": "^6.0.1",
-        "typescript": "^5.5.4"
+        "rimraf": "^6.0.1"
     },
     "packageManager": "pnpm@9.6.0"
 }
