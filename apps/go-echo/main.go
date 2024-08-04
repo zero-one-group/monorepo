@@ -10,5 +10,5 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, Echo!")
 	})
-	e.Start(":8080")
+	e.Start("127.0.0.1:8080")
 }

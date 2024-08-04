@@ -1,8 +1,0 @@
-# moon.yml
-workspace:
-  projects:
-    apps/next-app: {}
-    apps/react-spa: {}
-    apps/go-echo: {}
-    apps/mobile: {}
-    packages/e2e-tests: {}

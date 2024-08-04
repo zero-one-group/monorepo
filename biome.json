@@ -107,6 +107,15 @@
     "files": {
         "ignoreUnknown": true,
         "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.css", "**/*.json"],
-        "ignore": [".github", ".husky", ".vscode", "dist", "node_modules", "target", "tmp"]
+        "ignore": [
+            ".github",
+            ".husky",
+            ".vscode",
+            "dist",
+            "node_modules",
+            "target",
+            "templates",
+            "tmp"
+        ]
     }
 }

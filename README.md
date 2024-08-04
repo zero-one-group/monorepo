@@ -25,13 +25,20 @@ Then, follow these steps (_don't forget to replace `my-new-project` with your pr
 3. Install the required toolchain: `moon setup`
 4. Install the necessary dependencies: `pnpm install`
 5. Initialize template submodule: `pnpm submodule:init`
-6. Update ubmodule (optional): `pnpm submodule:update`
+6. Update submodule (optional): `pnpm submodule:update`
 
 Find and replace the `myorg` namespace string with your own organization or project-specific
 namespace. This is necessary to ensure that all configurations, dependencies, and references
 are correctly aligned with your project's unique identifier. This includes updating any
 configuration files, package names, and other references throughout the codebase where
 `myorg` is used.
+
+### Golang application
+
+Currently, Go is not supported as an official moonrepo toolchain. You need to manually
+install and configure it for your project. Please read the [Go installation docs][go-docs].
+
+For a list of supported toolchains, visit [moonrepo documentation][moon-toolchain].
 
 ### Creating application from template
 
@@ -47,7 +54,9 @@ Example, creating React application:
 moon generate moon-vite-react-tailwind
 ```
 
-Take a look at [`templates`](./templates/) directory for list all available templates.
+Explore the [`templates`](./templates/) directory to see all available templates.
+Each template is prefixed with `moon-` to indicate its purpose and usage. The original
+templates repository can be found at [`zero-one-group/templates`][zog-templates].
 
 ### Moon commands
 
@@ -55,7 +64,7 @@ Once installed, run the following commands for common tasks:
 
 | Command                 | Description                      |
 |-------------------------|----------------------------------|
-| `moon check --all`      | Run all tasks                    |
+| `moon check --all`      | Check all tasks                  |
 | `moon :dev`             | Start developing the project     |
 | `moon :build`           | Build all projects               |
 | `moon :lint`            | Lint code in all projects        |
@@ -67,6 +76,26 @@ Once installed, run the following commands for common tasks:
 Refer to the [moon tasks documentation](https://moonrepo.dev/docs/run-task) for more details.
 
 [moonrepo]: https://moonrepo.dev/
+
+## Managing Dependencies
+
+To add a new dependency to a project, you can use the following command:
+
+```sh
+pnpm --filter <project> add <dependency>
+```
+
+Or, if you want to add development dependencies, you can use the following command:
+
+```sh
+pnpm --filter <project> add -D <dependency>
+```
+
+Example:
+
+```sh
+pnpm --filter vite-react-tailwind add -D vitest
+```
 
 ## Tasks to Complete
 
@@ -80,3 +109,7 @@ After creating a new project from this template repository, ensure you update th
 6. **License Information:** Ensure the license is accurate for the new project.
 
 Keeping documentation current helps others understand, use, and contribute to the project.
+
+[zog-templates]: https://github.com/zero-one-group/templates
+[moon-toolchain]: https://moonrepo.dev/docs/concepts/toolchain
+[go-docs]: https://go.dev/doc/install

@@ -2,7 +2,6 @@
     "name": "workspace",
     "private": true,
     "scripts": {
-        "dev": "pnpm --recursive --parallel --stream run dev",
         "lint": "biome lint --write .",
         "format": "biome check --write . && biome format . --write",
         "cleanup": "pnpm --recursive --parallel --stream run cleanup && pnpm run cleanup-workspace",
