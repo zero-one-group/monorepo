@@ -1,0 +1,123 @@
+{
+    "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+    "organizeImports": {
+        "enabled": true
+    },
+    "vcs": {
+        "enabled": true,
+        "clientKind": "git",
+        "useIgnoreFile": true,
+        "defaultBranch": "main"
+    },
+    "linter": {
+        "enabled": true,
+        "ignore": ["vite-env.d.ts"],
+        "rules": {
+            "recommended": true,
+            "a11y": {
+                "noSvgWithoutTitle": "off",
+                "useKeyWithClickEvents": "off"
+            },
+            "complexity": {
+                "noBannedTypes": "off",
+                "noUselessFragments": "warn"
+            },
+            "correctness": {
+                "noUnusedImports": "error",
+                "noUnusedVariables": "error",
+                "useJsxKeyInIterable": "error"
+            },
+            "nursery": {
+                "noConsole": {
+                    "level": "info",
+                    "fix": "none"
+                },
+                "noDuplicateAtImportRules": "error",
+                "noDuplicateJsonKeys": "error",
+                "noEmptyBlock": "warn",
+                "noUnknownUnit": "error",
+                "useSortedClasses": {
+                    "level": "warn",
+                    "fix": "safe",
+                    "options": {
+                        "attributes": ["classList"],
+                        "functions": ["cn", "clx", "clsx", "cva", "tw"]
+                    }
+                }
+            },
+            "performance": {
+                "noReExportAll": "off"
+            },
+            "security": {
+                "noDangerouslySetInnerHtmlWithChildren": "warn"
+            },
+            "style": {
+                "noUnusedTemplateLiteral": "off",
+                "useConsistentArrayType": "warn",
+                "useExportType": "warn",
+                "useImportType": "warn",
+                "useFilenamingConvention": "error"
+            },
+            "suspicious": {
+                "noArrayIndexKey": "error",
+                "noAssignInExpressions": "off",
+                "noCommentText": "off",
+                "noConsoleLog": {
+                    "level": "info",
+                    "fix": "none"
+                },
+                "noDebugger": "off",
+                "noExplicitAny": "off"
+            }
+        }
+    },
+    "formatter": {
+        "enabled": true,
+        "formatWithErrors": false,
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineWidth": 100
+    },
+    "css": {
+        "parser": {
+            "allowWrongLineComments": false
+        },
+        "formatter": {
+            "enabled": true,
+            "quoteStyle": "double"
+        }
+    },
+    "javascript": {
+        "formatter": {
+            "indentWidth": 2,
+            "quoteStyle": "single",
+            "jsxQuoteStyle": "double",
+            "arrowParentheses": "always",
+            "semicolons": "asNeeded",
+            "trailingCommas": "es5",
+            "quoteProperties": "asNeeded",
+            "bracketSpacing": true,
+            "bracketSameLine": false
+        }
+    },
+    "json": {
+        "formatter": {
+            "indentWidth": 4,
+            "trailingCommas": "none"
+        }
+    },
+    "files": {
+        "ignoreUnknown": true,
+        "include": ["**/*.js", "**/*.mjs", "**/*.ts", "**/*.tsx", "**/*.css", "**/*.json"],
+        "ignore": [
+            ".github",
+            ".husky",
+            ".vscode",
+            "dist",
+            "node_modules",
+            "target",
+            "templates",
+            "tmp"
+        ]
+    }
+}

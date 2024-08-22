@@ -1,0 +1,40 @@
+# https://moonrepo.dev/docs/config/toolchain
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/toolchain.json
+$schema: 'https://moonrepo.dev/schemas/toolchain.json'
+
+# Extend and inherit an external configuration file. Must be a valid HTTPS URL or file system path.
+# extends: './shared/toolchain.yml'
+
+# Configures Node.js within the toolchain. moon manages its own version of Node.js
+# instead of relying on a version found on the host machine. This ensures deterministic
+# and reproducible builds across any machine.
+node:
+  version: '20'
+  packageManager: 'pnpm'                  # Defines which package manager to utilize.
+  addEnginesConstraint: false             # Add `node.version` as a constraint in the root `package.json` `engines`.
+  dedupeOnLockfileChange: true            # Dedupe dependencies after the lockfile has changed, keep the workspace tree as clean and lean as possible.
+  syncPackageManagerField: true           # Sync the currently configured package manager and its version to the packageManager field in the root package.json.
+  rootPackageOnly: true                   # Single version policy patterns by only allowing dependencies in the root `package.json`.
+  syncProjectWorkspaceDependencies: true  # Sync a project's `dependsOn` as dependencies within the project's `package.json`.
+  syncVersionManagerConfig: null          # Sync `node.version` to a 3rd-party version manager's config file.
+  # dependencyVersionFormat: link         # Uses link:../relative/path and symlinks package contents.
+  dependencyVersionFormat: workspace      # Uses workspace:*, which resolves to "1.2.3". Requires package workspaces.
+  pnpm:
+    version: '9.7.1'  # The version of the package manager to use.
+
+typescript:
+  includeSharedTypes: false  # The shared types folder must be named types and must exist relative to the root setting
+  # projectConfigFileName: 'tsconfig.build.json'     # Defines the file name of the tsconfig.json found in the project root.
+  # rootConfigFileName: 'tsconfig.workspace.json'    # File name of the config file found in the root that houses shared compiler options.
+  # rootOptionsConfigFileName: 'tsconfig.base.json'  # File name of the config file found in the root that houses shared compiler options.
+
+# Configures Rust within the toolchain.
+# rust:
+#   version: '1.79'
+#   syncToolchainConfig: true
+#   targets:
+#     - 'aarch64-apple-darwin'
+#     - 'x86_64-apple-darwin'
+#     - 'x86_64-pc-windows-msvc'
+#   # List of Cargo binaries to install globally and make available to tasks.
+#   bins: ['cargo-nextest', 'cargo-generate', 'cargo-make', 'cargo-watch', 'cargo-px']

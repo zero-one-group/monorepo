@@ -1,17 +1,25 @@
 {
-  "name": "monorepo",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev:next": "pnpm --filter next-app dev",
-    "dev:react": "pnpm --filter react-spa dev",
-    "dev:go": "cd apps/go-echo && go run main.go",
-    "dev:mobile": "cd apps/mobile && flutter run",
-    "test:e2e": "pnpm --filter e2e-tests test"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+    "name": "myorg",
+    "private": true,
+    "scripts": {
+        "build": "pnpm exec moon :build",
+        "lint": "biome lint . --write",
+        "check": "biome check . --write",
+        "format": "biome format . --write",
+        "cleanup": "pnpm -r --parallel --stream run cleanup",
+        "cleanup-workspace": "pnpm run cleanup && pnpm run --color \"/purge:/\"",
+        "update-deps": "npm-check-updates --configFileName .ncurc.json",
+        "purge:artifacts": "pnpm dlx rimraf pnpm-lock.yaml node_modules .moon/cache",
+        "purge:toolchain": "pnpm store prune --force && moon clean --quiet",
+        "submodule:init": "git submodule update --init --recursive",
+        "submodule:update": "git submodule update --remote --recursive --merge"
+    },
+    "dependencies": {
+        "@moonrepo/cli": "^1.27.6"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "1.8.3",
+        "npm-check-updates": "^17.0.2"
+    },
+    "packageManager": "pnpm@9.7.1"
 }
