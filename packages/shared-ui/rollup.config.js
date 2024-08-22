@@ -7,8 +7,6 @@ const pkgJson = require('./package.json')
 /** @type {import('rollup').OutputOptions} */
 const outputOptions = {
   sourcemap: !isProduction,
-  // preserveModulesRoot: 'src',
-  // preserveModules: true,
 }
 
 /** @type {import('rollup').RollupOptions} */
@@ -36,5 +34,10 @@ export default {
       ...outputOptions,
     },
   ],
-  external: [/\.css$/, ...Object.keys(pkgJson.dependencies), ...Object.keys(pkgJson.dependencies)],
+  external: [
+    /\.css$/,
+    ...Object.keys(pkgJson.dependencies),
+    ...Object.keys(pkgJson.dependencies),
+    'react/jsx-runtime',
+  ],
 }
