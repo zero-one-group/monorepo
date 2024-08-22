@@ -15,12 +15,12 @@ Additionally, the following tools and libraries are included:
 - **Playwright** (optional) for end-to-end testing.
 - **Biome** for code formatting and linting.
 
-## Quick Start
+## 🏁 Quick Start
 
 To begin, we suggest installing moon globally, read the documentation [here](https://moonrepo.dev/docs/install).
 Then, follow these steps (_don't forget to replace `my-new-project` with your project name_):
 
-1. Clone this repository: `npx tiged zero-one-group/monorepo#moon my-new-project`
+1. Clone this repository: `npx tiged gh:zero-one-group/monorepo#moon my-new-project`
 2. Initialize git repository: `cd my-new-project && git init`
 3. Install the required toolchain: `moon setup`
 4. Install the necessary dependencies: `pnpm install`
@@ -28,11 +28,11 @@ Then, follow these steps (_don't forget to replace `my-new-project` with your pr
 6. Initialize template submodule: `pnpm submodule:init`
 7. Update submodule (optional): `pnpm submodule:update`
 
-Find and replace the `myorg` namespace string with your own organization or project-specific
-namespace. This is necessary to ensure that all configurations, dependencies, and references
-are correctly aligned with your project's unique identifier. This includes updating any
-configuration files, package names, and other references throughout the codebase where
-`myorg` is used.
+Find and replace the `myorg` namespace and `example.com` string with your own organization
+or project-specific namespace. This is necessary to ensure that all configurations,
+dependencies, and references are correctly aligned with your project's unique identifier.
+This includes updating any configuration files, package names, and other references
+throughout the codebase where `myorg` is used.
 
 ### Golang application
 
@@ -63,22 +63,22 @@ templates repository can be found at [`zero-one-group/templates`][zog-templates]
 
 After setting up your project, use the following commands for common tasks:
 
-| Command                 | Description                      |
-|-------------------------|----------------------------------|
-| `moon :dev`             | Start developing the project     |
-| `moon :build`           | Build all projects               |
-| `moon :test`            | Run tests in all projects        |
-| `moon :lint`            | Lint code in all projects        |
-| `moon :format`          | Format code in all projects      |
-| `moon <project>:<task>` | Run specific task by project     |
-| `moon check <project>`  | Run check for individual project |
-| `moon check --all`      | Run check for all tasks          |
+| Command                 | Description                              |
+|-------------------------|------------------------------------------|
+| `moon :dev`             | Start developing the project             |
+| `moon :build`           | Build all projects                       |
+| `moon :test`            | Run tests in all projects                |
+| `moon :lint`            | Lint code in all projects                |
+| `moon :format`          | Format code in all projects              |
+| `moon <project>:<task>` | Run specific task by project             |
+| `moon check <project>`  | Run check for individual project         |
+| `moon check --all`      | Run check for all tasks                  |
+| `moon run '#tag:task'`  | Run a task in all projects with a tag    |
+| `moon project-graph`    | Display an interactive graph of projects |
 
-Refer to the [moon tasks documentation](https://moonrepo.dev/docs/run-task) for more details.
+Type `moon help` for more information. Refer to the [moon tasks documentation](https://moonrepo.dev/docs/run-task) for more details.
 
-[moonrepo]: https://moonrepo.dev/
-
-## Managing Dependencies
+## 📦 Managing Dependencies
 
 To add a new dependency to a project, you can use the following command:
 
@@ -123,7 +123,7 @@ pnpm run cleanup-workspace
 
 After all, you can reinstall the dependencies and build the project.
 
-## Tasks to Complete
+## ✅ Tasks to Complete
 
 After creating a new project from this template repository, ensure you update the documentation, including:
 
@@ -136,6 +136,8 @@ After creating a new project from this template repository, ensure you update th
 
 Keeping documentation current helps others understand, use, and contribute to the project.
 
+<!-- link reference definition -->
+[moonrepo]: https://moonrepo.dev/
 [zog-templates]: https://github.com/zero-one-group/templates
 [moon-toolchain]: https://moonrepo.dev/docs/concepts/toolchain
 [go-docs]: https://go.dev/doc/install

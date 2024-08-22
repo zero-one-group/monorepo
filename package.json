@@ -1,20 +1,25 @@
 {
-    "name": "workspace",
+    "name": "myorg",
     "private": true,
     "scripts": {
-        "lint": "biome lint --write .",
-        "format": "biome check --write . && biome format . --write",
-        "cleanup": "pnpm --recursive --parallel --stream run cleanup",
-        "cleanup-workspace": "rimraf pnpm-lock.yaml node_modules",
+        "build": "pnpm exec moon :build",
+        "lint": "biome lint . --write",
+        "check": "biome check . --write",
+        "format": "biome format . --write",
+        "cleanup": "pnpm -r --parallel --stream run cleanup",
+        "cleanup-workspace": "pnpm run cleanup && pnpm run --color \"/purge:/\"",
         "update-deps": "npm-check-updates --configFileName .ncurc.json",
-        "preinstall": "pnpm dlx only-allow pnpm && moon setup",
+        "purge:artifacts": "pnpm dlx rimraf pnpm-lock.yaml node_modules .moon/cache",
+        "purge:toolchain": "pnpm store prune --force && moon clean --quiet",
         "submodule:init": "git submodule update --init --recursive",
         "submodule:update": "git submodule update --remote --recursive --merge"
     },
+    "dependencies": {
+        "@moonrepo/cli": "^1.27.6"
+    },
     "devDependencies": {
         "@biomejs/biome": "1.8.3",
-        "npm-check-updates": "^17.0.2",
-        "rimraf": "^6.0.1"
+        "npm-check-updates": "^17.0.2"
     },
-    "packageManager": "pnpm@9.6.0"
+    "packageManager": "pnpm@9.7.1"
 }
