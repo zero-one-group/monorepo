@@ -42,23 +42,19 @@ pnpm --filter @myorg/shared-ui add \
 
 ```sh
 pnpm --filter @myorg/shared-ui add \
-  @hookform/resolvers \
-  @tanstack/react-table \
   cmdk \
-  date-fns \
   embla-carousel-react \
   input-otp \
   react-day-picker \
   react-hook-form \
   react-resizable-panels \
   recharts \
-  sonner \
-  vaul \
-  zod
+  valibot \
+  vaul
 ```
 
 The key differences with the shadcn-ui library are the use of [`valibot`][valibot]
-for validation library, as opposed to zod, and the adoption of [`Modular Forms`][modular-form]
+for validation library instead of zod, and the adoption of [`Modular Forms`][modular-form]
 instead of `react-hook-form`.
 
 <!-- link reference definition -->

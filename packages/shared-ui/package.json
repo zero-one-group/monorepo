@@ -23,7 +23,6 @@
         "react-dom": "^18.3.1"
     },
     "dependencies": {
-        "@hookform/resolvers": "^3.9.0",
         "@radix-ui/react-accordion": "^1.2.0",
         "@radix-ui/react-alert-dialog": "^1.1.1",
         "@radix-ui/react-aspect-ratio": "^1.1.0",
@@ -52,11 +51,9 @@
         "@radix-ui/react-toggle": "^1.1.0",
         "@radix-ui/react-toggle-group": "^1.1.0",
         "@radix-ui/react-tooltip": "^1.1.2",
-        "@tanstack/react-table": "^8.20.1",
         "class-variance-authority": "^0.7.0",
         "clsx": "^2.1.1",
         "cmdk": "^1.0.0",
-        "date-fns": "^3.6.0",
         "embla-carousel-react": "^8.2.0",
         "input-otp": "^1.2.4",
         "react": "^18.3.1",
@@ -65,13 +62,14 @@
         "react-hook-form": "^7.52.2",
         "react-resizable-panels": "^2.1.1",
         "recharts": "^2.12.7",
-        "sonner": "^1.5.0",
         "tailwind-merge": "^2.5.2",
-        "vaul": "^0.9.1",
-        "zod": "^3.23.8"
+        "valibot": "^0.38.0",
+        "vaul": "^0.9.1"
     },
     "devDependencies": {
         "@biomejs/biome": "1.8.3",
+        "@rollup/plugin-commonjs": "^26.0.1",
+        "@rollup/plugin-node-resolve": "^15.2.3",
         "@rollup/plugin-terser": "^0.4.4",
         "@rollup/plugin-typescript": "^11.1.6",
         "@types/node": "^22.4.0",
