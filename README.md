@@ -57,7 +57,6 @@ moon generate moon-vite-react-tailwind
 ```
 
 Explore the [`zero-one-group/templates`][zog-templates] repository to see all available templates.
-Each template is prefixed with `moon-` to indicate its purpose and usage.
 
 ### Moon commands
 
