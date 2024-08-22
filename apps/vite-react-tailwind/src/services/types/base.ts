@@ -17,8 +17,8 @@ export interface BaseApiResponse {
 
 export interface ErrorResponse extends BaseApiResponse {
   error?: {
-    code?: number
-    reason?: string
+    hint?: string
+    message: string
   }
 }
 

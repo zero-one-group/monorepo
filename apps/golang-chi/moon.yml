@@ -1,0 +1,41 @@
+# https://moonrepo.dev/docs/config/project
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+type: application
+language: go
+platform: system
+stack: backend
+tags: ['app']
+
+# Overrides the name (identifier) of the project
+id: 'go-app'
+
+project:
+  name: golang-chi
+  description: 'Golang application'
+
+# File groups defined in .moon/tasks.yml will be inherited by all projects.
+# @see: https://moonrepo.dev/docs/config/project#filegroups
+# fileGroups:
+
+tasks:
+  dev:
+    command: air
+    args: ['-c', 'air.toml']
+    deps: [tidy]
+    options:
+      envFile: '/.env'
+
+  build:
+    command: go
+    args: ['build', '-o build/go-app']
+
+  start:
+    command: 'build/go-app'
+    args: []
+    options:
+      cache: false
+
+  tidy:
+    command: 'go mod tidy && go mod vendor'

@@ -13,9 +13,11 @@ node_modules/
 build/
 dist/
 dist-ssr/
+vendor/
 *.local
 .husky/
-/tmp
+.output/
+tmp/
 
 # Editor directories and files
 .vscode/*
@@ -34,9 +36,6 @@ dist-ssr/
 # envars
 .env*
 !.env.*example
-
-# Dependency graph
-*depgraph.png
 
 # moon
 .moon/cache

@@ -100,6 +100,10 @@ export default function AppProvider({ children, debugScreenSize }: AppProviderPr
           ...COOKIE_OPTIONS,
         })
 
+        if (!result.data?.user) {
+          throw new Error('User not found')
+        }
+
         return result.data.user
       } finally {
         setPendingCheck(false)
@@ -125,7 +129,6 @@ export default function AppProvider({ children, debugScreenSize }: AppProviderPr
         username: 'admin',
         first_name: 'Admin',
         last_name: 'Sistem',
-        preferred_theme: 'system',
         last_seen_at: 1723130670,
         created_at: 1723130670,
       }

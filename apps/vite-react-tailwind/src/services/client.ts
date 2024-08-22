@@ -84,9 +84,9 @@ export default class ApiClient {
     const logger = this.logger
     return ofetch.create({
       baseURL: this.baseUrl,
-      async onRequest(ctx) {
+      async onRequest(_ctx) {
         // Do something before request is sent.
-        logger.debug('[FETCHER] onRequest', ctx.request)
+        // logger.debug('[FETCHER] onRequest', ctx.request)
       },
       async onResponse(ctx) {
         // Do something after response is received.

@@ -20,7 +20,7 @@ Additionally, the following tools and libraries are included:
 To begin, we suggest installing moon globally, read the documentation [here](https://moonrepo.dev/docs/install).
 Then, follow these steps (_don't forget to replace `my-new-project` with your project name_):
 
-1. Clone this repository: `npx tiged gh:zero-one-group/monorepo#moon my-new-project`
+1. Clone this repository: `npx tiged gh:zero-one-group/monorepo my-new-project`
 2. Initialize git repository: `cd my-new-project && git init`
 3. Install the required toolchain: `moon setup`
 4. Install the necessary dependencies: `pnpm install`

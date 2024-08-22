@@ -29,5 +29,4 @@ export const LOG_LEVEL: LogLevel = Number(import.meta.env.LOG_LEVEL) || (isProdu
  * the base URL will be `/api`. If the application is running in production mode,
  * the base URL will be `http://localhost:8080/api`.
  */
-const defaultApiBaseUrl = import.meta.env.DEV ? '/api' : 'http://localhost:8080/api'
-export const API_BASE_URL = import.meta.env.VITE_API_URL || defaultApiBaseUrl
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080'
