@@ -5,8 +5,9 @@ tmp_dir = "tmp"
 [build]
   full_bin = "build/go-app"
   cmd = "go build -o build/go-app main.go"
-  args_bin = ["--address 127.0.0.1:8080"]
-  pre_cmd = []
+  args_bin = []
+  pre_cmd = ["pkill -f go-app"]
+  post_cmd = []
   exclude_dir = ["static", "assets"]
   exclude_file = []
   exclude_regex = ["_test.go", "_templ.go"]
@@ -15,10 +16,10 @@ tmp_dir = "tmp"
   include_dir = ["cmd", "pkg", "internal"]
   include_file = ["main.go"]
   include_ext = ["go", "templ"]
-  kill_delay = "0s"
+  kill_delay = "1s"
   delay = 500
   log = "build/build-errors.log"
-  send_interrupt = false
+  send_interrupt = true
   stop_on_error = true
 
 [color]

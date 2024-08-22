@@ -21,15 +21,13 @@ project:
 
 tasks:
   dev:
-    command: air
-    args: ['-c', 'air.toml']
+    command: 'air -c air.toml'
     deps: [tidy]
     options:
       envFile: '/.env'
 
   build:
-    command: go
-    args: ['build', '-o build/go-app']
+    command: 'go build -o build/go-app'
 
   start:
     command: 'build/go-app'
