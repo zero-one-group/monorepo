@@ -1,6 +1,6 @@
 [
     {
         "action": "remove",
-        "files": ["README.md", "apps", "packages", "templates"]
+        "files": ["README.md", "apps", "packages"]
     }
 ]
