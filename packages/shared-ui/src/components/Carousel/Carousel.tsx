@@ -103,19 +103,19 @@ const Carousel = React.forwardRef<
     }
   }, [api, onSelect])
 
+  const value = {
+    carouselRef,
+    api: api,
+    opts,
+    orientation: orientation || (opts?.axis === 'y' ? 'vertical' : 'horizontal'),
+    scrollPrev,
+    scrollNext,
+    canScrollPrev,
+    canScrollNext,
+  }
+
   return (
-    <CarouselContext.Provider
-      value={{
-        carouselRef,
-        api: api,
-        opts,
-        orientation: orientation || (opts?.axis === 'y' ? 'vertical' : 'horizontal'),
-        scrollPrev,
-        scrollNext,
-        canScrollPrev,
-        canScrollNext,
-      }}
-    >
+    <CarouselContext.Provider value={value}>
       <div
         ref={ref}
         onKeyDownCapture={handleKeyDown}
