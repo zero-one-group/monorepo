@@ -66,18 +66,18 @@ templates repository can be found at [`zero-one-group/templates`][zog-templates]
 
 After setting up your project, use the following commands for common tasks:
 
-| Command                 | Description                              |
-|-------------------------|------------------------------------------|
-| `moon :dev`             | Start developing the project             |
-| `moon :build`           | Build all projects                       |
-| `moon :test`            | Run tests in all projects                |
-| `moon :lint`            | Lint code in all projects                |
-| `moon :format`          | Format code in all projects              |
-| `moon <project>:<task>` | Run specific task by project             |
-| `moon check <project>`  | Run check for individual project         |
-| `moon check --all`      | Run check for all tasks                  |
-| `moon run '#tag:task'`  | Run a task in all projects with a tag    |
-| `moon project-graph`    | Display an interactive graph of projects |
+| Command                    | Description                              |
+|----------------------------|------------------------------------------|
+| `moon :dev`                | Start developing the project             |
+| `moon :build`              | Build all projects                       |
+| `moon :test`               | Run tests in all projects                |
+| `moon :lint`               | Lint code in all projects                |
+| `moon :format`             | Format code in all projects              |
+| `moon <project_id>:<task>` | Run specific task by project             |
+| `moon check <project_id>`  | Run check for individual project         |
+| `moon check --all`         | Run check for all tasks                  |
+| `moon run '#tag:task'`     | Run a task in all projects with a tag    |
+| `moon project-graph`       | Display an interactive graph of projects |
 
 Type `moon help` for more information. Refer to the [moon tasks documentation](https://moonrepo.dev/docs/run-task) for more details.
 
@@ -86,13 +86,13 @@ Type `moon help` for more information. Refer to the [moon tasks documentation](h
 To add a new dependency to a project, you can use the following command:
 
 ```sh
-pnpm --filter <project> add <dependency>
+pnpm --filter <project_id> add <dependency>
 ```
 
 Or, if you want to add development dependencies, you can use the following command:
 
 ```sh
-pnpm --filter <project> add -D <dependency>
+pnpm --filter <project_id> add -D <dependency>
 ```
 
 Example:
