@@ -1,6 +1,0 @@
-[submodule "templates"]
-	path = templates
-	url = git@github.com:zero-one-group/templates.git
-    branch = main
-    ignore = dirty
-	update = none

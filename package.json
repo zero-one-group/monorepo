@@ -10,9 +10,7 @@
         "cleanup-workspace": "pnpm run cleanup && pnpm run --color \"/purge:/\"",
         "update-deps": "npm-check-updates --configFileName .ncurc.json",
         "purge:artifacts": "pnpm dlx rimraf pnpm-lock.yaml node_modules .moon/cache",
-        "purge:toolchain": "pnpm store prune --force && moon clean --quiet",
-        "submodule:init": "git submodule update --init --recursive",
-        "submodule:update": "git submodule update --remote --recursive --merge"
+        "purge:toolchain": "pnpm store prune --force && moon clean --quiet"
     },
     "dependencies": {
         "@moonrepo/cli": "^1.27.6"

@@ -37,6 +37,8 @@ projects:
 # moonrepo team. This data is used to improve the quality and reliability of the tool.
 telemetry: false
 
+# Monorepo package templates to use when generating new projects.
+# @see: https://moonrepo.dev/docs/config/workspace#templates
 generator:
   templates:
-    - './templates'
+    - 'git://github.com/zero-one-group/templates#main'
