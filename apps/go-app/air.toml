@@ -3,7 +3,7 @@ testdata_dir = "testdata"
 tmp_dir = "tmp"
 
 [build]
-  full_bin = "godotenv -f ../../.env build/go-app"
+  full_bin = "build/go-app"
   cmd = "go build -o build/go-app main.go"
   args_bin = ["--address 127.0.0.1:8080"]
   pre_cmd = []
