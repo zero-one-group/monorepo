@@ -1,7 +1,8 @@
 import { type SubmitHandler, focus, reset, useForm, valiForm } from '@modular-forms/react'
-import { Button, Input, Label, Link, cn } from '@myorg/shared-ui'
+import { Button, Input, Label, cn } from '@myorg/shared-ui'
 import { toast } from 'sonner'
 import * as v from 'valibot'
+import { Link } from '#/components/link'
 import logger from '#/utils/logger'
 
 const ForgotPasswordSchema = v.object({

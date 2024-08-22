@@ -1,8 +1,9 @@
 import { type SubmitHandler, focus, reset, useForm, valiForm } from '@modular-forms/react'
-import { Button, Input, Label, Link, cn } from '@myorg/shared-ui'
+import { Button, Input, Label, cn } from '@myorg/shared-ui'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import * as v from 'valibot'
+import { Link } from '#/components/link'
 import { useAuth } from '#/context/hooks/use-auth'
 import logger from '#/utils/logger'
 
@@ -64,7 +65,7 @@ export default function SignInPage() {
           <div
             className={cn(
               'mt-8 flex flex-col p-4 sm:p-6 md:mt-12 lg:p-8',
-              'lg:rounded-xl lg:bg-white lg:shadow-md lg:ring-1 lg:ring-primary-950/5 dark:lg:bg-primary-900 dark:lg:ring-white/10'
+              'lg:rounded-lg lg:bg-white lg:shadow-md lg:ring-1 lg:ring-primary-950/5 dark:lg:bg-primary-900 dark:lg:ring-white/10'
             )}
           >
             <Form onSubmit={handleSubmit}>
@@ -117,7 +118,7 @@ export default function SignInPage() {
               </Field>
 
               <div className="mt-4 grid">
-                <Button type="submit" disabled={loginForm.submitting.value}>
+                <Button type="submit" disabled={loginForm.submitting.value} variant="default">
                   Continue
                 </Button>
               </div>

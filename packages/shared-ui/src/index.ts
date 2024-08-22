@@ -45,6 +45,3 @@ export * from './components/Tooltip'
 
 // Utilities
 export * from './utils'
-
-// Tailwind configuration
-export * from './tailwind'

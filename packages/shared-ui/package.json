@@ -7,9 +7,7 @@
     "main": "dist/cjs/index.js",
     "module": "dist/esm/index.js",
     "types": "dist/src/index.d.ts",
-    "files": [
-        "dist"
-    ],
+    "files": ["dist"],
     "scripts": {
         "build": "rollup --config rollup.config.js",
         "dev": "rollup --config rollup.config.js --watch",

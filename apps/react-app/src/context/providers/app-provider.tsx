@@ -27,7 +27,7 @@ const defaultAuthContext: AuthContext = {
   logout: () => {},
 }
 
-export const AuthContext = createContext(defaultAuthContext)
+const AuthContext = createContext(defaultAuthContext)
 
 interface AppProviderProps {
   children: React.ReactNode
@@ -49,7 +49,7 @@ const COOKIE_OPTIONS: Omit<CookieSetOptions, 'maxAge'> = { path: '/', sameSite: 
  *
  * The AppProvider component should be used to wrap the entire application to make the AuthContext available.
  */
-export default function AppProvider({ children, debugScreenSize }: AppProviderProps) {
+function AppProvider({ children, debugScreenSize }: AppProviderProps) {
   const [cookies, setCookie, removeCookie] = useCookies([COOKIE_NAME])
   const apiRef = useRef(useApiClient())
   const authState = useStore(authStore)
@@ -157,3 +157,6 @@ export default function AppProvider({ children, debugScreenSize }: AppProviderPr
     </CookiesProvider>
   )
 }
+
+export { AuthContext }
+export default AppProvider

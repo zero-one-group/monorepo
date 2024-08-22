@@ -1,9 +1,10 @@
 import { type SubmitHandler, focus, reset, useForm, valiForm } from '@modular-forms/react'
-import { Button, Input, Link, cn } from '@myorg/shared-ui'
+import { Button, Input, cn } from '@myorg/shared-ui'
 import { Suspense } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import * as v from 'valibot'
+import { Link } from '#/components/link'
 import PageLoader from '#/components/page-loader'
 import logger from '#/utils/logger'
 
