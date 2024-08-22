@@ -1,9 +1,15 @@
 import { createRequire } from 'node:module'
 import typescript from '@rollup/plugin-typescript'
-
 const isProduction = process.env.NODE_ENV === 'production'
 const require = createRequire(import.meta.url)
 const pkgJson = require('./package.json')
+
+/** @type {import('rollup').OutputOptions} */
+const outputOptions = {
+  sourcemap: !isProduction,
+  // preserveModulesRoot: 'src',
+  // preserveModules: true,
+}
 
 /** @type {import('rollup').RollupOptions} */
 export default {
@@ -21,13 +27,13 @@ export default {
     {
       format: 'commonjs',
       file: pkgJson.main,
-      sourcemap: !isProduction,
       name: pkgJson.name,
+      ...outputOptions,
     },
     {
       format: 'esm',
       file: pkgJson.module,
-      sourcemap: !isProduction,
+      ...outputOptions,
     },
   ],
   external: [/\.css$/, ...Object.keys(pkgJson.dependencies), ...Object.keys(pkgJson.dependencies)],
