@@ -12,7 +12,7 @@ tags: ['app']
 id: 'go-app'
 
 project:
-  name: golang-chi
+  name: go-app-echo
   description: 'Golang application'
 
 # File groups defined in .moon/tasks.yml will be inherited by all projects.
