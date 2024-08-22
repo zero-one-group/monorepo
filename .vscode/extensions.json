@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "biomejs.biome",
+        "bradlc.vscode-tailwindcss",
+        "EditorConfig.EditorConfig",
+        "foxundermoon.shell-format",
+        "tamasfe.even-better-toml"
+    ],
+  "unwantedRecommendations": []
+}

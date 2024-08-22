@@ -150,7 +150,7 @@ export default function AppProvider({ children, debugScreenSize }: AppProviderPr
   )
 
   return (
-    <CookiesProvider defaultSetOptions={{ path: '/' }}>
+    <CookiesProvider defaultSetOptions={COOKIE_OPTIONS}>
       <AuthContext.Provider value={authContextValues}>
         <div className={cn(debugScreenSize && 'debug-breakpoints')}>{children}</div>
       </AuthContext.Provider>
