@@ -1,9 +1,15 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
     "compilerOptions": {
+        "tsBuildInfoFile": "node_modules/.tsbuildinfo",
+        "composite": true,
         "allowJs": false,
         "allowSyntheticDefaultImports": true,
+        "declaration": true,
+        "declarationDir": "dist",
+        "declarationMap": true,
         "emitDecoratorMetadata": true,
+        "emitDeclarationOnly": true,
         "esModuleInterop": true,
         "experimentalDecorators": true,
         "forceConsistentCasingInFileNames": true,
@@ -13,31 +19,20 @@
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
         "module": "ESNext",
         "moduleResolution": "Bundler",
-        "noEmit": true,
         "noFallthroughCasesInSwitch": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "outDir": "dist",
         "resolveJsonModule": true,
         "skipLibCheck": true,
-        "sourceMap": false,
         "strict": true,
         "target": "ESNext",
         "useDefineForClassFields": true,
         "baseUrl": ".",
         "paths": {
-            "#/*": ["src/*"],
-            "~/*": ["public/*"]
+            "#/*": ["src/*"]
         }
     },
-    "include": ["**/*.ts", "**/*.tsx"],
-    "exclude": ["node_modules"],
-    "references": [
-        {
-            "path": "./tsconfig.node.json"
-        },
-        {
-            "path": "../../packages/shared-ui"
-        }
-    ]
+    "include": ["src/**/*.ts", "src/**/*.tsx"],
+    "exclude": ["node_modules", "dist"]
 }

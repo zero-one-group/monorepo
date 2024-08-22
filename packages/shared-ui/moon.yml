@@ -1,0 +1,29 @@
+# https://moonrepo.dev/docs/config/project
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+type: library
+language: typescript
+platform: node
+tags: ['app']
+
+# Overrides the name (identifier) of the project
+id: 'shared-ui'
+
+project:
+  name: shared-ui
+  description: 'Shared UI library'
+
+tasks:
+  dev:
+    command: 'pnpm run dev'
+    deps: ['ts-check']
+
+  build:
+    command: 'pnpm run build'
+    deps: ['ts-check']
+    options:
+      cache: false
+
+  ts-check:
+    command: 'pnpm run ts-check'

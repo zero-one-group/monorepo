@@ -1,0 +1,31 @@
+# https://moonrepo.dev/docs/config/tasks
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/tasks.json
+$schema: 'https://moonrepo.dev/schemas/tasks.json'
+
+# Global file groups, this will be inherited by all projects.
+# @see: https://moonrepo.dev/docs/config/project#filegroups
+fileGroups:
+  js-configs:
+    - '*.config.{js,cjs,mjs,ts}'
+    - '*.json'
+  js-sources:
+    - 'src/**/*'
+    - 'types/**/*'
+  tests:
+    - 'tests/**/*'
+    - '**/__tests__/**/*'
+  assets:
+    - 'assets/**/*'
+    - 'images/**/*'
+    - 'static/**/*'
+    - 'public/**/*'
+    - '**/*.{scss,css}'
+
+taskOptions:
+  runDepsInParallel: false
+
+# Defines task deps that are implicitly inserted into all inherited tasks within a project.
+# This is extremely useful for pre-building projects that are used extensively throughout
+# the repo, or always building project dependencies.
+# implicitDeps:
+#   - '^:format'

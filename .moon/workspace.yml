@@ -6,6 +6,11 @@ vcs:
   manager: 'git'
   provider: gitlab
   defaultBranch: 'main'
+  # @see: https://moonrepo.dev/docs/config/workspace#hooks
+  hooks:
+    pre-commit:
+      - 'moon run :lint :format --affected --status=staged'
+      # - 'another-command'
 
 hasher:
   optimization: 'performance'
@@ -24,13 +29,14 @@ runner:
 # path to the project folder as the map value. File paths are relative from the workspace root,
 # and cannot reference projects located outside the workspace boundary.
 projects:
-  - 'apps/*'
-  - 'packages/*'
-
-generator:
-  templates:
-    - './templates'
+  globs:
+    - 'apps/*'
+    - 'packages/*'
 
 # When enabled, will check for a newer moon version and send anonymous usage data to the
 # moonrepo team. This data is used to improve the quality and reliability of the tool.
 telemetry: false
+
+generator:
+  templates:
+    - './templates'

@@ -34,6 +34,9 @@ dependencies, and references are correctly aligned with your project's unique id
 This includes updating any configuration files, package names, and other references
 throughout the codebase where `myorg` is used.
 
+Optinally, you'll need to install [Static Web Server][static-web-server] to preview
+generated websites or Single-Page Applications (SPAs).
+
 ### Golang application
 
 Currently, Go is not supported as an official moonrepo toolchain. You need to manually
@@ -141,3 +144,4 @@ Keeping documentation current helps others understand, use, and contribute to th
 [zog-templates]: https://github.com/zero-one-group/templates
 [moon-toolchain]: https://moonrepo.dev/docs/concepts/toolchain
 [go-docs]: https://go.dev/doc/install
+[static-web-server]: https://static-web-server.net/download-and-install/

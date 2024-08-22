@@ -11,6 +11,7 @@
     },
     "linter": {
         "enabled": true,
+        "ignore": ["vite-env.d.ts"],
         "rules": {
             "recommended": true,
             "a11y": {
@@ -18,12 +19,13 @@
                 "useKeyWithClickEvents": "off"
             },
             "complexity": {
-                "noBannedTypes": "off"
+                "noBannedTypes": "off",
+                "noUselessFragments": "warn"
             },
             "correctness": {
                 "noUnusedImports": "error",
                 "noUnusedVariables": "error",
-                "useJsxKeyInIterable": "off"
+                "useJsxKeyInIterable": "error"
             },
             "nursery": {
                 "noConsole": {
@@ -106,7 +108,7 @@
     },
     "files": {
         "ignoreUnknown": true,
-        "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.css", "**/*.json"],
+        "include": ["**/*.js", "**/*.mjs", "**/*.ts", "**/*.tsx", "**/*.css", "**/*.json"],
         "ignore": [
             ".github",
             ".husky",
