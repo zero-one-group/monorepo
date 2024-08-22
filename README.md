@@ -56,9 +56,8 @@ Example, creating React application:
 moon generate moon-vite-react-tailwind
 ```
 
-Explore the [`templates`](./templates/) directory to see all available templates.
-Each template is prefixed with `moon-` to indicate its purpose and usage. The original
-templates repository can be found at [`zero-one-group/templates`][zog-templates].
+Explore the [`zero-one-group/templates`][zog-templates] repository to see all available templates.
+Each template is prefixed with `moon-` to indicate its purpose and usage.
 
 ### Moon commands
 
