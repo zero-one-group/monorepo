@@ -20,7 +20,7 @@ node:
   # dependencyVersionFormat: link         # Uses link:../relative/path and symlinks package contents.
   dependencyVersionFormat: workspace      # Uses workspace:*, which resolves to "1.2.3". Requires package workspaces.
   pnpm:
-    version: '9.7.1'  # The version of the package manager to use.
+    version: '9.12.3'  # The version of the package manager to use.
 
 typescript:
   includeSharedTypes: false  # The shared types folder must be named types and must exist relative to the root setting

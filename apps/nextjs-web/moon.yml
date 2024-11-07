@@ -44,11 +44,11 @@ tasks:
       cp -r .next/static/ .next/standalone/apps/web/.next/static/ && \
       echo -e "Nextjs build complete\n"
     deps: ['shared-ui:build']
-    inputs:
-      - '@group(nextjs)'
-      - '@group(sources)'
-    outputs:
-      - '.next'
+    # inputs:
+    #   # - '@group(nextjs)'
+    #   - '@group(sources)'
+    # outputs:
+    #   - '.next'
     env:
       NODE_ENV: 'production'
     options:
@@ -67,7 +67,7 @@ tasks:
 
   lint:
     command: 'next lint --fix'
-    inputs:
-      - '@group(nextjs)'
+    # inputs:
+    #   - '@group(nextjs)'
 
   # TODO: add docker build tasks

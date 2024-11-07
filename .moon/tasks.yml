@@ -29,3 +29,9 @@ taskOptions:
 # the repo, or always building project dependencies.
 # implicitDeps:
 #   - '^:format'
+
+# Shared tasks can be defined here, or in a separate file.
+tasks:
+  hello:
+    description: 'Prints a hello world message.'
+    command: 'echo "Hello World!"'
