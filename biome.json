@@ -11,6 +11,7 @@
     },
     "linter": {
         "enabled": true,
+        "ignore": ["vite-env.d.ts", "apps/web"],
         "rules": {
             "recommended": true,
             "a11y": {
@@ -22,16 +23,10 @@
                 "noUselessFragments": "warn"
             },
             "correctness": {
-                "noUnusedImports": {
-                    "level": "off",
-                    "fix": "none"
-                },
-                "noUnusedVariables": {
-                    "level": "warn",
-                    "fix": "none"
-                },
+                "noUnusedImports": "error",
+                "noUnusedVariables": "error",
                 "useJsxKeyInIterable": "error",
-                "noUnknownFunction": "off"
+                "noUnknownUnit": "error"
             },
             "nursery": {
                 "useSortedClasses": {
@@ -53,10 +48,7 @@
                 "noUnusedTemplateLiteral": "off",
                 "useConsistentArrayType": "warn",
                 "useExportType": "warn",
-                "useImportType": {
-                    "level": "off",
-                    "fix": "none"
-                },
+                "useImportType": "warn",
                 "useFilenamingConvention": {
                     "level": "off",
                     "options": {
@@ -70,26 +62,10 @@
                 "noCommentText": "off",
                 "noConsoleLog": {
                     "level": "info",
-                    "fix": "safe"
+                    "fix": "none"
                 },
                 "noDebugger": "off",
                 "noExplicitAny": "off",
-                "noConsole": {
-                    "level": "warn",
-                    "fix": "none",
-                    "options": {
-                        "allow": [
-                            "assert",
-                            "error",
-                            "info",
-                            "warn",
-                            "debug",
-                            "time",
-                            "timeEnd",
-                            "timeLog"
-                        ]
-                    }
-                },
                 "noDuplicateAtImportRules": "error",
                 "noEmptyBlock": "warn"
             }
@@ -100,8 +76,7 @@
         "formatWithErrors": false,
         "indentStyle": "space",
         "indentWidth": 4,
-        "lineWidth": 100,
-        "ignore": []
+        "lineWidth": 100
     },
     "css": {
         "parser": {
@@ -134,6 +109,6 @@
     "files": {
         "ignoreUnknown": true,
         "include": ["**/*.js", "**/*.mjs", "**/*.ts", "**/*.tsx", "**/*.css", "**/*.json"],
-        "ignore": [".github", ".husky", ".vscode", "dist", "build", "node_modules", "target", "tmp"]
+        "ignore": [".github", ".next", "dist", "build", "tmp", "temp", "templates"]
     }
 }

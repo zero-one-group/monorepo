@@ -2,9 +2,11 @@
     "recommendations": [
         "biomejs.biome",
         "bradlc.vscode-tailwindcss",
+        "darkriszty.markdown-table-prettify",
         "EditorConfig.EditorConfig",
         "foxundermoon.shell-format",
+        "ms-playwright.playwright",
         "tamasfe.even-better-toml"
     ],
-  "unwantedRecommendations": []
+    "unwantedRecommendations": []
 }
