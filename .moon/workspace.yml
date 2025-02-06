@@ -41,4 +41,4 @@ telemetry: false
 # @see: https://moonrepo.dev/docs/config/workspace#templates
 generator:
   templates:
-    - 'git://github.com/zero-one-group/monorepo#update-scaffolding'
+    - 'git://github.com/zero-one-group/monorepo#feat/update-scaffolding'
