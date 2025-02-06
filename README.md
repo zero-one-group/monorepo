@@ -1,6 +1,7 @@
 # Zero One Group Monorepo
 
 ## Table of Contents
+- [Summary](#summary)
 - [Quick Start](#quick-start)
   - [Golang application](#golang-application)
   - [Local development server](#local-development-server)
