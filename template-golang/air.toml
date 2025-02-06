@@ -3,37 +3,42 @@ testdata_dir = "testdata"
 tmp_dir = "tmp"
 
 [build]
-  full_bin = "build/{{ package_id | kebab_case }}"
-  cmd = "go build -o build/{{ package_id | kebab_case }} main.go"
   args_bin = []
-  pre_cmd = []
-  post_cmd = []
-  exclude_dir = ["static", "assets"]
+  bin = "build/debug/{{ package_id | kebab_case }}"
+  cmd = "go build -o build/debug/{{ package_id | kebab_case }}"
+  delay = 1000
+  exclude_dir = ["static", "assets", "build", "tmp", "vendor", "testdata", "web"]
   exclude_file = []
-  exclude_regex = ["_test.go", "_templ.go"]
+  exclude_regex = ["_test.go"]
   exclude_unchanged = false
   follow_symlink = false
-  include_dir = ["cmd", "pkg", "internal"]
-  include_file = ["main.go"]
-  include_ext = ["go", "templ"]
+  include_dir = []
+  include_ext = ["go", "tpl", "tmpl", "html"]
+  include_file = []
   kill_delay = "1s"
-  delay = 500
-  log = "build/build-errors.log"
-  send_interrupt = true
-  stop_on_error = true
+  log = "build/air.log"
+  poll = false
+  poll_interval = 0
+  post_cmd = []
+  pre_cmd = []
+  rerun = false
+  rerun_delay = 500
+  send_interrupt = false
+  stop_on_error = false
 
 [color]
-  app = "blue"
+  app = ""
   build = "yellow"
   main = "magenta"
   runner = "green"
   watcher = "cyan"
 
 [log]
+  main_only = false
   time = false
 
 [misc]
-  clean_on_exit = false
+  clean_on_exit = true
 
 [screen]
   clear_on_rebuild = false

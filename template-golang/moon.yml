@@ -4,7 +4,8 @@ $schema: 'https://moonrepo.dev/schemas/project.json'
 
 type: application
 language: go
-platform: system
+toolchain:
+  default: null
 stack: backend
 tags: ['app']
 
@@ -15,25 +16,69 @@ project:
   name: '{{ package_name | kebab_case }}'
   description: '{{ package_description }}'
 
-# File groups defined in .moon/tasks.yml will be inherited by all projects.
-# @see: https://moonrepo.dev/docs/config/project#filegroups
-# fileGroups:
+env:
+  APP_NAME: '$(go list -m)'
+  APP_VERSION: '$(jq -r .version <$workspaceRoot''/package.json'')'
 
 tasks:
   dev:
-    command: 'air -c air.toml'
-    deps: [tidy]
+    command: "air -c air.toml"
+    deps: [kill-port]
     options:
-      envFile: '/.env'
+      envFile: "/.env"
 
   build:
-    command: 'go build -o build/{{ package_id | kebab_case }}'
+    command: 'go build -o build/release/{{ package_id | kebab_case }}'
 
   start:
-    command: 'build/{{ package_id | kebab_case }}'
-    args: []
+    command: 'build/release/{{ package_id | kebab_case }}'
     options:
       cache: false
 
   tidy:
     command: 'go mod tidy && go mod vendor'
+
+  kill-port:
+    # This is a hack for killing the listen port before starting the app
+    command: 'pnpm --package=kill-port-process-cli dlx kill-port {{ port_number }}'
+    deps: [tidy]
+    options:
+      internal: true
+
+  docker-build:
+    command: 'docker build -f $projectRoot/Dockerfile . -t $APP_NAME:$APP_VERSION'
+    options:
+      outputStyle: stream
+      runFromWorkspaceRoot: true
+      runInCI: false
+      cache: false
+      shell: true
+
+  docker-run:
+    command: 'docker run --network=host --rm -it --env-file .env --name $APP_NAME $APP_NAME:$APP_VERSION'
+    options:
+      runFromWorkspaceRoot: true
+      interactive: false
+      outputStyle: stream
+      runInCI: false
+      cache: false
+      shell: true
+
+  docker-shell:
+    command: 'docker run --network=host --rm -it --env-file .env --entrypoint /bin/sh $APP_NAME:$APP_VERSION'
+    options:
+      runFromWorkspaceRoot: true
+      interactive: false
+      outputStyle: none
+      runInCI: false
+      cache: false
+      shell: true
+
+  docker-images:
+    command: 'docker image list --filter reference=$APP_NAME:\\*'
+    options:
+      runFromWorkspaceRoot: true
+      outputStyle: none
+      runInCI: false
+      cache: false
+      shell: true
