@@ -17,13 +17,14 @@ Desktop.ini
 $RECYCLE.BIN/
 *tsbuildinfo
 *.bak
-/coverage
-/temp
-/tmp
+coverage/
+temp/
+tmp/
 
 .husky
 .pnpm-store
 .vite-inspect
+testdata/
 vendor/
 
 # Logs
@@ -59,6 +60,7 @@ dist-ssr/
 .build
 .react-router
 .wrangler
+go.sum*
 
 # Vite & Vitest config
 vite.config.*

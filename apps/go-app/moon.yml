@@ -10,11 +10,11 @@ stack: backend
 tags: ['app']
 
 # Overrides the name (identifier) of the project
-id: '{{ package_id | kebab_case }}'
+id: 'go-app'
 
 project:
-  name: '{{ package_name | kebab_case }}'
-  description: '{{ package_description }}'
+  name: go-app
+  description: 'My backend application'
 
 env:
   APP_NAME: '$(go list -m)'
@@ -28,10 +28,10 @@ tasks:
       envFile: "/.env"
 
   build:
-    command: 'go build -o build/release/{{ package_id | kebab_case }}'
+    command: 'go build -o build/release/go-app'
 
   start:
-    command: 'build/release/{{ package_id | kebab_case }}'
+    command: 'build/release/go-app'
     options:
       cache: false
 
@@ -39,8 +39,8 @@ tasks:
     command: 'go mod tidy && go mod vendor'
 
   kill-port:
-    # This is a hack for killing the listen port before starting the app
-    command: 'pnpm --package=kill-port-process-cli dlx kill-port {{ port_number }}'
+    # This is a hack for killing the port 8080 before starting the app
+    command: 'pnpm --package=kill-port-process-cli dlx kill-port 8080'
     deps: [tidy]
     options:
       internal: true

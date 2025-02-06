@@ -1,4 +1,4 @@
-module {{ package_id | kebab_case }}
+module go-app
 
 go 1.23.0
 

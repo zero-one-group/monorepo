@@ -55,10 +55,10 @@ func main() {
 		host = "127.0.0.1"
 	}
 
-	// Get port from environment variable, default to {{ port_number }} if not set
+	// Get port from environment variable, default to 8080 if not set
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "{{ port_number }}"
+		port = "8080"
 	}
 
 	// Server address and port to listen on

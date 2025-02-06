@@ -4,8 +4,8 @@ tmp_dir = "tmp"
 
 [build]
   args_bin = []
-  bin = "build/debug/{{ package_id | kebab_case }}"
-  cmd = "go build -o build/debug/{{ package_id | kebab_case }}"
+  bin = "build/debug/go-app"
+  cmd = "go build -o build/debug/go-app"
   delay = 1000
   exclude_dir = ["static", "assets", "build", "tmp", "vendor", "testdata", "web"]
   exclude_file = []

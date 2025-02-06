@@ -3,19 +3,16 @@
 # Arguments with default value (for build).
 ARG PLATFORM=linux/amd64
 ARG NODE_VERSION=20
+ARG GO_VERSION=1.23
 
 FROM busybox:1.37-glibc as glibc
-FROM joseluisq/static-web-server:2-debian as httpd
 
 # -----------------------------------------------------------------------------
-# Base image with pnpm package manager.
+# Base image for building the Golang app.
 # -----------------------------------------------------------------------------
-FROM --platform=${PLATFORM} node:${NODE_VERSION}-bookworm-slim AS base
-ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0 COREPACK_INTEGRITY_KEYS=0
-ENV LEFTHOOK=0 CI=true PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=true
+FROM --platform=${PLATFORM} golang:${GO_VERSION}-bookworm AS base_go
 ENV MOON_TOOLCHAIN_FORCE_GLOBALS=1 MOON_INSTALL_DIR="/usr/bin"
-ENV PNPM_HOME="/pnpm" PATH="$PNPM_HOME:$MOON_INSTALL_DIR:$PATH"
-RUN corepack enable && corepack prepare pnpm@latest-10 --activate
+ENV PATH="$MOON_INSTALL_DIR:$PATH" LEFTHOOK=0 CI=true
 WORKDIR /srv
 
 # Install system dependencies and moon cli
@@ -26,51 +23,54 @@ RUN curl -fsSL https://moonrepo.dev/install/moon.sh | bash
 # -----------------------------------------------------------------------------
 # Scaffold the specific project.
 # -----------------------------------------------------------------------------
-FROM base AS skeleton
+FROM base_go AS skeleton
 COPY --link . .
-RUN moon docker scaffold {{ package_id | kebab_case }}
+RUN moon docker scaffold go-app
 
 # -----------------------------------------------------------------------------
 # Install dependencies and build the application.
 # -----------------------------------------------------------------------------
-FROM base AS builder
+FROM base_go AS builder
+ENV CGO_ENABLED=1
+
+# Enable caching for Go modules
+RUN go env -w GOCACHE=/go-cache
+RUN go env -w GOMODCACHE=/gomod-cache
 
 # Copy workspace skeleton
 COPY --from=skeleton /root/.proto /root/.proto
 COPY --from=skeleton /srv/.moon/docker/workspace .
 
 # Install toolchain and dependencies
-RUN moon docker setup
+RUN moon docker setup --concurrency=4
 
 # Copy source files
 COPY --from=skeleton /srv/.moon/docker/sources .
 
 # Build the application
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run {{ package_id | kebab_case }}:build
+RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon run go-app:tidy
+RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon run go-app:build
 
 # Prune workspace
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
+RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon docker prune
 
 # -----------------------------------------------------------------------------
 # Production image, copy build output files and run the application (runner).
 # -----------------------------------------------------------------------------
-FROM --platform=${PLATFORM} gcr.io/distroless/base-debian12 as runner
+FROM --platform=${PLATFORM} gcr.io/distroless/cc-debian12 AS runner
 
 # ----- Read application environment variables --------------------------------
 
-ARG VITE_API_URL VITE_BASE_URL
+ARG  DATABASE_URL SMTP_HOST SMTP_PORT SMTP_USERNAME SMTP_PASSWORD SMTP_EMAIL_FROM
 
 # ----- Read application environment variables --------------------------------
 
 # Copy the build output files from the installer stage.
-COPY --from=builder --chown=nonroot:nonroot /srv/apps/{{ package_id | kebab_case }}/build/client /srv
-
-# Copy the static web server and rename it to httpd.
-COPY --from=httpd /usr/local/bin/static-web-server /usr/bin/httpd
+COPY --from=builder --chown=nonroot:nonroot /srv/apps/go-app/build/release/go-app /srv
 
 # Copy some necessary system utilities from previous stage (~7MB).
 # To enhance security, consider avoiding the copying of sysutils.
-COPY --from=base /usr/bin/tini /usr/bin/tini
+COPY --from=base_go /usr/bin/tini /usr/bin/tini
 COPY --from=glibc /bin/clear /bin/clear
 COPY --from=glibc /bin/mkdir /bin/mkdir
 COPY --from=glibc /bin/which /bin/which
@@ -79,14 +79,13 @@ COPY --from=glibc /bin/ls /bin/ls
 COPY --from=glibc /bin/sh /bin/sh
 
 # Define the host and port to listen on.
-ARG NODE_ENV=production SERVER_HOST=0.0.0.0 SERVER_PORT={{ port_number }}
-ENV SERVER_HOST=$SERVER_HOST SERVER_PORT=$SERVER_PORT
-ENV NODE_ENV=$NODE_ENV TINI_SUBREAPER=true
-STOPSIGNAL SIGQUIT
+ARG SERVER_ENV=production HOST=0.0.0.0 PORT=8080
+ENV SERVER_ENV=$SERVER_ENV TINI_SUBREAPER=true
+ENV HOST=$HOST PORT=$PORT
 
 WORKDIR /srv
 USER nonroot:nonroot
-EXPOSE $SERVER_PORT
+EXPOSE $PORT
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["/usr/bin/httpd", "-d", "/srv", "--page-fallback", "/srv/index.html"]
+CMD ["/srv/go-app"]
