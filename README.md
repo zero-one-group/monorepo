@@ -22,9 +22,8 @@ Then, follow these steps (_don't forget to replace `my-new-project` with your pr
 
 1. Clone this repository: `npx tiged zero-one-group/monorepo my-new-project`
 2. Initialize git repository: `cd my-new-project && git init`
-3. Install the required toolchain: `moon setup`
-4. Install the necessary dependencies: `pnpm install`
-5. Create `.env` file or duplicate the `.env.example` file, then configure required variables.
+3. Install the necessary dependencies: `pnpm install`
+4. Create `.env` file or duplicate the `.env.example` file, then configure required variables.
 
 Find and replace the `myorg` namespace and `example.com` string with your own organization
 or project-specific namespace. This is necessary to ensure that all configurations,

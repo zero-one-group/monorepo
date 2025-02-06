@@ -1,0 +1,11 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "compilerOptions": {
+        "composite": true,
+        "module": "ESNext",
+        "moduleResolution": "Bundler",
+        "allowSyntheticDefaultImports": true,
+        "tsBuildInfoFile": "node_modules/.tsbuildinfo"
+    },
+    "include": ["vite.config.ts", "tailwind.config.ts"]
+}

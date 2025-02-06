@@ -7,6 +7,8 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+.husky/
+.output/
 .pnpm-store
 .vite-inspect/
 node_modules/
@@ -15,8 +17,7 @@ dist/
 dist-ssr/
 vendor/
 *.local
-.husky/
-.output/
+temp/
 tmp/
 
 # Editor directories and files
@@ -27,6 +28,7 @@ tmp/
 !.vscode/tasks.json
 .idea
 .DS_Store
+.DS_Store?
 *.suo
 *.ntvs*
 *.njsproj
@@ -40,8 +42,5 @@ tmp/
 # moon
 .moon/cache
 .moon/docker
-
-# Exclude templates since they are have separates repositories
-# /templates/**
 
 # Specific directories for individual projects

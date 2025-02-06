@@ -1,28 +1,40 @@
 {
-	"editor.defaultFormatter": "biomejs.biome",
-	"typescript.enablePromptUseWorkspaceTsdk": false,
-	"files.associations": {
-		"*.yml.example": "yaml",
-		"*.css": "tailwindcss",
-		"*.plist": "xml"
-	},
-	"search.exclude": {
-		"**/.output": true,
-		"**/build": true,
-		"**/dist": true,
-		"**/templates": true
-	},
-	"tailwindCSS.experimental.classRegex": [
-		["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
-		"cn\\(([^)]*)\\)", // cn(xxx)
-		"clx\\(([^)]*)\\)", // clx(xxx)
-		"cx\\(([^)]*)\\)" // cx(xxx)
-	],
-	"tailwindCSS.files.exclude": ["**/.github/**", "**/*.{md,js,ts,json}"],
-	"[toml]": {
-		"editor.defaultFormatter": "tamasfe.even-better-toml"
-	},
-	"[markdown]": {
-		"editor.defaultFormatter": "darkriszty.markdown-table-prettify"
-	}
+    "editor.defaultFormatter": "biomejs.biome",
+    "typescript.enablePromptUseWorkspaceTsdk": false,
+    "files.associations": {
+        "*.yml.example": "yaml",
+        "*.css": "css"
+    },
+    "search.exclude": {
+        "**/.husky": true,
+        "**/.output": true,
+        "**/build": true,
+        "**/dist": true,
+        "**/templates": true
+    },
+    "tailwindCSS.experimental.classRegex": [
+        // @ref: https://github.com/paolotiu/tailwind-intellisense-regex-list
+        ["(?:twMerge|twJoin)\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"],
+        ["classList={{([^;]*)}}", "\\s*?[\"'`]([^\"'`]*).*?:"],
+        ["clsx\\(.*?\\)(?!\\])", "(?:'|\"|`)([^\"'`]*)(?:'|\"|`)"],
+        ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+        ["tv\\(([^)]*)\\)", "{?\\s?[\\w].*:\\s*?[\"'`]([^\"'`]*).*?,?\\s?}?"],
+        "clx\\(([^)]*)\\)", // clx(xxx)
+        "cn\\(([^)]*)\\)", // cn(xxx)
+        "cx\\(([^)]*)\\)" // cx(xxx)
+    ],
+    "tailwindCSS.files.exclude": ["**/.github/**", "**/*.{md,js,ts,json}"],
+    "[css]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[tailwindcss]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[toml]": {
+        "editor.defaultFormatter": "tamasfe.even-better-toml",
+        "editor.formatOnSave": false
+    },
+    "[markdown]": {
+        "editor.defaultFormatter": "darkriszty.markdown-table-prettify"
+    }
 }
