@@ -1,7 +1,7 @@
 # Zero One Group Monorepo
 
 ## Table of Contents
-- [Summary](#summary)
+- [Overview](#overview)
 - [Quick Start](#quick-start)
   - [Golang application](#golang-application)
   - [Local development server](#local-development-server)
@@ -13,7 +13,7 @@
 - [Tasks to Complete](#tasks-to-complete)
 
 
-## Summary
+## Overview
 
 This repository contains framework projects utilizing [moonrepo][moonrepo] and the technology
 stack commonly used within Zero One Group, with TypeScript and Go as the main languages.
