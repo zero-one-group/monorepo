@@ -1,5 +1,19 @@
 # Zero One Group Monorepo
 
+## Table of Contents
+- [Quick Start](#quick-start)
+  - [Golang application](#golang-application)
+  - [Local development server](#local-development-server)
+  - [Creating application from template](#creating-application-from-template)
+  - [Moon commands](#moon-commands)
+- [Managing Dependencies](#managing-dependencies)
+  - [Updating dependencies](#updating-dependencies)
+  - [Cleanup projects](#cleanup-projects)
+- [Tasks to Complete](#tasks-to-complete)
+
+
+## Summary
+
 This repository contains framework projects utilizing [moonrepo][moonrepo] and the technology
 stack commonly used within Zero One Group, with TypeScript and Go as the main languages.
 
@@ -15,7 +29,7 @@ Additionally, the following tools and libraries are included:
 - **Playwright** for end-to-end testing.
 - **Biome** for code formatting and linting.
 
-## 🏁 Quick Start
+## Quick Start
 
 To begin, we suggest installing `moon` globally, read the documentation [here][moonrepo].
 Then, follow these steps (_don't forget to replace `moon-project` with your project name_):
@@ -94,7 +108,7 @@ After setting up your project, use the following commands for common tasks:
 
 Type `moon help` for more information. Refer to the [moon tasks documentation](https://moonrepo.dev/docs/run-task) for more details.
 
-## 📦 Managing Dependencies
+## Managing Dependencies
 
 To add a new dependency to a project, you can use the following command:
 
@@ -122,7 +136,7 @@ To update all projects dependencies, you can use the following command:
 pnpm run update-deps
 ```
 
-### Cleanup Projects
+### Cleanup projects
 
 Sometimes it is necessary to clean up dependencies and build artifacts from the project.
 To do this, you can use the following command:
@@ -133,7 +147,7 @@ pnpm run cleanup
 
 After all, you can reinstall the dependencies and build the project.
 
-## ✅ Tasks to Complete
+## Tasks to Complete
 
 After creating a new project from this template repository, ensure you update the documentation, including:
 
