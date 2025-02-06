@@ -1,0 +1,30 @@
+import { Canvas, Meta, Primary } from '@storybook/blocks';
+import * as Stories from './radio-group.stories';
+
+<Meta of={Stories} />
+
+# Radio Group
+
+A set of checkable buttons where only one can be checked at a time.
+
+## Example
+
+```tsx
+import { RadioGroup, RadioGroupItem } from '#/components/base-ui'
+import { Label } from '#/components/base-ui'
+
+<RadioGroup defaultValue="option-1">
+  <div className="flex items-center space-x-2">
+    <RadioGroupItem id="option-1" value="option-1" />
+    <Label htmlFor="option-1">Option 1</Label>
+  </div>
+  <div className="flex items-center space-x-2">
+    <RadioGroupItem id="option-2" value="option-2" />
+    <Label htmlFor="option-2">Option 2</Label>
+  </div>
+</RadioGroup>
+```
+
+## Preview
+
+<Primary />

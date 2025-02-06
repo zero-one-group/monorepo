@@ -10,7 +10,8 @@
         "**/.output": true,
         "**/build": true,
         "**/dist": true,
-        "**/templates": true
+        "**/templates": true,
+        "**/template-*": true
     },
     "tailwindCSS.experimental.classRegex": [
         // @ref: https://github.com/paolotiu/tailwind-intellisense-regex-list

@@ -5,22 +5,22 @@ stack commonly used within Zero One Group, with TypeScript and Go as the main la
 
 To get started, several templates for backend and frontend applications are available.
 The frontend stack includes React with the Vite bundler, as well as Next.js. A shared
-UI Library, shadcn, is also provided.
+UI Library, shadcn/ui, is also provided.
 
 Additionally, the following tools and libraries are included:
 
 - **Tailwind CSS** for utility-first CSS framework.
 - **Radix UI** for accessible, unstyled UI components.
 - **Vitest** for fast unit testing.
-- **Playwright** (optional) for end-to-end testing.
+- **Playwright** for end-to-end testing.
 - **Biome** for code formatting and linting.
 
 ## 🏁 Quick Start
 
-To begin, we suggest installing moon globally, read the documentation [here][moonrepo].
+To begin, we suggest installing `moon` globally, read the documentation [here][moonrepo].
 Then, follow these steps (_don't forget to replace `moon-project` with your project name_):
 
-1. Clone this repository: `pnpm dlx tiged zero-one-group/monorepo moon-project`
+1. Clone this repository: `npx tiged zero-one-group/monorepo moon-project`
 2. Install the necessary dependencies: `cd moon-project && pnpm install`
 3. Create `.env` file or duplicate the `.env.example` file, then configure required variables.
 
@@ -29,9 +29,6 @@ or project-specific namespace. This is necessary to ensure that all configuratio
 dependencies, and references are correctly aligned with your project's unique identifier.
 This includes updating any configuration files, package names, and other references
 throughout the codebase where `myorg` is used.
-
-Optinally, you'll need to install [Static Web Server][static-web-server] to preview
-generated websites or Single-Page Applications (SPAs).
 
 ### Golang application
 
@@ -54,7 +51,15 @@ Example, creating React application:
 moon generate template-react-app
 ```
 
-Explore the [`zero-one-group/templates`][zog-templates] repository to see all available templates.
+View all available templates by looking at folders with `template-` prefix in this repository.
+
+Current available templates are:
+
+| Template Name        | Description                                       |
+|----------------------|---------------------------------------------------|
+| `template-golang`    | Basic Go application for backend                  |
+| `template-react-app` | React Router application with Tailwind CSS        |
+| `template-shared-ui` | Collections of UI components based on `shadcn/ui` |
 
 ### Moon commands
 
@@ -92,7 +97,7 @@ pnpm --filter <project_id> add -D <dependency>
 Example:
 
 ```sh
-pnpm --filter website add -D vitest
+pnpm --filter react-app add -D vitest
 ```
 
 ### Updating dependencies
@@ -112,12 +117,6 @@ To do this, you can use the following command:
 pnpm run cleanup
 ```
 
-Cleanup workspace (optional):
-
-```sh
-pnpm run cleanup-workspace
-```
-
 After all, you can reinstall the dependencies and build the project.
 
 ## ✅ Tasks to Complete
@@ -135,7 +134,6 @@ Keeping documentation current helps others understand, use, and contribute to th
 
 <!-- link reference definition -->
 [moonrepo]: https://moonrepo.dev/docs/install
-[zog-templates]: https://github.com/zero-one-group/templates
 [moon-toolchain]: https://moonrepo.dev/docs/concepts/toolchain
 [go-docs]: https://go.dev/doc/install
 [static-web-server]: https://static-web-server.net/download-and-install/

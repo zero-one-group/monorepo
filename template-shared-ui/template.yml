@@ -6,7 +6,7 @@ $schema: 'https://moonrepo.dev/schemas/template.json'
 title: 'Shared UI Components'
 
 # REQUIRED: Description of what the template is for and other relevant information.
-description: 'Shared UI Components based on shadcn-ui.'
+description: 'Shared UI Components for React apps'
 
 # Destination path for the package.
 destination: 'packages/[package_id]'
@@ -22,6 +22,6 @@ variables:
 
   package_name:
     type: 'string'
-    default: 'shared-ui-components'
+    default: 'shared-ui'
     prompt: 'Package name?'
     required: true

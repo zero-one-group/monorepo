@@ -1,3 +1,31 @@
+/node_modules
+/.rollup.cache
+/.fleet
+/.idea
+/.pnp
+/.cache
+/.output
+/.husky
+/.temp
+/.unikraft
+.pnp.js
+.DS_Store
+.DS_Store?
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*tsbuildinfo
+*.bak
+/coverage
+/temp
+/tmp
+
+.husky
+.pnpm-store
+.vite-inspect
+vendor/
+
 # Logs
 logs
 *.log
@@ -7,37 +35,69 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-.husky/
-.output/
-.pnpm-store
-.vite-inspect/
-node_modules/
+# VSCode
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+
+# SQLite
+*.sqlite*
+*.sqlite3*
+*.db
+
+# Projects
+_data/
 build/
 dist/
 dist-ssr/
-vendor/
-*.local
-temp/
-tmp/
+.data
+.dist
+.cache
+.output
+.client
+.build
+.react-router
+.wrangler
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-!.vscode/launch.json
-!.vscode/settings.json
-!.vscode/tasks.json
-.idea
-.DS_Store
-.DS_Store?
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+# Vite & Vitest config
+vite.config.*
+!vite.config.ts
+vitest.config.*
+!vitest.config.ts
+vitest.workspace.*
+!vitest.workspace.ts
 
 # envars
-.env*
-!.env.*example
+.env.*
+!.env.example
+compose.env*
+!compose.env.example
+
+# Disable this line in your real app
+/playwright/.cache/
+/playwright-report/
+/tests-results/
+/blob-report/
+.playwright/
+
+# Sentry Config File
+.sentryclirc
+
+# Storybook
+*storybook.log
+storybook-static/
+
+# Miscellaneous
+pnpm-exec-summary.json
+slim.report.json
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate*
+terraform.tfvars*
+!terraform.tfvars.example
 
 # moon
 .moon/cache

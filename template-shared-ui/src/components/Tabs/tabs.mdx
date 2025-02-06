@@ -1,0 +1,27 @@
+import { Canvas, Meta, Primary } from '@storybook/blocks';
+import * as Stories from './tabs.stories';
+
+<Meta of={Stories} />
+
+# Tabs
+
+A set of layered sections of content that display one panel at a time.
+
+## Example
+
+```tsx
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '#/components/base-ui'
+
+<Tabs defaultValue="account">
+  <TabsList>
+    <TabsTrigger value="account">Account</TabsTrigger>
+    <TabsTrigger value="password">Password</TabsTrigger>
+  </TabsList>
+  <TabsContent value="account">Account settings</TabsContent>
+  <TabsContent value="password">Password settings</TabsContent>
+</Tabs>
+```
+
+## Preview
+
+<Primary />

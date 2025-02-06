@@ -1,5 +1,6 @@
 {
-    "name": "myorg",
+    "name": "repo",
+    "version": "0.0.0",
     "private": true,
     "scripts": {
         "dev": "moon :dev",
@@ -8,7 +9,7 @@
         "lint": "biome lint . --write",
         "check": "biome check . --write",
         "format": "biome format . --write",
-        "cleanup": "pnpm run --color \"/cleanup:/\"",
+        "cleanup": "pnpm --stream --color \"/cleanup:(?!deps)/\"",
         "cleanup:dev": "pnpm -r --parallel --stream run cleanup",
         "cleanup:cache": "pnpm store prune --force && pnpm dlx rimraf .moon/cache",
         "cleanup:deps": "pnpm dlx rimraf pnpm-lock.yaml node_modules",
@@ -18,13 +19,5 @@
         "@biomejs/biome": "^1.9.4",
         "npm-check-updates": "^17.1.14"
     },
-    "packageManager": "pnpm@10.2.0",
-    "pnpm": {
-        "ignoredBuiltDependencies": [
-            "esbuild"
-        ],
-        "onlyBuiltDependencies": [
-            "sharp"
-        ]
-    }
+    "packageManager": "pnpm@10.2.0"
 }

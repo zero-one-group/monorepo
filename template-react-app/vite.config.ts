@@ -1,39 +1,22 @@
-import { join, resolve } from 'node:path'
-import react from '@vitejs/plugin-react'
+import { reactRouter } from '@react-router/dev/vite'
+import tailwindcss from '@tailwindcss/vite'
+import { resolve } from 'pathe'
+import { isProduction } from 'std-env'
 import { defineConfig } from 'vite'
-import inspect from 'vite-plugin-inspect'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
-  plugins: [
-    react({ include: /\.(mdx|js|jsx|ts|tsx)$/ }),
-    inspect({ build: false, open: false }),
-    tsconfigPaths(),
-  ],
-  define: {
-    'import.meta.env.APP_VERSION': `"${process.env.npm_package_version}"`,
-  },
-  envDir: join(__dirname, '..'),
-  envPrefix: ['VITE_'],
-  clearScreen: true,
-  server: {
-    port: 8000,
-    strictPort: true,
-  },
-  base: '/',
-  root: resolve(__dirname),
+  envPrefix: 'VITE_' /* Prefix for environment variables */,
+  plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
+  server: { port: {{ port_number }}, host: true },
+  publicDir: resolve('public'),
   build: {
-    emptyOutDir: true,
-    chunkSizeWarningLimit: 1024,
+    ssr: false,
+    minify: isProduction,
+    cssMinify: isProduction,
+    chunkSizeWarningLimit: 1024 * 2,
     reportCompressedSize: false,
-    outDir: resolve(__dirname, 'dist'),
-    rollupOptions: {
-      output: {
-        // Generate output with hash in filename.
-        entryFileNames: `assets/[name]-[hash].js`,
-        chunkFileNames: `assets/[name]-[hash].js`,
-        assetFileNames: `assets/[name]-[hash].[ext]`,
-      },
-    },
+    emptyOutDir: true,
+    manifest: true,
   },
 })
