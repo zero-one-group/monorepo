@@ -1,0 +1,57 @@
+# https://moonrepo.dev/docs/config/project
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+type: application
+language: typescript
+platform: node
+stack: frontend
+tags: ['app']
+
+# Overrides the name (identifier) of the project
+id: '{{ package_id | kebab_case }}'
+
+project:
+  name: '{{ package_name | kebab_case }}'
+  description: '{{ package_description }}'
+
+# Uncomment to use shared UI library
+# dependsOn:
+#   - 'shared-ui'
+
+# File groups defined in .moon/tasks.yml will be inherited by all projects.
+# @see: https://moonrepo.dev/docs/config/project#filegroups
+# fileGroups:
+
+tasks:
+  dev:
+    command: 'pnpm run dev'
+    inputs:
+      - '@group(js-configs)'
+      - '@group(js-sources)'
+      - '@group(assets)'
+    outputs:
+      - 'dist/**/*.js'
+      - 'public/**/*'
+      - '!public/.gitkeep'
+    options:
+      envFile: '/.env'
+
+  build:
+    command: 'pnpm run build'
+    inputs:
+      - '@group(js-configs)'
+      - '@group(js-sources)'
+      - '@group(assets)'
+    outputs:
+      - 'dist/**/*.js'
+      - 'public/**/*'
+      - '!public/.gitkeep'
+
+  start:
+    command: 'static-web-server'
+    args: ['-d', 'dist', '--page404', 'index.html', '-a', '127.0.0.1', '-p', '8000']
+    env:
+      NODE_ENV: 'production'
+    options:
+      cache: false

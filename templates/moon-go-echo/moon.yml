@@ -1,0 +1,39 @@
+# https://moonrepo.dev/docs/config/project
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+type: application
+language: go
+platform: system
+stack: backend
+tags: ['app']
+
+# Overrides the name (identifier) of the project
+id: '{{ package_id | kebab_case }}'
+
+project:
+  name: '{{ package_name | kebab_case }}'
+  description: '{{ package_description }}'
+
+# File groups defined in .moon/tasks.yml will be inherited by all projects.
+# @see: https://moonrepo.dev/docs/config/project#filegroups
+# fileGroups:
+
+tasks:
+  dev:
+    command: 'air -c air.toml'
+    deps: [tidy]
+    options:
+      envFile: '/.env'
+
+  build:
+    command: 'go build -o build/{{ package_id | kebab_case }}'
+
+  start:
+    command: 'build/{{ package_id | kebab_case }}'
+    args: []
+    options:
+      cache: false
+
+  tidy:
+    command: 'go mod tidy && go mod vendor'
