@@ -29,6 +29,7 @@ tasks:
 
   build:
     command: 'go build -o build/release/go-app'
+    deps: [tidy]
 
   start:
     command: 'build/release/go-app'
