@@ -1,6 +1,14 @@
 [
     {
         "action": "remove",
-        "files": ["README.md", "apps", "packages", "templates", "template-*"]
+        "files": [
+            "README.md",
+            "apps",
+            "packages",
+            "templates",
+            "template-golang",
+            "template-react-app",
+            "template-shared-ui"
+        ]
     }
 ]
