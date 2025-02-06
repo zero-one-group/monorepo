@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json
+
+# Valkey is a drop-in replacement for Redis.
+# ALLOW_EMPTY_PASSWORD is recommended only for development.
+# For better performance, consider `host` mode instead `port` to avoid docker NAT.
+# Notice: Docker `host` mode is NOT currently supported in Swarm Mode.
+# @ref: https://docs.docker.com/compose/compose-file/compose-file-v3/#network_mode
+services:
+  valkey:
+    image: valkey/valkey:${VALKEY_VERSION:-8-alpine}
+    container_name: myorg_valkey
+    hostname: valkey
+    restart: always
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - VALKEY_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+    ports:
+      - 6379:6379
+    # network_mode: "host"
+    volumes:
+      - valkey_data:/data:rw
+    ulimits:
+      memlock: -1
+      nofile:
+        soft: 262144
+        hard: 262144
+
+volumes:
+  valkey_data:
+    driver: local

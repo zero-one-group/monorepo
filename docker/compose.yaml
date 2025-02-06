@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json
+
+# @see: https://docs.docker.com/compose/how-tos/multiple-compose-files/include/
+include:
+  - ./compose-mailpit.yaml
+  # - ./compose-valkey.yaml
+
+services:
+  pgsql:
+    image: postgres:${PGSQL_VERSION:-17-alpine}
+    container_name: myorg_pgsql
+    hostname: postgres
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    volumes:
+      - pgsql_data:/var/lib/postgresql/data
+      - ./pgsql-multidb.sh:/docker-entrypoint-initdb.d/multidb.sh
+    environment:
+      POSTGRES_DB: myorg
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: securedb
+      POSTGRES_EXTRA_DB: extradb1,extradb2
+      POSTGRES_SCHEMAS: myorg:internal,extradb1:analytics
+    command: ['postgres', '-c', 'wal_level=logical']
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d myorg']
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  pgweb:
+    image: sosedoff/pgweb:latest
+    container_name: myorg_pgweb
+    restart: always
+    ports:
+      - 54321:8081
+    environment:
+      PGWEB_DATABASE_URL: 'postgres://postgres:securedb@pgsql:5432/myorg?sslmode=disable'
+    depends_on:
+      pgsql:
+        condition: service_started
+
+volumes:
+  pgsql_data:
+    driver: local
+  valkey_data:
+    driver: local

@@ -37,6 +37,20 @@ install and configure it for your project. Please read the [Go installation docs
 
 For a list of supported toolchains, visit [moonrepo documentation][moon-toolchain].
 
+### Local development server
+
+This repository includes a local development server for testing and development purposes.
+Currently, it supports PostgreSQL, Valkey (drop-in replacement for Redis), [mailpit][mailpit] (SMTP server),
+and [pgweb][pgweb] (PostgreSQL web interface).
+
+These commands are used for managing the local development server:
+
+```sh
+pnpm compose:up       # Start local development server
+pnpm compose:down     # Stop local development server
+pnpm compose:cleanup  # Remove all local development server data
+```
+
 ### Creating application from template
 
 To get started, you can use the following command to generate a new application from a template.
@@ -133,7 +147,8 @@ After creating a new project from this template repository, ensure you update th
 Keeping documentation current helps others understand, use, and contribute to the project.
 
 <!-- link reference definition -->
-[moonrepo]: https://moonrepo.dev/docs/install
-[moon-toolchain]: https://moonrepo.dev/docs/concepts/toolchain
 [go-docs]: https://go.dev/doc/install
-[static-web-server]: https://static-web-server.net/download-and-install/
+[mailpit]: https://mailpit.axllent.org/
+[moon-toolchain]: https://moonrepo.dev/docs/concepts/toolchain
+[moonrepo]: https://moonrepo.dev/docs/install
+[pgweb]: https://sosedoff.github.io/pgweb
