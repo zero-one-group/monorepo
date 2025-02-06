@@ -7,7 +7,8 @@ and TypeScript to deliver accessible, type-safe, and customizable components.
 The UI components leverage [shadcn/ui](https://ui.shadcn.com/) as their foundation,
 enhanced with custom modifications. The notable distinction lies in the styling
 implementation, which utilizes [Tailwind Variants](https://www.tailwind-variants.org/)
-for a more flexible approach.
+for a more flexible approach and [tailwindcss-motion](https://rombo.co/tailwind) for
+animations and transitions effects.
 
 ## Enabling the package
 

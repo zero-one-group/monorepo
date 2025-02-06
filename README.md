@@ -52,6 +52,7 @@ moon generate template-react-app
 ```
 
 View all available templates by looking at folders with `template-` prefix in this repository.
+
 Current available templates are:
 
 | Template Name        | Description                                       |
