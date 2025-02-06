@@ -3,10 +3,10 @@
 $schema: 'https://moonrepo.dev/schemas/template.json'
 
 # REQUIRED: Name of the template in a human readable format.
-title: 'Go Echo Application'
+title: 'Go Application'
 
 # REQUIRED: Description of what the template is for and other relevant information.
-description: 'Go Echo application template.'
+description: 'Basic Go application template'
 
 # Destination path for the package.
 destination: 'apps/[package_id]'
@@ -16,7 +16,7 @@ destination: 'apps/[package_id]'
 variables:
   package_id:
     type: 'string'
-    default: 'api'
+    default: 'go-app'
     prompt: 'Package identifier?'
     required: true
 
@@ -30,4 +30,10 @@ variables:
     type: 'string'
     default: 'My backend application'
     prompt: 'Package description?'
+    required: true
+
+  port_number:
+    type: 'number'
+    default: 8080
+    prompt: 'Port number?'
     required: true

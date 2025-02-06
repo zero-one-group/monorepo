@@ -27,6 +27,8 @@ npm-debug.log
 slim.report.json
 playwright-report/
 tests-results/
+vendor/
+testdata/
 template-*/
 .playwright/
 .moon/cache
