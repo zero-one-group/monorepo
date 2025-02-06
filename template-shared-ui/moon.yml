@@ -14,18 +14,8 @@ id: '{{ package_id | kebab_case }}'
 
 project:
   name: '{{ package_name | kebab_case }}'
-  description: 'Shared UI Components for the frontend application.'
+  description: 'Shared UI Components for the frontend application'
 
-tasks:
-  dev:
-    command: 'pnpm run dev'
-    deps: ['typecheck']
-
-  build:
-    command: 'pnpm run build'
-    deps: ['typecheck']
-    options:
-      cache: false
-
-  typecheck:
-    command: 'pnpm run typecheck'
+# Since this project can infer task from script (package.json), then you can run any script as moon task.
+# @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
+# Example: `moon shared-ui:typecheck`

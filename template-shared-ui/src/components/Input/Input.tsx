@@ -1,62 +1,123 @@
-import { EyeClosedIcon, EyeOpenIcon } from '@radix-ui/react-icons'
+import * as Lucide from 'lucide-react'
 import * as React from 'react'
-import { cn } from '#/utils'
+import { Button } from '../button/button'
+import { toast } from '../toast/toast'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../tooltip/tooltip'
+import { inputStyles } from './input.css'
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  onCopy?: () => void
+  showCopyButton?: boolean
+  showExternalCopyButton?: boolean
+}
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, ...props }, ref) => {
-    const [isVisible, setIsVisible] = React.useState(false)
-    if (type === 'password') {
-      return (
-        <div className="relative rounded-md shadow-sm">
-          <input
-            id="price"
-            name="price"
-            type={isVisible ? 'text' : 'password'}
-            placeholder="0.00"
-            aria-describedby="price-currency"
-            className={cn(
-              'flex h-9 w-full rounded-md border border-input bg-transparent py-1 pr-12 pl-3 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:font-medium file:text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
-              className
-            )}
-            ref={ref}
-            {...props}
-          />
-          <div className="absolute inset-y-0 right-0 flex items-center">
-            <button
-              type="button"
-              className={cn(
-                'inline-flex h-9 w-9 items-center justify-center whitespace-nowrap rounded-md',
-                'font-medium text-sm transition-colors hover:bg-transparent hover:text-accent-foreground',
-                'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring',
-                'disabled:pointer-events-none disabled:opacity-50'
-              )}
-              onClick={() => setIsVisible(!isVisible)}
-            >
-              {isVisible ? (
-                <EyeOpenIcon className="h-3.5 w-3.5 fill-primary" />
+  ({ className, type, showCopyButton, showExternalCopyButton, onCopy, ...props }, ref) => {
+    const [showPassword, setShowPassword] = React.useState(false)
+    const styles = inputStyles({
+      hasPasswordToggle: type === 'password',
+      hasCopyButton: showCopyButton && !type,
+    })
+
+    const togglePassword = () => setShowPassword(!showPassword)
+
+    const handleCopy = () => {
+      if (!props.value) {
+        toast.error('Nothing to copy')
+        return
+      }
+      navigator.clipboard.writeText(props.value.toString())
+      toast.success('Copied to clipboard')
+      onCopy?.()
+    }
+
+    const PasswordToggle = () => (
+      <TooltipProvider>
+        <Tooltip delayDuration={150}>
+          <TooltipTrigger asChild>
+            <button type="button" onClick={togglePassword} className={styles.toggleButton()}>
+              {showPassword ? (
+                <Lucide.EyeOff className="size-4" strokeWidth={2} />
               ) : (
-                <EyeClosedIcon className="h-3.5 w-3.5 fill-primary" />
+                <Lucide.Eye className="size-4" strokeWidth={2} />
               )}
             </button>
+          </TooltipTrigger>
+          <TooltipContent side="top">
+            <p>{showPassword ? 'Hide password' : 'Show password'}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    )
+
+    const CopyButton = () => (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button type="button" onClick={handleCopy} className={styles.copyButton()}>
+              <Lucide.Copy className="size-4" strokeWidth={2} />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="top">
+            <p>Copy to clipboard</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    )
+
+    const ExternalCopyButton = () => (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={handleCopy}
+              className="shrink-0"
+            >
+              <Lucide.Copy className="size-4" strokeWidth={2} />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="top">
+            <p>Copy to clipboard</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    )
+
+    if (showExternalCopyButton) {
+      return (
+        <div className={styles.wrapperWithCopy()}>
+          <div className={styles.wrapper()}>
+            <input
+              type={showPassword ? 'text' : type}
+              className={styles.input({ className })}
+              ref={ref}
+              {...props}
+            />
+            {type === 'password' && <PasswordToggle />}
           </div>
+          <ExternalCopyButton />
         </div>
       )
     }
 
     return (
-      <input
-        type={type}
-        className={cn(
-          'flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:font-medium file:text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50',
-          className
-        )}
-        ref={ref}
-        {...props}
-      />
+      <div className={styles.wrapper()}>
+        <input
+          type={showPassword ? 'text' : type}
+          className={styles.input({ className })}
+          ref={ref}
+          {...props}
+        />
+        {type === 'password' && <PasswordToggle />}
+        {showCopyButton && !type && <CopyButton />}
+      </div>
     )
   }
 )
+
+Input.displayName = 'Input'
 
 export { Input }
