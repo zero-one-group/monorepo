@@ -1,0 +1,44 @@
+import { Canvas, Meta, Primary } from '@storybook/blocks';
+import * as Stories from './input-otp.stories';
+
+<Meta of={Stories} />
+
+# Input OTP
+
+A one-time password input component with individual character slots.
+
+## Example
+
+```tsx
+import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from '#/components/base-ui'
+
+// Basic usage
+<InputOTP maxLength={6}>
+  <InputOTPGroup>
+    <InputOTPSlot index={0} />
+    <InputOTPSlot index={1} />
+    <InputOTPSlot index={2} />
+    <InputOTPSeparator />
+    <InputOTPSlot index={3} />
+    <InputOTPSlot index={4} />
+    <InputOTPSlot index={5} />
+  </InputOTPGroup>
+</InputOTP>
+
+// With size variants
+<InputOTP maxLength={6} size="sm">
+  {/* ... */}
+</InputOTP>
+
+<InputOTP maxLength={6} size="default">
+  {/* ... */}
+</InputOTP>
+
+<InputOTP maxLength={6} size="lg">
+  {/* ... */}
+</InputOTP>
+```
+
+## Preview
+
+<Primary />

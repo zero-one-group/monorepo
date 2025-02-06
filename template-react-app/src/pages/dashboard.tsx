@@ -1,5 +1,5 @@
 import { ofetch } from 'ofetch'
-import { Await, json, useLoaderData } from 'react-router-dom'
+import { Await, json, useLoaderData } from 'react-router'
 
 import { Suspense } from 'react'
 import viteLogo from '/vite.svg'

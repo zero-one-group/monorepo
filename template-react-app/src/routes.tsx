@@ -1,4 +1,4 @@
-import { type RouteObject, createBrowserRouter, useRoutes } from 'react-router-dom'
+import { type RouteObject, createBrowserRouter, useRoutes } from 'react-router'
 import NotFound from '#/pages/errors/not-found'
 
 // Application layouts
@@ -57,7 +57,7 @@ const routes: RouteObject[] = [
  *
  * @example
  *
- * import { RouterProvider } from 'react-router-dom'
+ * import { RouterProvider } from 'react-router'
  * import { routes, browserRoutes } from './routes'
  *
  * const App = () => {
@@ -68,13 +68,13 @@ const routes: RouteObject[] = [
 const browserRoutes = createBrowserRouter(routes)
 
 /**
- * Renders the application's routes using the `useRoutes` hook from `react-router-dom`.
+ * Renders the application's routes using the `useRoutes` hook from `react-router`.
  * This component is responsible for setting up the routing structure and rendering the
  * appropriate components based on the current URL.
  *
  * @example
  *
- * import { BrowserRouter } from 'react-router-dom'
+ * import { BrowserRouter } from 'react-router'
  * import AppRoutes from './routes'
  *
  * export default function App() {

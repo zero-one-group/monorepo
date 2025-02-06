@@ -1,6 +1,6 @@
 import type React from 'react'
 import { forwardRef } from 'react'
-import { type LinkProps, Link as RouterLink } from 'react-router-dom'
+import { type LinkProps, Link as RouterLink } from 'react-router'
 
 interface CustomLinkProps extends Omit<LinkProps, 'to'> {
   href: string

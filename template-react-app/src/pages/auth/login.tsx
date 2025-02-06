@@ -1,5 +1,5 @@
 import { type SubmitHandler, focus, reset, useForm, valiForm } from '@modular-forms/react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import * as v from 'valibot'
 import { Button, Input, Label, Link } from '#/components/base'

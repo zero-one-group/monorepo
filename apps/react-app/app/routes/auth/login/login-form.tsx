@@ -1,3 +1,4 @@
+import { Button } from '@repo/shared-ui/button'
 import { useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { Link } from '#/components/link'
@@ -7,13 +8,9 @@ function SubmitButton() {
   const { pending } = useFormStatus()
 
   return (
-    <button
-      type="submit"
-      disabled={pending}
-      className="group relative flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 font-medium text-sm text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-70"
-    >
+    <Button type="submit" variant="primary" className="w-full" disabled={pending}>
       {pending ? 'Signing in...' : 'Sign in'}
-    </button>
+    </Button>
   )
 }
 
@@ -23,8 +20,11 @@ export function LoginForm() {
   return (
     <form className="mt-8 space-y-6" action={formAction}>
       {state?.error && <div className="text-center text-red-500 text-sm">{state.error}</div>}
+      {state?.data && (
+        <div className="text-center text-green-600 text-sm">{`Hello ${state.data.email}`}</div>
+      )}
 
-      <div className="space-y-4 rounded-md shadow-sm">
+      <div className="space-y-4">
         <div>
           <label htmlFor="email" className="sr-only">
             Email address

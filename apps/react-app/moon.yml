@@ -53,7 +53,7 @@ tasks:
   build:
     command: 'pnpm run build'
     options:
-      cache: false
+      cache: true
 
   docker-build:
     command: 'docker build -f $projectRoot/Dockerfile . -t $APP_NAME:$APP_VERSION'

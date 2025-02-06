@@ -1,5 +1,5 @@
 import { ErrorBoundary } from 'react-error-boundary'
-import { Navigate, Outlet, useLocation } from 'react-router-dom'
+import { Navigate, Outlet, useLocation } from 'react-router'
 import { useAuth } from '#/context/hooks/use-auth'
 import InternalError from '#/pages/errors/internal-error'
 import logger from '#/utils/logger'

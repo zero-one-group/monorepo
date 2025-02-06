@@ -1,6 +1,6 @@
 import { type SubmitHandler, focus, reset, useForm, valiForm } from '@modular-forms/react'
 import { Suspense } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { toast } from 'sonner'
 import * as v from 'valibot'
 import { Button, Input, Link } from '#/components/base'

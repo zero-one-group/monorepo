@@ -87,7 +87,6 @@ ${colorConfig
   }
 
   return (
-    // biome-ignore lint/security/noDangerouslySetInnerHtml: used for styling
     <style dangerouslySetInnerHTML={innerHtml} />
   )
 }

@@ -2,7 +2,7 @@ import './assets/styles/main.css'
 
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { RouterProvider } from 'react-router-dom'
+import { RouterProvider } from 'react-router'
 import AppProvider from '#/context/providers/app-provider'
 import { browserRoutes } from './routes'
 
