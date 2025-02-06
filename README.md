@@ -17,13 +17,12 @@ Additionally, the following tools and libraries are included:
 
 ## 🏁 Quick Start
 
-To begin, we suggest installing moon globally, read the documentation [here](https://moonrepo.dev/docs/install).
-Then, follow these steps (_don't forget to replace `my-new-project` with your project name_):
+To begin, we suggest installing moon globally, read the documentation [here][moonrepo].
+Then, follow these steps (_don't forget to replace `moon-project` with your project name_):
 
-1. Clone this repository: `npx tiged zero-one-group/monorepo my-new-project`
-2. Initialize git repository: `cd my-new-project && git init`
-3. Install the necessary dependencies: `pnpm install`
-4. Create `.env` file or duplicate the `.env.example` file, then configure required variables.
+1. Clone this repository: `pnpm dlx tiged zero-one-group/monorepo moon-project`
+2. Install the necessary dependencies: `cd moon-project && pnpm install`
+3. Create `.env` file or duplicate the `.env.example` file, then configure required variables.
 
 Find and replace the `myorg` namespace and `example.com` string with your own organization
 or project-specific namespace. This is necessary to ensure that all configurations,
@@ -52,7 +51,7 @@ moon generate TEMPLATE_NAME
 Example, creating React application:
 
 ```sh
-moon generate moon-vite-react-tailwind
+moon generate template-react-app
 ```
 
 Explore the [`zero-one-group/templates`][zog-templates] repository to see all available templates.
@@ -135,7 +134,7 @@ After creating a new project from this template repository, ensure you update th
 Keeping documentation current helps others understand, use, and contribute to the project.
 
 <!-- link reference definition -->
-[moonrepo]: https://moonrepo.dev/
+[moonrepo]: https://moonrepo.dev/docs/install
 [zog-templates]: https://github.com/zero-one-group/templates
 [moon-toolchain]: https://moonrepo.dev/docs/concepts/toolchain
 [go-docs]: https://go.dev/doc/install
