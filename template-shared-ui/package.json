@@ -9,18 +9,18 @@
     "types": "dist/src/index.d.ts",
     "files": ["dist"],
     "scripts": {
-        "build": "rollup --config rollup.config.js",
-        "dev": "rollup --config rollup.config.js --watch",
+        "build": "rollup --config rollup.config.mjs",
+        "dev": "rollup --config rollup.config.mjs --watch",
         "lint": "biome lint . --write",
         "check": "biome check . --write",
         "format": "biome format . --write",
         "cleanup": "pnpm dlx rimraf dist node_modules .rollup.cache",
-        "ts-check": "tsc --p tsconfig.json",
+        "typecheck": "tsc --p tsconfig.json",
         "prepublishOnly": "pnpm run build"
     },
     "peerDependencies": {
-        "react": "^18.3.1",
-        "react-dom": "^18.3.1"
+        "react": "^19.0.3",
+        "react-dom": "^19.0.3"
     },
     "dependencies": {
         "@radix-ui/react-accordion": "^1.2.0",
@@ -56,9 +56,9 @@
         "cmdk": "^1.0.0",
         "embla-carousel-react": "^8.2.0",
         "input-otp": "^1.2.4",
-        "react": "^18.3.1",
+        "react": "^19.0.3",
         "react-day-picker": "^9.0.8",
-        "react-dom": "^18.3.1",
+        "react-dom": "^19.0.3",
         "react-resizable-panels": "^2.1.1",
         "recharts": "^2.12.7",
         "tailwind-merge": "^2.5.2",

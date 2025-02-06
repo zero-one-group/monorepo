@@ -18,6 +18,10 @@ hasher:
 runner:
   cacheLifetime: '24 hours'
 
+docker:
+  prune:
+    installToolchainDeps: false
+
 # Require a specific version of moon while running commands, otherwise fail.
 # versionConstraint: '>=1.0.0'
 

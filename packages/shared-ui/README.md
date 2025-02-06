@@ -7,7 +7,7 @@ This is a shared UI library for the Monorepo project based on `shadcn-ui`.
 ### RadixUI Packages
 
 ```sh
-pnpm --filter @myorg/shared-ui add \
+pnpm --filter @repo/shared-ui add \
   @radix-ui/react-accordion \
   @radix-ui/react-alert-dialog \
   @radix-ui/react-aspect-ratio \
@@ -41,7 +41,7 @@ pnpm --filter @myorg/shared-ui add \
 ### Additional Packages
 
 ```sh
-pnpm --filter @myorg/shared-ui add \
+pnpm --filter @repo/shared-ui add \
   cmdk \
   embla-carousel-react \
   input-otp \
@@ -239,14 +239,14 @@ export default defineConfig({
   // ....
   optimizeDeps: {
     // Do not optimize internal workspace dependencies.
-    exclude: ['@myorg/shared-ui'],
+    exclude: ['@repo/shared-ui'],
   },
   resolve: {
     alias: [
       {
         // Configure an alias for the package. So, we don't have to restart
         // the Vite server each time when the former is performed.
-        find: '@myorg/shared-ui',
+        find: '@repo/shared-ui',
         replacement: resolve(__dirname, '../../packages/shared-ui/src/index.ts'),
       },
     ],
@@ -260,7 +260,7 @@ Add the following to your `package.json` file:
 ```json
 {
     "dependencies": {
-        "@myorg/shared-ui": "workspace:*",
+        "@repo/shared-ui": "workspace:*",
         "tailwindcss-animate": "^1.0.7",
     }
 }

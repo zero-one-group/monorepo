@@ -1,0 +1,26 @@
+@import "tailwindcss";
+@plugin "tailwindcss-motion";
+@variant dark (&:where([data-theme="dark"] *));
+
+@theme {
+  /* Reference: https://modernfontstacks.com/ */
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+@layer base {
+  html,
+  body {
+    @apply antialiased min-h-screen scroll-smooth overflow-hidden;
+  }
+  body {
+    @apply bg-white text-gray-950 dark:bg-gray-950 dark:text-gray-50;
+  }
+}
+
+/* Debug element */
+@utility debug {
+  border-width: 1px;
+  border-style: dashed;
+  border-color: #f87171;
+}

@@ -19,13 +19,13 @@ project:
 tasks:
   dev:
     command: 'pnpm run dev'
-    deps: ['ts-check']
+    deps: ['typecheck']
 
   build:
     command: 'pnpm run build'
-    deps: ['ts-check']
+    deps: ['typecheck']
     options:
       cache: false
 
-  ts-check:
-    command: 'pnpm run ts-check'
+  typecheck:
+    command: 'pnpm run typecheck'

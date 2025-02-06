@@ -14,45 +14,81 @@ tags: ['app']
 id: 'react-app'
 
 project:
-  name: vite-react-tailwind
+  name: react-app
   description: 'Frontend application'
+
+env:
+  APP_NAME: '$(jq -r .name <$projectRoot''/package.json'')'
+  APP_VERSION: '$(jq -r .version <$workspaceRoot''/package.json'')'
 
 dependsOn:
   - 'shared-ui'
 
 # File groups defined in .moon/tasks.yml will be inherited by all projects.
 # @see: https://moonrepo.dev/docs/config/project#filegroups
-# fileGroups:
+fileGroups:
+  configs:
+    - '*.config.{js,cjs,mjs,ts}'
+    - '*.json'
+  sources:
+    - 'app/**/*'
+  tests:
+    - 'tests/**/*'
+    - '**/__tests__/**/*'
+  assets:
+    - 'public/**/*'
+    - '!public/.gitkeep'
 
+# Since this project can infer task from script (package.json), then you can run any script as moon task.
+# @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
+# Example: `moon react-app:start`
 tasks:
   dev:
     command: 'pnpm run dev'
-    inputs:
-      - '@group(js-configs)'
-      - '@group(js-sources)'
-      - '@group(assets)'
     outputs:
-      - 'dist/**/*.js'
-      - 'public/**/*'
-      - '!public/.gitkeep'
+      - 'build/**/*'
     options:
       envFile: '/.env'
 
   build:
     command: 'pnpm run build'
-    inputs:
-      - '@group(js-configs)'
-      - '@group(js-sources)'
-      - '@group(assets)'
-    outputs:
-      - 'dist/**/*.js'
-      - 'public/**/*'
-      - '!public/.gitkeep'
-
-  start:
-    command: 'static-web-server'
-    args: ['-d', 'dist', '--page404', 'index.html', '-a', '127.0.0.1', '-p', '8000']
-    env:
-      NODE_ENV: 'production'
     options:
       cache: false
+
+  docker-build:
+    command: 'docker build -f $projectRoot/Dockerfile . -t $APP_NAME:$APP_VERSION'
+    options:
+      outputStyle: stream
+      runFromWorkspaceRoot: true
+      runInCI: false
+      cache: false
+      shell: true
+
+  docker-run:
+    command: 'docker run --network=host --rm -it --env-file .env --name $APP_NAME $APP_NAME:$APP_VERSION'
+    options:
+      runFromWorkspaceRoot: true
+      interactive: false
+      outputStyle: stream
+      runInCI: false
+      cache: false
+      shell: true
+
+  docker-shell:
+    command: 'docker run --network=host --rm -it --env-file .env --entrypoint /bin/sh $APP_NAME:$APP_VERSION'
+    options:
+      runFromWorkspaceRoot: true
+      interactive: false
+      outputStyle: none
+      runInCI: false
+      cache: false
+      shell: true
+
+  docker-images:
+    command: 'docker image list --filter reference=$APP_NAME:\\*'
+    options:
+      runFromWorkspaceRoot: true
+      outputStyle: none
+      runInCI: false
+      cache: false
+      shell: true

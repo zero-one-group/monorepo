@@ -23,9 +23,16 @@
                 "noUselessFragments": "warn"
             },
             "correctness": {
-                "noUnusedImports": "error",
-                "noUnusedVariables": "error",
+                "noUnusedImports": {
+                    "level": "off",
+                    "fix": "none"
+                },
+                "noUnusedVariables": {
+                    "level": "warn",
+                    "fix": "none"
+                },
                 "useJsxKeyInIterable": "error",
+                "noUnknownFunction": "off",
                 "noUnknownUnit": "error"
             },
             "nursery": {
