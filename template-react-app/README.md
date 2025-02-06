@@ -1,6 +1,6 @@
 # React SPA Template
 
-This is a template for a React Single Page Application (SPA) using Vite, React, and Tailwind CSS.
+React Router application preconfigured with Tailwind CSS.
 
 To use this template, follow these steps:
 
