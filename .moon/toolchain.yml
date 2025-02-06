@@ -11,6 +11,7 @@ $schema: 'https://moonrepo.dev/schemas/toolchain.json'
 node:
   version: '20'
   packageManager: 'pnpm'                  # Defines which package manager to utilize.
+  inferTasksFromScripts: true             # Automatically infer moon tasks from `package.json` scripts.
   addEnginesConstraint: false             # Add `node.version` as a constraint in the root `package.json` `engines`.
   dedupeOnLockfileChange: true            # Dedupe dependencies after the lockfile has changed, keep the workspace tree as clean and lean as possible.
   syncPackageManagerField: true           # Sync the currently configured package manager and its version to the packageManager field in the root package.json.

@@ -14,10 +14,17 @@
         "cleanup:deps": "pnpm dlx rimraf pnpm-lock.yaml node_modules",
         "update-deps": "npm-check-updates --configFileName .ncurc.json"
     },
-    "dependencies": {},
     "devDependencies": {
         "@biomejs/biome": "^1.9.4",
         "npm-check-updates": "^17.1.14"
     },
-    "packageManager": "pnpm@10.2.0"
+    "packageManager": "pnpm@10.2.0",
+    "pnpm": {
+        "ignoredBuiltDependencies": [
+            "esbuild"
+        ],
+        "onlyBuiltDependencies": [
+            "sharp"
+        ]
+    }
 }

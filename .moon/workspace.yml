@@ -9,8 +9,8 @@ vcs:
   # @see: https://moonrepo.dev/docs/config/workspace#hooks
   hooks:
     pre-commit:
-      - 'moon run :lint :format --affected --status=staged'
-      # - 'another-command'
+      - 'moon run :format --affected --status=all'
+      - 'moon run :lint --affected --status=staged'
 
 hasher:
   optimization: 'performance'

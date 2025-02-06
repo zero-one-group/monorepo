@@ -84,7 +84,8 @@
         },
         "formatter": {
             "enabled": true,
-            "quoteStyle": "double"
+            "quoteStyle": "double",
+            "indentWidth": 2
         }
     },
     "javascript": {
@@ -109,6 +110,6 @@
     "files": {
         "ignoreUnknown": true,
         "include": ["**/*.js", "**/*.mjs", "**/*.ts", "**/*.tsx", "**/*.css", "**/*.json"],
-        "ignore": [".github", ".next", "dist", "build", "tmp", "temp", "templates"]
+        "ignore": [".github", "tmp", "temp", "templates", "template-*"]
     }
 }

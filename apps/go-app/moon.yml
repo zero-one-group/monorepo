@@ -4,7 +4,8 @@ $schema: 'https://moonrepo.dev/schemas/project.json'
 
 type: application
 language: go
-platform: system
+toolchain:
+  default: null
 stack: backend
 tags: ['app']
 
