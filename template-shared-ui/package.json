@@ -59,6 +59,8 @@
         "./utils": "./src/utils.ts"
     },
     "dependencies": {
+        "@hookform/resolvers": "^3.10.0",
+        "@nanostores/react": "^0.8.4",
         "@radix-ui/react-accordion": "^1.2.3",
         "@radix-ui/react-alert-dialog": "^1.1.6",
         "@radix-ui/react-aspect-ratio": "^1.1.2",
@@ -89,6 +91,8 @@
         "@radix-ui/react-tooltip": "^1.1.8",
         "clsx": "^2.1.1",
         "cmdk": "^1.0.4",
+        "consola": "^3.4.0",
+        "date-fns": "^4.1.0",
         "embla-carousel-react": "^8.5.2",
         "input-otp": "^1.4.2",
         "lucide-react": "^0.474.0",
@@ -98,7 +102,9 @@
         "react-hook-form": "^7.54.2",
         "react-resizable-panels": "^2.1.7",
         "recharts": "^2.15.1",
-        "vaul": "^1.1.2"
+        "sonner": "^1.7.4",
+        "vaul": "^1.1.2",
+        "zod": "^3.24.1"
     },
     "devDependencies": {
         "@storybook/addon-essentials": "^8.5.3",
@@ -106,18 +112,18 @@
         "@storybook/addon-themes": "^8.5.3",
         "@storybook/blocks": "^8.5.3",
         "@storybook/manager-api": "^8.5.3",
-        "@storybook/react-vite": "^8.5.3",
         "@storybook/react": "^8.5.3",
+        "@storybook/react-vite": "^8.5.3",
         "@storybook/test": "^8.5.3",
         "@storybook/theming": "^8.5.3",
         "@types/node": "^22.13.1",
-        "@types/react-dom": "^19.0.3",
         "@types/react": "^19.0.8",
+        "@types/react-dom": "^19.0.3",
         "storybook": "^8.5.3",
         "tailwind-merge": "^3.0.1",
         "tailwind-variants": "^0.3.1",
-        "tailwindcss-motion": "^1.0.1",
         "tailwindcss": "^4.0.4",
+        "tailwindcss-motion": "^1.0.1",
         "typescript": "^5.7.3"
     },
     "peerDependencies": {
