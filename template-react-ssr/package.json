@@ -1,5 +1,5 @@
 {
-    "name": "react-ssr",
+    "name": "{{ package_id | kebab_case }}",
     "private": true,
     "type": "module",
     "scripts": {

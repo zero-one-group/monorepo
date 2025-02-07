@@ -1,0 +1,101 @@
+# https://moonrepo.dev/docs/config/project
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+type: application
+language: typescript
+toolchain:
+  node:
+    version: '20'
+stack: frontend
+tags: ['app']
+
+# Overrides the name (identifier) of the project
+id: '{{ package_id | kebab_case }}'
+
+project:
+  name: '{{ package_name | kebab_case }}'
+  description: '{{ package_description }}'
+
+env:
+  APP_NAME: '$(jq -r .name <$projectRoot''/package.json'')'
+  APP_VERSION: '$(jq -r .version <$workspaceRoot''/package.json'')'
+
+# Uncomment to use shared UI library
+# dependsOn:
+#   - 'shared-ui'
+
+# File groups defined in .moon/tasks.yml will be inherited by all projects.
+# @see: https://moonrepo.dev/docs/config/project#filegroups
+fileGroups:
+  configs:
+    - '*.config.{js,cjs,mjs,ts}'
+    - '*.json'
+  sources:
+    - 'app/**/*'
+  tests:
+    - 'tests/**/*'
+    - '**/__tests__/**/*'
+  assets:
+    - 'public/**/*'
+    - '!public/.gitkeep'
+
+# Since this project can infer task from script (package.json), then you can run any script as moon task.
+# @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
+# Example: `moon {{ package_name | kebab_case }}:start`
+tasks:
+  dev:
+    command: 'pnpm run dev'
+    outputs:
+      - 'build/**/*'
+    options:
+      envFile: '/.env'
+
+  build:
+    command: 'pnpm run build'
+    deps: ['typegen']
+    options:
+      cache: true
+
+  typegen:
+    command: 'pnpm run typegen'
+    options:
+      cache: true
+
+  docker-build:
+    command: 'docker build -f $projectRoot/Dockerfile . -t $APP_NAME:$APP_VERSION'
+    options:
+      outputStyle: stream
+      runFromWorkspaceRoot: true
+      runInCI: false
+      cache: false
+      shell: true
+
+  docker-run:
+    command: 'docker run --network=host --rm -it --env-file .env --name $APP_NAME $APP_NAME:$APP_VERSION'
+    options:
+      runFromWorkspaceRoot: true
+      interactive: false
+      outputStyle: stream
+      runInCI: false
+      cache: false
+      shell: true
+
+  docker-shell:
+    command: 'docker run --network=host --rm -it --env-file .env --entrypoint /bin/sh $APP_NAME:$APP_VERSION'
+    options:
+      runFromWorkspaceRoot: true
+      interactive: false
+      outputStyle: none
+      runInCI: false
+      cache: false
+      shell: true
+
+  docker-images:
+    command: 'docker image list --filter reference=$APP_NAME:\\*'
+    options:
+      runFromWorkspaceRoot: true
+      outputStyle: none
+      runInCI: false
+      cache: false
+      shell: true
