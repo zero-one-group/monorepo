@@ -16,19 +16,19 @@ destination: 'apps/[package_id]'
 variables:
   package_id:
     type: 'string'
-    default: 'react-app'
+    default: 'react-ssr'
     prompt: 'Package identifier?'
     required: true
 
   package_name:
     type: 'string'
-    default: 'react-app'
+    default: 'react-ssr'
     prompt: 'Package name?'
     required: true
 
   package_description:
     type: 'string'
-    default: 'SPA React application'
+    default: 'SSR React application'
     prompt: 'Package description?'
     required: true
 

@@ -8,6 +8,7 @@
             "templates",
             "template-golang",
             "template-react-app",
+            "template-react-ssr",
             "template-shared-ui"
         ]
     }
