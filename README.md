@@ -87,7 +87,8 @@ Current available templates are:
 | Template Name        | Description                                       |
 |----------------------|---------------------------------------------------|
 | `template-golang`    | Basic Go application for backend                  |
-| `template-react-app` | React Router application with Tailwind CSS        |
+| `template-react-app` | SPA React Router application with Tailwind CSS    |
+| `template-react-ssr` | SSR React Router application with Tailwind CSS    |
 | `template-shared-ui` | Collections of UI components based on `shadcn/ui` |
 
 ### Moon commands
