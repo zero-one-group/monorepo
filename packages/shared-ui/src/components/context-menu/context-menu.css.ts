@@ -8,11 +8,19 @@ export const contextMenuStyles = tv({
       'data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
     ],
     content: [
-      'z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md',
-      'data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=open]:animate-in',
-      'data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=closed]:animate-out',
-      'data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2',
-      'data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2',
+      'z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-sm',
+      // Entry animations
+      'data-[state=open]:motion-safe:motion-translate-y-in-2',
+      'data-[state=open]:motion-safe:motion-opacity-in-0',
+      'data-[state=open]:motion-safe:motion-duration-200',
+      // Exit animations
+      'data-[state=closed]:motion-safe:motion-opacity-out-0',
+      'data-[state=closed]:motion-safe:motion-duration-150',
+      // Slide animations based on position
+      'data-[side=top]:motion-safe:motion-translate-y-in-2',
+      'data-[side=bottom]:motion-safe:motion-translate-y-in--2',
+      'data-[side=left]:motion-safe:motion-translate-x-in-2',
+      'data-[side=right]:motion-safe:motion-translate-x-in--2',
     ],
     item: [
       'relative flex cursor-default select-none items-center rounded-xs px-2 py-1.5 text-sm',
@@ -39,11 +47,20 @@ export const contextMenuStyles = tv({
     ],
     subTriggerIcon: 'ml-auto size-4',
     subContent: [
-      'z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-lg',
-      'data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=open]:animate-in',
-      'data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=closed]:animate-out',
-      'data-[side=bottom]:slide-in-from-top-2 data-[side=top]:slide-in-from-bottom-2',
-      'data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2',
+      'z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-sm',
+      // Entry animations
+      'data-[state=open]:motion-safe:motion-opacity-in-0',
+      'data-[state=open]:motion-safe:motion-scale-in-95',
+      'data-[state=open]:motion-safe:motion-duration-200',
+      // Exit animations
+      'data-[state=closed]:motion-safe:motion-opacity-out-0',
+      'data-[state=closed]:motion-safe:motion-scale-out-95',
+      'data-[state=closed]:motion-safe:motion-duration-150',
+      // Slide animations based on position
+      'data-[side=top]:motion-safe:motion-translate-y-in-2',
+      'data-[side=bottom]:motion-safe:motion-translate-y-in--2',
+      'data-[side=left]:motion-safe:motion-translate-x-in-2',
+      'data-[side=right]:motion-safe:motion-translate-x-in--2',
     ],
     itemIndicator: 'absolute left-2 flex h-3.5 w-3.5 items-center justify-center',
     itemIndicatorIcon: 'size-4',
