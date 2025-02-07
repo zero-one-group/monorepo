@@ -5,7 +5,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), tsconfigPaths()],
-  server: { port: 6300, host: true },
+  server: { port: 6300, host: false },
   build: {
     emptyOutDir: true,
     chunkSizeWarningLimit: 1024 * 2,

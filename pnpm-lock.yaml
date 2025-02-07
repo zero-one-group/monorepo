@@ -341,9 +341,6 @@ importers:
       '@storybook/addon-links':
         specifier: ^8.5.3
         version: 8.5.3(react@19.0.0)(storybook@8.5.3(prettier@3.4.2))
-      '@storybook/addon-storysource':
-        specifier: ^8.5.3
-        version: 8.5.3(storybook@8.5.3(prettier@3.4.2))
       '@storybook/addon-themes':
         specifier: ^8.5.3
         version: 8.5.3(storybook@8.5.3(prettier@3.4.2))
@@ -1721,11 +1718,6 @@ packages:
     peerDependencies:
       storybook: ^8.5.3
 
-  '@storybook/addon-storysource@8.5.3':
-    resolution: {integrity: sha512-W+QK6w2osgJSMKAHdSsMLTPgmsv/fFOiAR1Dr9NPXK0URnmg5edyFim9R2A+tGIv2QM2k7y3v8m8N534eA2C8w==}
-    peerDependencies:
-      storybook: ^8.5.3
-
   '@storybook/addon-themes@8.5.3':
     resolution: {integrity: sha512-wGlrAxU/9WF/CA4EV9VDzWbi4fPKdUweHmAPcnuiU0xG/zEIIL4o2fDr0+9tTctjJfVHgkrsHk74BpP14j+p9g==}
     peerDependencies:
@@ -1844,11 +1836,6 @@ packages:
         optional: true
       typescript:
         optional: true
-
-  '@storybook/source-loader@8.5.3':
-    resolution: {integrity: sha512-55leYMti07WGOw2XKtEwHLV9G/hmnhbjtRiSIgVnPCGoPQ0R76uCvGFazmOQqWLkcXAr8hAx2A8eAsrIyLUBNQ==}
-    peerDependencies:
-      storybook: ^8.5.3
 
   '@storybook/test@8.5.3':
     resolution: {integrity: sha512-2smoDbtU6Qh4yk0uD18qGfW6ll7lZBzKlF58Ha1CgWR4o+jpeeTQcfDLH9gG6sNrpojF7AVzMh/aN9BDHD+Chg==}
@@ -2640,9 +2627,6 @@ packages:
     resolution: {integrity: sha512-FGgH2h8zKNim9ljj7dankFPcICIK9Cp5bm+c2gQSYePhpaG5+esrLODihIorn+Pe6FGJzWhXQotPv73jTaldXA==}
     engines: {node: '>= 0.4'}
 
-  es-toolkit@1.32.0:
-    resolution: {integrity: sha512-ZfSfHP1l6ubgW/B/FRtqb9bYdMvI6jizbOSfbwwJNcOQ1QE6TFsC3jpQkZ900uUPSR3t3SU5Ds7UWKnYz+uP8Q==}
-
   esbuild-register@3.6.0:
     resolution: {integrity: sha512-H2/S7Pm8a9CL1uhp9OvjwrBh5Pvx0H8qVOxNu8Wed9Y7qv56MPtq+GGM8RJpq6glYJn9Wspr8uw7l55uyinNeg==}
     peerDependencies:
@@ -2668,10 +2652,6 @@ packages:
     resolution: {integrity: sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==}
     engines: {node: '>=4'}
     hasBin: true
-
-  estraverse@5.3.0:
-    resolution: {integrity: sha512-MMdARuVEQziNTeJD8DgMqmhwR11BRQ/cBP+pLtYdSTnf3MIO8fFeiINEbX36ZdNlfU/7A9f3gUw49B3oQsvwBA==}
-    engines: {node: '>=4.0'}
 
   estree-walker@2.0.2:
     resolution: {integrity: sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==}
@@ -5528,13 +5508,6 @@ snapshots:
       storybook: 8.5.3(prettier@3.4.2)
       ts-dedent: 2.2.0
 
-  '@storybook/addon-storysource@8.5.3(storybook@8.5.3(prettier@3.4.2))':
-    dependencies:
-      '@storybook/source-loader': 8.5.3(storybook@8.5.3(prettier@3.4.2))
-      estraverse: 5.3.0
-      storybook: 8.5.3(prettier@3.4.2)
-      tiny-invariant: 1.3.3
-
   '@storybook/addon-themes@8.5.3(storybook@8.5.3(prettier@3.4.2))':
     dependencies:
       storybook: 8.5.3(prettier@3.4.2)
@@ -5688,14 +5661,6 @@ snapshots:
     optionalDependencies:
       '@storybook/test': 8.5.3(storybook@8.5.3(prettier@3.4.2))
       typescript: 5.7.3
-
-  '@storybook/source-loader@8.5.3(storybook@8.5.3(prettier@3.4.2))':
-    dependencies:
-      '@storybook/csf': 0.1.12
-      es-toolkit: 1.32.0
-      estraverse: 5.3.0
-      prettier: 3.4.2
-      storybook: 8.5.3(prettier@3.4.2)
 
   '@storybook/test@8.5.3(storybook@8.5.3(prettier@3.4.2))':
     dependencies:
@@ -6485,8 +6450,6 @@ snapshots:
     dependencies:
       es-errors: 1.3.0
 
-  es-toolkit@1.32.0: {}
-
   esbuild-register@3.6.0(esbuild@0.24.2):
     dependencies:
       debug: 4.4.0
@@ -6529,8 +6492,6 @@ snapshots:
   escape-string-regexp@4.0.0: {}
 
   esprima@4.0.1: {}
-
-  estraverse@5.3.0: {}
 
   estree-walker@2.0.2: {}
 
@@ -7134,7 +7095,8 @@ snapshots:
 
   prettier@2.8.8: {}
 
-  prettier@3.4.2: {}
+  prettier@3.4.2:
+    optional: true
 
   pretty-format@27.5.1:
     dependencies:

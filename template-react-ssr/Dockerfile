@@ -69,11 +69,11 @@ COPY --from=builder /srv/node_modules /srv/node_modules
 # Copy the application output from the builder stage.
 COPY --from=builder /srv/apps/{{ package_id | kebab_case }}/node_modules /srv/apps/{{ package_id | kebab_case }}/node_modules
 COPY --from=builder /srv/apps/{{ package_id | kebab_case }}/package.json /srv/apps/{{ package_id | kebab_case }}/package.json
-COPY --from=builder /srv/apps/{{ package_id | kebab_case }}/server.js /srv/apps/{{ package_id | kebab_case }}/server.js
+COPY --from=builder /srv/apps/{{ package_id | kebab_case }}/server.mjs /srv/apps/{{ package_id | kebab_case }}/server.mjs
 COPY --from=builder /srv/apps/{{ package_id | kebab_case }}/build /srv/apps/{{ package_id | kebab_case }}/build
 
 # Set executable permissions.
-RUN chmod +x /srv/apps/{{ package_id | kebab_case }}/server.js
+RUN chmod +x /srv/apps/{{ package_id | kebab_case }}/server.mjs
 
 # -----------------------------------------------------------------------------
 # Production image, copy build output files and run the application (runner).
@@ -109,4 +109,4 @@ USER nonroot:nonroot
 EXPOSE $PORT
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["/nodejs/bin/node", "server.js"]
+CMD ["/nodejs/bin/node", "server.mjs"]

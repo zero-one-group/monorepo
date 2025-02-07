@@ -69,11 +69,11 @@ COPY --from=builder /srv/node_modules /srv/node_modules
 # Copy the application output from the builder stage.
 COPY --from=builder /srv/apps/react-ssr/node_modules /srv/apps/react-ssr/node_modules
 COPY --from=builder /srv/apps/react-ssr/package.json /srv/apps/react-ssr/package.json
-COPY --from=builder /srv/apps/react-ssr/server.js /srv/apps/react-ssr/server.js
+COPY --from=builder /srv/apps/react-ssr/server.mjs /srv/apps/react-ssr/server.mjs
 COPY --from=builder /srv/apps/react-ssr/build /srv/apps/react-ssr/build
 
 # Set executable permissions.
-RUN chmod +x /srv/apps/react-ssr/server.js
+RUN chmod +x /srv/apps/react-ssr/server.mjs
 
 # -----------------------------------------------------------------------------
 # Production image, copy build output files and run the application (runner).
@@ -109,4 +109,4 @@ USER nonroot:nonroot
 EXPOSE $PORT
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["/nodejs/bin/node", "server.js"]
+CMD ["/nodejs/bin/node", "server.mjs"]

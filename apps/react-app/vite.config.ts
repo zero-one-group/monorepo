@@ -8,7 +8,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 export default defineConfig({
   envPrefix: 'VITE_' /* Prefix for environment variables */,
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
-  server: { port: 3000, host: true },
+  server: { port: 3000, host: false },
   publicDir: resolve('public'),
   build: {
     ssr: false,

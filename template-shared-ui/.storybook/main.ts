@@ -7,17 +7,6 @@ const config: StorybookConfig = {
   addons: [
     { name: '@storybook/addon-essentials', options: { backgrounds: false } },
     '@storybook/addon-links',
-    {
-      name: '@storybook/addon-storysource',
-      options: {
-        sourceLoaderOptions: {
-          injectStoryParameters: true,
-        },
-        loaderOptions: {
-          prettierConfig: { printWidth: 80, singleQuote: false },
-        },
-      },
-    },
     '@storybook/addon-a11y',
   ],
   framework: {
@@ -27,6 +16,7 @@ const config: StorybookConfig = {
   core: {
     disableTelemetry: true, // 👈 Disables telemetry
     enableCrashReports: false, // 👈 Appends the crash reports to the telemetry events
+    disableWhatsNewNotifications: true, // 👈 Disables the whats new notification
   },
   async viteFinal(config) {
     return mergeConfig(config, {

@@ -4,8 +4,8 @@
     "type": "module",
     "scripts": {
         "build": "react-router build",
-        "dev": "NODE_ENV=development node -r dotenv/config server.js",
-        "start": "node --no-warnings -r dotenv/config server.js",
+        "dev": "NODE_ENV=development node -r dotenv/config server.mjs",
+        "start": "node --no-warnings -r dotenv/config server.mjs",
         "cleanup": "pnpm dlx rimraf node_modules pnpm-lock.yaml build .react-router",
         "typegen": "react-router typegen",
         "typecheck": "tsc --noEmit"
