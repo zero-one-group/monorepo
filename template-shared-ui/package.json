@@ -3,18 +3,35 @@
     "private": true,
     "type": "module",
     "files": ["dist"],
+    "exports": {
+        "./components": {
+            "types": "./dist/components.d.ts",
+            "default": "./dist/components.js"
+        },
+        "./hooks": {
+            "types": "./dist/hooks.d.ts",
+            "default": "./dist/hooks.js"
+        },
+        "./theme": {
+            "types": "./dist/theme.d.ts",
+            "default": "./dist/theme.js"
+        },
+        "./utils": {
+            "types": "./dist/utils.d.ts",
+            "default": "./dist/utils.js"
+        }
+    },
     "scripts": {
-        "dev": "VITE_CJS_IGNORE_WARNING=true storybook dev -p 6006 --no-open",
-        "build": "VITE_CJS_IGNORE_WARNING=true storybook build -o storybook-static",
+        "dev:vite": "vite build",
+        "build:vite": "vite build",
+        "dev": "pnpm run --color \"/dev:/\"",
+        "build": "pnpm run --color \"/build:/\"",
+        "dev:storybook": "VITE_CJS_IGNORE_WARNING=true storybook dev -p 6006 --no-open",
+        "build:storybook": "VITE_CJS_IGNORE_WARNING=true storybook build -o storybook-static",
         "cleanup": "pnpm dlx rimraf dist node_modules pnpm-lock.yaml storybook-static",
         "start": "pnpm dlx serve storybook-static -l 6006 -n -C",
+        "prepublishOnly": "pnpm run build:lib",
         "typecheck": "tsc --noEmit"
-    },
-    "exports": {
-        "./components": "./src/components/index.ts",
-        "./hooks": "./src/hooks/index.ts",
-        "./theme": "./src/theme/index.ts",
-        "./utils": "./src/utils.ts"
     },
     "dependencies": {
         "@hookform/resolvers": "^3.10.0",
@@ -58,8 +75,6 @@
         "nanostores": "^0.11.3",
         "react": "^19.0.0",
         "react-day-picker": "^9.5.1",
-        "react-dom": "^19.0.0",
-        "react-hook-form": "^7.54.2",
         "react-resizable-panels": "^2.1.7",
         "recharts": "^2.15.1",
         "sonner": "^1.7.4",
@@ -74,21 +89,27 @@
         "@storybook/blocks": "^8.5.3",
         "@storybook/core-events": "^8.5.3",
         "@storybook/manager-api": "^8.5.3",
-        "@storybook/react": "^8.5.3",
         "@storybook/react-vite": "^8.5.3",
+        "@storybook/react": "^8.5.3",
         "@storybook/test": "^8.5.3",
         "@storybook/theming": "^8.5.3",
         "@tailwindcss/vite": "^4.0.4",
         "@types/node": "^22.13.1",
-        "@types/react": "^19.0.8",
         "@types/react-dom": "^19.0.3",
+        "@types/react": "^19.0.8",
+        "@vitejs/plugin-react": "^4.3.4",
+        "pathe": "^2.0.2",
+        "react-dom": "^19.0.0",
+        "react-hook-form": "^7.54.2",
+        "std-env": "^3.8.0",
         "storybook": "^8.5.3",
         "tailwind-merge": "^3.0.1",
         "tailwind-variants": "^0.3.1",
-        "tailwindcss": "^4.0.4",
         "tailwindcss-motion": "^1.0.1",
+        "tailwindcss": "^4.0.4",
         "typescript": "^5.7.3",
         "vite": "^6.1.0",
+        "vite-plugin-dts": "^4.5.0",
         "vite-tsconfig-paths": "^5.1.4"
     },
     "peerDependencies": {

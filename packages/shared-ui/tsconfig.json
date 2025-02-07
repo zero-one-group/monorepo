@@ -5,9 +5,10 @@
         "allowSyntheticDefaultImports": true,
         "composite": true,
         "declaration": true,
-        "declarationMap": true,
         "declarationDir": "dist",
+        "declarationMap": true,
         "esModuleInterop": true,
+        "inlineSources": true,
         "isolatedModules": true,
         "jsx": "react-jsx",
         "lib": ["DOM", "DOM.Iterable", "ES2023"],
@@ -15,10 +16,12 @@
         "moduleResolution": "bundler",
         "resolveJsonModule": true,
         "skipLibCheck": true,
+        "sourceMap": true,
         "strict": true,
         "target": "ES2023",
+        "tsBuildInfoFile": "node_modules/tsconfig.tsbuildinfo",
         "verbatimModuleSyntax": true
     },
-    "include": ["src/**/*", ".storybook"],
+    "include": ["src", ".storybook"],
     "exclude": ["node_modules", "dist", "storybook-static"]
 }
