@@ -28,7 +28,7 @@ variables:
 
   package_description:
     type: 'string'
-    default: 'My frontend application'
+    default: 'SSR React application'
     prompt: 'Package description?'
     required: true
 
