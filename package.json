@@ -16,7 +16,8 @@
         "cleanup:dev": "pnpm -r --parallel --stream run cleanup",
         "cleanup:cache": "pnpm store prune --force && pnpm dlx rimraf .moon/cache",
         "cleanup:deps": "pnpm dlx rimraf pnpm-lock.yaml node_modules",
-        "update-deps": "npm-check-updates --configFileName .ncurc.json"
+        "update-deps": "npm-check-updates --configFileName .ncurc.json",
+        "typecheck": "moon :typecheck"
     },
     "devDependencies": {
         "@biomejs/biome": "^1.9.4",

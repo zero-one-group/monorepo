@@ -1,4 +1,4 @@
-import { Button } from '@repo/shared-ui/button'
+import { Button } from '@repo/shared-ui/components'
 import { useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { Link } from '#/components/link'

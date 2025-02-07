@@ -8,6 +8,9 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from './hover-card'
 const meta: Meta<typeof HoverCard> = {
   title: 'Basic Components/HoverCard',
   component: HoverCard,
+  parameters: {
+    layout: 'centered',
+  },
   argTypes: {},
 }
 
