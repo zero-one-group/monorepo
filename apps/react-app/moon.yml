@@ -52,6 +52,12 @@ tasks:
 
   build:
     command: 'pnpm run build'
+    deps: ['typegen']
+    options:
+      cache: true
+
+  typegen:
+    command: 'pnpm run typegen'
     options:
       cache: true
 

@@ -1,0 +1,28 @@
+import { Canvas, Meta, Primary } from '@storybook/blocks';
+import * as Stories from './hover-card.stories';
+
+<Meta of={Stories} />
+
+# HoverCard
+
+For sighted users to preview content available behind a link.
+
+## Example
+
+```tsx
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@repo/shared-ui'
+
+<HoverCard>
+  <HoverCardTrigger>Hover me</HoverCardTrigger>
+  <HoverCardContent>
+    <div className="space-y-2">
+      <h4 className="text-sm font-semibold">Title</h4>
+      <p className="text-sm">Description</p>
+    </div>
+  </HoverCardContent>
+</HoverCard>
+```
+
+## Preview
+
+<Primary />

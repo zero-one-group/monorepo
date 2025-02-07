@@ -56,10 +56,13 @@
         "./toggle-group": "./src/components/toggle-group/toggle-group.tsx",
         "./toggle": "./src/components/toggle/toggle.tsx",
         "./tooltip": "./src/components/tooltip/tooltip.tsx",
+        "./hooks": "./src/hooks/index.ts",
+        "./theme": "./src/theme/index.ts",
         "./utils": "./src/utils.ts"
     },
     "dependencies": {
         "@hookform/resolvers": "^3.10.0",
+        "@nanostores/persistent": "^0.10.2",
         "@nanostores/react": "^0.8.4",
         "@radix-ui/react-accordion": "^1.2.3",
         "@radix-ui/react-alert-dialog": "^1.1.6",
@@ -96,6 +99,7 @@
         "embla-carousel-react": "^8.5.2",
         "input-otp": "^1.4.2",
         "lucide-react": "^0.474.0",
+        "nanostores": "^0.11.3",
         "react": "^19.0.0",
         "react-day-picker": "^9.5.1",
         "react-dom": "^19.0.0",

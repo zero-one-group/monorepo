@@ -1,0 +1,28 @@
+import { Canvas, Meta, Primary } from '@storybook/blocks';
+import * as Stories from './carousel.stories';
+
+<Meta of={Stories} />
+
+# Carousel
+
+A carousel with support for horizontal and vertical orientations.
+
+## Example
+
+```tsx
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@repo/shared-ui'
+
+<Carousel>
+  <CarouselContent>
+    <CarouselItem>Slide 1</CarouselItem>
+    <CarouselItem>Slide 2</CarouselItem>
+    <CarouselItem>Slide 3</CarouselItem>
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>
+```
+
+## Preview
+
+<Primary />

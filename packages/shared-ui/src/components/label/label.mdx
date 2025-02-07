@@ -1,0 +1,32 @@
+import { Canvas, Meta, Primary } from '@storybook/blocks';
+import * as Stories from './label.stories';
+
+<Meta of={Stories} />
+
+# Label
+
+A accessible label component for form inputs.
+
+## Example
+
+```tsx
+import { Label } from '@repo/shared-ui'
+
+// Basic usage
+<Label>Email address</Label>
+
+// With input
+<div className="grid gap-1.5">
+  <Label htmlFor="email">Email address</Label>
+  <Input type="email" id="email" />
+</div>
+
+// Required field
+<Label htmlFor="username">
+  Username <span className="text-destructive">*</span>
+</Label>
+```
+
+## Preview
+
+<Primary />

@@ -27,11 +27,7 @@
         "strict": true,
         "target": "ESNext",
         "tsBuildInfoFile": "node_modules/.tsbuildinfo",
-        "useDefineForClassFields": true,
-        "baseUrl": ".",
-        "paths": {
-            "#/*": ["src/*"]
-        }
+        "useDefineForClassFields": true
     },
     "include": ["src/**/*.ts", "src/**/*.tsx"],
     "exclude": ["node_modules", "dist"]
