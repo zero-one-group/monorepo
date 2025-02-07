@@ -10,6 +10,7 @@ export default defineConfig({
   plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   server: { port: {{ port_number }}, host: true },
   publicDir: resolve('public'),
+  publicDir: resolve('public'),
   build: {
     ssr: false,
     minify: isProduction,
@@ -18,5 +19,7 @@ export default defineConfig({
     reportCompressedSize: false,
     emptyOutDir: true,
     manifest: true,
+    terserOptions: { format: { comments: false } },
   },
+  esbuild: { legalComments: 'inline' },
 })
