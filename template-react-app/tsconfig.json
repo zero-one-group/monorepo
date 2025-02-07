@@ -19,5 +19,5 @@
             "#/*": ["./app/*"]
         }
     },
-    "include": ["**/*", "**/.server/**/*", "**/.client/**/*", ".react-router/types/**/*"]
+    "include": ["app/**/*", "**/.server/**/*", "**/.client/**/*", ".react-router/types/**/*"]
 }

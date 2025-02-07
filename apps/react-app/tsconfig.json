@@ -19,10 +19,5 @@
             "#/*": ["./app/*"]
         }
     },
-    "include": ["**/*", "**/.server/**/*", "**/.client/**/*", ".react-router/types/**/*"],
-    "references": [
-        {
-            "path": "../../packages/shared-ui"
-        }
-    ]
+    "include": ["app/**/*", "**/.server/**/*", "**/.client/**/*", ".react-router/types/**/*"]
 }
