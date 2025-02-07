@@ -14,7 +14,7 @@ const Progress = React.forwardRef<React.ComponentRef<typeof ProgressPrimitive.Ro
       <ProgressPrimitive.Root ref={ref} className={styles.base({ className })} {...props}>
         <ProgressPrimitive.Indicator
           className={styles.indicator()}
-          style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+          style={% raw %}{{ transform: `translateX(-${100 - (value || 0)}%)` }}{% endraw %}
         />
       </ProgressPrimitive.Root>
     )

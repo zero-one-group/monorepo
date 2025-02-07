@@ -100,7 +100,7 @@ const Carousel = React.forwardRef<
 
   return (
     <CarouselContext.Provider
-      value={{
+      value={% raw %}{{
         carouselRef,
         api: api,
         opts,
@@ -109,7 +109,7 @@ const Carousel = React.forwardRef<
         scrollNext,
         canScrollPrev,
         canScrollNext,
-      }}
+      }}{% endraw %}
     >
       <div
         ref={ref}

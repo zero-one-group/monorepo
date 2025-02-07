@@ -41,7 +41,7 @@ export const Default: Story = {
 
 export const Vertical: Story = {
   render: () => (
-    <Carousel opts={{ align: 'start' }} orientation="vertical" className="w-full max-w-xs">
+    <Carousel opts={% raw %}{{ align: 'start' }}{% endraw %} orientation="vertical" className="w-full max-w-xs">
       <CarouselContent className="-mt-1 h-[200px]">
         {slides.map((slide) => (
           <CarouselItem key={slide.id} className="pt-1 md:basis-1/2">

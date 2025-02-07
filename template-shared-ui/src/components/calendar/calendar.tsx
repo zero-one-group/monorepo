@@ -21,7 +21,7 @@ function Calendar({
       timeZone={timezone}
       showOutsideDays={showOutsideDays}
       className={styles.root({ className })}
-      classNames={{
+      classNames={% raw %}{{
         root: styles.root(),
         months: styles.months(),
         month: styles.month(),
@@ -48,13 +48,13 @@ function Calendar({
         range_middle: styles.range_middle(),
         hidden: styles.hidden(),
         ...classNames,
-      }}
-      components={{
+      }}{% endraw %}
+      components={% raw %}{{
         Chevron: ({ orientation, ...props }) => {
           const Icon = orientation === 'left' ? Lucide.ChevronLeft : Lucide.ChevronRight
           return <Icon className={clx(styles.icon(), props.className)} />
         },
-      }}
+      }}{% endraw %}
       {...props}
     />
   )

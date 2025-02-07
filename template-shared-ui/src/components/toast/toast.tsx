@@ -12,14 +12,14 @@ const Toaster = ({ ...props }: ToasterProps) => {
     <Sonner
       theme={theme as ToasterProps['theme']}
       className="toaster group"
-      toastOptions={{
+      toastOptions={% raw %}{{
         classNames: {
           toast: styles.toast(),
           description: styles.description(),
           actionButton: styles.actionButton(),
           cancelButton: styles.cancelButton(),
         },
-      }}
+      }}{% endraw %}
       {...props}
     />
   )

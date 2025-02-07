@@ -11,7 +11,7 @@
         "**/build": true,
         "**/dist": true,
         "**/templates": true,
-        "**/template-*": true
+        "**/template-*": false
     },
     "tailwindCSS.experimental.classRegex": [
         // @ref: https://github.com/paolotiu/tailwind-intellisense-regex-list

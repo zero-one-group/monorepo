@@ -32,7 +32,7 @@ function FormDemo() {
         <FormField
           control={form.control}
           name="username"
-          rules={{ required: 'Username is required' }}
+          rules={% raw %}{{ required: 'Username is required' }}{% endraw %}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Username</FormLabel>

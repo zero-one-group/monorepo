@@ -42,7 +42,7 @@ const ChartContainer = React.forwardRef<
   const chartId = `chart-${id || uniqueId.replace(/:/g, '')}`
 
   return (
-    <ChartContext.Provider value={{ config }}>
+    <ChartContext.Provider value={% raw %}{{ config }}{% endraw %}>
       <div
         data-chart={chartId}
         ref={ref}
@@ -69,7 +69,7 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
 
   return (
     <style
-      dangerouslySetInnerHTML={{
+      dangerouslySetInnerHTML={% raw %}{{
         __html: Object.entries(THEMES)
           .map(
             ([theme, prefix]) => `
@@ -84,7 +84,7 @@ ${colorConfig
 `
           )
           .join('\n'),
-      }}
+      }}{% endraw %}
     />
   )
 }
@@ -276,9 +276,7 @@ const ChartLegendContent = React.forwardRef<
             ) : (
               <div
                 className="size-2 shrink-0 rounded-[2px]"
-                style={{
-                  backgroundColor: item.color,
-                }}
+                style={% raw %}{{ backgroundColor: item.color }}{% endraw %}
               />
             )}
             {itemConfig?.label}

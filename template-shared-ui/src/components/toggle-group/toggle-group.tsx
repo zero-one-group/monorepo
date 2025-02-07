@@ -14,7 +14,7 @@ const ToggleGroup = React.forwardRef<
 >(({ className, variant, size, children, ...props }, ref) => {
   return (
     <ToggleGroupPrimitive.Root ref={ref} className={toggleGroupStyles({ className })} {...props}>
-      <ToggleGroupContext.Provider value={{ variant, size }}>
+      <ToggleGroupContext.Provider value={% raw %}{{ variant, size }}{% endraw %}>
         {children}
       </ToggleGroupContext.Provider>
     </ToggleGroupPrimitive.Root>

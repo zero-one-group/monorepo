@@ -148,7 +148,7 @@ const SidebarMenuSkeleton = React.forwardRef<
       )}
       <Skeleton
         className={styles.sidebarMenuSkeletonText()}
-        style={{ '--skeleton-width': width } as React.CSSProperties}
+        style={% raw %}{{ '--skeleton-width': width } as React.CSSProperties}{% endraw %}
         data-sidebar="menu-skeleton-text"
       />
     </div>

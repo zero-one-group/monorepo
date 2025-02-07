@@ -111,7 +111,7 @@ const SidebarProvider = React.forwardRef<
       <SidebarContext.Provider value={contextValue}>
         <TooltipProvider delayDuration={0}>
           <div
-            style={{ ...style } as React.CSSProperties}
+            style={% raw %}{{ ...style } as React.CSSProperties}{% endraw %}
             className={styles.sidebarProvider({ className })}
             ref={ref}
             {...props}

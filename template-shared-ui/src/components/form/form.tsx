@@ -24,7 +24,7 @@ const FormField = <
   ...props
 }: ControllerProps<TFieldValues, TName>) => {
   return (
-    <FormFieldContext.Provider value={{ name: props.name }}>
+    <FormFieldContext.Provider value={% raw %}{{ name: props.name }}{% endraw %}>
       <Controller {...props} />
     </FormFieldContext.Provider>
   )
@@ -65,7 +65,7 @@ const FormItem = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
     const styles = formStyles()
 
     return (
-      <FormItemContext.Provider value={{ id }}>
+      <FormItemContext.Provider value={% raw %}{{ id }}{% endraw %}>
         <div ref={ref} className={styles.item({ className })} {...props} />
       </FormItemContext.Provider>
     )

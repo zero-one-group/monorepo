@@ -133,27 +133,27 @@ export const LineChartExample: Story = {
             type="monotone"
             dataKey="total"
             strokeWidth={2}
-            activeDot={{
+            activeDot={% raw %}{{
               r: 6,
               style: { fill: 'var(--color-total)', opacity: 0.8 },
-            }}
-            style={{
+            }}{% endraw %}
+            style={% raw %}{{
               stroke: 'var(--color-total)',
               opacity: 0.8,
-            }}
+            }}{% endraw %}
           />
           <Line
             type="monotone"
             dataKey="revenue"
             strokeWidth={2}
-            activeDot={{
+            activeDot={% raw %}{{
               r: 6,
               style: { fill: 'var(--color-revenue)', opacity: 0.8 },
-            }}
-            style={{
+            }}{% endraw %}
+            style={% raw %}{{
               stroke: 'var(--color-revenue)',
               opacity: 0.8,
-            }}
+            }}{% endraw %}
           />
         </LineChart>
       </ChartContainer>
@@ -192,17 +192,11 @@ export const BarChartExample: Story = {
           />
           <Bar
             dataKey="total"
-            style={{
-              fill: 'var(--color-total)',
-              opacity: 0.8,
-            }}
+            style={% raw %}{{ fill: 'var(--color-total)', opacity: 0.8 }}{% endraw %}
           />
           <Bar
             dataKey="revenue"
-            style={{
-              fill: 'var(--color-revenue)',
-              opacity: 0.8,
-            }}
+            style={% raw %}{{ fill: 'var(--color-revenue)', opacity: 0.8 }}{% endraw %}
           />
         </BarChart>
       </ChartContainer>
@@ -242,22 +236,22 @@ export const AreaChartExample: Story = {
           <Area
             type="monotone"
             dataKey="total"
-            style={{
+            style={% raw %}{{
               fill: 'var(--color-total)',
               opacity: 0.2,
               stroke: 'var(--color-total)',
               strokeWidth: 2,
-            }}
+            }}{% endraw %}
           />
           <Area
             type="monotone"
             dataKey="revenue"
-            style={{
+            style={% raw %}{{
               fill: 'var(--color-revenue)',
               opacity: 0.2,
               stroke: 'var(--color-revenue)',
               strokeWidth: 2,
-            }}
+            }}{% endraw %}
           />
         </AreaChart>
       </ChartContainer>
