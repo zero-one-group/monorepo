@@ -39,39 +39,33 @@ COPY --from=skeleton /root/.proto /root/.proto
 COPY --from=skeleton /srv/.moon/docker/workspace .
 
 # Install toolchain and dependencies
-RUN moon docker setup
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker setup
 
 # Copy source files
 COPY --from=skeleton /srv/.moon/docker/sources .
 
 # Build the application and prune the workspace
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run react-ssr:build
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
-
-# Cleanup node_modules
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod \
-    --frozen-lockfile --ignore-scripts && pnpm prune --prod \
-    --ignore-scripts && pnpm dlx clean-modules clean --yes \
-    "**/codecov*" "!**/@repo/**"
+# RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 
 # -----------------------------------------------------------------------------
 # Cleanup the builder stage and create data directory.
 # -----------------------------------------------------------------------------
 FROM base AS pruner
 
-# Copy node_modules from the builder stage.
-COPY --from=builder /srv/pnpm-lock.yaml /srv/pnpm-lock.yaml
-COPY --from=builder /srv/package.json /srv/package.json
-COPY --from=builder /srv/node_modules /srv/node_modules
+# Only copy the require files for Strapi from builder stage
+COPY --from=builder /srv/apps/react-ssr/node_modules /srv/node_modules
+COPY --from=builder /srv/apps/react-ssr/package.json /srv/package.json
+COPY --from=builder /srv/apps/react-ssr/server.mjs /srv/server.mjs
+COPY --from=builder /srv/apps/react-ssr/build /srv/build
 
-# Copy the application output from the builder stage.
-COPY --from=builder /srv/apps/react-ssr/node_modules /srv/apps/react-ssr/node_modules
-COPY --from=builder /srv/apps/react-ssr/package.json /srv/apps/react-ssr/package.json
-COPY --from=builder /srv/apps/react-ssr/server.mjs /srv/apps/react-ssr/server.mjs
-COPY --from=builder /srv/apps/react-ssr/build /srv/apps/react-ssr/build
+# Cleanup uncessary files and install production dependencies
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm prune --prod \
+    --ignore-scripts && pnpm dlx clean-modules clean --yes \
+    "**/codecov*" "!**/@repo/**"
 
 # Set executable permissions.
-RUN chmod +x /srv/apps/react-ssr/server.mjs
+RUN chmod +x /srv/server.mjs
 
 # -----------------------------------------------------------------------------
 # Production image, copy build output files and run the application (runner).
@@ -103,7 +97,7 @@ ARG NODE_ENV=production HOST=0.0.0.0 PORT=3001
 ENV NODE_ENV=$NODE_ENV HOST=$HOST PORT=$PORT
 ENV TINI_SUBREAPER=true
 
-WORKDIR /srv/apps/react-ssr
+WORKDIR /srv
 USER nonroot:nonroot
 EXPOSE $PORT
 

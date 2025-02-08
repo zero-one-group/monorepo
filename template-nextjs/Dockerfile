@@ -40,7 +40,7 @@ COPY --from=skeleton /root/.proto /root/.proto
 COPY --from=skeleton /srv/.moon/docker/workspace .
 
 # Install toolchain and dependencies
-RUN moon docker setup
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker setup
 
 # Copy source files
 COPY --from=skeleton /srv/.moon/docker/sources .

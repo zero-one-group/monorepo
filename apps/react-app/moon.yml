@@ -18,7 +18,9 @@ project:
   description: 'Frontend application'
 
 env:
+  APP_PREFIX: "$(jq -r .name <$workspaceRoot'/package.json')"
   APP_VERSION: '$(jq -r .version <$workspaceRoot''/package.json'')'
+  IMAGE_NAME: '$APP_PREFIX-$project'
 
 dependsOn:
   - 'shared-ui'
@@ -63,7 +65,7 @@ tasks:
       cache: true
 
   docker-run:
-    command: 'docker run --network=host --rm -it --env-file .env --name $project $project:$APP_VERSION'
+    command: 'docker run --network=host --rm -it --env-file .env --name $IMAGE_NAME $IMAGE_NAME:$APP_VERSION'
     options:
       mergeEnv: replace
       runFromWorkspaceRoot: true
@@ -74,7 +76,7 @@ tasks:
       shell: true
 
   docker-shell:
-    command: 'docker run --network=host --rm -it --env-file .env --entrypoint /bin/sh $project:$APP_VERSION'
+    command: 'docker run --network=host --rm -it --env-file .env --entrypoint /bin/sh $IMAGE_NAME:$APP_VERSION'
     options:
       mergeEnv: replace
       runFromWorkspaceRoot: true

@@ -13,11 +13,13 @@ tags: ['app']
 id: '{{ package_name | kebab_case }}'
 
 project:
-  name: {{ package_name | kebab_case }}
+  name: '{{ package_name | kebab_case }}'
   description: '{{ package_description }}'
 
 env:
+  APP_PREFIX: "$(jq -r .name <$workspaceRoot'/package.json')"
   APP_VERSION: '$(jq -r .version <$workspaceRoot''/package.json'')'
+  IMAGE_NAME: '$APP_PREFIX-$project'
 
 # Since this project can infer task from script (package.json), then you can run any script as moon task.
 # @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
@@ -34,7 +36,7 @@ tasks:
       cache: true
 
   docker-run:
-    command: 'docker run --network=host --rm -it --env-file .env -v $(pwd)/_data:/_data --name $project $project:$APP_VERSION'
+    command: 'docker run --network=host --rm -it --env-file .env -v $(pwd)/_data:/_data --name $IMAGE_NAME $IMAGE_NAME:$APP_VERSION'
     options:
       mergeEnv: replace
       runFromWorkspaceRoot: false
@@ -45,7 +47,7 @@ tasks:
       shell: true
 
   docker-shell:
-    command: 'docker run --network=host --rm -it --env-file .env -v $(pwd)/_data:/_data --entrypoint /bin/sh $project:$APP_VERSION'
+    command: 'docker run --network=host --rm -it --env-file .env -v $(pwd)/_data:/_data --entrypoint /bin/sh $IMAGE_NAME:$APP_VERSION'
     options:
       mergeEnv: replace
       runFromWorkspaceRoot: false
