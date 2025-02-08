@@ -7,6 +7,7 @@
   - [Local development server](#local-development-server)
   - [Creating application from template](#creating-application-from-template)
   - [Moon commands](#moon-commands)
+- [E2E Testing](#e2e-testing)
 - [Managing Dependencies](#managing-dependencies)
   - [Updating dependencies](#updating-dependencies)
   - [Cleanup projects](#cleanup-projects)
