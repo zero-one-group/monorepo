@@ -17,6 +17,7 @@ const main = defineCommand({
   },
   subCommands: {
     'make:app-key': () => import('./cmd/make-app-key').then((r) => r.default),
+    'make:strapi-keys': () => import('./cmd/make-strapi-keys').then((r) => r.default),
   },
   async run({ args, cmd }) {
     // Show help page if --help flag is used or no subcommand provided
