@@ -31,7 +31,7 @@
     },
     "devDependencies": {
         "@strapi/typescript-utils": "5.9.0",
-        "@types/node": "^22",
+        "@types/node": "^22.13.1",
         "@types/pg": "^8.11.11",
         "@types/react": "~18.0.0",
         "@types/react-dom": "~18.0.0",
