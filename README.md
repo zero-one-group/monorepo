@@ -110,6 +110,45 @@ After setting up your project, use the following commands for common tasks:
 
 Type `moon help` for more information. Refer to the [moon tasks documentation](https://moonrepo.dev/docs/run-task) for more details.
 
+## E2E Testing
+
+This monorepo includes E2E tests for testing the application, powered by Playwright.
+To run E2E tests, you need to install Playwright dependencies. You can do this by
+running the following command:
+
+**Install Playwright dependencies for all projects**
+
+```sh
+moon <project_id>:e2e-install
+```
+
+**Install Playwright dependencies for a specific project**
+
+```sh
+moon <project_id>:e2e-install
+```
+
+Run E2E tests for specific project in headless mode:
+
+```sh
+moon <project_id>:e2e
+```
+
+If you want to use Playwright UI mode, you can use the following command:
+
+```sh
+moon <project_id>:e2e-ui
+```
+
+To run E2E test for specific browser, you can use the following command:
+
+```sh
+moon <project_id>:e2e-chrome   # Run E2E test for Chrome browser
+moon <project_id>:e2e-firefox  # Run E2E test for Firefox browser
+moon <project_id>:e2e-mobile   # Run E2E test for Chrome Mobile browser
+moon <project_id>:e2e-safari   # Run E2E test for Safari browser
+```
+
 ## Managing Dependencies
 
 To add a new dependency to a project, you can use the following command:
