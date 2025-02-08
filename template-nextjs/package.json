@@ -1,10 +1,10 @@
 {
-    "name": "nextjs-app",
+    "name": "{{ package_name | kebab_case }}",
     "private": true,
     "scripts": {
         "dev": "next dev",
         "build": "next build",
-        "start": "PORT=3002 next start",
+        "start": "PORT={{ port_number }} next start",
         "lint": "next lint",
         "check": "biome check . --write",
         "cleanup": "pnpm dlx rimraf node_modules .{cache,data,next,tmp} dist",

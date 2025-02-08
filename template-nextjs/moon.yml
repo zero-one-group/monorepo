@@ -11,15 +11,15 @@ stack: frontend
 tags: ['app']
 
 # Overrides the name (identifier) of the project
-id: 'nextjs-app'
+id: '{{ package_name | kebab_case }}'
 
 project:
-  name: 'nextjs-app'
-  description: 'Next.js application'
+  name: '{{ package_name | kebab_case }}'
+  description: '{{ package_description }}'
 
 env:
   APP_VERSION: '$(jq -r .version <$workspaceRoot''/package.json'')'
-  PORT: '3002'
+  PORT: '{{ port_number }}'
 
 # Uncomment to use shared UI library
 # dependsOn:
@@ -42,7 +42,7 @@ fileGroups:
 
 # Since this project can infer task from script (package.json), then you can run any script as moon task.
 # @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
-# Example: `moon nextjs-app:start`
+# Example: `moon {{ package_name | kebab_case }}:start`
 tasks:
   dev:
     command: 'pnpm run dev'
@@ -72,7 +72,7 @@ tasks:
     command: |
       'rm -fr $projectRoot/dist';
       'mkdir -p $projectRoot/dist/.next';
-      'cp -r .next/standalone/apps/nextjs-app/ dist';
+      'cp -r .next/standalone/apps/{{ package_name | kebab_case }}/ dist';
       'cp -r .next/static dist/.next/static';
       'cp -r public dist/';
     outputs:

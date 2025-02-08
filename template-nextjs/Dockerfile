@@ -27,7 +27,7 @@ RUN curl -fsSL https://moonrepo.dev/install/moon.sh | bash
 # -----------------------------------------------------------------------------
 FROM base AS skeleton
 COPY --link . .
-RUN moon docker scaffold nextjs-app
+RUN moon docker scaffold {{ package_name | kebab_case }}
 
 # -----------------------------------------------------------------------------
 # Install dependencies and build the application.
@@ -46,7 +46,7 @@ RUN moon docker setup
 COPY --from=skeleton /srv/.moon/docker/sources .
 
 # Build the application and prune the workspace
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run nextjs-app:build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run {{ package_name | kebab_case }}:build
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 
 # -----------------------------------------------------------------------------
@@ -55,9 +55,9 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 FROM base AS pruner
 
 # Copy only necessary files from builder stage
-COPY --from=builder /srv/apps/nextjs-app/.next/standalone/apps/nextjs-app ./
-COPY --from=builder /srv/apps/nextjs-app/.next/static /srv/.next/static
-COPY --from=builder /srv/apps/nextjs-app/public /srv/public
+COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/.next/standalone/apps/{{ package_name | kebab_case }} ./
+COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/.next/static /srv/.next/static
+COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/public /srv/public
 
 # Set permissions for the public directory and the server.js file.
 RUN chmod -R 0775 /srv/public && chmod +x /srv/server.js
@@ -93,7 +93,7 @@ COPY --from=glibc /bin/ls /bin/ls
 COPY --from=glibc /bin/sh /bin/sh
 
 # Define the host and port to listen on.
-ARG NODE_ENV=production HOSTNAME=0.0.0.0 PORT=3002
+ARG NODE_ENV=production HOSTNAME=0.0.0.0 PORT={{ port_number }}
 ENV NODE_ENV=$NODE_ENV HOSTNAME=$HOSTNAME PORT=$PORT
 ENV TINI_SUBREAPER=true NEXT_TELEMETRY_DISABLED=1
 

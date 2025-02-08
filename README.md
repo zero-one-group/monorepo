@@ -92,6 +92,7 @@ Current available templates are:
 | `template-react-app` | SPA React Router application with Tailwind CSS     |
 | `template-react-ssr` | SSR React Router application with Tailwind CSS     |
 | `template-shared-ui` | Collections of UI components based on `shadcn/ui`  |
+| `template-nextjs`    | Next.js application with Tailwind CSS              |
 | `template-strapi`    | Strapi headless CMS with PostgreSQL and Nodemailer |
 
 ### Moon commands

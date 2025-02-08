@@ -5,6 +5,7 @@
     "scripts": {
         "dev": "moon :dev",
         "build": "moon :build",
+        "start": "moon :start",
         "prepare": "moon setup",
         "lint": "moon :lint",
         "check": "moon :check",
