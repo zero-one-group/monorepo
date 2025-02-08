@@ -7,6 +7,7 @@
   - [Local development server](#local-development-server)
   - [Creating application from template](#creating-application-from-template)
   - [Moon commands](#moon-commands)
+- [Monorepo CLI](#monorepo-cli)
 - [E2E Testing](#e2e-testing)
 - [Managing Dependencies](#managing-dependencies)
   - [Updating dependencies](#updating-dependencies)
@@ -111,6 +112,22 @@ After setting up your project, use the following commands for common tasks:
 | `moon project-graph`       | Display an interactive graph of projects |
 
 Type `moon help` for more information. Refer to the [moon tasks documentation](https://moonrepo.dev/docs/run-task) for more details.
+
+## Monorepo CLI
+
+The monorepo CLI is a command-line interface for managing and interacting with the monorepo.
+It provides a set of commands for common tasks such as creating application secrets, database
+migrations, seeders, etc.
+
+To getting started, you can use the following command:
+
+```sh
+pnpm -s cmd --help
+```
+
+You can also register your own commands. To do this, you need to create a file in the
+[`internal/cmd`](./internal/cmd) directory then register the sub-commands in the
+[`cli.ts`](./internal/cli.ts) file.
 
 ## E2E Testing
 

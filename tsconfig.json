@@ -1,0 +1,44 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "isolatedModules": true,
+        "lib": [
+            "ES2023"
+        ],
+        "module": "ESNext",
+        "moduleDetection": "force",
+        "moduleResolution": "node",
+        "noEmit": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUncheckedSideEffectImports": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "strictPropertyInitialization": true,
+        "target": "ES2023",
+        "tsBuildInfoFile": "./tmp/tsconfig.tsbuildinfo",
+        "baseUrl": ".",
+        "paths": {
+            "~~/*": [
+                "./*"
+            ]
+        }
+    },
+    "include": [
+        "internal"
+    ],
+    "references": [
+        {
+            "path": "apps/react-app"
+        },
+        {
+            "path": "apps/react-ssr"
+        },
+        {
+            "path": "packages/shared-ui"
+        }
+    ]
+}

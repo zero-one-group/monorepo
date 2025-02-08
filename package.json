@@ -9,6 +9,7 @@
         "lint": "biome lint . --write",
         "check": "biome check . --write",
         "format": "biome format . --write",
+        "cmd": "tsx --tsconfig tsconfig.json -r dotenv/config internal/cli.ts",
         "compose:cleanup": "docker compose -f docker/compose.yaml down --remove-orphans --volumes",
         "compose:up": "docker compose -f docker/compose.yaml up --detach --remove-orphans",
         "compose:down": "docker compose -f docker/compose.yaml down --remove-orphans",
@@ -22,7 +23,13 @@
     },
     "devDependencies": {
         "@biomejs/biome": "^1.9.4",
-        "npm-check-updates": "^17.1.14"
+        "@noble/hashes": "^1.7.1",
+        "@types/node": "^22.13.1",
+        "citty": "^0.1.6",
+        "consola": "^3.4.0",
+        "dotenv": "^16.4.7",
+        "npm-check-updates": "^17.1.14",
+        "tsx": "^4.19.2"
     },
     "packageManager": "pnpm@10.2.0"
 }
