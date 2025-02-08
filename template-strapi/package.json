@@ -1,5 +1,5 @@
 {
-    "name": "strapi-cms",
+    "name": "{{ package_name | kebab_case }}",
     "private": true,
     "scripts": {
         "dev": "VITE_CJS_IGNORE_WARNING=true strapi develop",
