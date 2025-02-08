@@ -47,11 +47,9 @@ RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache m
 # Copy source files
 COPY --from=skeleton /srv/.moon/docker/sources .
 
-# Build the application
+# Build the application and prune the workspace
 RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon run go-app:tidy
 RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon run go-app:build
-
-# Prune workspace
 RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon docker prune
 
 # -----------------------------------------------------------------------------

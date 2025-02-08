@@ -11,6 +11,8 @@
         "test-coverage": "vitest run --coverage",
         "test-ui": "vitest --ui",
         "test": "vitest --run",
+        "lint": "biome lint . --write",
+        "check": "biome check . --write",
         "e2e-install": "playwright install --with-deps",
         "e2e-chrome": "playwright test --headed --project Chromium",
         "e2e-firefox": "playwright test --headed --project Firefox",
@@ -36,6 +38,7 @@
         "tailwind-variants": "^0.3.1"
     },
     "devDependencies": {
+        "@biomejs/biome": "^1.9.4",
         "@playwright/test": "^1.50.1",
         "@react-router/dev": "^7.1.5",
         "@tailwindcss/vite": "^4.0.4",

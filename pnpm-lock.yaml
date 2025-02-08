@@ -57,6 +57,9 @@ importers:
         specifier: ^3.8.0
         version: 3.8.0
     devDependencies:
+      '@biomejs/biome':
+        specifier: ^1.9.4
+        version: 1.9.4
       '@eslint/eslintrc':
         specifier: ^3.2.0
         version: 3.2.0
@@ -136,6 +139,9 @@ importers:
         specifier: ^0.3.1
         version: 0.3.1(tailwindcss@4.0.4)
     devDependencies:
+      '@biomejs/biome':
+        specifier: ^1.9.4
+        version: 1.9.4
       '@playwright/test':
         specifier: ^1.50.1
         version: 1.50.1
@@ -254,6 +260,9 @@ importers:
         specifier: ^0.3.1
         version: 0.3.1(tailwindcss@4.0.4)
     devDependencies:
+      '@biomejs/biome':
+        specifier: ^1.9.4
+        version: 1.9.4
       '@playwright/test':
         specifier: ^1.50.1
         version: 1.50.1
@@ -387,6 +396,9 @@ importers:
         specifier: ^6.0.0
         version: 6.1.15(react-dom@18.0.0(react@18.0.0))(react@18.0.0)
     devDependencies:
+      '@biomejs/biome':
+        specifier: ^1.9.4
+        version: 1.9.4
       '@strapi/typescript-utils':
         specifier: 5.9.0
         version: 5.9.0
@@ -550,6 +562,9 @@ importers:
         specifier: ^3.24.1
         version: 3.24.1
     devDependencies:
+      '@biomejs/biome':
+        specifier: ^1.9.4
+        version: 1.9.4
       '@storybook/addon-a11y':
         specifier: ^8.5.3
         version: 8.5.3(storybook@8.5.3(prettier@3.3.3))(vitest@3.0.5)

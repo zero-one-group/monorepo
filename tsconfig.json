@@ -17,7 +17,7 @@
         "strict": true,
         "strictPropertyInitialization": true,
         "target": "ES2023",
-        "tsBuildInfoFile": "./tmp/tsconfig.tsbuildinfo",
+        "tsBuildInfoFile": "node_modules/tsconfig.tsbuildinfo",
         "baseUrl": ".",
         "paths": {
             "~~/*": ["./*"]

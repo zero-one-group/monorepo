@@ -66,13 +66,15 @@ tasks:
       cache: false
 
   build-standalone:
-    deps: ['build']
     command: |
       'rm -fr $projectRoot/dist';
       'mkdir -p $projectRoot/dist/.next';
-      'cp -r .next/standalone/apps/nextjs-app/ dist/';
+      'cp -r .next/standalone/apps/nextjs-app/ dist';
       'cp -r .next/static dist/.next/static';
       'cp -r public dist/';
+    outputs:
+      - 'dist/**/*'
+    deps: ['build']
     options:
       cache: false
       shell: true

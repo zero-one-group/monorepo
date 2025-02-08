@@ -6,6 +6,8 @@
         "dev": "react-router dev",
         "build": "react-router build",
         "start": "vite preview --port 3000",
+        "lint": "biome lint . --write",
+        "check": "biome check . --write",
         "cleanup": "pnpm dlx rimraf node_modules build .react-router tests-results playwright-report",
         "test-report": "pnpm dlx serve tests-results -l 9000 -s -n -C",
         "test-coverage": "vitest run --coverage",
@@ -36,6 +38,7 @@
         "tailwind-variants": "^0.3.1"
     },
     "devDependencies": {
+        "@biomejs/biome": "^1.9.4",
         "@playwright/test": "^1.50.1",
         "@react-router/dev": "^7.1.5",
         "@tailwindcss/vite": "^4.0.4",
