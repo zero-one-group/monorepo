@@ -23,10 +23,10 @@
         }
     },
     "include": [
-        "app/**/*",
-        "**/.server/**/*",
         "**/.client/**/*",
+        "**/.server/**/*",
         ".react-router/types/**/*",
+        "app/**/*",
         "tests/**/*"
     ],
     "exclude": ["tests-results"],

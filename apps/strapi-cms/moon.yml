@@ -1,0 +1,31 @@
+# https://moonrepo.dev/docs/config/project
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+type: library
+language: typescript
+toolchain:
+  node:
+    version: '20'
+tags: ['app']
+
+# Overrides the name (identifier) of the project
+id: 'strapi-cms'
+
+project:
+  name: strapi-cms
+  description: 'Strapi headless CMS'
+
+# Since this project can infer task from script (package.json), then you can run any script as moon task.
+# @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
+# Example: `moon strapi-cms:start`
+tasks:
+  dev:
+    command: 'pnpm run dev'
+    options:
+      envFile: '.env'
+
+  build:
+    command: 'pnpm run build'
+    options:
+      cache: true

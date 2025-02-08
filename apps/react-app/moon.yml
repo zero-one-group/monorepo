@@ -44,7 +44,7 @@ fileGroups:
 tasks:
   dev:
     command: 'pnpm run dev'
-    deps: ['typegen']
+    deps: ['shared-ui:build', 'typegen']
     outputs:
       - 'build/**/*'
     options:
@@ -52,6 +52,12 @@ tasks:
 
   build:
     command: 'pnpm run build'
-    deps: ['typegen', 'shared-ui:build']
+    deps: ['shared-ui:build', 'typegen']
+    options:
+      cache: true
+
+  typecheck:
+    command: 'pnpm run typecheck'
+    deps: ['shared-ui:build', 'typegen']
     options:
       cache: true

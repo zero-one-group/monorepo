@@ -56,3 +56,9 @@ tasks:
     deps: ['typegen']
     options:
       cache: true
+
+  typecheck:
+    command: 'pnpm run typecheck'
+    deps: ['typegen']
+    options:
+      cache: true

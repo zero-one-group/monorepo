@@ -6,7 +6,7 @@
         "dev": "react-router dev",
         "build": "react-router build",
         "start": "vite preview --port 3000",
-        "cleanup": "pnpm dlx rimraf node_modules pnpm-lock.yaml build .react-router tests-results playwright-report",
+        "cleanup": "pnpm dlx rimraf node_modules build .react-router tests-results playwright-report",
         "test-report": "pnpm dlx serve tests-results -l 9000 -s -n -C",
         "test-coverage": "vitest run --coverage",
         "test-ui": "vitest --ui",

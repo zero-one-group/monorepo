@@ -24,14 +24,16 @@ node:
     version: '10.2.0'                     # The version of the package manager to use.
 
 typescript:
-  includeSharedTypes: false  # The shared types folder must be named types and must exist relative to the root setting
+  includeSharedTypes: false                          # The shared types folder must be named types and must exist relative to the root setting
+  syncProjectReferences: false                       # Sync project references to the root tsconfig.json.
+  includeProjectReferenceSources: false              # Appends sources of project reference to include in tsconfig.json, for each project.
   # projectConfigFileName: 'tsconfig.build.json'     # Defines the file name of the tsconfig.json found in the project root.
   # rootConfigFileName: 'tsconfig.workspace.json'    # File name of the config file found in the root that houses shared compiler options.
   # rootOptionsConfigFileName: 'tsconfig.base.json'  # File name of the config file found in the root that houses shared compiler options.
 
 # Configures Rust within the toolchain.
 # rust:
-#   version: '1.79'
+#   version: '1.80'
 #   syncToolchainConfig: true
 #   targets:
 #     - 'aarch64-apple-darwin'

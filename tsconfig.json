@@ -3,9 +3,7 @@
     "compilerOptions": {
         "allowSyntheticDefaultImports": true,
         "isolatedModules": true,
-        "lib": [
-            "ES2023"
-        ],
+        "lib": ["ES2023"],
         "module": "ESNext",
         "moduleDetection": "force",
         "moduleResolution": "node",
@@ -22,23 +20,9 @@
         "tsBuildInfoFile": "./tmp/tsconfig.tsbuildinfo",
         "baseUrl": ".",
         "paths": {
-            "~~/*": [
-                "./*"
-            ]
+            "~~/*": ["./*"]
         }
     },
-    "include": [
-        "internal"
-    ],
-    "references": [
-        {
-            "path": "apps/react-app"
-        },
-        {
-            "path": "apps/react-ssr"
-        },
-        {
-            "path": "packages/shared-ui"
-        }
-    ]
+    "include": ["internal"],
+    "exclude": ["apps", "packages", "temp", "tmp", "node_modules"]
 }
