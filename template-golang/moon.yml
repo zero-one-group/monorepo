@@ -17,7 +17,6 @@ project:
   description: '{{ package_description }}'
 
 env:
-  APP_NAME: '$(go list -m)'
   APP_VERSION: '$(jq -r .version <$workspaceRoot''/package.json'')'
 
 tasks:

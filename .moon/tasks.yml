@@ -40,39 +40,52 @@ taskOptions:
 # Common tasks that can be inherited by all projects.
 # @see: https://moonrepo.dev/docs/config/tasks
 tasks:
-  docker-build:
-    command: 'docker build -f $projectRoot/Dockerfile . -t $APP_NAME:$APP_VERSION'
+  env:
+    command: 'printenv'
+    toolchain: 'system'
     options:
       outputStyle: stream
+      envFile: '/.env'
+
+  docker-build:
+    command: 'docker build -f $projectRoot/Dockerfile . -t $project:$APP_VERSION && docker image list --filter reference=$project:\\*'
+    options:
+      mergeEnv: replace
       runFromWorkspaceRoot: true
+      interactive: false
+      outputStyle: buffer-only-failure
       runInCI: false
       cache: false
       shell: true
 
   docker-run:
-    command: 'docker run --network=host --rm -it --env-file .env --name $APP_NAME $APP_NAME:$APP_VERSION'
+    command: 'docker run --network=host --rm -it --env-file .env --name $project $project:$APP_VERSION'
     options:
+      mergeEnv: replace
       runFromWorkspaceRoot: true
       interactive: false
-      outputStyle: stream
+      outputStyle: buffer-only-failure
       runInCI: false
       cache: false
       shell: true
 
   docker-shell:
-    command: 'docker run --network=host --rm -it --env-file .env --entrypoint /bin/sh $APP_NAME:$APP_VERSION'
+    command: 'docker run --network=host --rm -it --env-file .env --entrypoint /bin/sh $project:$APP_VERSION'
     options:
+      mergeEnv: replace
       runFromWorkspaceRoot: true
       interactive: false
-      outputStyle: none
+      outputStyle: buffer-only-failure
       runInCI: false
       cache: false
       shell: true
 
   docker-images:
-    command: 'docker image list --filter reference=$APP_NAME:\\*'
+    command: 'docker image list --filter reference=$project:\\*'
     options:
+      mergeEnv: replace
       runFromWorkspaceRoot: true
+      interactive: false
       outputStyle: none
       runInCI: false
       cache: false

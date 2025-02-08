@@ -17,7 +17,6 @@ project:
   description: 'My backend application'
 
 env:
-  APP_NAME: '$(go list -m)'
   APP_VERSION: '$(jq -r .version <$workspaceRoot''/package.json'')'
 
 tasks:

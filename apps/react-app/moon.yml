@@ -18,7 +18,6 @@ project:
   description: 'Frontend application'
 
 env:
-  APP_NAME: '$(jq -r .name <$projectRoot''/package.json'')'
   APP_VERSION: '$(jq -r .version <$workspaceRoot''/package.json'')'
 
 dependsOn:

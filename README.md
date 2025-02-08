@@ -103,6 +103,7 @@ After setting up your project, use the following commands for common tasks:
 | `moon :test`               | Run tests in all projects                |
 | `moon :lint`               | Lint code in all projects                |
 | `moon :format`             | Format code in all projects              |
+| `moon <project_id>:env`    | Print system env and individual project  |
 | `moon <project_id>:<task>` | Run specific task by project             |
 | `moon check <project_id>`  | Run check for individual project         |
 | `moon check --all`         | Run check for all tasks                  |

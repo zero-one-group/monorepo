@@ -42,7 +42,7 @@ COPY --from=skeleton /root/.proto /root/.proto
 COPY --from=skeleton /srv/.moon/docker/workspace .
 
 # Install toolchain and dependencies
-RUN moon docker setup --concurrency=4
+RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon setup
 
 # Copy source files
 COPY --from=skeleton /srv/.moon/docker/sources .
@@ -66,7 +66,7 @@ ARG  DATABASE_URL SMTP_HOST SMTP_PORT SMTP_USERNAME SMTP_PASSWORD SMTP_EMAIL_FRO
 # ----- Read application environment variables --------------------------------
 
 # Copy the build output files from the installer stage.
-COPY --from=builder --chown=nonroot:nonroot /srv/apps/go-app/build/release/go-app /srv
+COPY --from=builder --chown=nonroot:nonroot /srv/apps/go-app/build/release/go-app /srv/go-app
 
 # Copy some necessary system utilities from previous stage (~7MB).
 # To enhance security, consider avoiding the copying of sysutils.
