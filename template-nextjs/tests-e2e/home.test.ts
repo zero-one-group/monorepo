@@ -5,7 +5,7 @@ test.describe.configure({ mode: 'serial' })
 test.describe('@feature-default', () => {
   test('has title', async ({ page }) => {
     await page.goto('/')
-    await expect(page).toHaveTitle(/React Router App/)
+    await expect(page).toHaveTitle(/Welcome to Next.js App/)
   })
 
   test('contain title', async ({ page }) => {
