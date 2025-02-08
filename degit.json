@@ -2,14 +2,15 @@
     {
         "action": "remove",
         "files": [
-            "README.md",
             "apps",
             "packages",
             "templates",
             "template-golang",
             "template-react-app",
             "template-react-ssr",
-            "template-shared-ui"
+            "template-shared-ui",
+            "CONTRIBUTING.md",
+            "README.md"
         ]
     }
 ]

@@ -12,7 +12,7 @@
   - [Updating dependencies](#updating-dependencies)
   - [Cleanup projects](#cleanup-projects)
 - [Tasks to Complete](#tasks-to-complete)
-
+- [Contributions](#contributions)
 
 ## Overview
 
@@ -202,6 +202,12 @@ After creating a new project from this template repository, ensure you update th
 6. **License Information:** Ensure the license is accurate for the new project.
 
 Keeping documentation current helps others understand, use, and contribute to the project.
+
+## Contributions
+
+Contributions are welcome! Please open a pull requests for your changes and tickets in case you would like to discuss something or have a question.
+
+Read [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed documentation.
 
 <!-- link reference definition -->
 [go-docs]: https://go.dev/doc/install
