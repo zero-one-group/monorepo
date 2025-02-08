@@ -80,6 +80,7 @@ compose.env*
 playwright/.cache/
 playwright-report/
 tests-results/
+test-results/
 blob-report/
 .playwright/
 
