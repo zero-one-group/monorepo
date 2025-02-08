@@ -1,16 +1,16 @@
-/node_modules
-/.rollup.cache
+node_modules
 /.fleet
 /.idea
 /.pnp
-/.cache
-/.output
 /.husky
-/.temp
 /.unikraft
 .pnp.js
 .DS_Store
 .DS_Store?
+.rollup.cache
+.cache
+.output
+.temp/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
@@ -77,10 +77,10 @@ compose.env*
 !compose.env.example
 
 # Disable this line in your real app
-/playwright/.cache/
-/playwright-report/
-/tests-results/
-/blob-report/
+playwright/.cache/
+playwright-report/
+tests-results/
+blob-report/
 .playwright/
 
 # Sentry Config File
