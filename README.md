@@ -86,13 +86,13 @@ View all available templates by looking at folders with `template-` prefix in th
 
 Current available templates are:
 
-| Template Name         | Description                                        |
-|-----------------------|----------------------------------------------------|
-| `template-golang`     | Basic Go application for backend                   |
-| `template-react-app`  | SPA React Router application with Tailwind CSS     |
-| `template-react-ssr`  | SSR React Router application with Tailwind CSS     |
-| `template-shared-ui`  | Collections of UI components based on `shadcn/ui`  |
-| `template-strapi-cms` | Strapi headless CMS with PostgreSQL and Nodemailer |
+| Template Name        | Description                                        |
+|----------------------|----------------------------------------------------|
+| `template-golang`    | Basic Go application for backend                   |
+| `template-react-app` | SPA React Router application with Tailwind CSS     |
+| `template-react-ssr` | SSR React Router application with Tailwind CSS     |
+| `template-shared-ui` | Collections of UI components based on `shadcn/ui`  |
+| `template-strapi`    | Strapi headless CMS with PostgreSQL and Nodemailer |
 
 ### Moon commands
 

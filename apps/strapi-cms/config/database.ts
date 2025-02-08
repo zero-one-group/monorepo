@@ -21,7 +21,7 @@ export default ({ env }) => {
     },
     sqlite: {
       connection: {
-        filename: resolve(env('DATABASE_FILENAME', '.tmp/data.db')),
+        filename: resolve(env('DATABASE_FILENAME', '_data/data.db')),
       },
       useNullAsDefault: true,
     },

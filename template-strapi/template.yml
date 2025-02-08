@@ -1,0 +1,33 @@
+# https://moonrepo.dev/docs/config/template
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/template.json
+$schema: 'https://moonrepo.dev/schemas/template.json'
+
+# REQUIRED: Name of the template in a human readable format.
+title: 'Strapi CMS'
+
+# REQUIRED: Description of what the template is for and other relevant information.
+description: 'Strapi Headless Content Management System'
+
+# Destination path for the package.
+destination: 'apps/[package_name]'
+
+# Mapping of variables that will be interpolated and rendered within template files.
+# Users will be prompted to provide a value when running the generator.
+variables:
+  package_name:
+    type: 'string'
+    default: 'strapi-cms'
+    prompt: 'Package name (identifier)?'
+    required: true
+
+  package_description:
+    type: 'string'
+    default: 'Strapi headless CMS'
+    prompt: 'Package description?'
+    required: true
+
+  port_number:
+    type: 'number'
+    default: 1337
+    prompt: 'Port number?'
+    required: true

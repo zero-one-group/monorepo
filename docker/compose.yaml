@@ -46,5 +46,3 @@ services:
 volumes:
   pgsql_data:
     driver: local
-  valkey_data:
-    driver: local

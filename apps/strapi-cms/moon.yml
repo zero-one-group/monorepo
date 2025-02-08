@@ -16,6 +16,9 @@ project:
   name: strapi-cms
   description: 'Strapi headless CMS'
 
+env:
+  APP_VERSION: '$(jq -r .version <$workspaceRoot''/package.json'')'
+
 # Since this project can infer task from script (package.json), then you can run any script as moon task.
 # @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
 # Example: `moon strapi-cms:start`
@@ -29,3 +32,25 @@ tasks:
     command: 'pnpm run build'
     options:
       cache: true
+
+  docker-run:
+    command: 'docker run --network=host --rm -it --env-file .env -v $(pwd)/_data:/_data --name $project $project:$APP_VERSION'
+    options:
+      mergeEnv: replace
+      runFromWorkspaceRoot: false
+      interactive: false
+      outputStyle: buffer-only-failure
+      runInCI: false
+      cache: false
+      shell: true
+
+  docker-shell:
+    command: 'docker run --network=host --rm -it --env-file .env -v $(pwd)/_data:/_data --entrypoint /bin/sh $project:$APP_VERSION'
+    options:
+      mergeEnv: replace
+      runFromWorkspaceRoot: false
+      interactive: false
+      outputStyle: buffer-only-failure
+      runInCI: false
+      cache: false
+      shell: true

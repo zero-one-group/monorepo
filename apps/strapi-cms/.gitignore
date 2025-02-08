@@ -8,6 +8,3 @@ build
 .strapi-cloud.json
 .data/
 /types/
-
-# Ignore generated documentation
-src/extensions/documentation/*

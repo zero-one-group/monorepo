@@ -22,6 +22,7 @@ _data/
 .dockerignore
 .sentryclirc
 degit.json
+Containerfile
 Dockerfile
 compose.env*
 node_modules

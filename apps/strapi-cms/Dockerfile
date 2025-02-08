@@ -2,6 +2,7 @@
 
 # Arguments with default value (for build).
 ARG PLATFORM=linux/amd64
+ARG NODE_ENV=production
 ARG NODE_VERSION=20
 
 FROM busybox:1.37-glibc as glibc
@@ -27,7 +28,7 @@ RUN curl -fsSL https://moonrepo.dev/install/moon.sh | bash
 # -----------------------------------------------------------------------------
 FROM base AS skeleton
 COPY --link . .
-RUN moon docker scaffold react-ssr
+RUN moon docker scaffold strapi-cms
 
 # -----------------------------------------------------------------------------
 # Install dependencies and build the application.
@@ -44,47 +45,63 @@ RUN moon docker setup
 # Copy source files
 COPY --from=skeleton /srv/.moon/docker/sources .
 
-# Build the application
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run react-ssr:build
-
-# Prune workspace
+# Build the application and prune the workspace
+# RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run strapi-cms:build
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 
-# Cleanup node_modules
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod \
-    --frozen-lockfile --ignore-scripts && pnpm prune --prod \
-    --ignore-scripts && pnpm dlx clean-modules clean --yes \
-    "**/codecov*" "!**/@repo/**"
+# -----------------------------------------------------------------------------
+# Rebuild Strapi CMS with production dependencies.
+# -----------------------------------------------------------------------------
+FROM base AS installer
+
+# Only copy the require files for Strapi from builder stage
+COPY --from=builder /srv/apps/strapi-cms /srv
+COPY --from=builder /srv/.npmrc /srv/.npmrc
+
+# Fix sharp dependencies then build the Strapi application.
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --ignore-scripts
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm rebuild --verbose better-sqlite3 sharp
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store NODE_ENV=$NODE_ENV pnpm build
 
 # -----------------------------------------------------------------------------
 # Cleanup the builder stage and create data directory.
 # -----------------------------------------------------------------------------
 FROM base AS pruner
 
-# Copy node_modules from the builder stage.
-COPY --from=builder /srv/pnpm-lock.yaml /srv/pnpm-lock.yaml
-COPY --from=builder /srv/package.json /srv/package.json
-COPY --from=builder /srv/node_modules /srv/node_modules
+# Copy the required files from the installer stage
+COPY --from=installer /srv/package.json /srv/package.json
+COPY --from=installer /srv/pnpm-lock.yaml /srv/pnpm-lock.yaml
+COPY --from=installer /srv/node_modules /srv/node_modules
+COPY --from=installer /srv/server.cjs /srv/server.cjs
+COPY --from=installer /srv/dist /srv/dist
 
-# Copy the application output from the builder stage.
-COPY --from=builder /srv/apps/react-ssr/node_modules /srv/apps/react-ssr/node_modules
-COPY --from=builder /srv/apps/react-ssr/package.json /srv/apps/react-ssr/package.json
-COPY --from=builder /srv/apps/react-ssr/server.mjs /srv/apps/react-ssr/server.mjs
-COPY --from=builder /srv/apps/react-ssr/build /srv/apps/react-ssr/build
+# Copy migrations and the generated files from Strapi plugins
+COPY --from=installer /srv/src/extensions /srv/src/extensions
+COPY --from=installer /srv/database /srv/database
 
-# Set executable permissions.
-RUN chmod +x /srv/apps/react-ssr/server.mjs
+# Cleanup uncessary files and install production dependencies
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod \
+    --frozen-lockfile --ignore-scripts && pnpm prune --prod \
+    --ignore-scripts && pnpm dlx clean-modules clean --yes \
+    "!**/sharp/**" "!**/better-sqlite3/**" "**/codecov*"
+
+# Set permissions for server.cjs and uploads directories
+RUN mkdir -p /srv/public/uploads && chmod -R 0775 /srv/public
+RUN mkdir -p /srv/_data && chmod -R 0775 /srv/_data
+RUN chmod +x /srv/server.cjs
 
 # -----------------------------------------------------------------------------
 # Production image, copy build output files and run the application (runner).
 # -----------------------------------------------------------------------------
 FROM --platform=${PLATFORM} gcr.io/distroless/nodejs${NODE_VERSION}-debian12
 
-# ----- Read application environment variables --------------------------------
+# ------ Read application environment variables --------------------------------
 
-ARG VITE_API_URL VITE_BASE_URL
+ARG APP_KEYS API_TOKEN_SALT ADMIN_JWT_SECRET TRANSFER_TOKEN_SALT JWT_SECRET \
+    DATABASE_CLIENT DATABASE_URL DATABASE_FILENAME DATABASE_SSL SMTP_HOST \
+    SMTP_PORT SMTP_USERNAME SMTP_PASSWORD
 
-# ----- Read application environment variables --------------------------------
+# ------ Read application environment variables --------------------------------
 
 # Copy the build output files from the installer stage.
 COPY --from=pruner --chown=nonroot:nonroot /srv /srv
@@ -99,15 +116,17 @@ COPY --from=glibc /bin/which /bin/which
 COPY --from=glibc /bin/cat /bin/cat
 COPY --from=glibc /bin/ls /bin/ls
 COPY --from=glibc /bin/sh /bin/sh
+COPY --from=glibc /bin/head /bin/head
+COPY --from=glibc /bin/hostname /bin/hostname
 
 # Define the host and port to listen on.
-ARG NODE_ENV=production HOST=0.0.0.0 PORT=3001
+ARG NODE_ENV=production HOST=0.0.0.0 PORT=1337
 ENV NODE_ENV=$NODE_ENV HOST=$HOST PORT=$PORT
 ENV TINI_SUBREAPER=true
 
-WORKDIR /srv/apps/react-ssr
+WORKDIR /srv
 USER nonroot:nonroot
 EXPOSE $PORT
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["/nodejs/bin/node", "server.mjs"]
+CMD ["/nodejs/bin/node", "server.cjs"]

@@ -5,8 +5,9 @@
         "dev": "VITE_CJS_IGNORE_WARNING=true strapi develop",
         "build": "VITE_CJS_IGNORE_WARNING=true strapi build",
         "cleanup": "pnpm dlx rimraf node_modules build dist .{cache,data,strapi,tmp}",
+        "start-node": "NODE_ENV=production node --no-warnings -r dotenv/config server.cjs",
+        "start": "NODE_ENV=production strapi start",
         "typecheck": "tsc --noEmit",
-        "start": "strapi start",
         "strapi": "strapi"
     },
     "dependencies": {
@@ -18,11 +19,12 @@
         "@strapi/upload": "5.9.0",
         "better-sqlite3": "^11.8.1",
         "consola": "^3.4.0",
+        "dotenv": "^16.4.7",
         "pathe": "^2.0.2",
         "pg": "^8.13.1",
-        "react": "~18.0.0",
         "react-dom": "~18.0.0",
         "react-router-dom": "~6.29.0",
+        "react": "~18.0.0",
         "sharp": "^0.33.5",
         "std-env": "^3.8.0",
         "styled-components": "^6.0.0"
@@ -36,5 +38,8 @@
         "typescript": "^5.7.3",
         "vite": "^6.1.0"
     },
-    "strapi": {}
+    "strapi": {},
+    "pnpm": {
+        "onlyBuiltDependencies": ["better-sqlite3", "sharp"]
+    }
 }
