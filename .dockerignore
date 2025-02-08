@@ -12,7 +12,9 @@ _data/
 .cache
 .github
 .husky
-.temp
+.strapi
+.temp/
+.tmp/
 .unikraft
 .vscode
 .DS_Store

@@ -13,7 +13,7 @@ node:
   packageManager: 'pnpm'                  # Defines which package manager to utilize.
   inferTasksFromScripts: true             # Automatically infer moon tasks from `package.json` scripts.
   addEnginesConstraint: false             # Add `node.version` as a constraint in the root `package.json` `engines`.
-  dedupeOnLockfileChange: true            # Dedupe dependencies after the lockfile has changed, keep the workspace tree as clean and lean as possible.
+  dedupeOnLockfileChange: false           # Dedupe dependencies after the lockfile has changed, keep the workspace tree as clean and lean as possible.
   syncPackageManagerField: true           # Sync the currently configured package manager and its version to the packageManager field in the root package.json.
   rootPackageOnly: true                   # Single version policy patterns by only allowing dependencies in the root `package.json`.
   syncProjectWorkspaceDependencies: true  # Sync a project's `dependsOn` as dependencies within the project's `package.json`.
@@ -30,6 +30,13 @@ typescript:
   # projectConfigFileName: 'tsconfig.build.json'     # Defines the file name of the tsconfig.json found in the project root.
   # rootConfigFileName: 'tsconfig.workspace.json'    # File name of the config file found in the root that houses shared compiler options.
   # rootOptionsConfigFileName: 'tsconfig.base.json'  # File name of the config file found in the root that houses shared compiler options.
+
+# Configures Python within the toolchain.
+# python:
+#   version: '3.13'
+#   packageManager: uv
+#   uv:
+#     version: '0.5.29'
 
 # Configures Rust within the toolchain.
 # rust:

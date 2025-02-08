@@ -1,8 +1,14 @@
-export default [
+export default ({ env }) => [
   'strapi::logger',
   'strapi::errors',
   'strapi::security',
-  'strapi::cors',
+  {
+    name: 'strapi::cors',
+    config: {
+      headers: '*',
+      origin: [env('STRAPI_ALLOWED_ORIGIN', '*')],
+    },
+  },
   'strapi::query',
   'strapi::body',
   'strapi::session',
