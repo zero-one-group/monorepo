@@ -14,7 +14,7 @@ id: '{{ package_name | kebab_case }}'
 
 project:
   name: {{ package_name | kebab_case }}
-  description: 'Strapi headless CMS'
+  description: '{{ package_description }}'
 
 env:
   APP_VERSION: '$(jq -r .version <$workspaceRoot''/package.json'')'

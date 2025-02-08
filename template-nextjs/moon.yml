@@ -1,0 +1,105 @@
+# https://moonrepo.dev/docs/config/project
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+type: application
+language: typescript
+toolchain:
+  node:
+    version: '20'
+stack: frontend
+tags: ['app']
+
+# Overrides the name (identifier) of the project
+id: '{{ package_name | kebab_case }}'
+
+project:
+  name: '{{ package_name | kebab_case }}'
+  description: '{{ package_description }}'
+
+env:
+  APP_VERSION: '$(jq -r .version <$workspaceRoot''/package.json'')'
+  PORT: '{{ port_number }}'
+
+# Uncomment to use shared UI library
+# dependsOn:
+#   - 'shared-ui'
+
+# File groups defined in .moon/tasks.yml will be inherited by all projects.
+# @see: https://moonrepo.dev/docs/config/project#filegroups
+fileGroups:
+  configs:
+    - '*.config.{js,cjs,mjs,ts}'
+    - '*.json'
+  sources:
+    - 'app/**/*'
+  tests:
+    - 'tests/**/*'
+    - '**/__tests__/**/*'
+  assets:
+    - 'public/**/*'
+    - '!public/.gitkeep'
+
+# Since this project can infer task from script (package.json), then you can run any script as moon task.
+# @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
+# Example: `moon {{ package_name | kebab_case }}:start`
+tasks:
+  dev:
+    command: 'pnpm run dev'
+    outputs:
+      - '.next/**/*'
+    options:
+      envFile: '/.env'
+
+  build:
+    command: 'pnpm run build'
+    outputs:
+      - '.next/**/*'
+    options:
+      envFile: '/.env'
+      cache: true
+
+  start-node:
+    env:
+      NODE_ENV: 'production'
+    command: 'node --no-warnings dist/server.js'
+    deps: ['build-standalone']
+    options:
+      envFile: '/.env'
+      cache: false
+
+  build-standalone:
+    command: |
+      'rm -fr $projectRoot/dist';
+      'mkdir -p $projectRoot/dist/.next';
+      'cp -r .next/standalone/apps/{{ package_name | kebab_case }}/ dist';
+      'cp -r .next/static dist/.next/static';
+      'cp -r public dist/';
+    outputs:
+      - 'dist/**/*'
+    deps: ['build']
+    options:
+      cache: false
+      shell: true
+
+  docker-run:
+    command: 'docker run --network=host --rm -it --env-file .env --name $project $project:$APP_VERSION'
+    options:
+      mergeEnv: replace
+      runFromWorkspaceRoot: true
+      interactive: false
+      outputStyle: buffer-only-failure
+      runInCI: false
+      cache: false
+      shell: true
+
+  docker-shell:
+    command: 'docker run --network=host --rm -it --env-file .env --entrypoint /bin/sh $project:$APP_VERSION'
+    options:
+      mergeEnv: replace
+      runFromWorkspaceRoot: true
+      interactive: false
+      outputStyle: buffer-only-failure
+      runInCI: false
+      cache: false
+      shell: true

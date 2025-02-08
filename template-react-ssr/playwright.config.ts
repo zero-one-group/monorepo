@@ -9,6 +9,7 @@ import { resolve } from 'pathe'
 import { env, isCI } from 'std-env'
 
 export const STORAGE_STATE = resolve('.playwright/user.json')
+const APP_PORT = env.PORT || {{ port_number }}
 
 export default defineConfig({
   quiet: !!isCI,
@@ -18,15 +19,22 @@ export default defineConfig({
   forbidOnly: !!isCI,
   retries: isCI ? 2 : 0,
   workers: isCI ? 1 : undefined,
-  reporter: [['html', { open: 'never', outputFolder: './tests-results/e2e' }], ['list']],
+  reporter: [['html', { open: 'never', outputFolder: './tests-results/e2e-html' }], ['list']],
+  preserveOutput: 'always',
   use: {
-    baseURL: env.URL || 'http://localhost:{{ port_number }}',
     ...devices['Desktop Chrome'],
+    baseURL: env.URL || `http://localhost:${APP_PORT}`,
     defaultBrowserType: 'chromium',
     colorScheme: 'no-preference',
+    ignoreHTTPSErrors: true,
     locale: 'en-US',
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    trace: 'on-all-retries' /* @see https://playwright.dev/docs/trace-viewer */,
+    video: { mode: isCI ? 'off' : 'on' },
+    contextOptions: {
+      recordVideo: { dir: resolve('tests-results/e2e-videos') },
+      reducedMotion: 'reduce',
+    },
+    screenshot: isCI ? 'off' : 'only-on-failure',
     launchOptions: {
       slowMo: 1000, // a 1000 milliseconds pause before each operation. Useful for slow systems.
     },
@@ -44,7 +52,7 @@ export default defineConfig({
     : {
         command: 'moon {{ package_name | kebab_case }}:build && moon {{ package_name | kebab_case }}:start',
         reuseExistingServer: !isCI,
+        port: Number(APP_PORT),
         timeout: 30_000,
-        port: {{ port_number }},
       },
 })

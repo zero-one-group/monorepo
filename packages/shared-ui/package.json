@@ -38,6 +38,8 @@
         "cleanup": "pnpm dlx rimraf dist node_modules pnpm-lock.yaml storybook-static",
         "start": "pnpm dlx serve storybook-static -l 6006 -n -C",
         "prepublishOnly": "pnpm run build:vite",
+        "lint": "biome lint . --write",
+        "check": "biome check . --write",
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
@@ -89,6 +91,7 @@
         "zod": "^3.24.1"
     },
     "devDependencies": {
+        "@biomejs/biome": "^1.9.4",
         "@storybook/addon-a11y": "^8.5.3",
         "@storybook/addon-essentials": "^8.5.3",
         "@storybook/addon-links": "^8.5.3",

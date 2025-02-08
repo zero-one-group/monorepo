@@ -68,8 +68,10 @@ vite.config.*
 !vite.config.ts
 vitest.config.*
 !vitest.config.ts
+!vitest.config.mts
 vitest.workspace.*
 !vitest.workspace.ts
+!vitest.workspace.mts
 
 # envars
 .env.*

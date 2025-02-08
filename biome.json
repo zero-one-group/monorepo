@@ -117,7 +117,16 @@
     },
     "files": {
         "ignoreUnknown": true,
-        "include": ["**/*.js", "**/*.mjs", "**/*.ts", "**/*.tsx", "**/*.css", "**/*.json"],
+        "include": [
+            "**/*.js",
+            "**/*.cjs",
+            "**/*.mjs",
+            "**/*.ts",
+            "**/*.mts",
+            "**/*.tsx",
+            "**/*.css",
+            "**/*.json"
+        ],
         "ignore": [".github", "tmp", "temp", "templates", "template-*"]
     }
 }

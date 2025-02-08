@@ -45,10 +45,8 @@ RUN moon docker setup
 # Copy source files
 COPY --from=skeleton /srv/.moon/docker/sources .
 
-# Build the application
+# Build the application and prune the workspace
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run {{ package_name | kebab_case }}:build
-
-# Prune workspace
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 
 # -----------------------------------------------------------------------------
