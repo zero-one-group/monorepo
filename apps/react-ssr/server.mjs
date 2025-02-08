@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/nodejs/bin/node
 
 import os from 'node:os'
 import compression from 'compression'

@@ -20,8 +20,8 @@ services:
       POSTGRES_DB: myorg
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: securedb
-      POSTGRES_EXTRA_DB: extradb1,extradb2
-      POSTGRES_SCHEMAS: myorg:internal,extradb1:analytics
+      POSTGRES_EXTRA_DB: strapi,extradb
+      POSTGRES_SCHEMAS: myorg:internal,extradb:analytics
     command: ['postgres', '-c', 'wal_level=logical']
     # set shared memory limit when using docker-compose
     shm_size: 128mb
@@ -45,6 +45,4 @@ services:
 
 volumes:
   pgsql_data:
-    driver: local
-  valkey_data:
     driver: local

@@ -32,7 +32,7 @@ Add the following to your `tsconfig.json` file:
 
 ```json
 {
-    "references": [{ "path": "../../packages/shared-ui" } ]
+    "references": [{ "path": "../../packages/shared-ui" }]
 }
 ```
 

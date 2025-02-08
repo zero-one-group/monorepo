@@ -58,28 +58,6 @@ tasks:
       cache: false
       shell: true
 
-  docker-run:
-    command: 'docker run --network=host --rm -it --env-file .env --name $project $project:$APP_VERSION'
-    options:
-      mergeEnv: replace
-      runFromWorkspaceRoot: true
-      interactive: false
-      outputStyle: buffer-only-failure
-      runInCI: false
-      cache: false
-      shell: true
-
-  docker-shell:
-    command: 'docker run --network=host --rm -it --env-file .env --entrypoint /bin/sh $project:$APP_VERSION'
-    options:
-      mergeEnv: replace
-      runFromWorkspaceRoot: true
-      interactive: false
-      outputStyle: buffer-only-failure
-      runInCI: false
-      cache: false
-      shell: true
-
   docker-images:
     command: 'docker image list --filter reference=$project:\\*'
     options:

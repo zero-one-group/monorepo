@@ -11,6 +11,7 @@ node_modules
 .cache
 .output
 .temp/
+.tmp/
 Thumbs.db
 ehthumbs.db
 Desktop.ini

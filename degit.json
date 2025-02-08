@@ -9,6 +9,7 @@
             "template-react-app",
             "template-react-ssr",
             "template-shared-ui",
+            "template-strapi",
             "CONTRIBUTING.md",
             "README.md"
         ]

@@ -12,7 +12,9 @@ _data/
 .cache
 .github
 .husky
-.temp
+.strapi
+.temp/
+.tmp/
 .unikraft
 .vscode
 .DS_Store
@@ -20,6 +22,7 @@ _data/
 .dockerignore
 .sentryclirc
 degit.json
+Containerfile
 Dockerfile
 compose.env*
 node_modules

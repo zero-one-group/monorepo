@@ -92,6 +92,7 @@ COPY --from=pruner --chown=nonroot:nonroot /srv /srv
 # Copy some necessary system utilities from previous stage (~7MB).
 # To enhance security, consider avoiding the copying of sysutils.
 COPY --from=base /usr/bin/tini /usr/bin/tini
+COPY --from=glibc /usr/bin/env /usr/bin/env
 COPY --from=glibc /bin/clear /bin/clear
 COPY --from=glibc /bin/mkdir /bin/mkdir
 COPY --from=glibc /bin/which /bin/which

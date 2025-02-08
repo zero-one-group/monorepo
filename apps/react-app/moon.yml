@@ -44,7 +44,7 @@ fileGroups:
 tasks:
   dev:
     command: 'pnpm run dev'
-    deps: ['typegen']
+    deps: ['shared-ui:build', 'typegen']
     outputs:
       - 'build/**/*'
     options:
@@ -52,6 +52,34 @@ tasks:
 
   build:
     command: 'pnpm run build'
-    deps: ['typegen', 'shared-ui:build']
+    deps: ['shared-ui:build', 'typegen']
     options:
       cache: true
+
+  typecheck:
+    command: 'pnpm run typecheck'
+    deps: ['shared-ui:build', 'typegen']
+    options:
+      cache: true
+
+  docker-run:
+    command: 'docker run --network=host --rm -it --env-file .env --name $project $project:$APP_VERSION'
+    options:
+      mergeEnv: replace
+      runFromWorkspaceRoot: true
+      interactive: false
+      outputStyle: buffer-only-failure
+      runInCI: false
+      cache: false
+      shell: true
+
+  docker-shell:
+    command: 'docker run --network=host --rm -it --env-file .env --entrypoint /bin/sh $project:$APP_VERSION'
+    options:
+      mergeEnv: replace
+      runFromWorkspaceRoot: true
+      interactive: false
+      outputStyle: buffer-only-failure
+      runInCI: false
+      cache: false
+      shell: true
