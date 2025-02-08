@@ -11,7 +11,7 @@ stack: frontend
 tags: ['app']
 
 # Overrides the name (identifier) of the project
-id: '{{ package_id | kebab_case }}'
+id: '{{ package_name | kebab_case }}'
 
 project:
   name: '{{ package_name | kebab_case }}'
@@ -46,6 +46,7 @@ fileGroups:
 tasks:
   dev:
     command: 'pnpm run dev'
+    deps: ['typegen']
     outputs:
       - 'build/**/*'
     options:
@@ -54,11 +55,6 @@ tasks:
   build:
     command: 'pnpm run build'
     deps: ['typegen']
-    options:
-      cache: true
-
-  typegen:
-    command: 'pnpm run typegen'
     options:
       cache: true
 

@@ -1,6 +1,7 @@
 import { useStore } from '@nanostores/react'
 import { createContext, useEffect, useState } from 'react'
-import { type Theme, saveUiState, uiStore } from '../stores'
+import * as React from 'react'
+import { type Theme, saveUiState, uiStore } from './stores'
 
 type ThemeProviderState = {
   theme: Theme
@@ -51,4 +52,14 @@ export function ThemeProvider({ children }: React.PropsWithChildren) {
   }
 
   return <ThemeProviderContext.Provider value={value}>{children}</ThemeProviderContext.Provider>
+}
+
+export const useTheme = () => {
+  const context = React.useContext(ThemeProviderContext)
+
+  if (context === undefined) {
+    throw new Error('useTheme must be used within a ThemeProvider')
+  }
+
+  return context
 }

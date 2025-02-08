@@ -7,10 +7,10 @@ language: typescript
 toolchain:
   node:
     version: '20'
-tags: ['app']
+tags: ['libs', 'ui']
 
 # Overrides the name (identifier) of the project
-id: '{{ package_id | kebab_case }}'
+id: '{{ package_name | kebab_case }}'
 
 project:
   name: '{{ package_name | kebab_case }}'
@@ -18,4 +18,4 @@ project:
 
 # Since this project can infer task from script (package.json), then you can run any script as moon task.
 # @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
-# Example: `moon shared-ui:typecheck`
+# Example: `moon shared-ui:storybook`

@@ -20,7 +20,7 @@
         "express": "^5.0.1",
         "helmet": "^8.0.0",
         "isbot": "^5",
-        "lucide-react": "^0.474.0",
+        "lucide-react": "^0.475.0",
         "morgan": "^1.10.0",
         "pathe": "^2.0.2",
         "react-dom": "^19.0.0",

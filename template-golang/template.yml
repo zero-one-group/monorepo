@@ -9,21 +9,15 @@ title: 'Go Application'
 description: 'Basic Go application template'
 
 # Destination path for the package.
-destination: 'apps/[package_id]'
+destination: 'apps/[package_name]'
 
 # Mapping of variables that will be interpolated and rendered within template files.
 # Users will be prompted to provide a value when running the generator.
 variables:
-  package_id:
-    type: 'string'
-    default: 'go-app'
-    prompt: 'Package identifier?'
-    required: true
-
   package_name:
     type: 'string'
     default: 'go-app'
-    prompt: 'Package name?'
+    prompt: 'Package name (identifier)?'
     required: true
 
   package_description:
@@ -34,6 +28,6 @@ variables:
 
   port_number:
     type: 'number'
-    default: 8080
+    default: 8000
     prompt: 'Port number?'
     required: true

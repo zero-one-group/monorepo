@@ -15,10 +15,8 @@ export default defineConfig({
     dts({
       include: ['src'],
       rollupTypes: true,
-      compilerOptions: {
-        declarationMap: true,
-        sourceMap: true,
-      },
+      exclude: ['**/*.stories.@(ts|tsx)'],
+      tsconfigPath: resolve('tsconfig.json'),
     }),
   ],
   server: { port: 6300, host: false },
@@ -33,7 +31,7 @@ export default defineConfig({
       entry: {
         components: resolve('src/components/index.ts'),
         hooks: resolve('src/hooks/index.ts'),
-        theme: resolve('src/theme/index.ts'),
+        theme: resolve('src/theme.tsx'),
         utils: resolve('src/utils.ts'),
       },
       formats: ['es'],
@@ -42,12 +40,20 @@ export default defineConfig({
     rollupOptions: {
       external: ['react', 'react/jsx-runtime', 'react-dom'],
       output: {
-        preserveModules: false,
+        format: 'es',
+        exports: 'named',
+        entryFileNames: '[name]/index.js',
+        chunkFileNames: '_chunks/[name].js',
+        assetFileNames: 'assets/[name].[ext]',
+        manualChunks: undefined, // Let rollup handle chunking automatically
+        preserveModules: false, // To enable tree-shaking set to `true`
+        reexportProtoFromExternal: false,
         preserveModulesRoot: 'src',
-        entryFileNames: '[name].js',
-        chunkFileNames: '[name].js',
-        assetFileNames: '[name].[ext]',
       },
     },
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom'],
+    exclude: ['@repo/shared-ui'],
   },
 })

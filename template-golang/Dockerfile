@@ -25,7 +25,7 @@ RUN curl -fsSL https://moonrepo.dev/install/moon.sh | bash
 # -----------------------------------------------------------------------------
 FROM base_go AS skeleton
 COPY --link . .
-RUN moon docker scaffold {{ package_id | kebab_case }}
+RUN moon docker scaffold {{ package_name | kebab_case }}
 
 # -----------------------------------------------------------------------------
 # Install dependencies and build the application.
@@ -48,8 +48,8 @@ RUN moon docker setup --concurrency=4
 COPY --from=skeleton /srv/.moon/docker/sources .
 
 # Build the application
-RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon run {{ package_id | kebab_case }}:tidy
-RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon run {{ package_id | kebab_case }}:build
+RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon run {{ package_name | kebab_case }}:tidy
+RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon run {{ package_name | kebab_case }}:build
 
 # Prune workspace
 RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon docker prune
@@ -66,7 +66,7 @@ ARG  DATABASE_URL SMTP_HOST SMTP_PORT SMTP_USERNAME SMTP_PASSWORD SMTP_EMAIL_FRO
 # ----- Read application environment variables --------------------------------
 
 # Copy the build output files from the installer stage.
-COPY --from=builder --chown=nonroot:nonroot /srv/apps/{{ package_id | kebab_case }}/build/release/{{ package_id | kebab_case }} /srv
+COPY --from=builder --chown=nonroot:nonroot /srv/apps/{{ package_name | kebab_case }}/build/release/{{ package_name | kebab_case }} /srv
 
 # Copy some necessary system utilities from previous stage (~7MB).
 # To enhance security, consider avoiding the copying of sysutils.
@@ -88,4 +88,4 @@ USER nonroot:nonroot
 EXPOSE $PORT
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["/srv/{{ package_id | kebab_case }}"]
+CMD ["/srv/{{ package_name | kebab_case }}"]

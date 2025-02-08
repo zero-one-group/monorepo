@@ -14,9 +14,10 @@
         "compose:down": "docker compose -f docker/compose.yaml down --remove-orphans",
         "cleanup": "pnpm --stream --color \"/cleanup:(?!deps)/\"",
         "cleanup:dev": "pnpm -r --parallel --stream run cleanup",
-        "cleanup:cache": "pnpm store prune --force && pnpm dlx rimraf .moon/cache",
         "cleanup:deps": "pnpm dlx rimraf pnpm-lock.yaml node_modules",
         "update-deps": "npm-check-updates --configFileName .ncurc.json",
+        "cleanup:cache": "pnpm dlx rimraf .moon/cache --verbose",
+        "cleanup:store": "pnpm store prune --force",
         "typecheck": "moon :typecheck"
     },
     "devDependencies": {

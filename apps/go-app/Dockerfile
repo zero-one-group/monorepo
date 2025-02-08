@@ -79,7 +79,7 @@ COPY --from=glibc /bin/ls /bin/ls
 COPY --from=glibc /bin/sh /bin/sh
 
 # Define the host and port to listen on.
-ARG SERVER_ENV=production HOST=0.0.0.0 PORT=8080
+ARG SERVER_ENV=production HOST=0.0.0.0 PORT=8000
 ENV SERVER_ENV=$SERVER_ENV TINI_SUBREAPER=true
 ENV HOST=$HOST PORT=$PORT
 

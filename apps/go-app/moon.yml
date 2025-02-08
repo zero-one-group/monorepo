@@ -40,8 +40,8 @@ tasks:
     command: 'go mod tidy && go mod vendor'
 
   kill-port:
-    # This is a hack for killing the port 8080 before starting the app
-    command: 'pnpm --package=kill-port-process-cli dlx kill-port 8080'
+    # This is a hack for killing the port 8000 before starting the app
+    command: 'pnpm --package=kill-port-process-cli dlx kill-port 8000'
     deps: [tidy]
     options:
       internal: true

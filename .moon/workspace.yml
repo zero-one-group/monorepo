@@ -46,3 +46,4 @@ telemetry: false
 generator:
   templates:
     - 'git://github.com/zero-one-group/monorepo#main'
+    # - 'file://../some/path/to/monorepo-template'

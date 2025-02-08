@@ -10,7 +10,7 @@ stack: backend
 tags: ['app']
 
 # Overrides the name (identifier) of the project
-id: '{{ package_id | kebab_case }}'
+id: '{{ package_name | kebab_case }}'
 
 project:
   name: '{{ package_name | kebab_case }}'
@@ -28,11 +28,11 @@ tasks:
       envFile: "/.env"
 
   build:
-    command: 'go build -o build/release/{{ package_id | kebab_case }}'
+    command: 'go build -o build/release/{{ package_name | kebab_case }}'
     deps: [tidy]
 
   start:
-    command: 'build/release/{{ package_id | kebab_case }}'
+    command: 'build/release/{{ package_name | kebab_case }}'
     options:
       cache: false
 

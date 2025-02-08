@@ -192,11 +192,17 @@ export const BarChartExample: Story = {
           />
           <Bar
             dataKey="total"
-            style={% raw %}{{ fill: 'var(--color-total)', opacity: 0.8 }}{% endraw %}
+            style={% raw %}{{
+              fill: 'var(--color-total)',
+              opacity: 0.8,
+            }}{% endraw %}
           />
           <Bar
             dataKey="revenue"
-            style={% raw %}{{ fill: 'var(--color-revenue)', opacity: 0.8 }}{% endraw %}
+            style={% raw %}{{
+              fill: 'var(--color-revenue)',
+              opacity: 0.8,
+            }}{% endraw %}
           />
         </BarChart>
       </ChartContainer>

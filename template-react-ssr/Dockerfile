@@ -27,7 +27,7 @@ RUN curl -fsSL https://moonrepo.dev/install/moon.sh | bash
 # -----------------------------------------------------------------------------
 FROM base AS skeleton
 COPY --link . .
-RUN moon docker scaffold {{ package_id | kebab_case }}
+RUN moon docker scaffold {{ package_name | kebab_case }}
 
 # -----------------------------------------------------------------------------
 # Install dependencies and build the application.
@@ -45,7 +45,7 @@ RUN moon docker setup
 COPY --from=skeleton /srv/.moon/docker/sources .
 
 # Build the application
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run {{ package_id | kebab_case }}:build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run {{ package_name | kebab_case }}:build
 
 # Prune workspace
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
@@ -67,13 +67,13 @@ COPY --from=builder /srv/package.json /srv/package.json
 COPY --from=builder /srv/node_modules /srv/node_modules
 
 # Copy the application output from the builder stage.
-COPY --from=builder /srv/apps/{{ package_id | kebab_case }}/node_modules /srv/apps/{{ package_id | kebab_case }}/node_modules
-COPY --from=builder /srv/apps/{{ package_id | kebab_case }}/package.json /srv/apps/{{ package_id | kebab_case }}/package.json
-COPY --from=builder /srv/apps/{{ package_id | kebab_case }}/server.mjs /srv/apps/{{ package_id | kebab_case }}/server.mjs
-COPY --from=builder /srv/apps/{{ package_id | kebab_case }}/build /srv/apps/{{ package_id | kebab_case }}/build
+COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/node_modules /srv/apps/{{ package_name | kebab_case }}/node_modules
+COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/package.json /srv/apps/{{ package_name | kebab_case }}/package.json
+COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/server.mjs /srv/apps/{{ package_name | kebab_case }}/server.mjs
+COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/build /srv/apps/{{ package_name | kebab_case }}/build
 
 # Set executable permissions.
-RUN chmod +x /srv/apps/{{ package_id | kebab_case }}/server.mjs
+RUN chmod +x /srv/apps/{{ package_name | kebab_case }}/server.mjs
 
 # -----------------------------------------------------------------------------
 # Production image, copy build output files and run the application (runner).
@@ -104,7 +104,7 @@ ARG NODE_ENV=production HOST=0.0.0.0 PORT={{ port_number }}
 ENV NODE_ENV=$NODE_ENV HOST=$HOST PORT=$PORT
 ENV TINI_SUBREAPER=true
 
-WORKDIR /srv/apps/{{ package_id | kebab_case }}
+WORKDIR /srv/apps/{{ package_name | kebab_case }}
 USER nonroot:nonroot
 EXPOSE $PORT
 

@@ -15,7 +15,7 @@
         "@repo/shared-ui": "workspace:*",
         "consola": "^3.4.0",
         "isbot": "^5",
-        "lucide-react": "^0.474.0",
+        "lucide-react": "^0.475.0",
         "pathe": "^2.0.2",
         "react-dom": "^19.0.0",
         "react-router": "^7.1.5",

@@ -28,7 +28,7 @@ RUN curl -fsSL https://moonrepo.dev/install/moon.sh | bash
 # -----------------------------------------------------------------------------
 FROM base AS skeleton
 COPY --link . .
-RUN moon docker scaffold {{ package_id | kebab_case }}
+RUN moon docker scaffold {{ package_name | kebab_case }}
 
 # -----------------------------------------------------------------------------
 # Install dependencies and build the application.
@@ -46,7 +46,7 @@ RUN moon docker setup
 COPY --from=skeleton /srv/.moon/docker/sources .
 
 # Build the application
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run {{ package_id | kebab_case }}:build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run {{ package_name | kebab_case }}:build
 
 # Prune workspace
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
@@ -63,7 +63,7 @@ ARG VITE_API_URL VITE_BASE_URL
 # ----- Read application environment variables --------------------------------
 
 # Copy the build output files from the installer stage.
-COPY --from=builder --chown=nonroot:nonroot /srv/apps/{{ package_id | kebab_case }}/build/client /srv
+COPY --from=builder --chown=nonroot:nonroot /srv/apps/{{ package_name | kebab_case }}/build/client /srv
 
 # Copy the static web server and rename it to httpd.
 COPY --from=httpd /usr/local/bin/static-web-server /usr/bin/httpd

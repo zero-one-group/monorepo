@@ -276,7 +276,9 @@ const ChartLegendContent = React.forwardRef<
             ) : (
               <div
                 className="size-2 shrink-0 rounded-[2px]"
-                style={% raw %}{{ backgroundColor: item.color }}{% endraw %}
+                style={% raw %}{{
+                  backgroundColor: item.color,
+                }}{% endraw %}
               />
             )}
             {itemConfig?.label}

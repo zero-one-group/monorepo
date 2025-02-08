@@ -9,19 +9,13 @@ title: 'Shared UI Components'
 description: 'Shared UI Components for React apps'
 
 # Destination path for the package.
-destination: 'packages/[package_id]'
+destination: 'packages/[package_name]'
 
 # Mapping of variables that will be interpolated and rendered within template files.
 # Users will be prompted to provide a value when running the generator.
 variables:
-  package_id:
-    type: 'string'
-    default: 'shared-ui'
-    prompt: 'Package identifier?'
-    required: true
-
   package_name:
     type: 'string'
     default: 'shared-ui'
-    prompt: 'Package name?'
+    prompt: 'Package name (identifier)?'
     required: true

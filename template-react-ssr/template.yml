@@ -9,21 +9,15 @@ title: 'React Application'
 description: 'React Router application preconfigured with Tailwind CSS'
 
 # Destination path for the package.
-destination: 'apps/[package_id]'
+destination: 'apps/[package_name]'
 
 # Mapping of variables that will be interpolated and rendered within template files.
 # Users will be prompted to provide a value when running the generator.
 variables:
-  package_id:
-    type: 'string'
-    default: 'react-ssr'
-    prompt: 'Package identifier?'
-    required: true
-
   package_name:
     type: 'string'
     default: 'react-ssr'
-    prompt: 'Package name?'
+    prompt: 'Package name (identifier)?'
     required: true
 
   package_description:

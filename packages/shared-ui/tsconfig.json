@@ -20,7 +20,8 @@
         "strict": true,
         "target": "ES2023",
         "tsBuildInfoFile": "node_modules/tsconfig.tsbuildinfo",
-        "verbatimModuleSyntax": true
+        "verbatimModuleSyntax": true,
+        "baseUrl": "."
     },
     "include": ["src", ".storybook"],
     "exclude": ["node_modules", "dist", "storybook-static"]
