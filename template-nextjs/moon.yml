@@ -51,13 +51,16 @@ tasks:
     outputs:
       - '.next/**/*'
     options:
+      runDepsInParallel: false
       envFile: '/.env'
+      cache: false
 
   build:
     command: 'pnpm run build'
     outputs:
       - '.next/**/*'
     options:
+      runDepsInParallel: false
       envFile: '/.env'
       cache: true
 
@@ -67,6 +70,7 @@ tasks:
     command: 'node --no-warnings dist/server.js'
     deps: ['build-standalone']
     options:
+      runDepsInParallel: false
       envFile: '/.env'
       cache: false
 
@@ -81,8 +85,9 @@ tasks:
       - 'dist/**/*'
     deps: ['build']
     options:
-      cache: false
-      shell: true
+      runDepsInParallel: false
+      envFile: '/.env'
+      cache: true
 
   docker-run:
     command: 'docker run --network=host --rm -it --env-file .env --name $IMAGE_NAME $IMAGE_NAME:$APP_VERSION'

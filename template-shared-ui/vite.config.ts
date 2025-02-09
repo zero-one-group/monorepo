@@ -56,21 +56,7 @@ export default defineConfig({
         preserveModulesRoot: 'src',
         banner: "'use client';",
       },
-      external: [
-        ...Object.keys(pkg.peerDependencies || {}),
-        'react-router-dom',
-        'react-router',
-        'date-fns/locale',
-      ],
+      external: [...Object.keys(pkg.peerDependencies || {})],
     },
-  },
-  optimizeDeps: {
-    include: [
-      ...Object.keys(pkg.peerDependencies || {}),
-      ...Object.keys(pkg.dependencies || {}),
-      'react-router-dom',
-      'react-router',
-    ],
-    exclude: ['@repo/shared-ui'],
   },
 })

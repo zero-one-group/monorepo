@@ -51,8 +51,8 @@ tasks:
     outputs:
       - 'build/**/*'
     options:
-      envFile: '/.env'
       runDepsInParallel: false
+      envFile: '/.env'
       cache: false
 
   build:
@@ -60,6 +60,7 @@ tasks:
     deps: ['typegen']
     options:
       runDepsInParallel: false
+      envFile: '/.env'
       cache: true
 
   typecheck:
@@ -67,6 +68,7 @@ tasks:
     deps: ['typegen']
     options:
       runDepsInParallel: false
+      envFile: '/.env'
       cache: true
 
   docker-run:

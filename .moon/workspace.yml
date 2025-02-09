@@ -13,14 +13,19 @@ vcs:
       - 'moon run :lint --affected --status=staged'
 
 hasher:
-  optimization: 'performance'
+  optimization: performance
 
 runner:
   cacheLifetime: '24 hours'
 
 docker:
+  scaffold:
+    include:
+      - '**/.npmrc'
+      - '**/package.json'
   prune:
-    installToolchainDeps: false
+    installToolchainDeps: true
+    deleteVendorDirectories: false
 
 # Require a specific version of moon while running commands, otherwise fail.
 # versionConstraint: '>=1.0.0'
