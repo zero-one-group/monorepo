@@ -1,0 +1,74 @@
+##
+# Configuration file for Static Web Server to serve Single Page Applications.
+# Read more: https://static-web-server.net/configuration/config-file
+##
+
+[general]
+root = "/srv"
+
+#### Error pages
+# page404 = "/srv/404.html"
+# page50x = "/srv/50x.html"
+page-fallback = "/srv/index.html"
+
+#### List of index files
+index-files = "index.html, default.html"
+
+#### Maintenance Mode
+maintenance-mode = false
+maintenance-mode-status = 503
+maintenance-mode-file = "/srv/maintenance.html"
+
+#### Directory listing
+directory-listing = false
+
+#### Directory listing sorting code
+directory-listing-order = 1
+
+#### Directory listing content format
+directory-listing-format = "html"
+
+#### Cache Control
+cache-control-headers = true
+compression = true
+compression-level = "default"
+
+#### CORS & Security headers
+security-headers = true
+cors-allow-origins = "*"
+
+#### HTTP/2 + TLS
+http2 = false
+http2-tls-cert = ""
+http2-tls-key = ""
+https-redirect = false
+https-redirect-host = "localhost"
+https-redirect-from-port = 80
+https-redirect-from-hosts = "localhost"
+
+#### Basic Authentication
+# basic-auth = ""
+
+#### Worker threads
+threads-multiplier = 1
+
+#### Grace period after a graceful shutdown
+grace-period = 0
+
+#### Log request Remote Address if available
+log-remote-address = true
+
+#### Log real IP from X-Forwarded-For header if available
+log-forwarded-for = true
+
+#### IPs to accept the X-Forwarded-For header from. Empty means all
+trusted-proxies = []
+
+#### Redirect to trailing slash in the requested directory uri
+redirect-trailing-slash = true
+
+#### Check for existing pre-compressed files
+compression-static = true
+
+#### Health-check endpoint (GET or HEAD `/health`)
+health = false

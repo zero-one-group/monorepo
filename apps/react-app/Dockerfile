@@ -4,8 +4,8 @@
 ARG PLATFORM=linux/amd64
 ARG NODE_VERSION=20
 
-FROM nginx:1.27-alpine-slim as base_nginx
-RUN apk update && apk add --no-cache tini
+FROM busybox:1.37-glibc as glibc
+FROM joseluisq/static-web-server:2 as httpd
 
 # -----------------------------------------------------------------------------
 # Base image with pnpm package manager.
@@ -51,7 +51,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run react-app:build
 # -----------------------------------------------------------------------------
 # Production image, copy build output files and run the application (runner).
 # -----------------------------------------------------------------------------
-FROM --platform=${PLATFORM} nginx:1.27-alpine-slim as runner
+FROM --platform=${PLATFORM} gcr.io/distroless/base-nossl-debian12 as runner
 
 # ----- Read application environment variables --------------------------------
 
@@ -62,20 +62,30 @@ ARG VITE_API_URL VITE_BASE_URL
 # Copy the build output files from the installer stage.
 COPY --from=builder --chown=nonroot:nonroot /srv/apps/react-app/build/client /srv
 
-# Create the user and group that will run the application.
-RUN addgroup --system --gid 1001 nonroot && adduser --system --uid 1001 nonroot
-COPY --from=skeleton /srv/docker/nginx-static.conf /etc/nginx/nginx.conf
-COPY --from=base_nginx /sbin/tini /sbin/tini
+# Copy the required binaries and configuration file.
+COPY --from=skeleton /srv/docker/sws.toml /etc/sws.toml
+COPY --from=httpd /static-web-server /usr/bin/sws
+COPY --from=base /usr/bin/tini /usr/bin/tini
 
-# Define the host and port to listen on.
-ARG NODE_ENV=production NGINX_HOST=0.0.0.0 NGINX_PORT=3000
-ENV NGINX_HOST=$NGINX_HOST NGINX_PORT=$NGINX_PORT
-ENV NODE_ENV=$NODE_ENV TINI_SUBREAPER=true
+# Copy some necessary system utilities from previous stage (~7MB).
+# To enhance security, consider avoiding the copying of sysutils.
+# COPY --from=glibc /usr/bin/env /usr/bin/env
+# COPY --from=glibc /bin/clear /bin/clear
+# COPY --from=glibc /bin/mkdir /bin/mkdir
+# COPY --from=glibc /bin/which /bin/which
+# COPY --from=glibc /bin/cat /bin/cat
+# COPY --from=glibc /bin/ls /bin/ls
+# COPY --from=glibc /bin/sh /bin/sh
+
+# Define the log level, host and port to listen on.
+ARG SERVER_LOG_LEVEL=info SERVER_HOST=0.0.0.0 SERVER_PORT=3000
+ENV SERVER_CONFIG_FILE=/etc/sws.toml SERVER_LOG_LEVEL=$SERVER_LOG_LEVEL
+ENV SERVER_HOST=$SERVER_HOST SERVER_PORT=$SERVER_PORT TINI_SUBREAPER=true
 STOPSIGNAL SIGQUIT
 
 WORKDIR /srv
 USER nonroot:nonroot
-EXPOSE $NGINX_PORT
+EXPOSE $SERVER_PORT
 
-ENTRYPOINT ["/sbin/tini", "--"]
-CMD ["/usr/sbin/nginx"]
+ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD ["/usr/bin/sws"]

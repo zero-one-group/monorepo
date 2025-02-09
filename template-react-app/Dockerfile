@@ -5,7 +5,7 @@ ARG PLATFORM=linux/amd64
 ARG NODE_VERSION=20
 
 FROM busybox:1.37-glibc as glibc
-FROM joseluisq/static-web-server:2-debian as httpd
+FROM joseluisq/static-web-server:2 as httpd
 
 # -----------------------------------------------------------------------------
 # Base image with pnpm package manager.
@@ -45,14 +45,13 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker setup
 # Copy source files
 COPY --from=skeleton /srv/.moon/docker/sources .
 
-# Build the application and prune the workspace
+# Build the application and prune the workspace (optional).
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run {{ package_name | kebab_case }}:build
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 
 # -----------------------------------------------------------------------------
 # Production image, copy build output files and run the application (runner).
 # -----------------------------------------------------------------------------
-FROM --platform=${PLATFORM} gcr.io/distroless/base-debian12 as runner
+FROM --platform=${PLATFORM} gcr.io/distroless/base-nossl-debian12 as runner
 
 # ----- Read application environment variables --------------------------------
 
@@ -63,24 +62,25 @@ ARG VITE_API_URL VITE_BASE_URL
 # Copy the build output files from the installer stage.
 COPY --from=builder --chown=nonroot:nonroot /srv/apps/{{ package_name | kebab_case }}/build/client /srv
 
-# Copy the static web server and rename it to httpd.
-COPY --from=httpd /usr/local/bin/static-web-server /usr/bin/httpd
+# Copy the required binaries and configuration file.
+COPY --from=skeleton /srv/docker/sws.toml /etc/sws.toml
+COPY --from=httpd /static-web-server /usr/bin/sws
+COPY --from=base /usr/bin/tini /usr/bin/tini
 
 # Copy some necessary system utilities from previous stage (~7MB).
 # To enhance security, consider avoiding the copying of sysutils.
-COPY --from=base /usr/bin/tini /usr/bin/tini
-COPY --from=glibc /usr/bin/env /usr/bin/env
-COPY --from=glibc /bin/clear /bin/clear
-COPY --from=glibc /bin/mkdir /bin/mkdir
-COPY --from=glibc /bin/which /bin/which
-COPY --from=glibc /bin/cat /bin/cat
-COPY --from=glibc /bin/ls /bin/ls
-COPY --from=glibc /bin/sh /bin/sh
+# COPY --from=glibc /usr/bin/env /usr/bin/env
+# COPY --from=glibc /bin/clear /bin/clear
+# COPY --from=glibc /bin/mkdir /bin/mkdir
+# COPY --from=glibc /bin/which /bin/which
+# COPY --from=glibc /bin/cat /bin/cat
+# COPY --from=glibc /bin/ls /bin/ls
+# COPY --from=glibc /bin/sh /bin/sh
 
-# Define the host and port to listen on.
-ARG NODE_ENV=production SERVER_HOST=0.0.0.0 SERVER_PORT={{ port_number }}
-ENV SERVER_HOST=$SERVER_HOST SERVER_PORT=$SERVER_PORT
-ENV NODE_ENV=$NODE_ENV TINI_SUBREAPER=true
+# Define the log level, host and port to listen on.
+ARG SERVER_LOG_LEVEL=info SERVER_HOST=0.0.0.0 SERVER_PORT={{ port_number }}
+ENV SERVER_CONFIG_FILE=/etc/sws.toml SERVER_LOG_LEVEL=$SERVER_LOG_LEVEL
+ENV SERVER_HOST=$SERVER_HOST SERVER_PORT=$SERVER_PORT TINI_SUBREAPER=true
 STOPSIGNAL SIGQUIT
 
 WORKDIR /srv
@@ -88,4 +88,4 @@ USER nonroot:nonroot
 EXPOSE $SERVER_PORT
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["/usr/bin/httpd", "-d", "/srv", "--page-fallback", "/srv/index.html"]
+CMD ["/usr/bin/sws"]
