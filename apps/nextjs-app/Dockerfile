@@ -42,8 +42,9 @@ COPY --from=skeleton /srv/.moon/docker/workspace .
 # Install toolchain and dependencies
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker setup
 
-# Copy source files
+# Copy source files and npmrc
 COPY --from=skeleton /srv/.moon/docker/sources .
+COPY --from=skeleton /srv/.npmrc .
 
 # Build the application and prune the workspace
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run nextjs-app:build
@@ -63,9 +64,8 @@ COPY --from=builder /srv/apps/nextjs-app/public /srv/public
 RUN chmod -R 0775 /srv/public && chmod +x /srv/server.js
 
 # Cleanup uncessary files and install production dependencies
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm prune --prod \
-    --ignore-scripts && pnpm dlx clean-modules clean --yes \
-    "!**/sharp/**" "**/codecov*"
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm dlx clean-modules \
+    clean --yes "!**/sharp/**" "**/codecov*" "!**/@repo/**"
 
 # -----------------------------------------------------------------------------
 # Production image, copy build output files and run the application (runner).
