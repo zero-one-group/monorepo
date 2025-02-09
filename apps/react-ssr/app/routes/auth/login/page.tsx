@@ -1,7 +1,7 @@
 import * as Lucide from 'lucide-react'
 import { Link } from '#/components/link'
 import type { Route } from './+types/page'
-import { LoginForm } from './login-form'
+import { LoginForm } from './form'
 
 export function meta(_props: Route.MetaArgs) {
   return [{ title: 'Sign in | React Router App' }]

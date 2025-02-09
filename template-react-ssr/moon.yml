@@ -52,17 +52,21 @@ tasks:
       - 'build/**/*'
     options:
       envFile: '/.env'
+      runDepsInParallel: false
+      cache: false
 
   build:
     command: 'pnpm run build'
     deps: ['typegen']
     options:
+      runDepsInParallel: false
       cache: true
 
   typecheck:
     command: 'pnpm run typecheck'
     deps: ['typegen']
     options:
+      runDepsInParallel: false
       cache: true
 
   docker-run:

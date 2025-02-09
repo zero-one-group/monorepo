@@ -23,6 +23,7 @@
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
+        "@repo/shared-ui": "workspace:*",
         "consola": "^3.4.0",
         "lucide-react": "^0.475.0",
         "next": "15.1.6",

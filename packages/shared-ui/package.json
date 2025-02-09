@@ -30,9 +30,8 @@
         }
     },
     "scripts": {
-        "dev": "vite",
-        "build:vite": "vite build",
-        "build": "pnpm run --color \"/build:vite/\"",
+        "dev": "vite build --watch",
+        "build": "NODE_ENV=production vite build",
         "storybook": "VITE_CJS_IGNORE_WARNING=true storybook dev -p 6006 --no-open",
         "storybook-build": "VITE_CJS_IGNORE_WARNING=true storybook build -o storybook-static",
         "cleanup": "pnpm dlx rimraf dist node_modules pnpm-lock.yaml storybook-static",

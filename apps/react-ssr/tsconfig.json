@@ -29,5 +29,10 @@
         ".react-router/types/**/*",
         "tests/**/*"
     ],
-    "exclude": ["tests-results"]
+    "exclude": ["tests-results"],
+    "references": [
+        {
+            "path": "../../packages/shared-ui"
+        }
+    ]
 }

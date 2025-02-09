@@ -5,6 +5,7 @@ import { isDevelopment } from 'std-env'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import pkg from './package.json' assert { type: 'json' }
 
 export default defineConfig({
   plugins: [
@@ -38,7 +39,11 @@ export default defineConfig({
     },
     outDir: resolve('dist'),
     rollupOptions: {
-      external: ['react', 'react/jsx-runtime', 'react-dom'],
+      watch: {
+        include: ['src/**'],
+        exclude: ['src/**/*.stories.@(ts|tsx)'],
+      },
+      treeshake: true,
       output: {
         format: 'es',
         exports: 'named',
@@ -49,11 +54,23 @@ export default defineConfig({
         preserveModules: false, // To enable tree-shaking set to `true`
         reexportProtoFromExternal: false,
         preserveModulesRoot: 'src',
+        banner: "'use client';",
       },
+      external: [
+        ...Object.keys(pkg.peerDependencies || {}),
+        'react-router-dom',
+        'react-router',
+        'date-fns/locale',
+      ],
     },
   },
   optimizeDeps: {
-    include: ['react', 'react-dom'],
+    include: [
+      ...Object.keys(pkg.peerDependencies || {}),
+      ...Object.keys(pkg.dependencies || {}),
+      'react-router-dom',
+      'react-router',
+    ],
     exclude: ['@repo/shared-ui'],
   },
 })

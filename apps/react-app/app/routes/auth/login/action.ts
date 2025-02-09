@@ -1,3 +1,5 @@
+import consola from 'consola'
+
 export interface LoginState {
   error?: string
   success?: boolean
@@ -18,7 +20,7 @@ export const loginAction = async (
 
   if (!email || !password) {
     const errorState = { error: 'Email and password are required!' }
-    console.error('Login Error:', errorState)
+    consola.error('Login Error:', errorState)
     return errorState
   }
 
@@ -29,6 +31,6 @@ export const loginAction = async (
       timestamp: new Date().toISOString(),
     },
   }
-  console.info('Login Success:', successState)
+  consola.info('Login Success:', successState)
   return successState
 }

@@ -50,12 +50,14 @@ tasks:
     outputs:
       - 'build/**/*'
     options:
+      runDepsInParallel: false
       envFile: '/.env'
 
   build:
     command: 'pnpm run build'
     deps: ['shared-ui:build', 'typegen']
     options:
+      runDepsInParallel: false
       cache: true
 
   typecheck:

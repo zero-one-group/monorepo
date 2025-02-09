@@ -22,9 +22,8 @@ env:
   APP_VERSION: '$(jq -r .version <$workspaceRoot''/package.json'')'
   IMAGE_NAME: '$APP_PREFIX-$project'
 
-# Uncomment to use shared UI library
-# dependsOn:
-#   - 'shared-ui'
+dependsOn:
+  - 'shared-ui'
 
 # File groups defined in .moon/tasks.yml will be inherited by all projects.
 # @see: https://moonrepo.dev/docs/config/project#filegroups

@@ -1,3 +1,4 @@
+import { Button } from '@repo/shared-ui/components'
 import { useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { Link } from '#/components/link'
@@ -7,13 +8,9 @@ function SubmitButton() {
   const { pending } = useFormStatus()
 
   return (
-    <button
-      type="submit"
-      className="group relative flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 font-medium text-sm text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-70"
-      disabled={pending}
-    >
+    <Button type="submit" variant="primary" className="w-full" disabled={pending}>
       {pending ? 'Signing in...' : 'Sign in'}
-    </button>
+    </Button>
   )
 }
 
