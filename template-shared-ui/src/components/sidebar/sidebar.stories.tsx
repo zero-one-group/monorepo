@@ -53,6 +53,7 @@ const meta: Meta = {
   decorators: [
     (Story) => (
       <LayoutWrapper>
+        {/* @ts-ignore */}
         <Story />
       </LayoutWrapper>
     ),

@@ -9,6 +9,7 @@ const meta: Meta = {
   decorators: [
     (Story) => (
       <TooltipProvider>
+        {/* @ts-ignore */}
         <Story />
       </TooltipProvider>
     ),
