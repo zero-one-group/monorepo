@@ -44,9 +44,11 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker setup
 
 # Copy source files
 COPY --from=skeleton /srv/.moon/docker/sources .
+COPY --from=skeleton /srv/.npmrc .
 
 # Build the application and prune the workspace (optional).
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run nextjs-app:build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 
 # -----------------------------------------------------------------------------
 # Cleanup the builder stage and create data directory.
@@ -54,8 +56,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run nextjs-app:build
 FROM base AS pruner
 
 # Copy only necessary files from builder stage
-COPY --from=builder /srv/apps/nextjs-app/.next/standalone/node_modules /srv/node_modules
-COPY --from=builder /srv/apps/nextjs-app/.next/standalone/apps/nextjs-app /srv
+COPY --from=builder /srv/apps/nextjs-app/.next/standalone/apps/nextjs-app ./
 COPY --from=builder /srv/apps/nextjs-app/.next/static /srv/.next/static
 COPY --from=builder /srv/apps/nextjs-app/public /srv/public
 
@@ -64,7 +65,7 @@ RUN chmod -R 0775 /srv/public && chmod +x /srv/server.js
 
 # Cleanup uncessary files and install production dependencies
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm dlx clean-modules \
-    clean --yes "!**/sharp/**" "**/codecov*" "!**/@repo/**"
+    clean --yes "!**/next/**" "!**/sharp/**" "**/codecov*" "!**/@repo/**"
 
 # -----------------------------------------------------------------------------
 # Production image, copy build output files and run the application (runner).

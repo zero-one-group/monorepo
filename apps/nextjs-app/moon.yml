@@ -54,7 +54,7 @@ tasks:
     options:
       runDepsInParallel: false
       envFile: '/.env'
-      cache: false
+      cache: true
 
   build-standalone:
     command: >

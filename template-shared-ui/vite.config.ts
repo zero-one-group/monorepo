@@ -1,11 +1,14 @@
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'pathe'
-import { isDevelopment } from 'std-env'
+import { env, isDevelopment } from 'std-env'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import pkg from './package.json' assert { type: 'json' }
+
+// Check if the current environment is CI or test environment
+const isTestOrStorybook = env.VITEST || process.argv[1]?.includes('storybook')
 
 export default defineConfig({
   plugins: [
@@ -13,7 +16,7 @@ export default defineConfig({
     tailwindcss(),
     tsconfigPaths(),
     /* Generate declarations for TypeScript */
-    dts({
+    !isTestOrStorybook && dts({
       include: ['src'],
       rollupTypes: true,
       exclude: ['**/*.stories.@(ts|tsx)'],

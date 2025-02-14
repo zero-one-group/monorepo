@@ -12,7 +12,8 @@
             "template-nextjs",
             "template-strapi",
             "CONTRIBUTING.md",
-            "README.md"
+            "README.md",
+            "TASKS.md"
         ]
     }
 ]
