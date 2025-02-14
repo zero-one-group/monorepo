@@ -1,33 +1,6 @@
 # yaml-language-server: $schema=https://moonrepo.dev/schemas/tasks.json
 $schema: 'https://moonrepo.dev/schemas/tasks.json'
 
-# Global file groups, this will be inherited by all projects.
-# @see: https://moonrepo.dev/docs/config/project#filegroups
-fileGroups:
-  js-configs:
-    - '*.config.{js,cjs,mjs,ts}'
-    - '*.json'
-  js-sources:
-    - 'src/**/*'
-    - 'types/**/*'
-  tests:
-    - 'tests/**/*'
-    - '**/__tests__/**/*'
-  assets:
-    - 'assets/**/*'
-    - 'images/**/*'
-    - 'static/**/*'
-    - 'public/**/*'
-    - '**/*.{scss,css}'
-  nextjs:
-    - 'app/**/*'
-    - 'pages/**/*'
-    - 'public/**/*'
-    - 'src/**/*'
-    - 'next-env.d.ts'
-    - 'next.config.*'
-  sources: []
-
 taskOptions:
   runDepsInParallel: false
 
