@@ -32,26 +32,27 @@ env:
 tasks:
   dev:
     command: 'pnpm run dev'
-    deps: ['typegen']
+    deps: ['prebuild']
     options:
       runDepsInParallel: false
       envFile: '/.env'
-      cache: false
 
   build:
     command: 'pnpm run build'
-    deps: ['typegen']
+    deps: ['prebuild']
     options:
       runDepsInParallel: false
-      envFile: '/.env'
       cache: true
 
   typecheck:
     command: 'pnpm run typecheck'
+    deps: ['prebuild']
+    options:
+      cache: true
+
+  prebuild:
     deps: ['typegen']
     options:
-      runDepsInParallel: false
-      envFile: '/.env'
       cache: true
 
   docker-run:

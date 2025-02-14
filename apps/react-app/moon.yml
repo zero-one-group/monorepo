@@ -31,20 +31,25 @@ dependsOn:
 tasks:
   dev:
     command: 'pnpm run dev'
-    deps: ['shared-ui:build', 'typegen']
+    deps: ['prebuild']
     options:
       runDepsInParallel: false
       envFile: '/.env'
 
   build:
     command: 'pnpm run build'
-    deps: ['shared-ui:build', 'typegen']
+    deps: ['prebuild']
     options:
       runDepsInParallel: false
       cache: true
 
   typecheck:
     command: 'pnpm run typecheck'
+    deps: ['prebuild']
+    options:
+      cache: true
+
+  prebuild:
     deps: ['shared-ui:build', 'typegen']
     options:
       cache: true
