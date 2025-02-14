@@ -45,9 +45,8 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker setup
 # Copy source files
 COPY --from=skeleton /srv/.moon/docker/sources .
 
-# Build the application and prune the workspace
+# Build the application and prune the workspace (optional).
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run {{ package_name | kebab_case }}:build
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 
 # -----------------------------------------------------------------------------
 # Cleanup the builder stage and create data directory.
@@ -55,7 +54,8 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 FROM base AS pruner
 
 # Copy only necessary files from builder stage
-COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/.next/standalone/apps/{{ package_name | kebab_case }} ./
+COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/.next/standalone/node_modules /srv/node_modules
+COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/.next/standalone/apps/{{ package_name | kebab_case }} /srv
 COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/.next/static /srv/.next/static
 COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/public /srv/public
 
@@ -63,9 +63,8 @@ COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/public /srv/public
 RUN chmod -R 0775 /srv/public && chmod +x /srv/server.js
 
 # Cleanup uncessary files and install production dependencies
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm prune --prod \
-    --ignore-scripts && pnpm dlx clean-modules clean --yes \
-    "!**/sharp/**" "**/codecov*"
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm dlx clean-modules \
+    clean --yes "!**/sharp/**" "**/codecov*" "!**/@repo/**"
 
 # -----------------------------------------------------------------------------
 # Production image, copy build output files and run the application (runner).
