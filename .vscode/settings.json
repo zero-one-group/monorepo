@@ -15,16 +15,34 @@
     },
     "tailwindCSS.experimental.classRegex": [
         // @ref: https://github.com/paolotiu/tailwind-intellisense-regex-list
-        ["(?:twMerge|twJoin)\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"],
-        ["classList={{([^;]*)}}", "\\s*?[\"'`]([^\"'`]*).*?:"],
-        ["clsx\\(.*?\\)(?!\\])", "(?:'|\"|`)([^\"'`]*)(?:'|\"|`)"],
-        ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
-        ["tv\\(([^)]*)\\)", "{?\\s?[\\w].*:\\s*?[\"'`]([^\"'`]*).*?,?\\s?}?"],
+        [
+            "(?:twMerge|twJoin)\\(([^;]*)[\\);]",
+            "[`'\"`]([^'\"`;]*)[`'\"`]"
+        ],
+        [
+            "classList={{([^;]*)}}",
+            "\\s*?[\"'`]([^\"'`]*).*?:"
+        ],
+        [
+            "clsx\\(.*?\\)(?!\\])",
+            "(?:'|\"|`)([^\"'`]*)(?:'|\"|`)"
+        ],
+        [
+            "cva\\(([^)]*)\\)",
+            "[\"'`]([^\"'`]*).*?[\"'`]"
+        ],
+        [
+            "tv\\(([^)]*)\\)",
+            "{?\\s?[\\w].*:\\s*?[\"'`]([^\"'`]*).*?,?\\s?}?"
+        ],
         "clx\\(([^)]*)\\)", // clx(xxx)
         "cn\\(([^)]*)\\)", // cn(xxx)
         "cx\\(([^)]*)\\)" // cx(xxx)
     ],
-    "tailwindCSS.files.exclude": ["**/.github/**", "**/*.{md,js,ts,json}"],
+    "tailwindCSS.files.exclude": [
+        "**/.github/**",
+        "**/*.{md,js,ts,json}"
+    ],
     "[css]": {
         "editor.defaultFormatter": "biomejs.biome"
     },
@@ -37,5 +55,8 @@
     },
     "[markdown]": {
         "editor.defaultFormatter": "darkriszty.markdown-table-prettify"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
     }
 }

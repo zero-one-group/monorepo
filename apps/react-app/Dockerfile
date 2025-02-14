@@ -47,6 +47,7 @@ COPY --from=skeleton /srv/.moon/docker/sources .
 
 # Build the application and prune the workspace (optional).
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run react-app:build
+# RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 
 # -----------------------------------------------------------------------------
 # Production image, copy build output files and run the application (runner).
