@@ -47,6 +47,7 @@ COPY --from=skeleton /srv/.moon/docker/sources .
 COPY --from=skeleton /srv/.npmrc .
 
 # Build the application and prune the workspace (optional).
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm approve-builds
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run nextjs-app:build
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 
@@ -56,16 +57,20 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 FROM base AS pruner
 
 # Copy only necessary files from builder stage
-COPY --from=builder /srv/apps/nextjs-app/.next/standalone/apps/nextjs-app ./
-COPY --from=builder /srv/apps/nextjs-app/.next/static /srv/.next/static
-COPY --from=builder /srv/apps/nextjs-app/public /srv/public
+COPY --from=builder /srv/apps/nextjs-app/.next/standalone /srv
+COPY --from=builder /srv/apps/nextjs-app/.next/static /srv/apps/nextjs-app/.next/static
+COPY --from=builder /srv/apps/nextjs-app/public /srv/apps/nextjs-app/public
+
+# Copy Next.js configuration files.
+COPY --from=skeleton /srv/apps/nextjs-app/next.config.mjs /srv/apps/nextjs-app/next.config.mjs
 
 # Set permissions for the public directory and the server.js file.
-RUN chmod -R 0775 /srv/public && chmod +x /srv/server.js
+RUN chmod -R 0775 /srv/apps/nextjs-app/public && chmod +x /srv/apps/nextjs-app/server.js
 
 # Cleanup uncessary files and install production dependencies
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm dlx clean-modules \
-    clean --yes "!**/next/**" "!**/sharp/**" "**/codecov*" "!**/@repo/**"
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm dlx \
+    clean-modules clean --directory "apps/node_modules" --yes \
+    "!**/next/**" "!**/sharp/**" "**/codecov*" "!**/@repo/**"
 
 # -----------------------------------------------------------------------------
 # Production image, copy build output files and run the application (runner).
@@ -97,7 +102,7 @@ ARG NODE_ENV=production HOSTNAME=0.0.0.0 PORT=3002
 ENV NODE_ENV=$NODE_ENV HOSTNAME=$HOSTNAME PORT=$PORT
 ENV TINI_SUBREAPER=true NEXT_TELEMETRY_DISABLED=1
 
-WORKDIR /srv
+WORKDIR /srv/apps/nextjs-app
 USER nonroot:nonroot
 EXPOSE $PORT
 

@@ -44,9 +44,12 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker setup
 
 # Copy source files
 COPY --from=skeleton /srv/.moon/docker/sources .
+COPY --from=skeleton /srv/.npmrc .
 
 # Build the application and prune the workspace (optional).
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm approve-builds
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run {{ package_name | kebab_case }}:build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 
 # -----------------------------------------------------------------------------
 # Cleanup the builder stage and create data directory.
@@ -54,17 +57,20 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run {{ package_name | keb
 FROM base AS pruner
 
 # Copy only necessary files from builder stage
-COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/.next/standalone/node_modules /srv/node_modules
-COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/.next/standalone/apps/{{ package_name | kebab_case }} /srv
-COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/.next/static /srv/.next/static
-COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/public /srv/public
+COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/.next/standalone /srv
+COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/.next/static /srv/apps/{{ package_name | kebab_case }}/.next/static
+COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/public /srv/apps/{{ package_name | kebab_case }}/public
+
+# Copy Next.js configuration files.
+COPY --from=skeleton /srv/apps/{{ package_name | kebab_case }}/next.config.mjs /srv/apps/{{ package_name | kebab_case }}/next.config.mjs
 
 # Set permissions for the public directory and the server.js file.
-RUN chmod -R 0775 /srv/public && chmod +x /srv/server.js
+RUN chmod -R 0775 /srv/apps/{{ package_name | kebab_case }}/public && chmod +x /srv/apps/{{ package_name | kebab_case }}/server.js
 
 # Cleanup uncessary files and install production dependencies
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm dlx clean-modules \
-    clean --yes "!**/sharp/**" "**/codecov*" "!**/@repo/**"
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm dlx \
+    clean-modules clean --directory "apps/node_modules" --yes \
+    "!**/next/**" "!**/sharp/**" "**/codecov*" "!**/@repo/**"
 
 # -----------------------------------------------------------------------------
 # Production image, copy build output files and run the application (runner).
@@ -96,7 +102,7 @@ ARG NODE_ENV=production HOSTNAME=0.0.0.0 PORT={{ port_number }}
 ENV NODE_ENV=$NODE_ENV HOSTNAME=$HOSTNAME PORT=$PORT
 ENV TINI_SUBREAPER=true NEXT_TELEMETRY_DISABLED=1
 
-WORKDIR /srv
+WORKDIR /srv/apps/{{ package_name | kebab_case }}
 USER nonroot:nonroot
 EXPOSE $PORT
 

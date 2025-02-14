@@ -45,6 +45,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker setup
 COPY --from=skeleton /srv/.moon/docker/sources .
 
 # Build the application and prune the workspace (optional).
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm approve-builds
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run react-ssr:build
 
 # -----------------------------------------------------------------------------
