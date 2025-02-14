@@ -46,7 +46,6 @@ COPY --from=skeleton /srv/.moon/docker/sources .
 
 # Build the application and prune the workspace (optional).
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run react-ssr:build
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 
 # -----------------------------------------------------------------------------
 # Cleanup the builder stage and create data directory.
@@ -59,43 +58,43 @@ COPY --from=builder /srv/apps/react-ssr/package.json /srv/package.json
 COPY --from=builder /srv/apps/react-ssr/server.mjs /srv/server.mjs
 COPY --from=builder /srv/apps/react-ssr/build /srv/build
 
-# # Cleanup uncessary files and set executable permissions for the server.
-# RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm dlx clean-modules \
-#     clean --yes "**/codecov*" "!**/@repo/**" && chmod +x /srv/server.mjs
+# Cleanup uncessary files and set executable permissions for the server.
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm dlx clean-modules \
+    clean --yes "**/codecov*" "!**/@repo/**" && chmod +x /srv/server.mjs
 
-# # -----------------------------------------------------------------------------
-# # Production image, copy build output files and run the application (runner).
-# # -----------------------------------------------------------------------------
-# FROM --platform=${PLATFORM} gcr.io/distroless/nodejs${NODE_VERSION}-debian12
+# -----------------------------------------------------------------------------
+# Production image, copy build output files and run the application (runner).
+# -----------------------------------------------------------------------------
+FROM --platform=${PLATFORM} gcr.io/distroless/nodejs${NODE_VERSION}-debian12
 
-# # ----- Read application environment variables --------------------------------
+# ----- Read application environment variables --------------------------------
 
-# ARG VITE_API_URL VITE_BASE_URL
+ARG VITE_API_URL VITE_BASE_URL
 
-# # ----- Read application environment variables --------------------------------
+# ----- Read application environment variables --------------------------------
 
-# # Copy the build output files from the installer stage.
-# COPY --from=pruner --chown=nonroot:nonroot /srv /srv
+# Copy the build output files from the installer stage.
+COPY --from=pruner --chown=nonroot:nonroot /srv /srv
 
-# # Copy some necessary system utilities from previous stage (~7MB).
-# # To enhance security, consider avoiding the copying of sysutils.
-# COPY --from=base /usr/bin/tini /usr/bin/tini
-# COPY --from=glibc /usr/bin/env /usr/bin/env
-# COPY --from=glibc /bin/clear /bin/clear
-# COPY --from=glibc /bin/mkdir /bin/mkdir
-# COPY --from=glibc /bin/which /bin/which
-# COPY --from=glibc /bin/cat /bin/cat
-# COPY --from=glibc /bin/ls /bin/ls
-# COPY --from=glibc /bin/sh /bin/sh
+# Copy some necessary system utilities from previous stage (~7MB).
+# To enhance security, consider avoiding the copying of sysutils.
+COPY --from=base /usr/bin/tini /usr/bin/tini
+COPY --from=glibc /usr/bin/env /usr/bin/env
+COPY --from=glibc /bin/clear /bin/clear
+COPY --from=glibc /bin/mkdir /bin/mkdir
+COPY --from=glibc /bin/which /bin/which
+COPY --from=glibc /bin/cat /bin/cat
+COPY --from=glibc /bin/ls /bin/ls
+COPY --from=glibc /bin/sh /bin/sh
 
-# # Define the host and port to listen on.
-# ARG NODE_ENV=production HOST=0.0.0.0 PORT=3001
-# ENV NODE_ENV=$NODE_ENV HOST=$HOST PORT=$PORT
-# ENV TINI_SUBREAPER=true
+# Define the host and port to listen on.
+ARG NODE_ENV=production HOST=0.0.0.0 PORT=3001
+ENV NODE_ENV=$NODE_ENV HOST=$HOST PORT=$PORT
+ENV TINI_SUBREAPER=true
 
-# WORKDIR /srv
-# USER nonroot:nonroot
-# EXPOSE $PORT
+WORKDIR /srv
+USER nonroot:nonroot
+EXPOSE $PORT
 
-# ENTRYPOINT ["/usr/bin/tini", "--"]
-# CMD ["/nodejs/bin/node", "server.mjs"]
+ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD ["/nodejs/bin/node", "server.mjs"]

@@ -27,7 +27,8 @@
         "**/.server/**/*",
         "**/.client/**/*",
         ".react-router/types/**/*",
-        "tests/**/*"
+        "tests/**/*",
+        "tests-e2e/**/*"
     ],
     "exclude": ["tests-results"]
 }

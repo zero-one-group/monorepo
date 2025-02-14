@@ -2,9 +2,7 @@
     "name": "@repo/shared-ui",
     "private": true,
     "type": "module",
-    "files": [
-        "dist"
-    ],
+    "files": ["dist"],
     "exports": {
         "./components": {
             "types": "./dist/components.d.ts",
@@ -25,18 +23,10 @@
     },
     "typesVersions": {
         "*": {
-            "components": [
-                "./dist/components.d.ts"
-            ],
-            "hooks": [
-                "./dist/hooks.d.ts"
-            ],
-            "theme": [
-                "./dist/theme.d.ts"
-            ],
-            "utils": [
-                "./dist/utils.d.ts"
-            ]
+            "components": ["./dist/components.d.ts"],
+            "hooks": ["./dist/hooks.d.ts"],
+            "theme": ["./dist/theme.d.ts"],
+            "utils": ["./dist/utils.d.ts"]
         }
     },
     "scripts": {

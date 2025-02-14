@@ -2,9 +2,7 @@
     "name": "@repo/shared-ui",
     "private": true,
     "type": "module",
-    "files": [
-        "dist"
-    ],
+    "files": ["dist"],
     "exports": {
         "./components": {
             "types": "./dist/components.d.ts",
@@ -25,18 +23,10 @@
     },
     "typesVersions": {
         "*": {
-            "components": [
-                "./dist/components.d.ts"
-            ],
-            "hooks": [
-                "./dist/hooks.d.ts"
-            ],
-            "theme": [
-                "./dist/theme.d.ts"
-            ],
-            "utils": [
-                "./dist/utils.d.ts"
-            ]
+            "components": ["./dist/components.d.ts"],
+            "hooks": ["./dist/hooks.d.ts"],
+            "theme": ["./dist/theme.d.ts"],
+            "utils": ["./dist/utils.d.ts"]
         }
     },
     "scripts": {
@@ -52,7 +42,7 @@
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
-        "@hookform/resolvers": "^3.10.0",
+        "@hookform/resolvers": "^4.0.0",
         "@nanostores/persistent": "^0.10.2",
         "@nanostores/react": "^0.8.4",
         "@radix-ui/react-accordion": "^1.2.3",
@@ -97,35 +87,35 @@
         "sonner": "^1.7.4",
         "tailwind-merge": "^3.0.1",
         "vaul": "^1.1.2",
-        "zod": "^3.24.1"
+        "zod": "^3.24.2"
     },
     "devDependencies": {
         "@biomejs/biome": "^1.9.4",
-        "@storybook/addon-a11y": "^8.5.3",
-        "@storybook/addon-essentials": "^8.5.3",
-        "@storybook/addon-links": "^8.5.3",
-        "@storybook/addon-themes": "^8.5.3",
-        "@storybook/blocks": "^8.5.3",
-        "@storybook/core-events": "^8.5.3",
-        "@storybook/manager-api": "^8.5.3",
-        "@storybook/react-vite": "^8.5.3",
-        "@storybook/react": "^8.5.3",
-        "@storybook/test": "^8.5.3",
-        "@storybook/theming": "^8.5.3",
-        "@tailwindcss/vite": "^4.0.4",
-        "@types/node": "^22.13.1",
+        "@storybook/addon-a11y": "^8.5.5",
+        "@storybook/addon-essentials": "^8.5.5",
+        "@storybook/addon-links": "^8.5.5",
+        "@storybook/addon-themes": "^8.5.5",
+        "@storybook/blocks": "^8.5.5",
+        "@storybook/core-events": "^8.5.5",
+        "@storybook/manager-api": "^8.5.5",
+        "@storybook/react-vite": "^8.5.5",
+        "@storybook/react": "^8.5.5",
+        "@storybook/test": "^8.5.5",
+        "@storybook/theming": "^8.5.5",
+        "@tailwindcss/vite": "^4.0.6",
+        "@types/node": "^22.13.4",
         "@types/react-dom": "^19.0.3",
         "@types/react": "^19.0.8",
         "@vitejs/plugin-react": "^4.3.4",
         "consola": "^3.4.0",
-        "pathe": "^2.0.2",
+        "pathe": "^2.0.3",
         "react-dom": "^19.0.0",
         "react": "^19.0.0",
         "std-env": "^3.8.0",
-        "storybook": "^8.5.3",
+        "storybook": "^8.5.5",
         "tailwind-variants": "^0.3.1",
-        "tailwindcss-motion": "^1.0.1",
-        "tailwindcss": "^4.0.4",
+        "tailwindcss-motion": "^1.1.0",
+        "tailwindcss": "^4.0.6",
         "typescript": "5.7.2",
         "vite": "^6.1.0",
         "vite-plugin-dts": "^4.5.0",

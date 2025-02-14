@@ -34,11 +34,6 @@
     },
     "packageManager": "pnpm@10.2.0",
     "pnpm": {
-        "onlyBuiltDependencies": [
-            "@swc/core",
-            "better-sqlite3",
-            "esbuild",
-            "sharp"
-        ]
+        "onlyBuiltDependencies": ["@swc/core", "better-sqlite3", "esbuild", "sharp"]
     }
 }

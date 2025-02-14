@@ -5,14 +5,6 @@ import { Toaster, toast } from './toast'
 const meta: Meta = {
   title: 'Basic Components/Toast',
   component: Toaster,
-  decorators: [
-    (Story) => (
-      <>
-        <Story />
-        <Toaster />
-      </>
-    ),
-  ],
 }
 
 export default meta

@@ -8,6 +8,7 @@
     "search.exclude": {
         "**/.husky": true,
         "**/.output": true,
+        "**/.next": true,
         "**/build": true,
         "**/dist": true,
         "**/templates": true,
@@ -15,34 +16,16 @@
     },
     "tailwindCSS.experimental.classRegex": [
         // @ref: https://github.com/paolotiu/tailwind-intellisense-regex-list
-        [
-            "(?:twMerge|twJoin)\\(([^;]*)[\\);]",
-            "[`'\"`]([^'\"`;]*)[`'\"`]"
-        ],
-        [
-            "classList={{([^;]*)}}",
-            "\\s*?[\"'`]([^\"'`]*).*?:"
-        ],
-        [
-            "clsx\\(.*?\\)(?!\\])",
-            "(?:'|\"|`)([^\"'`]*)(?:'|\"|`)"
-        ],
-        [
-            "cva\\(([^)]*)\\)",
-            "[\"'`]([^\"'`]*).*?[\"'`]"
-        ],
-        [
-            "tv\\(([^)]*)\\)",
-            "{?\\s?[\\w].*:\\s*?[\"'`]([^\"'`]*).*?,?\\s?}?"
-        ],
+        ["(?:twMerge|twJoin)\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"],
+        ["classList={{([^;]*)}}", "\\s*?[\"'`]([^\"'`]*).*?:"],
+        ["clsx\\(.*?\\)(?!\\])", "(?:'|\"|`)([^\"'`]*)(?:'|\"|`)"],
+        ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+        ["tv\\(([^)]*)\\)", "{?\\s?[\\w].*:\\s*?[\"'`]([^\"'`]*).*?,?\\s?}?"],
         "clx\\(([^)]*)\\)", // clx(xxx)
         "cn\\(([^)]*)\\)", // cn(xxx)
         "cx\\(([^)]*)\\)" // cx(xxx)
     ],
-    "tailwindCSS.files.exclude": [
-        "**/.github/**",
-        "**/*.{md,js,ts,json}"
-    ],
+    "tailwindCSS.files.exclude": ["**/.github/**", "**/*.{md,js,ts,json}"],
     "[css]": {
         "editor.defaultFormatter": "biomejs.biome"
     },
