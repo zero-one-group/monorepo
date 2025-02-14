@@ -1,0 +1,25 @@
+{
+    "name": "astro-web",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "astro dev",
+        "build": "astro build",
+        "preview": "astro preview",
+        "start": "pnpm dlx serve dist -l 4321 -n -C",
+        "cleanup": "pnpm dlx rimraf node_modules dist .astro",
+        "lint": "biome lint . --write",
+        "check": "biome check . --write",
+        "astro": "astro"
+    },
+    "dependencies": {
+        "astro": "^5.3.0",
+        "lucide-astro": "^0.473.0"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "^1.9.4",
+        "@tailwindcss/vite": "^4.0.6",
+        "tailwindcss-motion": "^1.1.0",
+        "tailwindcss": "^4.0.6"
+    }
+}

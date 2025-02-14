@@ -11,6 +11,7 @@
             "template-shared-ui",
             "template-nextjs",
             "template-strapi",
+            "template-astro",
             "pnpm-lock.yaml",
             "CONTRIBUTING.md",
             "README.md",

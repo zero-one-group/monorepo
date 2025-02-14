@@ -54,6 +54,7 @@ _data/
 build/
 dist/
 dist-ssr/
+.astro/
 .data
 .dist
 .cache
