@@ -45,9 +45,9 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker setup
 # Copy source files
 COPY --from=skeleton /srv/.moon/docker/sources .
 
-# Build the application and prune the workspace
+# Build the application and prune the workspace (optional).
 # RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run strapi-cms:build
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
+# RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 
 # -----------------------------------------------------------------------------
 # Rebuild Strapi CMS with production dependencies.
@@ -56,7 +56,6 @@ FROM base AS installer
 
 # Only copy the require files for Strapi from builder stage
 COPY --from=builder /srv/apps/strapi-cms /srv
-COPY --from=builder /srv/.npmrc /srv/.npmrc
 
 # Fix sharp dependencies then build the Strapi application.
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --ignore-scripts
@@ -72,7 +71,9 @@ FROM base AS pruner
 COPY --from=installer /srv/package.json /srv/package.json
 COPY --from=installer /srv/pnpm-lock.yaml /srv/pnpm-lock.yaml
 COPY --from=installer /srv/node_modules /srv/node_modules
+COPY --from=installer /srv/favicon.png /srv/favicon.png
 COPY --from=installer /srv/server.cjs /srv/server.cjs
+COPY --from=installer /srv/public /srv/public
 COPY --from=installer /srv/dist /srv/dist
 
 # Copy migrations and the generated files from Strapi plugins
@@ -81,8 +82,8 @@ COPY --from=installer /srv/database /srv/database
 
 # Cleanup uncessary files and install production dependencies
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod \
-    --frozen-lockfile --ignore-scripts && pnpm prune --prod \
-    --ignore-scripts && pnpm dlx clean-modules clean --yes \
+    --frozen-lockfile --ignore-scripts && pnpm approve-builds && pnpm \
+    prune --prod --ignore-scripts && pnpm dlx clean-modules clean --yes \
     "!**/sharp/**" "!**/better-sqlite3/**" "**/codecov*"
 
 # Set permissions for server.cjs and uploads directories
