@@ -54,7 +54,7 @@ COPY --from=skeleton /srv/.moon/docker/sources .
 # -----------------------------------------------------------------------------
 FROM base AS installer
 
-# Only copy the require files for Strapi from builder stage
+# Only copy the require files from builder stage
 COPY --from=builder /srv/apps/strapi-cms /srv
 
 # Fix sharp dependencies then build the Strapi application.

@@ -11,7 +11,7 @@ const isTestOrStorybook = env.VITEST || process.argv[1]?.includes('storybook')
 export default defineConfig(({ isSsrBuild }) => ({
   envPrefix: 'VITE_' /* Prefix for environment variables */,
   plugins: [tailwindcss(), !isTestOrStorybook && reactRouter(), tsconfigPaths()],
-  server: { port: 3001, host: false },
+  server: { port: 3100, host: false },
   publicDir: resolve('public'),
   optimizeDeps: {
     // Do not optimize internal workspace dependencies.

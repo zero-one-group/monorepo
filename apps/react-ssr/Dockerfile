@@ -43,25 +43,36 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker setup
 
 # Copy source files
 COPY --from=skeleton /srv/.moon/docker/sources .
+COPY --from=skeleton /srv/.npmrc .
 
 # Build the application and prune the workspace (optional).
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm approve-builds
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run react-ssr:build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 
 # -----------------------------------------------------------------------------
 # Cleanup the builder stage and create data directory.
+# TODO: reduce image size, cleanup unnecessary dependencies from other packages
 # -----------------------------------------------------------------------------
 FROM base AS pruner
 
-# Only copy the require files for Strapi from builder stage
-COPY --from=builder /srv/apps/react-ssr/node_modules /srv/node_modules
-COPY --from=builder /srv/apps/react-ssr/package.json /srv/package.json
-COPY --from=builder /srv/apps/react-ssr/server.mjs /srv/server.mjs
-COPY --from=builder /srv/apps/react-ssr/build /srv/build
+# Copy global dependencies from builder stage
+COPY --from=builder /srv/node_modules /srv/node_modules
+COPY --from=builder /srv/package.json /srv/package.json
+COPY --from=builder /srv/pnpm-lock.yaml /srv/pnpm-lock.yaml
+
+# Only copy the require files from builder stage
+COPY --from=builder /srv/apps/react-ssr/node_modules /srv/apps/react-ssr/node_modules
+COPY --from=builder /srv/apps/react-ssr/package.json /srv/apps/react-ssr/package.json
+COPY --from=builder /srv/apps/react-ssr/server.mjs /srv/apps/react-ssr/server.mjs
+COPY --from=builder /srv/apps/react-ssr/build /srv/apps/react-ssr/build
 
 # Cleanup uncessary files and set executable permissions for the server.
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm dlx clean-modules \
-    clean --yes "**/codecov*" "!**/@repo/**" && chmod +x /srv/server.mjs
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod \
+    --frozen-lockfile --ignore-scripts && pnpm prune --prod \
+    --ignore-scripts && pnpm dlx clean-modules clean --yes \
+    "!**/sharp/**" "!**/better-sqlite3/**" "!**/@repo/**"
+
+RUN chmod +x /srv/apps/react-ssr/server.mjs
 
 # -----------------------------------------------------------------------------
 # Production image, copy build output files and run the application (runner).
@@ -89,11 +100,11 @@ COPY --from=glibc /bin/ls /bin/ls
 COPY --from=glibc /bin/sh /bin/sh
 
 # Define the host and port to listen on.
-ARG NODE_ENV=production HOST=0.0.0.0 PORT=3001
+ARG NODE_ENV=production HOST=0.0.0.0 PORT=3100
 ENV NODE_ENV=$NODE_ENV HOST=$HOST PORT=$PORT
 ENV TINI_SUBREAPER=true
 
-WORKDIR /srv
+WORKDIR /srv/apps/react-ssr
 USER nonroot:nonroot
 EXPOSE $PORT
 

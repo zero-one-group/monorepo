@@ -47,7 +47,6 @@ COPY --from=skeleton /srv/.moon/docker/sources .
 COPY --from=skeleton /srv/.npmrc .
 
 # Build the application and prune the workspace (optional).
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm approve-builds
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run {{ package_name | kebab_case }}:build
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 

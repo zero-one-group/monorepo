@@ -37,7 +37,7 @@ Additionally, the following tools and libraries are included:
 To begin, we suggest installing `moon` globally, read the documentation [here][moonrepo].
 Then, follow these steps (_don't forget to replace `moon-project` with your project name_):
 
-1. Clone this repository: `npx tiged zero-one-group/monorepo moon-project`
+1. Clone this repository: `pnpm dlx tiged zero-one-group/monorepo moon-project`
 2. Install the necessary dependencies: `cd moon-project && pnpm install`
 3. Create `.env` file or duplicate the `.env.example` file, then configure required variables.
 

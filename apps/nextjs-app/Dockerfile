@@ -47,7 +47,6 @@ COPY --from=skeleton /srv/.moon/docker/sources .
 COPY --from=skeleton /srv/.npmrc .
 
 # Build the application and prune the workspace (optional).
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm approve-builds
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run nextjs-app:build
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 
@@ -98,7 +97,7 @@ COPY --from=glibc /bin/ls /bin/ls
 COPY --from=glibc /bin/sh /bin/sh
 
 # Define the host and port to listen on.
-ARG NODE_ENV=production HOSTNAME=0.0.0.0 PORT=3002
+ARG NODE_ENV=production HOSTNAME=0.0.0.0 PORT=3200
 ENV NODE_ENV=$NODE_ENV HOSTNAME=$HOSTNAME PORT=$PORT
 ENV TINI_SUBREAPER=true NEXT_TELEMETRY_DISABLED=1
 

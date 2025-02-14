@@ -9,7 +9,7 @@ import { resolve } from 'pathe'
 import { env, isCI } from 'std-env'
 
 export const STORAGE_STATE = resolve('.playwright/user.json')
-const APP_PORT = env.PORT || 3001
+const APP_PORT = env.PORT || 3100
 
 export default defineConfig({
   quiet: !!isCI,
