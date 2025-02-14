@@ -2,7 +2,9 @@
     "name": "@repo/shared-ui",
     "private": true,
     "type": "module",
-    "files": ["dist"],
+    "files": [
+        "dist"
+    ],
     "exports": {
         "./components": {
             "types": "./dist/components.d.ts",
@@ -23,10 +25,18 @@
     },
     "typesVersions": {
         "*": {
-            "components": ["./dist/components.d.ts"],
-            "hooks": ["./dist/hooks.d.ts"],
-            "theme": ["./dist/theme.d.ts"],
-            "utils": ["./dist/utils.d.ts"]
+            "components": [
+                "./dist/components.d.ts"
+            ],
+            "hooks": [
+                "./dist/hooks.d.ts"
+            ],
+            "theme": [
+                "./dist/theme.d.ts"
+            ],
+            "utils": [
+                "./dist/utils.d.ts"
+            ]
         }
     },
     "scripts": {
@@ -116,7 +126,7 @@
         "tailwind-variants": "^0.3.1",
         "tailwindcss-motion": "^1.0.1",
         "tailwindcss": "^4.0.4",
-        "typescript": "^5.7.3",
+        "typescript": "5.7.2",
         "vite": "^6.1.0",
         "vite-plugin-dts": "^4.5.0",
         "vite-tsconfig-paths": "^5.1.4"

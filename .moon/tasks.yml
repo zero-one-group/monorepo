@@ -48,7 +48,9 @@ tasks:
       envFile: '/.env'
 
   docker-build:
-    command: 'docker build -f $projectRoot/Dockerfile . -t $IMAGE_NAME:$APP_VERSION && docker image list --filter reference=$APP_PREFIX-\\*'
+    command: >
+      docker build -f $projectRoot/Dockerfile . -t $IMAGE_NAME:$APP_VERSION
+      && docker image list --filter reference=$APP_PREFIX-\\*
     options:
       mergeEnv: replace
       runFromWorkspaceRoot: true
