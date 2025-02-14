@@ -28,7 +28,7 @@ RUN curl -fsSL https://moonrepo.dev/install/moon.sh | bash
 # -----------------------------------------------------------------------------
 FROM base AS skeleton
 COPY --link . .
-RUN moon docker scaffold react-app
+RUN moon docker scaffold astro-web
 
 # -----------------------------------------------------------------------------
 # Install dependencies and build the application.
@@ -46,7 +46,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker setup
 COPY --from=skeleton /srv/.moon/docker/sources .
 
 # Build the application and prune the workspace (optional).
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run react-app:build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run astro-web:build
 
 # -----------------------------------------------------------------------------
 # Production image, copy build output files and run the application (runner).
@@ -55,15 +55,15 @@ FROM --platform=${PLATFORM} gcr.io/distroless/base-nossl-debian12 as runner
 
 # ----- Read application environment variables --------------------------------
 
-ARG VITE_API_URL VITE_BASE_URL
+ARG PUBLIC_BASE_URL
 
 # ----- Read application environment variables --------------------------------
 
 # Copy the build output files from the installer stage.
-COPY --from=builder --chown=nonroot:nonroot /srv/apps/react-app/build/client /srv
+COPY --from=builder --chown=nonroot:nonroot /srv/apps/astro-web/dist /srv
 
 # Copy the required binaries and configuration file.
-COPY --from=skeleton /srv/docker/sws-spa.toml /etc/sws.toml
+COPY --from=skeleton /srv/docker/sws-mpa.toml /etc/sws.toml
 COPY --from=httpd /static-web-server /usr/bin/sws
 COPY --from=base /usr/bin/tini /usr/bin/tini
 
@@ -78,7 +78,7 @@ COPY --from=base /usr/bin/tini /usr/bin/tini
 # COPY --from=glibc /bin/sh /bin/sh
 
 # Define the log level, host and port to listen on.
-ARG SERVER_LOG_LEVEL=info SERVER_HOST=0.0.0.0 SERVER_PORT=3000
+ARG SERVER_LOG_LEVEL=info SERVER_HOST=0.0.0.0 SERVER_PORT=4321
 ENV SERVER_CONFIG_FILE=/etc/sws.toml SERVER_LOG_LEVEL=$SERVER_LOG_LEVEL
 ENV SERVER_HOST=$SERVER_HOST SERVER_PORT=$SERVER_PORT TINI_SUBREAPER=true
 STOPSIGNAL SIGQUIT

@@ -11,7 +11,7 @@
     },
     "linter": {
         "enabled": true,
-        "ignore": ["vite-env.d.ts", "apps/web"],
+        "ignore": ["vite-env.d.ts"],
         "rules": {
             "recommended": true,
             "a11y": {
@@ -115,6 +115,23 @@
             "trailingCommas": "none"
         }
     },
+    "overrides": [
+        {
+            "include": ["*.astro"],
+            "linter": {
+                "rules": {
+                    "style": {
+                        "useConst": "off",
+                        "useImportType": "off"
+                    }
+                }
+            },
+            "formatter": {
+                "indentWidth": 2,
+                "bracketSpacing": true
+            }
+        }
+    ],
     "files": {
         "ignoreUnknown": true,
         "include": [
@@ -125,8 +142,19 @@
             "**/*.mts",
             "**/*.tsx",
             "**/*.css",
-            "**/*.json"
+            "**/*.json",
+            "**/*.astro"
         ],
-        "ignore": [".github", ".next", "build", "dist", "tmp", "temp", "templates", "template-*"]
+        "ignore": [
+            ".github",
+            ".astro",
+            ".next",
+            "build",
+            "dist",
+            "tmp",
+            "temp",
+            "templates",
+            "template-*"
+        ]
     }
 }

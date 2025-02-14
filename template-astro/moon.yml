@@ -1,0 +1,66 @@
+# https://moonrepo.dev/docs/config/project
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+type: application
+language: typescript
+toolchain:
+  node:
+    version: '20'
+stack: frontend
+tags: ['app']
+
+# Overrides the name (identifier) of the project
+id: '{{ package_name | kebab_case }}'
+
+project:
+  name: {{ package_name | kebab_case }}
+  description: '{{ description }}'
+
+env:
+  APP_PREFIX: "$(jq -r .name <$workspaceRoot'/package.json')"
+  APP_VERSION: '$(jq -r .version <$workspaceRoot''/package.json'')'
+  IMAGE_NAME: '$APP_PREFIX-$project'
+
+# Uncomment to use shared UI library
+# dependsOn:
+#   - 'shared-ui'
+
+# Since this project can infer task from script (package.json), then you can run any script as moon task.
+# @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
+# Example: `moon {{ package_name | kebab_case }}:start`
+tasks:
+  dev:
+    command: 'pnpm run dev'
+    options:
+      runDepsInParallel: false
+      envFile: '/.env'
+
+  build:
+    command: 'pnpm run build'
+    options:
+      runDepsInParallel: false
+      envFile: '/.env'
+      cache: true
+
+  docker-run:
+    command: 'docker run --network=host --rm -it --env-file .env --name $IMAGE_NAME $IMAGE_NAME:$APP_VERSION'
+    options:
+      mergeEnv: replace
+      runFromWorkspaceRoot: true
+      interactive: false
+      outputStyle: buffer-only-failure
+      runInCI: false
+      cache: false
+      shell: true
+
+  docker-shell:
+    command: 'docker run --network=host --rm -it --env-file .env --entrypoint /bin/sh $IMAGE_NAME:$APP_VERSION'
+    options:
+      mergeEnv: replace
+      runFromWorkspaceRoot: true
+      interactive: false
+      outputStyle: buffer-only-failure
+      runInCI: false
+      cache: false
+      shell: true

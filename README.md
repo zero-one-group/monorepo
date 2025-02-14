@@ -94,6 +94,7 @@ Current available templates are:
 | [`template-shared-ui`](./template-shared-ui) | Collections of UI components based on `shadcn/ui`  |
 | [`template-nextjs`](./template-nextjs)       | Next.js application with Tailwind CSS              |
 | [`template-strapi`](./template-strapi)       | Strapi headless CMS with PostgreSQL and Nodemailer |
+| [`template-astro`](./template-astro)         | Astro website with Tailwind CSS                    |
 
 ### Moon commands
 

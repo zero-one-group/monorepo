@@ -63,7 +63,7 @@ ARG VITE_API_URL VITE_BASE_URL
 COPY --from=builder --chown=nonroot:nonroot /srv/apps/{{ package_name | kebab_case }}/build/client /srv
 
 # Copy the required binaries and configuration file.
-COPY --from=skeleton /srv/docker/sws.toml /etc/sws.toml
+COPY --from=skeleton /srv/docker/sws-spa.toml /etc/sws.toml
 COPY --from=httpd /static-web-server /usr/bin/sws
 COPY --from=base /usr/bin/tini /usr/bin/tini
 

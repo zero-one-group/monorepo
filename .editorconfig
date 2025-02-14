@@ -13,7 +13,7 @@ max_line_length = 100
 [*.{prettierrc,json,jsonc,plist,rs}]
 max_line_length = off
 
-[*.{js,cjs,mjs,jsx,ts,mts,tsx,css,html,txt,toml,yml,yaml}]
+[*.{js,cjs,mjs,jsx,ts,mts,tsx,css,html,txt,toml,yml,yaml,astro}]
 indent_size = 2
 
 [*.txt]
