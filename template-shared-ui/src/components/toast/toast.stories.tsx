@@ -8,6 +8,7 @@ const meta: Meta = {
   decorators: [
     (Story) => (
       <>
+        {/* @ts-ignore */}
         <Story />
         <Toaster />
       </>

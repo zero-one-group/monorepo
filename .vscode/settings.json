@@ -8,6 +8,7 @@
     "search.exclude": {
         "**/.husky": true,
         "**/.output": true,
+        "**/.next": true,
         "**/build": true,
         "**/dist": true,
         "**/templates": true,
@@ -37,5 +38,8 @@
     },
     "[markdown]": {
         "editor.defaultFormatter": "darkriszty.markdown-table-prettify"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
     }
 }

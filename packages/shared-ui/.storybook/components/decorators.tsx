@@ -33,6 +33,7 @@ export const withThemeProvider: Decorator = (Story, context) => {
 
   return (
     <ThemeProvider>
+      {/* @ts-ignore */}
       <Story />
       <Toaster />
     </ThemeProvider>

@@ -36,7 +36,7 @@ tasks:
       cache: true
 
   docker-run:
-    command: 'docker run --network=host --rm -it --env-file .env -v $(pwd)/_data:/_data --name $IMAGE_NAME $IMAGE_NAME:$APP_VERSION'
+    command: 'docker run --network=host --rm -it --env-file .env -v $projectRoot/_data:/srv/_data --name $IMAGE_NAME $IMAGE_NAME:$APP_VERSION'
     options:
       mergeEnv: replace
       runFromWorkspaceRoot: false
@@ -47,7 +47,7 @@ tasks:
       shell: true
 
   docker-shell:
-    command: 'docker run --network=host --rm -it --env-file .env -v $(pwd)/_data:/_data --entrypoint /bin/sh $IMAGE_NAME:$APP_VERSION'
+    command: 'docker run --network=host --rm -it --env-file .env -v $projectRoot/_data:/srv/_data --entrypoint /bin/sh $IMAGE_NAME:$APP_VERSION'
     options:
       mergeEnv: replace
       runFromWorkspaceRoot: false

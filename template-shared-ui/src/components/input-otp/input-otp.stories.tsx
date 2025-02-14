@@ -4,7 +4,7 @@ import type { InputOtpVariants } from './input-otp.css'
 
 const sizeOptions: NonNullable<InputOtpVariants['size']>[] = ['sm', 'default', 'lg']
 
-const meta = {
+const meta: Meta = {
   title: 'Basic Components/InputOTP',
   component: InputOTP,
   argTypes: {

@@ -13,7 +13,7 @@ import {
   SheetTrigger,
 } from './sheet'
 
-const meta = {
+const meta: Meta = {
   title: 'Basic Components/Sheet',
   component: Sheet,
   parameters: {

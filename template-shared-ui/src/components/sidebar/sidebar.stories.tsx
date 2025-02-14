@@ -44,7 +44,7 @@ function LayoutWrapper({ children }: { children: React.ReactNode }) {
   )
 }
 
-const meta = {
+const meta: Meta = {
   title: 'Layout Components/Sidebar',
   component: Sidebar,
   parameters: {
@@ -53,6 +53,7 @@ const meta = {
   decorators: [
     (Story) => (
       <LayoutWrapper>
+        {/* @ts-ignore */}
         <Story />
       </LayoutWrapper>
     ),

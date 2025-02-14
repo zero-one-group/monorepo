@@ -21,25 +21,10 @@ env:
   APP_PREFIX: "$(jq -r .name <$workspaceRoot'/package.json')"
   APP_VERSION: '$(jq -r .version <$workspaceRoot''/package.json'')'
   IMAGE_NAME: '$APP_PREFIX-$project'
-  PORT: '3002'
+  PORT: '3200'
 
 dependsOn:
   - 'shared-ui'
-
-# File groups defined in .moon/tasks.yml will be inherited by all projects.
-# @see: https://moonrepo.dev/docs/config/project#filegroups
-fileGroups:
-  configs:
-    - '*.config.{js,cjs,mjs,ts}'
-    - '*.json'
-  sources:
-    - 'app/**/*'
-  tests:
-    - 'tests/**/*'
-    - '**/__tests__/**/*'
-  assets:
-    - 'public/**/*'
-    - '!public/.gitkeep'
 
 # Since this project can infer task from script (package.json), then you can run any script as moon task.
 # @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
@@ -48,8 +33,6 @@ tasks:
   dev:
     command: 'pnpm run dev'
     deps: ['shared-ui:build']
-    outputs:
-      - '.next/**/*'
     options:
       runDepsInParallel: false
       envFile: '/.env'
@@ -58,8 +41,6 @@ tasks:
   build:
     command: 'pnpm run build'
     deps: ['shared-ui:build']
-    outputs:
-      - '.next/**/*'
     options:
       runDepsInParallel: false
       envFile: '/.env'
@@ -73,17 +54,15 @@ tasks:
     options:
       runDepsInParallel: false
       envFile: '/.env'
-      cache: false
+      cache: true
 
   build-standalone:
-    command: |
-      'rm -fr $projectRoot/dist';
-      'mkdir -p $projectRoot/dist/.next';
-      'cp -r .next/standalone/apps/nextjs-app/ dist';
-      'cp -r .next/static dist/.next/static';
-      'cp -r public dist/';
-    outputs:
-      - 'dist/**/*'
+    command: >
+      rm -fr $projectRoot/dist
+      && mkdir -p $projectRoot/dist/{.next,public}
+      && cp -r .next/standalone/apps/nextjs-app/ dist
+      && cp -r .next/static dist/.next/static
+      && cp -r public/* dist/public/
     deps: ['build']
     options:
       runDepsInParallel: false

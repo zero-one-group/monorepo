@@ -13,6 +13,10 @@ export default defineConfig({
   plugins: [tailwindcss(), !isTestOrStorybook && reactRouter(), tsconfigPaths()],
   server: { port: 3000, host: false },
   publicDir: resolve('public'),
+  optimizeDeps: {
+    // Do not optimize internal workspace dependencies.
+    exclude: ['@repo/shared-ui'],
+  },
   build: {
     ssr: false,
     minify: isProduction,

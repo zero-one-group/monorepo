@@ -1,7 +1,7 @@
-import type { NextConfig } from 'next'
 import { isProduction } from 'std-env'
 
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   output: 'standalone',
   cleanDistDir: true,
   reactStrictMode: true,

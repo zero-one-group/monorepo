@@ -127,6 +127,6 @@
             "**/*.css",
             "**/*.json"
         ],
-        "ignore": [".github", "tmp", "temp", "templates", "template-*"]
+        "ignore": [".github", ".next", "build", "dist", "tmp", "temp", "templates", "template-*"]
     }
 }

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import * as Lucide from 'lucide-react'
+import type * as React from 'react'
 import { Breadcrumb, BreadcrumbPage, BreadcrumbSeparator } from '../breadcrumb/breadcrumb'
 import { BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from '../breadcrumb/breadcrumb'
 import { Button } from '../button/button'
@@ -11,7 +12,7 @@ import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel } from './sidebar-
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from './sidebar-menu'
 import { SidebarProvider } from './sidebar-provider'
 
-function LayoutWrapper({ children }: { children: React.ReactNode }) {
+function LayoutWrapper({ children }: React.PropsWithChildren) {
   return (
     <SidebarProvider>
       {children}
@@ -44,7 +45,7 @@ function LayoutWrapper({ children }: { children: React.ReactNode }) {
   )
 }
 
-const meta = {
+const meta: Meta = {
   title: 'Layout Components/Sidebar',
   component: Sidebar,
   parameters: {
@@ -53,6 +54,7 @@ const meta = {
   decorators: [
     (Story) => (
       <LayoutWrapper>
+        {/* @ts-ignore */}
         <Story />
       </LayoutWrapper>
     ),

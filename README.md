@@ -37,7 +37,7 @@ Additionally, the following tools and libraries are included:
 To begin, we suggest installing `moon` globally, read the documentation [here][moonrepo].
 Then, follow these steps (_don't forget to replace `moon-project` with your project name_):
 
-1. Clone this repository: `npx tiged zero-one-group/monorepo moon-project`
+1. Clone this repository: `pnpm dlx tiged zero-one-group/monorepo moon-project`
 2. Install the necessary dependencies: `cd moon-project && pnpm install`
 3. Create `.env` file or duplicate the `.env.example` file, then configure required variables.
 
@@ -86,14 +86,14 @@ View all available templates by looking at folders with `template-` prefix in th
 
 Current available templates are:
 
-| Template Name        | Description                                        |
-|----------------------|----------------------------------------------------|
-| `template-golang`    | Basic Go application for backend                   |
-| `template-react-app` | SPA React Router application with Tailwind CSS     |
-| `template-react-ssr` | SSR React Router application with Tailwind CSS     |
-| `template-shared-ui` | Collections of UI components based on `shadcn/ui`  |
-| `template-nextjs`    | Next.js application with Tailwind CSS              |
-| `template-strapi`    | Strapi headless CMS with PostgreSQL and Nodemailer |
+| Template Name                                | Description                                        |
+|----------------------------------------------|----------------------------------------------------|
+| [`template-golang`](./template-golang)       | Basic Go application for backend                   |
+| [`template-react-app`](./template-react-app) | SPA React Router application with Tailwind CSS     |
+| [`template-react-ssr`](./template-react-ssr) | SSR React Router application with Tailwind CSS     |
+| [`template-shared-ui`](./template-shared-ui) | Collections of UI components based on `shadcn/ui`  |
+| [`template-nextjs`](./template-nextjs)       | Next.js application with Tailwind CSS              |
+| [`template-strapi`](./template-strapi)       | Strapi headless CMS with PostgreSQL and Nodemailer |
 
 ### Moon commands
 

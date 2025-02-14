@@ -4,7 +4,7 @@ import type { InputOtpVariants } from './input-otp.css'
 
 const sizeOptions: NonNullable<InputOtpVariants['size']>[] = ['sm', 'default', 'lg']
 
-const meta = {
+const meta: Meta = {
   title: 'Basic Components/InputOTP',
   component: InputOTP,
   argTypes: {
@@ -38,7 +38,7 @@ export const Default: Story = {
     ),
   },
   render: ({ size, ...args }) => (
-    <InputOTP {...args}>
+    <InputOTP maxLength={6} {...args}>
       <InputOTPGroup>
         <InputOTPSlot index={0} size={size} />
         <InputOTPSlot index={1} size={size} />

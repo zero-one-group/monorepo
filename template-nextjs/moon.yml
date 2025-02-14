@@ -27,29 +27,12 @@ env:
 # dependsOn:
 #   - 'shared-ui'
 
-# File groups defined in .moon/tasks.yml will be inherited by all projects.
-# @see: https://moonrepo.dev/docs/config/project#filegroups
-fileGroups:
-  configs:
-    - '*.config.{js,cjs,mjs,ts}'
-    - '*.json'
-  sources:
-    - 'app/**/*'
-  tests:
-    - 'tests/**/*'
-    - '**/__tests__/**/*'
-  assets:
-    - 'public/**/*'
-    - '!public/.gitkeep'
-
 # Since this project can infer task from script (package.json), then you can run any script as moon task.
 # @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
 # Example: `moon {{ package_name | kebab_case }}:start`
 tasks:
   dev:
     command: 'pnpm run dev'
-    outputs:
-      - '.next/**/*'
     options:
       runDepsInParallel: false
       envFile: '/.env'
@@ -57,8 +40,6 @@ tasks:
 
   build:
     command: 'pnpm run build'
-    outputs:
-      - '.next/**/*'
     options:
       runDepsInParallel: false
       envFile: '/.env'
@@ -72,17 +53,15 @@ tasks:
     options:
       runDepsInParallel: false
       envFile: '/.env'
-      cache: false
+      cache: true
 
   build-standalone:
-    command: |
-      'rm -fr $projectRoot/dist';
-      'mkdir -p $projectRoot/dist/.next';
-      'cp -r .next/standalone/apps/{{ package_name | kebab_case }}/ dist';
-      'cp -r .next/static dist/.next/static';
-      'cp -r public dist/';
-    outputs:
-      - 'dist/**/*'
+    command: >
+      rm -fr $projectRoot/dist
+      && mkdir -p $projectRoot/dist/{.next,public}
+      && cp -r .next/standalone/apps/nextjs-app/ dist
+      && cp -r .next/static dist/.next/static
+      && cp -r public/* dist/public/
     deps: ['build']
     options:
       runDepsInParallel: false

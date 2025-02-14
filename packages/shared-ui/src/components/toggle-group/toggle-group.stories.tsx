@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import * as Lucide from 'lucide-react'
 import { ToggleGroup, ToggleGroupItem } from './toggle-group'
 
-const meta = {
+const meta: Meta = {
   title: 'Basic Components/ToggleGroup',
   component: ToggleGroup,
   parameters: {

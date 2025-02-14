@@ -10,6 +10,7 @@ node_modules
 .rollup.cache
 .cache
 .output
+.pnpm/
 .temp/
 .tmp/
 Thumbs.db

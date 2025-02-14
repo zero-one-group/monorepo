@@ -11,7 +11,7 @@ import { env, isDevelopment } from 'std-env'
 
 // Short-circuit the type-checking of the built output.
 const BUILD_PATH = resolve('build/server/index.js')
-const PORT = Number.parseInt(env.PORT || '3001')
+const PORT = Number.parseInt(env.PORT || '3100')
 
 const app = express()
 

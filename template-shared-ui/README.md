@@ -32,8 +32,20 @@ Add the following to your `tsconfig.json` file:
 
 ```json
 {
-    "references": [{ "path": "../../packages/shared-ui" } ]
+    "references": [{ "path": "../../packages/shared-ui" }]
 }
+```
+
+Exclude internal packages from optimization, add the following to your `vite.config.ts` file:
+
+```ts
+export default defineConfig({
+  // ...
+  optimizeDeps: {
+    // Do not optimize internal workspace dependencies.
+    exclude: ['@repo/shared-ui'],
+  },
+})
 ```
 
 Finally, add the following to your `moon.yml` file:

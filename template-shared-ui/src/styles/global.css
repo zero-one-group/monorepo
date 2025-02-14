@@ -1,5 +1,6 @@
 @import "tailwindcss";
-@plugin "tailwindcss-motion";
+/* FIXME: https://github.com/romboHQ/tailwindcss-motion/issues/45 */
+/* @plugin "tailwindcss-motion"; */
 @variant dark (&:where([data-theme="dark"] *));
 
 @theme {
