@@ -1,0 +1,11 @@
+# next.js
+next-env.d.ts
+*.tsbuildinfo
+.vercel
+/.next/
+/out/
+
+# generated content
+.contentlayer
+.content-collections
+.source
