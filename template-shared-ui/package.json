@@ -4,30 +4,10 @@
     "type": "module",
     "files": ["dist"],
     "exports": {
-        "./components": {
-            "types": "./dist/components.d.ts",
-            "default": "./dist/components/index.js"
-        },
-        "./hooks": {
-            "types": "./dist/hooks.d.ts",
-            "default": "./dist/hooks/index.js"
-        },
-        "./theme": {
-            "types": "./dist/theme.d.ts",
-            "default": "./dist/theme/index.js"
-        },
-        "./utils": {
-            "types": "./dist/utils.d.ts",
-            "default": "./dist/utils/index.js"
-        }
-    },
-    "typesVersions": {
-        "*": {
-            "components": ["./dist/components.d.ts"],
-            "hooks": ["./dist/hooks.d.ts"],
-            "theme": ["./dist/theme.d.ts"],
-            "utils": ["./dist/utils.d.ts"]
-        }
+        "./components": "./src/components/index.ts",
+        "./hooks": "./src/hooks/index.ts",
+        "./theme": "./src/theme.tsx",
+        "./utils": "./src/utils.ts"
     },
     "scripts": {
         "dev": "vite build --watch",
