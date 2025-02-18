@@ -4,7 +4,8 @@
     "scripts": {
         "dev": "next dev",
         "build": "next build",
-        "start": "next start",
+        "preview": "next start",
+        "start": "pnpm dlx serve out -l 3030 -n -C",
         "postinstall": "fumadocs-mdx"
     },
     "dependencies": {

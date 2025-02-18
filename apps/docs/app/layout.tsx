@@ -11,7 +11,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={clx(fontSans.variable, fontMono.variable)} suppressHydrationWarning>
       <body className="flex min-h-screen flex-col">
-        <RootProvider>{children}</RootProvider>
+        <RootProvider search={{ enabled: false }}>{children}</RootProvider>
       </body>
     </html>
   )
