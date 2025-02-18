@@ -1,0 +1,38 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+name: Publish Docs
+
+on:
+  push:
+    branches: ['main']
+
+env:
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: true
+  LEFTHOOK: 0
+  CI: true
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build-release:
+    name: Build and release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run actions/setup-sdk@local
+        uses: ./.github/setup-sdk
+
+      - name: Get current tag
+        id: current_tag
+        shell: bash
+        run: echo "PKG_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - if: ${{ steps.pnpm-cache.outputs.cache-hit != 'true' }}
+        name: Install and build
+        run: |
+          pnpm install --frozen-lockfile --ignore-scripts
+          moon docs:build

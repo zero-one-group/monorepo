@@ -15,7 +15,8 @@
             "pnpm-lock.yaml",
             "CONTRIBUTING.md",
             "README.md",
-            "TASKS.md"
+            "TASKS.md",
+            ".github"
         ]
     }
 ]
