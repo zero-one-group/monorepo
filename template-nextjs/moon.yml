@@ -59,7 +59,7 @@ tasks:
     command: >
       rm -fr $projectRoot/dist
       && mkdir -p $projectRoot/dist/{.next,public}
-      && cp -r .next/standalone/apps/nextjs-app/ dist
+      && cp -r .next/standalone/apps/{{ package_name | kebab_case }}/ dist
       && cp -r .next/static dist/.next/static
       && cp -r public/* dist/public/
     deps: ['build']
