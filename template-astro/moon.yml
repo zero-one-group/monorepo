@@ -15,7 +15,7 @@ id: '{{ package_name | kebab_case }}'
 
 project:
   name: {{ package_name | kebab_case }}
-  description: '{{ description }}'
+  description: '{{ package_description }}'
 
 env:
   APP_PREFIX: "$(jq -r .name <$workspaceRoot'/package.json')"
