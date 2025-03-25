@@ -1,0 +1,10 @@
+[project]
+name = "zog-ai-project-template"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.115.11",
+    "pydantic-settings>=2.8.1",
+]
