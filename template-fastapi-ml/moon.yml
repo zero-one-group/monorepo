@@ -26,14 +26,14 @@ env:
 # Example: `moon {{ package_name | kebab_case }}:start`
 tasks:
   dev:
-    command: "uv run fastapi dev app/main.py --port 8080"
+    command: "uv run fastapi dev app/main.py --port {{ port }}"
     options:
-      envFile: "/.env"
+      envFile: ".env"
 
   start:
-    command: "uv run fastapi run app/main.py --port 8080"
+    command: "uv run fastapi run app/main.py --port {{ port }}"
     options:
-      envFile: "/.env"
+      envFile: ".env"
 
   sync:
     command: "uv sync"
