@@ -3,10 +3,10 @@
 $schema: "https://moonrepo.dev/schemas/template.json"
 
 # REQUIRED: Name of the template in a human readable format.
-title: "Machine Learning Application"
+title: "Artificial Intelligence Application"
 
 # REQUIRED: Description of what the template is for and other relevant information.
-description: "Machine learning template generated standard project"
+description: "Artifical Intelligence template generated standard project"
 
 # Destination path for the package.
 destination: "apps/[package_name]"
@@ -16,13 +16,13 @@ destination: "apps/[package_name]"
 variables:
   package_name:
     type: "string"
-    default: "ml-app"
+    default: "ai-app"
     prompt: "Package name (identifier)?"
     required: true
 
   package_description:
     type: "string"
-    default: "Machine Learning App"
+    default: "Artificial Intelligence App"
     prompt: "Package description?"
     required: true
 

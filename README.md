@@ -95,7 +95,7 @@ Current available templates are:
 | [`template-nextjs`](./template-nextjs)       | Next.js application with Tailwind CSS              |
 | [`template-strapi`](./template-strapi)       | Strapi headless CMS with PostgreSQL and Nodemailer |
 | [`template-astro`](./template-astro)         | Astro website with Tailwind CSS                    |
-| [`template-fastapi-ml`](./template-fastapi-ml)       | Machine Learning app with FastAPI                  |
+| [`template-fastapi-ai`](./template-fastapi-ml)       | FastAPI template for AI apps                  |
 
 ### Moon commands
 
