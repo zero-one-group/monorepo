@@ -1,4 +1,4 @@
-from app.config.env import get_env
+from app.core.env import get_env
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
