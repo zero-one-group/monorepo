@@ -1,0 +1,39 @@
+# https://moonrepo.dev/docs/config/project
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
+$schema: "https://moonrepo.dev/schemas/project.json"
+
+type: library
+language: python
+toolchain:
+  node:
+    version: "20"
+tags: ["app"]
+
+# Overrides the name (identifier) of the project
+id: "ai-app"
+
+project:
+  name: "ai-app"
+  description: "Artificial Intelligence App"
+
+env:
+  APP_PREFIX: "$(jq -r .name <$workspaceRoot'/package.json')"
+  APP_VERSION: "$(jq -r .version <$workspaceRoot'/package.json')"
+  IMAGE_NAME: "$APP_PREFIX-$project"
+
+# Since this project can infer task from script (package.json), then you can run any script as moon task.
+# @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
+# Example: `moon ai-app:start`
+tasks:
+  dev:
+    command: "uv run fastapi dev app/main.py --port 8080"
+    options:
+      envFile: ".env"
+
+  start:
+    command: "uv run fastapi run app/main.py --port 8080"
+    options:
+      envFile: ".env"
+
+  sync:
+    command: "uv sync"
