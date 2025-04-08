@@ -1,5 +1,5 @@
 from app.core.env import get_env
-from app.core.logging import logger
+from app.core.logging import DepLogger, logger
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -29,6 +29,6 @@ app.add_middleware(
 
 
 @app.get("/")
-async def root():
+async def root(logger: DepLogger):
     logger.info("Incoming request at root path!", extra={"path": "/"})
     return {"message": "Welcome to the Machine Learning API"}
