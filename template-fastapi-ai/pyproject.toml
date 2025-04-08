@@ -7,4 +7,5 @@ requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.115.11",
     "pydantic-settings>=2.8.1",
+    "python-json-logger>=3.3.0",
 ]
