@@ -2,8 +2,10 @@ import logging
 import os
 import sys
 from logging.handlers import RotatingFileHandler
+from typing import Annotated
 
 from app.core.env import get_env
+from fastapi import Depends
 from pythonjsonlogger import jsonlogger
 
 # Singleton logger instance
@@ -62,3 +64,12 @@ def get_logger(
 
 
 logger = get_logger()
+
+
+def get_logger_dependency():
+    """Dependency to get the logger instance."""
+    return get_logger()
+
+
+# Type alias
+DepLogger = Annotated[logging.Logger, Depends(get_logger_dependency)]
