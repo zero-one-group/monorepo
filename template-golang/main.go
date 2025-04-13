@@ -8,17 +8,14 @@ import (
 	"os/signal"
 	"time"
 
+	"template_go/domain"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 )
 
 // Response represents the API response structure
-type Response struct {
-	Success bool      `json:"success"`
-	Message string    `json:"message"`
-	Time    time.Time `json:"time"`
-}
 
 func main() {
 	e := echo.New()
@@ -39,7 +36,7 @@ func main() {
 
 	// Register the routes
 	e.GET("/", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, Response{
+		return c.JSON(http.StatusOK, domain.Response{
 			Success: true,
 			Message: "All is well!",
 			Time:    time.Now(),
