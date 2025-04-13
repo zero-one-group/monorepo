@@ -8,14 +8,17 @@ import (
 	"os/signal"
 	"time"
 
-	"template_go/domain"
+	"{{ package_name }}/config"
+	"{{ package_name }}/domain"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 )
 
-// Response represents the API response structure
+func init() {
+	config.LoadEnv()
+}
 
 func main() {
 	e := echo.New()
