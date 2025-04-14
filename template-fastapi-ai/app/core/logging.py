@@ -1,12 +1,14 @@
 import logging
 import os
 import sys
+import uuid
 from logging.handlers import RotatingFileHandler
 from typing import Annotated
 
 from app.core.env import get_env
-from fastapi import Depends
-from pythonjsonlogger import jsonlogger
+from fastapi import Depends, Request
+from pythonjsonlogger.jsonlogger import JsonFormatter
+from starlette.middleware.base import BaseHTTPMiddleware
 
 # Singleton logger instance
 _logger_instance = None
@@ -28,7 +30,7 @@ def get_logger(
         env = get_env()
 
         # Set logging level based on DEBUG setting
-        level = logging.DEBUG if get_env.DEBUG else logging.INFO
+        level = logging.DEBUG if env.DEBUG else logging.INFO
 
         logger = logging.getLogger(logger_name)
         logger.setLevel(level)
@@ -38,7 +40,7 @@ def get_logger(
 
         console_handler = logging.StreamHandler(stream)
         console_handler.setLevel(level)
-        console_formatter = jsonlogger.JsonFormatter(log_format)
+        console_formatter = JsonFormatter(log_format)
         console_handler.setFormatter(console_formatter)
         logger.addHandler(console_handler)
 
@@ -51,7 +53,7 @@ def get_logger(
                 log_file_path, maxBytes=max_file_size, backupCount=backup_count
             )
             file_handler.setLevel(level)
-            file_formatter = jsonlogger.JsonFormatter(log_format)
+            file_formatter = JsonFormatter(log_format)
             file_handler.setFormatter(file_formatter)
             logger.addHandler(file_handler)
 
@@ -66,10 +68,28 @@ def get_logger(
 logger = get_logger()
 
 
-def get_logger_dependency():
-    """Dependency to get the logger instance."""
-    return get_logger()
+class RequestIdMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        request_id = str(uuid.uuid4())
+
+        # Add request_id to the request state
+        request.state.request_id = request_id
+        response = await call_next(request)
+        return response
+
+
+def get_request_id(request: Request) -> str:
+    """Get the request ID from the current request state"""
+    return getattr(request.state, "request_id", str(uuid.uuid4()))
+
+
+def get_logger_dependency(request: Request):
+    """Dependency to get the logger instance with request_id context."""
+    logger = get_logger()
+    request_id = get_request_id(request)
+    # Return a logger adapter with the request_id in the extra dict
+    return logging.LoggerAdapter(logger, {"request_id": request_id})
 
 
 # Type alias
-DepLogger = Annotated[logging.Logger, Depends(get_logger_dependency)]
+DepLogger = Annotated[logging.LoggerAdapter, Depends(get_logger_dependency)]

@@ -1,7 +1,7 @@
 from app.core.database import DepDB, check_db_connection, engine
 from app.core.env import get_env
-from app.core.logging import DepLogger, logger
-from fastapi import FastAPI, HTTPException
+from app.core.logging import DepLogger, RequestIdMiddleware, logger
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 env = get_env()
@@ -27,6 +27,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(RequestIdMiddleware)
 
 
 @app.get("/")
