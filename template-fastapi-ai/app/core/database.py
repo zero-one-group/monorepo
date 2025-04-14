@@ -32,3 +32,27 @@ def get_db() -> Generator[Session, None, None]:
 
 # NOTE: Type alias for database session dependency
 DepDB = Annotated[Session, Depends(get_db)]
+
+
+def check_db_connection(db: Session) -> bool:
+    try:
+        db.execute(text("SELECT 1"))
+        logger.debug("Database connection check successful.")
+        return True
+    except OperationalError as e:
+        logger.error(
+            f"Database connection operational error: {
+                e}",
+            exc_info=False,
+        )
+        return False
+    except SQLAlchemyError as e:
+        logger.error(
+            f"Database query execution error during health check: {e}", exc_info=True
+        )
+        return False
+    except Exception as e:
+        logger.error(
+            f"Unexpected error during database connection check: {e}", exc_info=True
+        )
+        return False
