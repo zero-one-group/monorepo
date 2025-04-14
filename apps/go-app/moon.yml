@@ -13,7 +13,7 @@ tags: ['app']
 id: 'go-app'
 
 project:
-  name: go-app
+  name: 'go-app'
   description: 'My backend application'
 
 env:
@@ -41,7 +41,7 @@ tasks:
     command: 'go mod tidy && go mod vendor'
 
   kill-port:
-    # This is a hack for killing the port 8000 before starting the app
+    # This is a hack for killing the listen port before starting the app
     command: 'pnpm --package=kill-port-process-cli dlx kill-port 8000'
     deps: [tidy]
     options:

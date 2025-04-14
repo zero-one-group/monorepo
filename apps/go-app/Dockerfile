@@ -59,7 +59,7 @@ FROM --platform=${PLATFORM} gcr.io/distroless/cc-debian12 AS runner
 
 # ----- Read application environment variables --------------------------------
 
-ARG DATABASE_URL SMTP_HOST SMTP_PORT SMTP_USERNAME SMTP_PASSWORD SMTP_EMAIL_FROM
+ARG  DATABASE_URL SMTP_HOST SMTP_PORT SMTP_USERNAME SMTP_PASSWORD SMTP_EMAIL_FROM
 
 # ----- Read application environment variables --------------------------------
 
