@@ -1,4 +1,3 @@
-from app.core.database import DepDB, check_db_connection, engine
 from app.core.env import get_env
 from app.core.logging import RequestIdMiddleware, logger
 from app.router.main import router as system_router
