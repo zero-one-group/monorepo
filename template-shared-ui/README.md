@@ -20,10 +20,10 @@ Add the following to your `package.json` file:
         "@repo/shared-ui": "workspace:*"
     },
     "devDependencies": {
-        "@tailwindcss/vite": "^4.0.4",
-        "tailwind-variants": "^0.3.1",
-        "tailwindcss-motion": "^1.0.1",
-        "tailwindcss": "^4.0.4"
+        "@tailwindcss/vite": "^4.1.4",
+        "tailwind-variants": "^1.0.0",
+        "tailwindcss-motion": "^1.1.0",
+        "tailwindcss": "^4.1.4",
     }
 }
 ```
@@ -46,6 +46,12 @@ export default defineConfig({
     exclude: ['@repo/shared-ui'],
   },
 })
+```
+
+Add `shared-ui` source list to `global.css`:
+
+```css
+@source "../../../../packages/shared-ui/**/*.{ts,tsx}";
 ```
 
 Finally, add the following to your `moon.yml` file:

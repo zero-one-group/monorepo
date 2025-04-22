@@ -1,8 +1,4 @@
-/* Import the CSS files */
-import './styles/fontface.css'
 import './styles/global.css'
-import './styles/colors.css'
-
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router'
 import { isRouteErrorResponse } from 'react-router'
 import NotFound from '#/components/errors/404'

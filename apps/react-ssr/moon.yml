@@ -34,7 +34,7 @@ tasks:
     deps: ['prebuild']
     options:
       runDepsInParallel: false
-      envFile: '/.env'
+      envFile: '.env'
 
   build:
     command: 'pnpm run build'

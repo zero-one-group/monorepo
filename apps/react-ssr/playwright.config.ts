@@ -4,8 +4,8 @@
  */
 
 import 'dotenv/config'
+import { resolve } from 'node:path'
 import { defineConfig, devices } from '@playwright/test'
-import { resolve } from 'pathe'
 import { env, isCI } from 'std-env'
 
 export const STORAGE_STATE = resolve('.playwright/user.json')

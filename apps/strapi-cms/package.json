@@ -13,33 +13,32 @@
         "strapi": "strapi"
     },
     "dependencies": {
-        "@strapi/plugin-documentation": "5.11.0",
-        "@strapi/plugin-users-permissions": "5.11.0",
-        "@strapi/provider-email-nodemailer": "5.11.0",
-        "@strapi/provider-upload-aws-s3": "5.11.0",
-        "@strapi/strapi": "5.11.0",
-        "@strapi/upload": "5.11.0",
-        "better-sqlite3": "^11.8.1",
-        "consola": "^3.4.0",
-        "dotenv": "^16.4.7",
-        "pathe": "^2.0.3",
-        "pg": "^8.13.3",
+        "@strapi/plugin-documentation": "5.12.5",
+        "@strapi/plugin-users-permissions": "5.12.5",
+        "@strapi/provider-email-nodemailer": "5.12.5",
+        "@strapi/provider-upload-aws-s3": "5.12.5",
+        "@strapi/strapi": "5.12.5",
+        "@strapi/upload": "5.12.5",
+        "better-sqlite3": "^11.9.1",
+        "consola": "^3.4.2",
+        "dotenv": "^16.5.0",
+        "pg": "^8.14.1",
         "react-dom": "~18.0.0",
         "react-router-dom": "~6.29.0",
         "react": "~18.0.0",
-        "sharp": "^0.33.5",
-        "std-env": "^3.8.1",
-        "styled-components": "^6.1.15"
+        "sharp": "^0.34.1",
+        "std-env": "^3.9.0",
+        "styled-components": "^6.1.17"
     },
     "devDependencies": {
         "@biomejs/biome": "^1.9.4",
-        "@strapi/typescript-utils": "5.11.0",
-        "@types/node": "^22.13.10",
-        "@types/pg": "^8.11.11",
+        "@strapi/typescript-utils": "5.12.5",
+        "@types/node": "^22.14.1",
+        "@types/pg": "^8.11.13",
         "@types/react": "~18.0.0",
         "@types/react-dom": "~18.0.0",
         "typescript": "5.7.2",
-        "vite": "^6.2.1"
+        "vite": "^6.3.2"
     },
     "strapi": {}
 }

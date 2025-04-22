@@ -1,4 +1,5 @@
-import { Button } from '@repo/shared-ui/components'
+// FIXME: ERR_UNSUPPORTED_DIR_IMPORT use-sync-external-store/shim
+// import { Button } from '@repo/shared-ui/components'
 import { useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { Link } from '#/components/link'
@@ -8,9 +9,13 @@ function SubmitButton() {
   const { pending } = useFormStatus()
 
   return (
-    <Button type="submit" variant="primary" className="w-full" disabled={pending}>
+    <button
+      type="submit"
+      className="group relative flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 font-medium text-sm text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-70"
+      disabled={pending}
+    >
       {pending ? 'Signing in...' : 'Sign in'}
-    </Button>
+    </button>
   )
 }
 

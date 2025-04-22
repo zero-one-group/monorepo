@@ -1,5 +1,5 @@
-import { Slot } from '@radix-ui/react-slot'
 import * as Lucide from 'lucide-react'
+import { Slot } from 'radix-ui'
 import * as React from 'react'
 import { type ButtonVariants, buttonStyles } from './button.css'
 
@@ -10,7 +10,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant, size, className, isLoading, disabled, children, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : 'button'
+    const Comp = asChild ? Slot.Root : 'button'
     const isDisabled = disabled || isLoading
     const styles = buttonStyles({ variant, size, isLoading })
 

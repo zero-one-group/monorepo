@@ -35,24 +35,24 @@ tasks:
     command: 'pnpm run dev'
     options:
       runDepsInParallel: false
-      envFile: '/.env'
+      envFile: '.env'
       cache: false
 
   build:
     command: 'pnpm run build'
     options:
       runDepsInParallel: false
-      envFile: '/.env'
+      envFile: '.env'
       cache: true
 
   start-node:
     env:
       NODE_ENV: 'production'
-    command: 'node --no-warnings dist/server.js'
+    command: 'node --no-warnings .next/standalone/apps/{{ package_name | kebab_case }}/server.js'
     deps: ['build-standalone']
     options:
       runDepsInParallel: false
-      envFile: '/.env'
+      envFile: '.env'
       cache: true
 
   build-standalone:
@@ -65,7 +65,7 @@ tasks:
     deps: ['build']
     options:
       runDepsInParallel: false
-      envFile: '/.env'
+      envFile: '.env'
       cache: true
 
   docker-run:

@@ -34,13 +34,13 @@ tasks:
     command: 'pnpm run dev'
     options:
       runDepsInParallel: false
-      envFile: '/.env'
+      envFile: '.env'
 
   build:
     command: 'pnpm run build'
     options:
       runDepsInParallel: false
-      envFile: '/.env'
+      envFile: '.env'
       cache: true
 
   docker-run:
