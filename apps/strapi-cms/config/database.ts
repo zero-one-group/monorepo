@@ -1,4 +1,4 @@
-import { resolve } from 'pathe'
+import { resolve } from 'node:path'
 
 export default ({ env }) => {
   const client = env('DATABASE_CLIENT', 'sqlite')

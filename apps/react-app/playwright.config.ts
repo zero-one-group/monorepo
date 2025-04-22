@@ -5,7 +5,7 @@
 
 import 'dotenv/config'
 import { defineConfig, devices } from '@playwright/test'
-import { resolve } from 'pathe'
+import { resolve } from 'node:path'
 import { env, isCI } from 'std-env'
 
 export const STORAGE_STATE = resolve('.playwright/user.json')
@@ -50,9 +50,9 @@ export default defineConfig({
   webServer: env.URL
     ? undefined
     : {
-        command: 'moon react-app:build && moon react-app:start',
-        reuseExistingServer: !isCI,
-        port: Number(APP_PORT),
-        timeout: 30_000,
-      },
+      command: 'moon react-app:build && moon react-app:start',
+      reuseExistingServer: !isCI,
+      port: Number(APP_PORT),
+      timeout: 30_000,
+    },
 })

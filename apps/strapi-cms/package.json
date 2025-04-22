@@ -22,7 +22,6 @@
         "better-sqlite3": "^11.9.1",
         "consola": "^3.4.2",
         "dotenv": "^16.5.0",
-        "pathe": "^2.0.3",
         "pg": "^8.14.1",
         "react-dom": "~18.0.0",
         "react-router-dom": "~6.29.0",

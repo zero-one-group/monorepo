@@ -2,7 +2,9 @@
     "name": "@repo/shared-ui",
     "private": true,
     "type": "module",
-    "files": ["dist"],
+    "files": [
+        "dist"
+    ],
     "exports": {
         "./components": "./src/components/index.ts",
         "./hooks": "./src/hooks/index.ts",
@@ -88,7 +90,6 @@
         "@types/react": "^19.1.2",
         "@vitejs/plugin-react": "^4.4.1",
         "consola": "^3.4.2",
-        "pathe": "^2.0.3",
         "react-dom": "^19.1.0",
         "react": "^19.1.0",
         "std-env": "^3.9.0",
@@ -102,7 +103,7 @@
         "vite-tsconfig-paths": "^5.1.4"
     },
     "peerDependencies": {
-        "react": "^19.0.0",
-        "react-dom": "^19.0.0"
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0"
     }
 }

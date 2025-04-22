@@ -1,4 +1,4 @@
-#!/nodejs/bin/node
+#!/usr/bin/env node --no-warnings
 
 import os from 'node:os'
 import compression from 'compression'

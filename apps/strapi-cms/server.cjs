@@ -1,4 +1,4 @@
-#!/nodejs/bin/node
+#!/usr/bin/env node --no-warnings
 
 /* @ref: https://docs.strapi.io/dev-docs/deployment */
 
