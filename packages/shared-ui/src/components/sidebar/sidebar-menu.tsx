@@ -1,4 +1,4 @@
-import { Slot } from '@radix-ui/react-slot'
+import { Slot } from 'radix-ui'
 import * as React from 'react'
 import { clx } from '../../utils'
 import { Skeleton } from '../skeleton/skeleton'
@@ -50,7 +50,7 @@ const SidebarMenuButton = React.forwardRef<
     },
     ref
   ) => {
-    const Comp = asChild ? Slot : 'button'
+    const Comp = asChild ? Slot.Root : 'button'
     const { isMobile, state } = useSidebar()
 
     const button = (
@@ -95,7 +95,7 @@ const SidebarMenuAction = React.forwardRef<
     showOnHover?: boolean
   }
 >(({ className, asChild = false, showOnHover = false, ...props }, ref) => {
-  const Comp = asChild ? Slot : 'button'
+  const Comp = asChild ? Slot.Root : 'button'
   const styles = sidebarStyles({ showOnHover })
 
   return (
@@ -181,7 +181,7 @@ const SidebarMenuSubButton = React.forwardRef<
     isActive?: boolean
   }
 >(({ asChild = false, size = 'md', isActive, className, ...props }, ref) => {
-  const Comp = asChild ? Slot : 'a'
+  const Comp = asChild ? Slot.Root : 'a'
   // const styles = sidebarStyles()
 
   return (

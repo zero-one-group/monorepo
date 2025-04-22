@@ -1,5 +1,5 @@
-import { Slot } from '@radix-ui/react-slot'
 import * as Lucide from 'lucide-react'
+import { Slot } from 'radix-ui'
 import * as React from 'react'
 import { breadcrumbStyles } from './breadcrumb.css'
 
@@ -30,7 +30,7 @@ const BreadcrumbLink = React.forwardRef<
     asChild?: boolean
   }
 >(({ asChild, className, ...props }, ref) => {
-  const Comp = asChild ? Slot : 'a'
+  const Comp = asChild ? Slot.Root : 'a'
   const styles = breadcrumbStyles()
   return <Comp ref={ref} className={styles.link({ className })} {...props} />
 })

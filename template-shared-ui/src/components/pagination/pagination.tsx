@@ -1,5 +1,5 @@
-import { Slot } from '@radix-ui/react-slot'
 import * as Lucide from 'lucide-react'
+import { Slot } from 'radix-ui'
 import * as React from 'react'
 import type { ButtonProps } from '../button/button'
 import { buttonStyles } from '../button/button.css'
@@ -38,7 +38,7 @@ const PaginationLink = ({
   ...props
 }: PaginationLinkProps) => {
   const styles = buttonStyles({ variant: isActive ? 'outline' : 'ghost', size })
-  const Comp = asChild ? Slot : 'a'
+  const Comp = asChild ? Slot.Root : 'a'
   return (
     <Comp
       href={props.href || '#'}
