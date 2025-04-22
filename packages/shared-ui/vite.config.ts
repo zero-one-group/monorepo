@@ -1,6 +1,6 @@
+import { resolve } from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
-import { resolve } from 'node:path'
 import { env, isDevelopment } from 'std-env'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
@@ -17,12 +17,12 @@ export default defineConfig({
     tsconfigPaths(),
     /* Generate declarations for TypeScript */
     !isTestOrStorybook &&
-    dts({
-      include: ['src'],
-      rollupTypes: true,
-      exclude: ['**/*.stories.@(ts|tsx)'],
-      tsconfigPath: resolve('tsconfig.json'),
-    }),
+      dts({
+        include: ['src'],
+        rollupTypes: true,
+        exclude: ['**/*.stories.@(ts|tsx)'],
+        tsconfigPath: resolve('tsconfig.json'),
+      }),
   ],
   server: { port: 6300, host: false },
   build: {

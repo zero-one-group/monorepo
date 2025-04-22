@@ -6,7 +6,7 @@ import consola from 'consola'
 import express from 'express'
 import rateLimit from 'express-rate-limit'
 import morgan from 'morgan'
-import { resolve } from 'pathe'
+import { resolve } from 'node:path'
 import { env, isDevelopment } from 'std-env'
 
 // Short-circuit the type-checking of the built output.
