@@ -48,6 +48,12 @@ export default defineConfig({
 })
 ```
 
+Add `shared-ui` source list to `global.css`:
+
+```css
+@source "../../../../packages/shared-ui/**/*.{ts,tsx}";
+```
+
 Finally, add the following to your `moon.yml` file:
 
 ```yaml

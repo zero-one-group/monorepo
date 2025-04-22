@@ -39,7 +39,7 @@ Then, follow these steps (_don't forget to replace `moon-project` with your proj
 
 1. Clone this repository: `pnpm dlx tiged zero-one-group/monorepo moon-project`
 2. Install the necessary dependencies: `cd moon-project && pnpm install`
-3. Create `.env` file or duplicate the `.env.example` file, then configure required variables.
+3. Create `.env` file or duplicate the `.env.example` file inside the app or package.
 
 Find and replace the `myorg` namespace and `example.com` string with your own organization
 or project-specific namespace. This is necessary to ensure that all configurations,
@@ -86,16 +86,16 @@ View all available templates by looking at folders with `template-` prefix in th
 
 Current available templates are:
 
-| Template Name                                | Description                                        |
-|----------------------------------------------|----------------------------------------------------|
-| [`template-golang`](./template-golang)       | Basic Go application for backend                   |
-| [`template-react-app`](./template-react-app) | SPA React Router application with Tailwind CSS     |
-| [`template-react-ssr`](./template-react-ssr) | SSR React Router application with Tailwind CSS     |
-| [`template-shared-ui`](./template-shared-ui) | Collections of UI components based on `shadcn/ui`  |
-| [`template-nextjs`](./template-nextjs)       | Next.js application with Tailwind CSS              |
-| [`template-strapi`](./template-strapi)       | Strapi headless CMS with PostgreSQL and Nodemailer |
-| [`template-astro`](./template-astro)         | Astro website with Tailwind CSS                    |
-| [`template-fastapi-ai`](./template-fastapi-ml)       | FastAPI template for AI apps                  |
+| Template Name                                  | Description                                        |
+|------------------------------------------------|----------------------------------------------------|
+| [`template-golang`](./template-golang)         | Basic Go application for backend                   |
+| [`template-react-app`](./template-react-app)   | SPA React Router application with Tailwind CSS     |
+| [`template-react-ssr`](./template-react-ssr)   | SSR React Router application with Tailwind CSS     |
+| [`template-shared-ui`](./template-shared-ui)   | Collections of UI components based on `shadcn/ui`  |
+| [`template-nextjs`](./template-nextjs)         | Next.js application with Tailwind CSS              |
+| [`template-strapi`](./template-strapi)         | Strapi headless CMS with PostgreSQL and Nodemailer |
+| [`template-astro`](./template-astro)           | Astro website with Tailwind CSS                    |
+| [`template-fastapi-ai`](./template-fastapi-ml) | FastAPI template for AI apps                       |
 
 ### Moon commands
 
