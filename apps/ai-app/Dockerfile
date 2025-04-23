@@ -21,13 +21,9 @@ ENV PATH="/root/.local/bin/:$PATH"
 
 # Set default environment variables
 ARG SERVER_ENV=production
-ARG HOST=0.0.0.0
-ARG PORT=8080
+ARG DEBUG=false
 ENV SERVER_ENV=${SERVER_ENV}
-ENV DEBUG=false
-
-ENV HOST=${HOST}
-ENV PORT=${PORT}
+ENV DEBUG=${DEBUG}
 
 # Copy the rest of the application
 COPY . .
@@ -35,8 +31,7 @@ COPY . .
 # Set up the virtual environment and install dependencies
 RUN uv venv && uv sync
 
-# Expose the port
-EXPOSE ${PORT}
+EXPOSE 8080
 
-# Run the application using a shell command
-CMD ["/bin/sh", "-c", "/root/.local/bin/uv run fastapi run /opt/app/main.py --port=${PORT}"]
+# Run the application
+CMD ["/bin/sh", "-c", "/root/.local/bin/uv run fastapi run /opt/app/main.py --port=8080"]
