@@ -7,7 +7,6 @@ router = APIRouter()
 
 @router.get("/")
 async def root(logger: DepLogger):
-    logger.info("Incoming request at root path!", extra={"path": "/"})
     return {"message": "Welcome to the Machine Learning API"}
 
 

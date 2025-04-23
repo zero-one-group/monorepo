@@ -1,22 +1,6 @@
 # FastAPI AI Project Template
 
-## Project Structure
-
-| Directory/File | Purpose |
-|----------------|---------|
-| `app/` | Main application package |
-| `app/core/` | Core functionality including config, database, env management, and logging |
-| `app/main.py` | Application entry point |
-| `app/model/` | Data models including database models and schemas |
-| `app/repository/` | Data access layer for different providers (postgres, ml models, etc.) |
-| `app/router/` | API route definitions |
-| `app/services/` | Business logic implementation |
-| `infra/` | Infrastructure configuration |
-| `infra/docker/` | Docker configuration for development and production |
-| `tests/` | Test suite |
-| `.env.example` | Example environment variables |
-| `moon.yml` | Moonrepo configuration |
-| `pyproject.toml` | Python package configuration |
+Short brief description about the project.
 
 ## Check-In-Dance
 
@@ -67,9 +51,9 @@ moon ai-app:start
 If you've renamed your application, use:
 
 ```bash
-moon {app-name}:dev
+moon {{ package_name | kebab_case }}:dev
 ```
-
-## Contributing
-
-When contributing to this template, please follow the existing structure and naming conventions.
+## Useful Links
+- [FastAPI Dependency Injection](https://fastapi.tiangolo.com/tutorial/dependencies/)
+    - tl;dr: FastAPI Dependency Injection: Your code tells FastAPI what it needs, and FastAPI automatically provides those requirements when needed. This eliminates repetitive code and makes your application cleaner and easier to maintain.
+- [FastAPI Deployment](https://fastapi.tiangolo.com/deployment/)
