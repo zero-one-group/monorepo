@@ -53,3 +53,7 @@ If you've renamed your application, use:
 ```bash
 moon {app-name}:dev
 ```
+## Useful Links
+- [FastAPI Dependency Injection](https://fastapi.tiangolo.com/tutorial/dependencies/)
+    - tl;dr: FastAPI Dependency Injection: Your code tells FastAPI what it needs, and FastAPI automatically provides those requirements when needed. This eliminates repetitive code and makes your application cleaner and easier to maintain.
+- [FastAPI Deployment](https://fastapi.tiangolo.com/deployment/)
