@@ -1,6 +1,9 @@
+from app.core.database import engine
 from app.core.env import get_env
+from app.core.logging import RequestIdMiddleware, logger
+from app.router.openai import router as openai_router
+from app.router.root import router as root_router
 from fastapi import FastAPI
-from app.core.logging import DepLogger, RequestIdMiddleware, logger
 from fastapi.middleware.cors import CORSMiddleware
 
 env = get_env()
@@ -28,8 +31,13 @@ app.add_middleware(
 )
 app.add_middleware(RequestIdMiddleware)
 
+app.include_router(root_router)
+app.include_router(openai_router)
 
-@app.get("/")
-async def root(logger: DepLogger):
-    logger.info("Incoming request at root path!", extra={"path": "/"})
-    return {"message": "Welcome to the Machine Learning API"}
+
+@app.on_event("shutdown")
+def shutdown():
+    logger.info("Application shutting down, preparing for graceful shutdown")
+    logger.info("Disposing database connections")
+    engine.dispose()
+    logger.info("Database engine disposed")

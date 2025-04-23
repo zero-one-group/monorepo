@@ -11,6 +11,7 @@ class Env(BaseSettings):
 
     ML_PREFIX_API: str
     DEBUG: bool = False
+    DATABASE_URL: str
 
     model_config = SettingsConfigDict(
         env_file=".env",
