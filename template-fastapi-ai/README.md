@@ -51,7 +51,7 @@ moon ai-app:start
 If you've renamed your application, use:
 
 ```bash
-moon {app-name}:dev
+moon {{ package_name | kebab_case }}:dev
 ```
 ## Useful Links
 - [FastAPI Dependency Injection](https://fastapi.tiangolo.com/tutorial/dependencies/)
