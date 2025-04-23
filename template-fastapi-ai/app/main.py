@@ -1,6 +1,7 @@
 from app.core.env import get_env
 from app.core.logging import RequestIdMiddleware, logger
 from app.router.main import router as system_router
+from app.router.openai import router as openai_router
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -30,3 +31,4 @@ app.add_middleware(
 app.add_middleware(RequestIdMiddleware)
 
 app.include_router(system_router)
+app.include_router(openai_router)
