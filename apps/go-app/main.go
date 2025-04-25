@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"go-app/config"
+	"go-app/database"
 	"go-app/domain"
 
 	"github.com/labstack/echo/v4"
@@ -21,6 +22,14 @@ func init() {
 }
 
 func main() {
+
+	dbPool, err := database.SetupDatabase()
+	if err != nil {
+		log.Fatal("Failed to set up database: " + err.Error())
+	}
+	defer dbPool.Close()
+
+
 	e := echo.New()
 	e.HideBanner = true
 	e.Logger.SetLevel(log.INFO)
@@ -50,13 +59,13 @@ func main() {
 	defer stop()
 
 	// Get host from environment variable, default to 127.0.0.1 if not set
-	host := os.Getenv("HOST")
+	host := os.Getenv("APP_HOST")
 	if host == "" {
 		host = "127.0.0.1"
 	}
 
 	// Get port from environment variable, default to 8000 if not set
-	port := os.Getenv("PORT")
+	port := os.Getenv("APP_PORT")
 	if port == "" {
 		port = "8000"
 	}
