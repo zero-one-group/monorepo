@@ -29,11 +29,12 @@ tasks:
       envFile: "/.env"
 
   build:
-    command: 'go build -o build/release/go-app'
+    command: 'go build -o build/go-app'
+    outputs: ["build/go-app"]
     deps: [tidy]
 
   start:
-    command: 'build/release/go-app'
+    command: 'build/go-app'
     options:
       cache: false
 
