@@ -29,9 +29,19 @@ Adjust the variable to the desired value.
 moon run tidy
 ```
 
-#### Running The Application
+#### Running and Build The Application
 
-1. Development
+1. Running on development mode
 ```bash
 moon run dev
+```
+
+2. Build the application
+```bash
+moon run build
+```
+
+3. Running on production mode
+```bash
+moon run start
 ```
