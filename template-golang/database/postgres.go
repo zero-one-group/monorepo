@@ -29,5 +29,7 @@ func SetupDatabase() (*pgxpool.Pool, error) {
 		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
 
+    fmt.Println("Connected to DB Postgresql...")
+
 	return dbPool, nil
 }
