@@ -29,11 +29,12 @@ tasks:
       envFile: "/.env"
 
   build:
-    command: 'go build -o build/release/{{ package_name | kebab_case }}'
+    command: 'go build -o build/{{ package_name | kebab_case }}'
+    outputs: ["build/{{ package_name | kebab_case }}"]
     deps: [tidy]
 
   start:
-    command: 'build/release/{{ package_name | kebab_case }}'
+    command: 'build/{{ package_name | kebab_case }}'
     options:
       cache: false
 

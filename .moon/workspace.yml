@@ -52,3 +52,4 @@ generator:
   templates:
     - 'git://github.com/zero-one-group/monorepo#main'
     # - 'file://../../Repository/ZeroOne/monorepo'
+    # - './'
