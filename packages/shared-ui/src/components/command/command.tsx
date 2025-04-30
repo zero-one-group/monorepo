@@ -1,6 +1,6 @@
-import type { DialogProps } from '@radix-ui/react-dialog'
 import { Command as CommandPrimitive } from 'cmdk'
 import * as Lucide from 'lucide-react'
+import type { Dialog as DialogPrimitive } from 'radix-ui'
 import * as React from 'react'
 import { Dialog, DialogContent } from '../dialog/dialog'
 import { ScrollArea } from '../scroll-area/scroll-area'
@@ -14,7 +14,7 @@ const Command = React.forwardRef<
   return <CommandPrimitive ref={ref} className={styles.root({ className })} {...props} />
 })
 
-const CommandDialog = ({ children, ...props }: DialogProps) => {
+const CommandDialog = ({ children, ...props }: DialogPrimitive.DialogProps) => {
   const styles = commandStyles()
   return (
     <Dialog {...props}>

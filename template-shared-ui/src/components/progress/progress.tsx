@@ -1,4 +1,4 @@
-import * as ProgressPrimitive from '@radix-ui/react-progress'
+import { Progress as ProgressPrimitive } from 'radix-ui'
 import * as React from 'react'
 import { progressStyles } from './progress.css'
 import type { ProgressVariants } from './progress.css'

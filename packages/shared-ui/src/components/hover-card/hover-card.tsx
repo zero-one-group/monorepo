@@ -1,4 +1,4 @@
-import * as HoverCardPrimitive from '@radix-ui/react-hover-card'
+import { HoverCard as HoverCardPrimitive } from 'radix-ui'
 import * as React from 'react'
 import { hoverCardStyles } from './hover-card.css'
 import type { HoverCardVariants } from './hover-card.css'

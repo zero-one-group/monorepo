@@ -1,4 +1,4 @@
-import * as AspectRatioPrimitive from '@radix-ui/react-aspect-ratio'
+import { AspectRatio as AspectRatioPrimitive } from 'radix-ui'
 import * as React from 'react'
 import { type AspectRatioVariants, aspectRatioStyles } from './aspect-ratio.css'
 

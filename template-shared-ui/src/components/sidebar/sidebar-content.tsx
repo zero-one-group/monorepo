@@ -91,19 +91,20 @@ const SidebarFooter = React.forwardRef<HTMLDivElement, React.ComponentProps<'div
   }
 )
 
-const SidebarSeparator = React.forwardRef<
-  React.ComponentRef<typeof Separator>,
-  React.ComponentProps<typeof Separator>
->(({ className, ...props }, ref) => {
-  return (
-    <Separator
-      ref={ref}
-      data-sidebar="separator"
-      className={clx('mx-2 w-auto bg-sidebar-border', className)}
-      {...props}
-    />
-  )
-})
+const SidebarSeparator: React.ForwardRefExoticComponent<
+  React.ComponentPropsWithRef<typeof Separator>
+> = React.forwardRef<React.ComponentRef<typeof Separator>, React.ComponentProps<typeof Separator>>(
+  ({ className, ...props }, ref) => {
+    return (
+      <Separator
+        ref={ref}
+        data-sidebar="separator"
+        className={clx('mx-2 w-auto bg-sidebar-border', className)}
+        {...props}
+      />
+    )
+  }
+)
 
 const SidebarContent = React.forwardRef<HTMLDivElement, React.ComponentProps<'div'>>(
   ({ className, ...props }, ref) => {

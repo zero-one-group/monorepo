@@ -1,4 +1,4 @@
-import * as ToggleGroupPrimitive from '@radix-ui/react-toggle-group'
+import { ToggleGroup as ToggleGroupPrimitive } from 'radix-ui'
 import * as React from 'react'
 import { type ToggleVariants, toggleStyles } from '../toggle/toggle.css'
 import { toggleGroupStyles } from './toggle-group.css'

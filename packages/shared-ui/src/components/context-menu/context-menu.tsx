@@ -1,5 +1,5 @@
-import * as ContextMenuPrimitive from '@radix-ui/react-context-menu'
 import * as Lucide from 'lucide-react'
+import { ContextMenu as ContextMenuPrimitive } from 'radix-ui'
 import * as React from 'react'
 import { contextMenuStyles } from './context-menu.css'
 import type { ContextMenuVariants } from './context-menu.css'
