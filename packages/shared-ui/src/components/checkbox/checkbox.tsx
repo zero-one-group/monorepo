@@ -1,5 +1,5 @@
-import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
 import * as Lucide from 'lucide-react'
+import { Checkbox as CheckboxPrimitive } from 'radix-ui'
 import * as React from 'react'
 import { checkboxStyles } from './checkbox.css'
 

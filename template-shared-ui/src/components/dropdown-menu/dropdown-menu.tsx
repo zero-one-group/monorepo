@@ -1,5 +1,5 @@
-import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import * as Lucide from 'lucide-react'
+import { DropdownMenu as DropdownMenuPrimitive } from 'radix-ui'
 import * as React from 'react'
 import { type DropdownMenuVariants, dropdownMenuStyles } from './dropdown-menu.css'
 

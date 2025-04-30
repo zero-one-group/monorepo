@@ -1,5 +1,5 @@
-import * as SheetPrimitive from '@radix-ui/react-dialog'
 import * as Lucide from 'lucide-react'
+import { Dialog as SheetPrimitive } from 'radix-ui'
 import * as React from 'react'
 import { sheetStyles } from './sheet.css'
 import type { SheetVariants } from './sheet.css'

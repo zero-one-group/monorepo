@@ -1,5 +1,5 @@
-import * as RadioGroupPrimitive from '@radix-ui/react-radio-group'
 import * as Lucide from 'lucide-react'
+import { RadioGroup as RadioGroupPrimitive } from 'radix-ui'
 import * as React from 'react'
 import { radioGroupStyles } from './radio-group.css'
 import type { RadioGroupVariants } from './radio-group.css'

@@ -1,5 +1,5 @@
-import * as AccordionPrimitive from '@radix-ui/react-accordion'
 import * as Lucide from 'lucide-react'
+import { Accordion as AccordionPrimitive } from 'radix-ui'
 import * as React from 'react'
 import { accordionStyles } from './accordion.css'
 

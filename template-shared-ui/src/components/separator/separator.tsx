@@ -1,4 +1,4 @@
-import * as SeparatorPrimitive from '@radix-ui/react-separator'
+import { Separator as SeparatorPrimitive } from 'radix-ui'
 import * as React from 'react'
 import { type SeparatorVariants, separatorStyles } from './separator.css'
 

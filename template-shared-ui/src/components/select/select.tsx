@@ -1,5 +1,5 @@
-import * as SelectPrimitive from '@radix-ui/react-select'
 import * as Lucide from 'lucide-react'
+import { Select as SelectPrimitive } from 'radix-ui'
 import * as React from 'react'
 import { selectStyles } from './select.css'
 

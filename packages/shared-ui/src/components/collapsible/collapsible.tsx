@@ -1,4 +1,4 @@
-import * as CollapsiblePrimitive from '@radix-ui/react-collapsible'
+import { Collapsible as CollapsiblePrimitive } from 'radix-ui'
 import * as React from 'react'
 import { collapsibleStyles } from './collapsible.css'
 
