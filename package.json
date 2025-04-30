@@ -3,9 +3,9 @@
     "version": "0.0.0",
     "private": true,
     "scripts": {
-        "dev": "moon :dev",
-        "build": "moon :build",
-        "start": "moon :start",
+        "dev": "moon '#app:dev'",
+        "build": "moon '#app:build'",
+        "start": "moon '#app:start'",
         "prepare": "moon setup",
         "lint": "moon :lint",
         "check": "moon :check",
@@ -32,7 +32,7 @@
         "npm-check-updates": "^17.1.14",
         "tsx": "^4.19.2"
     },
-    "packageManager": "pnpm@10.9.0",
+    "packageManager": "pnpm@10.10.0",
     "pnpm": {
         "onlyBuiltDependencies": [
             "@biomejs/biome",
