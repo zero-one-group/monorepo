@@ -24,6 +24,7 @@
     },
     "devDependencies": {
         "@biomejs/biome": "^1.9.4",
+        "@clack/prompts": "^0.10.1",
         "@noble/hashes": "^1.7.1",
         "@types/node": "^22.13.1",
         "citty": "^0.1.6",

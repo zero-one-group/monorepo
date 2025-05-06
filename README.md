@@ -73,16 +73,10 @@ pnpm compose:cleanup  # Remove all local development server data
 To get started, you can use the following command to generate a new application from a template.
 
 ```sh
-moon generate TEMPLATE_NAME
+pnpm -s cmd generate:app
 ```
 
-Example, creating React application:
-
-```sh
-moon generate template-react-app
-```
-
-View all available templates by looking at folders with `template-` prefix in this repository.
+Follow the prompts to create a new application.
 
 Current available templates are:
 

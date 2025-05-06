@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty'
-import consola from 'consola'
+import { consola } from 'consola'
 import { generateRandomStr } from '../utils/string'
 
 export default defineCommand({

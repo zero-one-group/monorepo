@@ -16,6 +16,7 @@ const main = defineCommand({
     },
   },
   subCommands: {
+    'generate:app': () => import('./cmd/generate-app').then((r) => r.default),
     'make:app-key': () => import('./cmd/make-app-key').then((r) => r.default),
     'make:strapi-keys': () => import('./cmd/make-strapi-keys').then((r) => r.default),
   },
