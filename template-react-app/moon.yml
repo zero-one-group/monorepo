@@ -4,9 +4,6 @@ $schema: 'https://moonrepo.dev/schemas/project.json'
 
 type: application
 language: typescript
-toolchain:
-  node:
-    version: '20'
 stack: frontend
 tags: ['app']
 

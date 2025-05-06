@@ -5,7 +5,7 @@ import { env, isDevelopment } from 'std-env'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import tsconfigPaths from 'vite-tsconfig-paths'
-import pkg from './package.json' assert { type: 'json' }
+import pkg from './package.json' with { type: 'json' }
 
 // Check if the current environment is CI or test environment
 const isTestOrStorybook = env.VITEST || process.argv[1]?.includes('storybook')

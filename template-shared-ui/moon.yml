@@ -4,9 +4,6 @@ $schema: 'https://moonrepo.dev/schemas/project.json'
 
 type: library
 language: typescript
-toolchain:
-  node:
-    version: '20'
 tags: ['libs', 'ui']
 
 # Overrides the name (identifier) of the project
