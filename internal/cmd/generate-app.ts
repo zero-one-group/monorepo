@@ -8,16 +8,34 @@ import { createConsola } from 'consola'
 
 const _console = createConsola({ defaults: { tag: 'monorepo-cli' } })
 
-// Map of app types to their corresponding moon generate template commands
-const TEMPLATE_MAP = {
-  astro: 'template-astro',
-  fastapi: 'template-fastapi-ai',
-  golang: 'template-golang',
-  nextjs: 'template-nextjs',
-  'react-spa': 'template-react-app',
-  'react-ssr': 'template-react-ssr',
-  'shared-ui': 'template-shared-ui',
-  strapi: 'template-strapi',
+// Define template info type for better type safety
+type TemplateInfo = {
+  template: string
+  port: string
+  requiresPort: boolean
+}
+
+type PhoenixInfo = {
+  requiresPort: boolean
+}
+
+// Map of app types to their corresponding moon generate template commands and default ports
+const TEMPLATE_MAP: Record<string, TemplateInfo | PhoenixInfo> = {
+  astro: { template: 'template-astro', port: '4321', requiresPort: true },
+  fastapi: { template: 'template-fastapi-ai', port: '5000', requiresPort: true },
+  golang: { template: 'template-golang', port: '8080', requiresPort: true },
+  nextjs: { template: 'template-nextjs', port: '3000', requiresPort: true },
+  'react-spa': { template: 'template-react-app', port: '3000', requiresPort: true },
+  'react-ssr': { template: 'template-react-ssr', port: '3000', requiresPort: true },
+  'shared-ui': { template: 'template-shared-ui', port: '6300', requiresPort: false },
+  strapi: { template: 'template-strapi', port: '1337', requiresPort: true },
+  // Phoenix is not in the template map but we still define its port requirement
+  phoenix: { requiresPort: false },
+}
+
+// Type guard to check if an entry has template and port
+function isTemplateInfo(entry: TemplateInfo | PhoenixInfo): entry is TemplateInfo {
+  return 'template' in entry && 'port' in entry
 }
 
 export default defineCommand({
@@ -113,22 +131,52 @@ export default defineCommand({
         process.exit(0)
       }
 
-      const portNumber = await text({
-        message: `What is the port number of your app? (ex: ${args.portNumber})`,
-        defaultValue: args.portNumber,
-      })
+      // Get template info
+      const templateInfo = TEMPLATE_MAP[appType] || { requiresPort: true }
 
-      if (isCancel(portNumber)) {
-        cancel('Operation cancelled.')
-        process.exit(0)
+      // Check if the app type requires a port
+      const requiresPort = templateInfo.requiresPort
+
+      // Get default port based on app type
+      let defaultPort = args.portNumber
+      if (isTemplateInfo(templateInfo)) {
+        defaultPort = templateInfo.port
+      }
+
+      // Only ask for port number if the app type requires it
+      let portNumber = defaultPort
+      if (requiresPort) {
+        const portResponse = await text({
+          message: `What is the port number of your app? (ex: ${defaultPort})`,
+          defaultValue: defaultPort,
+        })
+
+        if (isCancel(portResponse)) {
+          cancel('Operation cancelled.')
+          process.exit(0)
+        }
+
+        portNumber = portResponse
+      }
+
+      // Build confirmation message
+      let confirmMessage = `Do you want to generate the app with the following configuration?\n
+  • Type: ${appType}
+  • Name: ${appName}
+  • Description: ${appDescription}\n`
+
+      // Only include port in confirmation if it's required
+      if (requiresPort) {
+        confirmMessage += `\n  • Port: ${portNumber}`
+      }
+
+      // Add overwrite info if needed
+      if (forceOverwrite) {
+        confirmMessage += `\n  • Overwrite: Yes`
       }
 
       const confirmAction = await confirm({
-        message: `Do you want to generate the app with the following configuration?
-  • Type: ${appType}
-  • Name: ${appName}
-  • Description: ${appDescription}
-  • Port: ${portNumber}${forceOverwrite ? '\n  • Overwrite: Yes' : ''}`,
+        message: confirmMessage,
         initialValue: true,
       })
 
@@ -151,17 +199,22 @@ export default defineCommand({
               throw new Error('Phoenix generator is not implemented yet')
             }
 
-            if (appType in TEMPLATE_MAP) {
-              const templateName = TEMPLATE_MAP[appType as keyof typeof TEMPLATE_MAP]
+            const info = TEMPLATE_MAP[appType]
+            if (info && isTemplateInfo(info)) {
+              const templateName = info.template
               _console.info(`Generating ${appType} app using template: ${templateName}`)
 
               try {
                 // Create command with arguments, adding --force flag if needed
                 const forceFlag = forceOverwrite ? '--force' : ''
-                const command = `moon generate ${templateName} ${forceFlag} -- \\
+                let command = `moon generate ${templateName} ${forceFlag} -- \\
                   --package_name "${appName}" \\
-                  --package_description "${appDescription}" \\
-                  --port_number "${portNumber}"`
+                  --package_description "${appDescription}"`
+
+                // Only add port number if required
+                if (requiresPort) {
+                  command += ` \\\n  --port_number "${portNumber}"`
+                }
 
                 // Execute the command
                 execSync(command, { stdio: 'inherit' })
