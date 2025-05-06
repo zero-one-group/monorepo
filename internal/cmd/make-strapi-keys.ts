@@ -1,5 +1,5 @@
 import { defineCommand } from 'citty'
-import consola from 'consola'
+import { consola } from 'consola'
 import { generateRandomStr } from '../utils/string'
 
 function generateBase64Key(length = 24): string {

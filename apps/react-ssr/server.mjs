@@ -3,7 +3,7 @@
 import os from 'node:os'
 import { resolve } from 'node:path'
 import compression from 'compression'
-import consola from 'consola'
+import { consola } from 'consola'
 import express from 'express'
 import rateLimit from 'express-rate-limit'
 import morgan from 'morgan'

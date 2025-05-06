@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { Meta, StoryObj } from '@storybook/react'
-import consola from 'consola'
+import { consola } from 'consola'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Button } from '../button/button'
