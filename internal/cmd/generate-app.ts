@@ -1,10 +1,24 @@
-import { spawn } from 'node:child_process'
+import { execSync } from 'node:child_process'
+import { existsSync } from 'node:fs'
+import { join } from 'node:path'
 import { intro, outro, spinner, tasks } from '@clack/prompts'
 import { cancel, confirm, isCancel, select, text } from '@clack/prompts'
 import { defineCommand } from 'citty'
 import { createConsola } from 'consola'
 
 const _console = createConsola({ defaults: { tag: 'monorepo-cli' } })
+
+// Map of app types to their corresponding moon generate template commands
+const TEMPLATE_MAP = {
+  astro: 'template-astro',
+  fastapi: 'template-fastapi-ai',
+  golang: 'template-golang',
+  nextjs: 'template-nextjs',
+  'react-spa': 'template-react-app',
+  'react-ssr': 'template-react-ssr',
+  'shared-ui': 'template-shared-ui',
+  strapi: 'template-strapi',
+}
 
 export default defineCommand({
   meta: {
@@ -70,18 +84,27 @@ export default defineCommand({
         process.exit(0)
       }
 
-      const appTitle = await text({
-        message: `What is the title of your app? (ex: My Application)`,
-        defaultValue: 'My Application',
-      })
+      // Check if app directory already exists
+      const appDir = join(process.cwd(), 'apps', appName)
+      const appExists = existsSync(appDir)
+      let forceOverwrite = false
 
-      if (isCancel(appTitle)) {
-        cancel('Operation cancelled.')
-        process.exit(0)
+      if (appExists) {
+        const overwriteConfirm = await confirm({
+          message: `App directory "${appName}" already exists. Do you want to overwrite it?`,
+          initialValue: false,
+        })
+
+        if (isCancel(overwriteConfirm) || !overwriteConfirm) {
+          cancel('Operation cancelled.')
+          process.exit(0)
+        }
+
+        forceOverwrite = true
       }
 
       const appDescription = await text({
-        message: `What is the description of your app?`,
+        message: `What is the description of your app? (ex: ${args.appDescription})`,
         defaultValue: args.appDescription,
       })
 
@@ -101,52 +124,62 @@ export default defineCommand({
       }
 
       const confirmAction = await confirm({
-        message: `Do you want to generate the app with the following configuration?`,
+        message: `Do you want to generate the app with the following configuration?
+  • Type: ${appType}
+  • Name: ${appName}
+  • Description: ${appDescription}
+  • Port: ${portNumber}${forceOverwrite ? '\n  • Overwrite: Yes' : ''}`,
         initialValue: true,
       })
 
-      if (isCancel(confirmAction)) {
+      if (isCancel(confirmAction) || !confirmAction) {
         cancel('Operation cancelled.')
         process.exit(0)
       }
 
-      // Build the params object
-      const params = { appName, appTitle, appDescription, portNumber }
-
       const s = spinner()
       s.start('Generating app...')
-
-      _console.info(params)
 
       await tasks([
         {
           title: 'Generating application files',
-          task: async (message) => {
-            // Do installation here
+          task: async () => {
+            // Generate app based on selected type
+            if (appType === 'phoenix') {
+              // Phoenix has a special case since it's not in the template map
+              _console.info('Phoenix generator is not implemented yet')
+              throw new Error('Phoenix generator is not implemented yet')
+            }
 
-            // moon setup
-            // moon generate template-strapi
+            if (appType in TEMPLATE_MAP) {
+              const templateName = TEMPLATE_MAP[appType as keyof typeof TEMPLATE_MAP]
+              _console.info(`Generating ${appType} app using template: ${templateName}`)
 
-            const ls = spawn('ls', ['-lh', '/Users/ariss/Developer/Excercise'])
+              try {
+                // Create command with arguments, adding --force flag if needed
+                const forceFlag = forceOverwrite ? '--force' : ''
+                const command = `moon generate ${templateName} ${forceFlag} -- \\
+                  --package_name "${appName}" \\
+                  --package_description "${appDescription}" \\
+                  --port_number "${portNumber}"`
 
-            ls.stdout.on('data', (data) => {
-              _console.log(`stdout: ${data}`)
-            })
+                // Execute the command
+                execSync(command, { stdio: 'inherit' })
 
-            ls.stderr.on('data', (data) => {
-              _console.error(`stderr: ${data}`)
-            })
+                return `${appType} application generated successfully`
+              } catch (error) {
+                _console.error(`Failed to generate ${appType} application:`, error)
+                throw error
+              }
+            }
 
-            ls.on('close', (code) => {
-              _console.log(`child process exited with code ${code}`)
-            })
-            return 'Installed via npm'
+            throw new Error(`Generator for ${appType} is not implemented yet`)
           },
         },
       ])
 
       s.stop('New application generated!')
-      outro(`You're all set!`)
+      outro(`You're all set! Your new ${appType} application "${appName}" is ready.`)
     } catch (error) {
       _console.error(error instanceof Error ? error.message : 'Unknown error occurred')
       process.exit(1)
