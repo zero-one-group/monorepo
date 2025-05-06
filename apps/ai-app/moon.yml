@@ -4,9 +4,6 @@ $schema: "https://moonrepo.dev/schemas/project.json"
 
 type: library
 language: python
-toolchain:
-  node:
-    version: "20"
 tags: ["app"]
 
 # Overrides the name (identifier) of the project

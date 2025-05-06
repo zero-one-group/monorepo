@@ -2,7 +2,7 @@
 
 # Arguments with default value (for build).
 ARG PLATFORM=linux/amd64
-ARG NODE_VERSION=20
+ARG NODE_VERSION=22
 
 FROM busybox:1.37-glibc as glibc
 
@@ -70,7 +70,7 @@ COPY --from=builder /srv/apps/react-ssr/build /srv/apps/react-ssr/build
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod \
     --frozen-lockfile --ignore-scripts && pnpm prune --prod \
     --ignore-scripts && pnpm dlx clean-modules clean --yes \
-    "!**/sharp/**" "!**/better-sqlite3/**" "!**/@repo/**"
+    "!**/sharp/**" "!**/@repo/**"
 
 RUN chmod +x /srv/apps/react-ssr/server.mjs
 

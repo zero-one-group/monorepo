@@ -2,7 +2,7 @@
 
 # Arguments with default value (for build).
 ARG PLATFORM=linux/amd64
-ARG NODE_VERSION=20
+ARG NODE_VERSION=22
 
 FROM busybox:1.37-glibc as glibc
 FROM joseluisq/static-web-server:2 as httpd

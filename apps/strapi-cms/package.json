@@ -2,8 +2,8 @@
     "name": "strapi-cms",
     "private": true,
     "scripts": {
-        "dev": "VITE_CJS_IGNORE_WARNING=true strapi develop",
-        "build": "VITE_CJS_IGNORE_WARNING=true strapi build",
+        "dev": "strapi develop",
+        "build": "strapi build",
         "cleanup": "pnpm dlx rimraf node_modules build dist .{cache,data,strapi,tmp} _data",
         "start-node": "NODE_ENV=production node --no-warnings -r dotenv/config server.cjs",
         "start": "NODE_ENV=production strapi start",
@@ -19,7 +19,6 @@
         "@strapi/provider-upload-aws-s3": "5.12.7",
         "@strapi/strapi": "5.12.7",
         "@strapi/upload": "5.12.7",
-        "better-sqlite3": "^11.9.1",
         "consola": "^3.4.2",
         "dotenv": "^16.5.0",
         "pg": "^8.15.6",

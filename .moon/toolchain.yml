@@ -9,7 +9,7 @@ $schema: 'https://moonrepo.dev/schemas/toolchain.json'
 # instead of relying on a version found on the host machine. This ensures deterministic
 # and reproducible builds across any machine.
 node:
-  version: '20'
+  version: '22.15'
   packageManager: 'pnpm'                  # Defines which package manager to utilize.
   inferTasksFromScripts: true             # Automatically infer moon tasks from `package.json` scripts.
   addEnginesConstraint: false             # Add `node.version` as a constraint in the root `package.json` `engines`.

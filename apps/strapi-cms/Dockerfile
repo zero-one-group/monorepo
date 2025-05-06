@@ -3,7 +3,7 @@
 # Arguments with default value (for build).
 ARG PLATFORM=linux/amd64
 ARG NODE_ENV=production
-ARG NODE_VERSION=20
+ARG NODE_VERSION=22
 
 FROM busybox:1.37-glibc as glibc
 
@@ -59,7 +59,7 @@ COPY --from=builder /srv/apps/strapi-cms /srv
 
 # Fix sharp dependencies then build the Strapi application.
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --ignore-scripts
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm rebuild --verbose better-sqlite3 sharp
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm rebuild --verbose sharp
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store NODE_ENV=$NODE_ENV pnpm build
 
 # -----------------------------------------------------------------------------
@@ -84,7 +84,7 @@ COPY --from=installer /srv/database /srv/database
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod \
     --frozen-lockfile --ignore-scripts && pnpm approve-builds && pnpm \
     prune --prod --ignore-scripts && pnpm dlx clean-modules clean --yes \
-    "!**/sharp/**" "!**/better-sqlite3/**" "**/codecov*"
+    "!**/sharp/**" "**/codecov*"
 
 # Set permissions for server.cjs and uploads directories
 RUN mkdir -p /srv/public/uploads && chmod -R 0775 /srv/public

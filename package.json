@@ -33,15 +33,8 @@
         "npm-check-updates": "^18.0.1",
         "tsx": "^4.19.4"
     },
-    "packageManager": "pnpm@10.10.0",
     "pnpm": {
-        "onlyBuiltDependencies": [
-            "@biomejs/biome",
-            "@swc/core",
-            "better-sqlite3",
-            "core-js-pure",
-            "esbuild",
-            "sharp"
-        ]
-    }
+        "onlyBuiltDependencies": ["@biomejs/biome", "@swc/core", "core-js-pure", "esbuild", "sharp"]
+    },
+    "packageManager": "pnpm@10.10.0"
 }

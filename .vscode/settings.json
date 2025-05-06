@@ -15,15 +15,10 @@
         "**/template-*": true
     },
     "tailwindCSS.experimental.classRegex": [
+        // @ref: https://www.tailwind-variants.org/docs/getting-started
         // @ref: https://github.com/paolotiu/tailwind-intellisense-regex-list
-        ["(?:twMerge|twJoin)\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"],
-        ["classList={{([^;]*)}}", "\\s*?[\"'`]([^\"'`]*).*?:"],
-        ["clsx\\(.*?\\)(?!\\])", "(?:'|\"|`)([^\"'`]*)(?:'|\"|`)"],
-        ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
-        ["tv\\(([^)]*)\\)", "{?\\s?[\\w].*:\\s*?[\"'`]([^\"'`]*).*?,?\\s?}?"],
-        "clx\\(([^)]*)\\)", // clx(xxx)
-        "cn\\(([^)]*)\\)", // cn(xxx)
-        "cx\\(([^)]*)\\)" // cx(xxx)
+        ["(?:cn|cx|cva|clx|tv)\\(([^;]*)[\\);]", "[`'\"`]([^'\"`;]*)[`'\"`]"],
+        ["classList={{([^;]*)}}", "\\s*?[\"'`]([^\"'`]*).*?:"]
     ],
     "tailwindCSS.files.exclude": ["**/.github/**", "**/*.{md,js,ts,json}"],
     "[css]": {
