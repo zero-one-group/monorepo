@@ -5,6 +5,8 @@ import { intro, outro, spinner, tasks } from '@clack/prompts'
 import { cancel, confirm, isCancel, select, text } from '@clack/prompts'
 import { defineCommand } from 'citty'
 import { createConsola } from 'consola'
+import { generatePhoenixApp, promptPhoenixOptions } from '../generator/phoenix'
+import type { PhoenixAssetsOption, PhoenixDatabaseOption } from '../generator/phoenix'
 
 const _console = createConsola({ defaults: { tag: 'monorepo-cli' } })
 
@@ -159,6 +161,21 @@ export default defineCommand({
         portNumber = portResponse
       }
 
+      // Phoenix-specific options
+      let phoenixOptions = {
+        database: 'postgres' as PhoenixDatabaseOption,
+        assets: 'both' as PhoenixAssetsOption,
+        install: true,
+      }
+
+      if (appType === 'phoenix') {
+        const options = await promptPhoenixOptions()
+        if (!options) {
+          process.exit(0)
+        }
+        phoenixOptions = options
+      }
+
       // Build confirmation message
       let confirmMessage = `Do you want to generate the app with the following configuration?\n
   • Type: ${appType}
@@ -168,6 +185,13 @@ export default defineCommand({
       // Only include port in confirmation if it's required
       if (requiresPort) {
         confirmMessage += `\n  • Port: ${portNumber}`
+      }
+
+      // Add Phoenix-specific options to confirmation
+      if (appType === 'phoenix') {
+        confirmMessage += `\n  • Database: ${phoenixOptions.database}`
+        confirmMessage += `\n  • Assets: ${phoenixOptions.assets}`
+        confirmMessage += `\n  • Install dependencies: ${phoenixOptions.install ? 'Yes' : 'No'}`
       }
 
       // Add overwrite info if needed
@@ -194,9 +218,21 @@ export default defineCommand({
           task: async () => {
             // Generate app based on selected type
             if (appType === 'phoenix') {
-              // Phoenix has a special case since it's not in the template map
-              _console.info('Phoenix generator is not implemented yet')
-              throw new Error('Phoenix generator is not implemented yet')
+              _console.info('Generating Phoenix Framework application')
+              try {
+                await generatePhoenixApp({
+                  appName,
+                  appDescription,
+                  database: phoenixOptions.database,
+                  assets: phoenixOptions.assets,
+                  force: forceOverwrite,
+                  install: phoenixOptions.install,
+                })
+                return 'Phoenix Framework application generated successfully'
+              } catch (error) {
+                _console.error('Failed to generate Phoenix Framework application:', error)
+                throw error
+              }
             }
 
             const info = TEMPLATE_MAP[appType]
