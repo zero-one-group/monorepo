@@ -35,6 +35,12 @@ tasks:
     options:
       cache: true
 
+  update-deps:
+    command: 'pnpm -s exec npm-check-updates --configFileName .ncurc.json'
+    options:
+      interactive: true
+      cache: false
+
   docker-run:
     command: 'docker run --network=host --rm -it --env-file .env -v $projectRoot/_data:/srv/_data --name $IMAGE_NAME $IMAGE_NAME:$APP_VERSION'
     options:

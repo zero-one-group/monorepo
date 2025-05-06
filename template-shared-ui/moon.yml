@@ -19,3 +19,10 @@ project:
 # Since this project can infer task from script (package.json), then you can run any script as moon task.
 # @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
 # Example: `moon shared-ui:storybook`
+
+tasks:
+  update-deps:
+    command: 'pnpm -s exec npm-check-updates --configFileName .ncurc.json'
+    options:
+      interactive: true
+      cache: false

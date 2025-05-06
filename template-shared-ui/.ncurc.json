@@ -8,5 +8,5 @@
     "install": "always",
     "packageManager": "pnpm",
     "silent": false,
-    "reject": ["typescript"]
+    "reject": ["react-resizable-panels", "typescript"]
 }

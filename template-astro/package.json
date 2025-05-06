@@ -13,12 +13,13 @@
         "astro": "astro"
     },
     "dependencies": {
-        "astro": "^5.7.10",
-        "lucide-astro": "^0.503.0"
+        "astro": "^5.7.11",
+        "lucide-astro": "^0.507.0"
     },
     "devDependencies": {
         "@biomejs/biome": "^1.9.4",
         "@tailwindcss/vite": "^4.1.5",
+        "npm-check-updates": "^18.0.1",
         "tailwindcss-motion": "^1.1.0",
         "tailwindcss": "^4.1.5"
     }

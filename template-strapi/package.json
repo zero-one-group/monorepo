@@ -33,12 +33,13 @@
     "devDependencies": {
         "@biomejs/biome": "^1.9.4",
         "@strapi/typescript-utils": "5.12.7",
-        "@types/node": "^22.15.3",
-        "@types/pg": "^8.11.14",
-        "@types/react": "~18.0.0",
+        "@types/node": "^22.15.14",
+        "@types/pg": "^8.12.0",
         "@types/react-dom": "~18.0.0",
+        "@types/react": "~18.0.0",
+        "npm-check-updates": "^18.0.1",
         "typescript": "5.7.2",
-        "vite": "^6.3.4"
+        "vite": "^6.3.5"
     },
     "strapi": {}
 }
