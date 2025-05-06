@@ -23,7 +23,7 @@ Add the following to your `package.json` file:
         "@tailwindcss/vite": "^4.1.4",
         "tailwind-variants": "^1.0.0",
         "tailwindcss-motion": "^1.1.0",
-        "tailwindcss": "^4.1.4",
+        "tailwindcss": "^4.1.5",
     }
 }
 ```

@@ -108,6 +108,7 @@ After setting up your project, use the following commands for common tasks:
 | `moon check --all`         | Run check for all tasks                  |
 | `moon run '#tag:task'`     | Run a task in all projects with a tag    |
 | `moon project-graph`       | Display an interactive graph of projects |
+| `moon :update-deps`        | Update all projects dependencies         |
 
 Type `moon help` for more information. Refer to the [moon tasks documentation](https://moonrepo.dev/docs/run-task) for more details.
 
@@ -188,7 +189,7 @@ pnpm --filter react-app add -D vitest
 
 ### Updating dependencies
 
-To update all projects dependencies, you can use the following command:
+To update workspace dependencies, you can use the following command:
 
 ```sh
 pnpm run update-deps

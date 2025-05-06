@@ -25,13 +25,13 @@
     "devDependencies": {
         "@biomejs/biome": "^1.9.4",
         "@clack/prompts": "^0.10.1",
-        "@noble/hashes": "^1.7.1",
-        "@types/node": "^22.13.1",
+        "@noble/hashes": "^1.8.0",
+        "@types/node": "^22.15.14",
         "citty": "^0.1.6",
-        "consola": "^3.4.0",
-        "dotenv": "^16.4.7",
-        "npm-check-updates": "^17.1.14",
-        "tsx": "^4.19.2"
+        "consola": "^3.4.2",
+        "dotenv": "^16.5.0",
+        "npm-check-updates": "^18.0.1",
+        "tsx": "^4.19.4"
     },
     "packageManager": "pnpm@10.10.0",
     "pnpm": {

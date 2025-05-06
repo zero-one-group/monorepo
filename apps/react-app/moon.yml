@@ -43,6 +43,12 @@ tasks:
       runDepsInParallel: false
       cache: true
 
+  update-deps:
+    command: 'pnpm -s exec npm-check-updates --configFileName .ncurc.json'
+    options:
+      interactive: true
+      cache: false
+
   typecheck:
     command: 'pnpm run typecheck'
     deps: ['prebuild']

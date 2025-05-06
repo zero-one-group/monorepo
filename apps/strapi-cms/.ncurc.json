@@ -8,5 +8,12 @@
     "install": "always",
     "packageManager": "pnpm",
     "silent": false,
-    "reject": ["typescript"]
+    "reject": [
+        "@types/react-dom",
+        "@types/react",
+        "react-dom",
+        "react-router-dom",
+        "react",
+        "typescript"
+    ]
 }
