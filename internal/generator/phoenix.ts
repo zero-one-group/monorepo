@@ -221,13 +221,21 @@ function createEnvFiles(appDir: string, userInstallChoice: boolean): void {
   try {
     // Generate a secret key, passing the app directory and user install choice
     const secretKey = generateSecretKey(appDir, userInstallChoice)
-    const envContent = `SECRET_KEY_BASE=${secretKey}`
+
+    // Ensure secretKey doesn't contain compilation logs
+    const cleanSecretKey = secretKey.trim().split('\n').pop() || 'REPLACE_WITH_GENERATED_SECRET_KEY'
+
+    // For .env.example, don't include the actual secret key
+    const envExampleContent = 'SECRET_KEY_BASE='
+
+    // For .env, include the actual secret key
+    const envContent = `SECRET_KEY_BASE=${cleanSecretKey}`
 
     const envExamplePath = join(appDir, '.env.example')
     const envPath = join(appDir, '.env')
 
     // Create .env.example file
-    writeFileSync(envExamplePath, envContent)
+    writeFileSync(envExamplePath, envExampleContent)
     _console.success(`Created ${envExamplePath}`)
 
     // Create .env file
