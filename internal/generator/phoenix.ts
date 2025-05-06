@@ -1,5 +1,5 @@
 import { execSync } from 'node:child_process'
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { cancel, confirm, isCancel, select } from '@clack/prompts'
 import { createConsola } from 'consola'
@@ -104,11 +104,11 @@ export async function promptPhoenixOptions(): Promise<
   const databaseOption = await select({
     message: 'Select database adapter for Ecto:',
     options: [
+      { value: 'none', label: 'No database (--no-ecto)' },
       { value: 'postgres', label: 'PostgreSQL' },
       { value: 'mysql', label: 'MySQL' },
       { value: 'mssql', label: 'MSSQL' },
       { value: 'sqlite3', label: 'SQLite3' },
-      { value: 'none', label: 'No database (--no-ecto)' },
     ],
   })
 
@@ -136,7 +136,7 @@ export async function promptPhoenixOptions(): Promise<
   // Ask if dependencies should be installed
   const installDeps = await confirm({
     message: 'Fetch and install dependencies?',
-    initialValue: true,
+    initialValue: false,
   })
 
   if (isCancel(installDeps)) {
@@ -152,12 +152,145 @@ export async function promptPhoenixOptions(): Promise<
 }
 
 /**
+ * Ensures dependencies are installed before running commands that require them
+ * @param appDir Directory of the Phoenix application
+ * @param userInstallChoice Whether the user chose to install dependencies
+ * @returns true if dependencies are installed or were installed successfully
+ */
+function ensureDependenciesInstalled(appDir: string, userInstallChoice: boolean): boolean {
+  try {
+    // Check if deps directory exists as a simple way to verify if deps are installed
+    const depsDir = join(appDir, 'deps')
+    if (existsSync(depsDir)) {
+      _console.info('Dependencies already installed')
+      return true
+    }
+
+    if (!userInstallChoice) {
+      _console.warn('Dependencies not installed but required for next steps')
+      _console.info('Installing dependencies now...')
+
+      // Change to the app directory before running the command
+      process.chdir(appDir)
+      execSync('mix deps.get', { stdio: 'inherit' })
+      _console.success('Dependencies installed successfully')
+    } else {
+      // This shouldn't happen if user chose to install, but just in case
+      _console.error('Dependencies should be installed but are missing')
+      return false
+    }
+
+    return true
+  } catch (error) {
+    _console.error('Failed to install dependencies:', error)
+    return false
+  }
+}
+
+/**
+ * Generates a secret key using mix phx.gen.secret
+ * @param appDir Directory of the Phoenix application
+ * @param userInstallChoice Whether the user chose to install dependencies
+ * @returns The generated secret key
+ */
+function generateSecretKey(appDir: string, userInstallChoice: boolean): string {
+  try {
+    // Ensure dependencies are installed before generating secret key
+    if (!ensureDependenciesInstalled(appDir, userInstallChoice)) {
+      _console.warn('Could not ensure dependencies are installed')
+      return 'REPLACE_WITH_GENERATED_SECRET_KEY'
+    }
+
+    // Change to the app directory before running the command
+    process.chdir(appDir)
+    const secretKey = execSync('mix phx.gen.secret', { encoding: 'utf8' }).trim()
+    _console.info('Generated secret key for Phoenix application')
+    return secretKey
+  } catch (error) {
+    _console.warn('Failed to generate secret key:', error)
+    return 'REPLACE_WITH_GENERATED_SECRET_KEY'
+  }
+}
+
+/**
+ * Creates .env and .env.example files for Phoenix application
+ * @param appDir Directory of the Phoenix application
+ * @param userInstallChoice Whether the user chose to install dependencies
+ */
+function createEnvFiles(appDir: string, userInstallChoice: boolean): void {
+  try {
+    // Generate a secret key, passing the app directory and user install choice
+    const secretKey = generateSecretKey(appDir, userInstallChoice)
+    const envContent = `SECRET_KEY_BASE=${secretKey}`
+
+    const envExamplePath = join(appDir, '.env.example')
+    const envPath = join(appDir, '.env')
+
+    // Create .env.example file
+    writeFileSync(envExamplePath, envContent)
+    _console.success(`Created ${envExamplePath}`)
+
+    // Create .env file
+    writeFileSync(envPath, envContent)
+    _console.success(`Created ${envPath}`)
+  } catch (error) {
+    _console.error('Failed to create .env files:', error)
+  }
+}
+
+/**
+ * Generates release files for Phoenix application
+ * @param appDir Directory of the Phoenix application
+ */
+function generateReleaseFiles(appDir: string): void {
+  try {
+    _console.info('Generating release files with mix phx.gen.release...')
+    process.chdir(appDir)
+    execSync('mix phx.gen.release', { stdio: 'inherit' })
+    _console.success('Release files generated successfully')
+  } catch (error) {
+    _console.error('Failed to generate release files:', error)
+  }
+}
+
+/**
+ * Copies and customizes moon.yml from template to the app directory
+ * @param appDir Directory of the Phoenix application
+ * @param appName Name of the application
+ * @param appDescription Description of the application
+ */
+function copyMoonYml(appDir: string, appName: string, appDescription: string): void {
+  try {
+    _console.info('Copying moon.yml configuration...')
+
+    // Path to template moon.yml
+    const templatePath = join(process.cwd(), '..', '..', 'template-phoenix', 'moon.yml')
+
+    // Read template content
+    let moonYmlContent = readFileSync(templatePath, 'utf8')
+
+    // Replace variables
+    moonYmlContent = moonYmlContent
+      .replace(/{{ package_name }}/g, appName)
+      .replace(/{{ package_description }}/g, appDescription)
+
+    // Write to app directory
+    const destPath = join(appDir, 'moon.yml')
+    writeFileSync(destPath, moonYmlContent)
+
+    _console.success(`Created ${destPath}`)
+  } catch (error) {
+    _console.error('Failed to copy moon.yml:', error)
+  }
+}
+
+/**
  * Generate a Phoenix Framework application
  * @param options Options for generating a Phoenix Framework application
  * @returns Promise that resolves when the application is generated
  */
 export async function generatePhoenixApp(options: PhoenixGenerateOptions): Promise<void> {
-  const { appName, database, assets, force, install } = options
+  const { appName, appDescription, database, assets, force, install } = options
 
   _console.info(`Generating Phoenix Framework application: ${appName}`)
 
@@ -214,6 +347,19 @@ export async function generatePhoenixApp(options: PhoenixGenerateOptions): Promi
     process.chdir(appsDir)
     _console.info(`Executing command: ${command}`)
     execSync(command, { stdio: 'inherit' })
+
+    // Generate release files
+    if (install) {
+      generateReleaseFiles(appDir)
+    } else {
+      _console.info('Skipping release generation as dependencies were not installed')
+    }
+
+    // Create .env and .env.example files - pass user's install choice
+    createEnvFiles(appDir, install)
+
+    // Copy and customize moon.yml
+    copyMoonYml(appDir, appName, appDescription)
 
     _console.success(`Phoenix Framework application ${appName} generated successfully!`)
 

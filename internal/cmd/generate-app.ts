@@ -73,6 +73,7 @@ export default defineCommand({
 
       const appType = await select({
         message: 'Pick a project type.',
+        initialValue: 'phoenix',
         options: [
           { value: 'astro', label: 'Astro' },
           { value: 'fastapi', label: 'FastAPI' },
@@ -112,7 +113,7 @@ export default defineCommand({
       if (appExists) {
         const overwriteConfirm = await confirm({
           message: `App directory "${appName}" already exists. Do you want to overwrite it?`,
-          initialValue: false,
+          initialValue: true,
         })
 
         if (isCancel(overwriteConfirm) || !overwriteConfirm) {
