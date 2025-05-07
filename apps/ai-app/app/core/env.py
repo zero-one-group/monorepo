@@ -12,6 +12,7 @@ class Env(BaseSettings):
     ML_PREFIX_API: str
     DEBUG: bool = False
     DATABASE_URL: str
+    OPENAI_API_KEY: str
 
     model_config = SettingsConfigDict(
         env_file=".env",
