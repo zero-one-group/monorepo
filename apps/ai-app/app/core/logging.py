@@ -29,8 +29,9 @@ def get_logger(
     if _logger_instance is None:
         env = get_env()
 
+        is_development = env.APP_ENVIRONMENT == "development"
         # Set logging level based on DEBUG setting
-        level = logging.DEBUG if env.DEBUG else logging.INFO
+        level = logging.DEBUG if is_development else logging.INFO
 
         logger = logging.getLogger(logger_name)
         logger.setLevel(level)
@@ -40,8 +41,11 @@ def get_logger(
 
         console_handler = logging.StreamHandler(stream)
         console_handler.setLevel(level)
-        console_formatter = JsonFormatter(log_format)
-        console_handler.setFormatter(console_formatter)
+
+        if is_development == False:
+            console_formatter = JsonFormatter(log_format)
+            console_handler.setFormatter(console_formatter)
+
         logger.addHandler(console_handler)
 
         # Add file handler if log_to_file is True
@@ -57,7 +61,7 @@ def get_logger(
             file_handler.setFormatter(file_formatter)
             logger.addHandler(file_handler)
 
-        if env.DEBUG:
+        if is_development:
             logger.debug("Debug logging enabled")
 
         _logger_instance = logger
