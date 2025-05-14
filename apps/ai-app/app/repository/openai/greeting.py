@@ -1,14 +1,12 @@
-from app.core.env import get_env
 from app.core.logging import get_logger
-from openai import OpenAI
+from openai import AsyncOpenAI
 
 
 class GreetingRepoOpenAI:
     __log = get_logger()
 
-    def __init__(self):
-        env = get_env()
-        self.client = OpenAI(api_key=env.OPENAI_API_KEY)
+    def __init__(self, client: AsyncOpenAI):
+        self.client = client
 
     def greetings(self):
         self.__log.info(
