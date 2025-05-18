@@ -69,3 +69,19 @@ tasks:
       runInCI: false
       cache: false
       shell: true
+
+  migration-create:
+    command: 'goose -dir ./migrations create'
+
+  migration-up:
+    command: 'go run ./cmd/ migrate up'
+
+  migration-down:
+    command: 'go run ./cmd/ migrate down'
+
+  migration-reset:
+    command: 'go run ./cmd/ migrate reset'
+
+  seed:
+    command: 'go run ./cmd/ seed'
+

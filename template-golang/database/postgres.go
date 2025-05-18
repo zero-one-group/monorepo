@@ -2,14 +2,16 @@ package database
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"os"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 
-func SetupDatabase() (*pgxpool.Pool, error) {
+func SetupPgxPool() (*pgxpool.Pool, error) {
 	dbURL := os.Getenv("DATABASE_URL")
     if dbURL == "" {
 		return nil, fmt.Errorf("DATABASE_URL environment variable not set")
@@ -32,4 +34,23 @@ func SetupDatabase() (*pgxpool.Pool, error) {
     fmt.Println("Connected to DB Postgresql...")
 
 	return dbPool, nil
+}
+
+func SetupSQLDatabase() (*sql.DB, error) {
+	dbURL := os.Getenv("DATABASE_URL")
+	if dbURL == "" {
+		return nil, fmt.Errorf("DATABASE_URL environment variable not set")
+	}
+
+	db, err := sql.Open("pgx", dbURL)
+	if err != nil {
+		return nil, fmt.Errorf("sql open error: %w", err)
+	}
+
+	if err := db.Ping(); err != nil {
+		return nil, fmt.Errorf("sql ping error: %w", err)
+	}
+
+	fmt.Println("Connected to DB via *sql.DB...")
+	return db, nil
 }
