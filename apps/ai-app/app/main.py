@@ -46,12 +46,15 @@ async def shutdown():
 
 @app.exception_handler(AppError)
 async def app_error_handler(request: Request, exc: AppError):
+    message = str(exc)
+    logger.error(msg=message, exc_info=exc)
+
     return JSONResponse(
         status_code=exc.status_code,
         content={
             "success": False,
-            "message": str(exc),
+            "message": message,
             "error_code": exc.code,
-            "data": None,
+            "data": exc.data,
         },
     )
