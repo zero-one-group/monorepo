@@ -10,7 +10,7 @@ class Env(BaseSettings):
     """
 
     ML_PREFIX_API: str
-    DEBUG: bool = False
+    APP_ENVIRONMENT: str = "development"
     DATABASE_URL: str
     OPENAI_API_KEY: str
 
