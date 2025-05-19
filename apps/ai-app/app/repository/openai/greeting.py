@@ -1,3 +1,4 @@
+from app.core.exception import AppError
 from app.core.logging import get_logger
 from openai import AsyncOpenAI
 
@@ -14,8 +15,8 @@ class GreetingRepoOpenAI:
             extra={"layer": "repository"},
         )
         try:
-            response = self.client.chat.completions.create(
-                model="gpt-3.5-turbo",
+            response = await self.client.chat.completions.create(
+                model="gpt-4.1-mini",
                 messages=[
                     {
                         "role": "system",
@@ -38,28 +39,28 @@ class GreetingRepoOpenAI:
                 extra={"layer": "repository"},
             )
 
-            try:
-                import json
-
-                greetings_data = json.loads(content)
-
-                self.__log.info(
-                    f"Successfully parsed greetings in {
-                        len(greetings_data.get('greetings', []))} languages",
-                    extra={"layer": "repository"},
-                )
-
-                return {"response": greetings_data}
-            except json.JSONDecodeError as e:
-                self.__log.warning(
-                    f"Could not parse OpenAI response as JSON: {str(e)}",
-                    extra={"layer": "repository"},
-                )
-                return {"response": content}
-
         except Exception as e:
-            self.__log.error(
-                f"Error fetching greetings from OpenAI: {str(e)}",
+            raise AppError(
+                f"OpenAI unavailable: {str(e)}",
+                status_code=503,
+                code="OPENAI_ERROR",
+            )
+
+        try:
+            import json
+
+            greetings_data = json.loads(content)
+
+            self.__log.info(
+                f"Successfully parsed greetings in {
+                    len(greetings_data.get('greetings', []))} languages",
                 extra={"layer": "repository"},
             )
-            return {"response": "Error fetching greetings", "error": str(e)}
+
+            return {"response": greetings_data}
+        except json.JSONDecodeError:
+            raise AppError(
+                "Invalid JSON from OpenAI",
+                status_code=502,
+                code="PARSE_ERROR",
+            )
