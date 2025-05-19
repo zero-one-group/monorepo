@@ -8,7 +8,7 @@ class GreetingRepoOpenAI:
     def __init__(self, client: AsyncOpenAI):
         self.client = client
 
-    def greetings(self):
+    async def greetings(self):
         self.__log.info(
             "Fetching greetings in 5 languages from OpenAI",
             extra={"layer": "repository"},

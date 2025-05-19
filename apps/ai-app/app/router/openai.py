@@ -9,4 +9,5 @@ router = APIRouter(
 
 @router.get("/greetings")
 async def greetings(service: DepGreetingService):
-    return service.greetings()
+    greetings = await service.greetings()
+    return greetings

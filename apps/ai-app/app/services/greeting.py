@@ -8,6 +8,7 @@ class GreetingService:
     def __init__(self, repo: DepGreetingRepoOpenAI):
         self.__repo = repo
 
-    def greetings(self) -> dict:
+    async def greetings(self) -> dict:
         self.__log.info("Service layer log", extra={"layer": "service"})
-        return self.__repo.greetings()
+        greetings = await self.__repo.greetings()
+        return greetings

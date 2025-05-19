@@ -1,4 +1,4 @@
-from app.core.database import engine
+from app.core.database import Database
 from app.core.env import get_env
 from app.core.logging import RequestIdMiddleware, logger
 from app.router.openai import router as openai_router
@@ -36,8 +36,7 @@ app.include_router(openai_router)
 
 
 @app.on_event("shutdown")
-def shutdown():
+async def shutdown():
     logger.info("Application shutting down, preparing for graceful shutdown")
     logger.info("Disposing database connections")
-    engine.dispose()
-    logger.info("Database engine disposed")
+    await Database.dispose()

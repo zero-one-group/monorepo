@@ -115,6 +115,5 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 DepDB = Annotated[AsyncSession, Depends(get_db)]
 
 
-# Expose connection check function for convenience
 async def check_db_connection() -> bool:
     return await Database.check_connection()
