@@ -16,7 +16,8 @@ async def health_check(logger: DepLogger, db: DepDB):
     Checks the health of the application and related connection.
     """
     logger.info("Performing health check...")
-    if check_db_connection(db):
+
+    if await check_db_connection():
         logger.info("Health check successful: Database connection verified.")
         return {"status": "ok", "database": "connected"}
     else:
