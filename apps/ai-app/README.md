@@ -43,7 +43,7 @@ moon ai-app:dev
 #### Production Mode
 
 ```bash
-moon ai-app:start
+moon {app-name}:start
 ```
 
 #### Using Custom App Name
@@ -53,7 +53,57 @@ If you've renamed your application, use:
 ```bash
 moon {app-name}:dev
 ```
-## Useful Links
+
+## Development
+To get started with this template, we recommend the following:
+
+1. Walk through the “Greeting API” example
+    - Begin at the router:
+
+    `app/router/openai.py`
+
+    - Inspect the service layer:
+
+    `app/services/greeting.py`
+
+    - Finally, examine the repository layer:
+
+    `app/repository/openai/greeting.py`
+
+2. Explore core abstractions in the app/core folder
+
+    These utilities and base classes are provided to improve developer experience by reducing boilerplate and enforcing consistent patterns across app.
+
+### Error Handling
+
+- We’ve set up a global exception handler in `app/main.py`. It catches every `AppError` raised anywhere in your code and turns it into a structured JSON error response with the correct HTTP status.
+- To trigger an error response, simply raise an `AppError` from `app/core/exceptions.py` at any layer (repository, service, or even directly in a route).
+  ```python
+  from app.core.exceptions import AppError
+
+  # inside repository or service
+  if something_went_wrong:
+      raise AppError(
+          message="Invalid user ID",
+          status_code=400,
+          code="INVALID_ID",
+          data={"user_id": supplied_id}
+      )
+  ```
+- The global handler will produce a response like:
+  ```json
+  {
+    "success": false,
+    "message": "Invalid user ID",
+    "error_code": "INVALID_ID",
+    "data": { "user_id": 123 }
+  }
+  ```
+- No further wiring is needed—just raise `AppError` and FastAPI does the rest.
+
+### Useful Links
 - [FastAPI Dependency Injection](https://fastapi.tiangolo.com/tutorial/dependencies/)
-    - tl;dr: FastAPI Dependency Injection: Your code tells FastAPI what it needs, and FastAPI automatically provides those requirements when needed. This eliminates repetitive code and makes your application cleaner and easier to maintain.
+    - TL;DR: Declare your dependencies as function parameters, and FastAPI will resolve and inject them for you automatically, no manual wiring required.
+    - For more details, see any dependency.py in your layers (e.g. app/repository/dependency.py).
 - [FastAPI Deployment](https://fastapi.tiangolo.com/deployment/)
+- [FastAPI Handling Errors](https://fastapi.tiangolo.com/tutorial/handling-errors/#install-custom-exception-handlers)
