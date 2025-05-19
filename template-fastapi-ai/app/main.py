@@ -1,10 +1,12 @@
-from app.core.database import engine
+from app.core.database import Database
 from app.core.env import get_env
+from app.core.exception import AppError
 from app.core.logging import RequestIdMiddleware, logger
 from app.router.openai import router as openai_router
 from app.router.root import router as root_router
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 env = get_env()
 app = FastAPI(
@@ -36,8 +38,23 @@ app.include_router(openai_router)
 
 
 @app.on_event("shutdown")
-def shutdown():
+async def shutdown():
     logger.info("Application shutting down, preparing for graceful shutdown")
     logger.info("Disposing database connections")
-    engine.dispose()
-    logger.info("Database engine disposed")
+    await Database.dispose()
+
+
+@app.exception_handler(AppError)
+async def app_error_handler(request: Request, exc: AppError):
+    message = str(exc)
+    logger.error(msg=message, exc_info=exc)
+
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "success": False,
+            "message": message,
+            "error_code": exc.code,
+            "data": exc.data,
+        },
+    )

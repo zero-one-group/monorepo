@@ -10,14 +10,12 @@ class Env(BaseSettings):
     """
 
     ML_PREFIX_API: str
-    DEBUG: bool = False
+    APP_ENVIRONMENT: str = "development"
     DATABASE_URL: str
     OPENAI_API_KEY: str
 
     model_config = SettingsConfigDict(
-        env_file=".env",
-        env_file_encoding="utf-8",
-        case_sensitive=True,
+        env_file=".env", env_file_encoding="utf-8", case_sensitive=True, extra="ignore"
     )
 
 
