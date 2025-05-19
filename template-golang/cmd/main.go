@@ -1,12 +1,10 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"os"
-
-	"go-app/config"
-	"{{ package_name }}/cmd/cli"
-	"{{ package_name }}/database"
+	"{{package_name}}/cmd/commands"
+	"{{package_name}}/config"
 )
 
 func init() {
@@ -14,39 +12,17 @@ func init() {
 }
 
 func main() {
-	if len(os.Args) < 2 {
-		log.Fatal("Usage: go run main.go [migrate|seed] [args...]")
-	}
+    if len(os.Args) < 2 {
+        fmt.Println("Expected a command.")
+        os.Exit(1)
+    }
 
-	command := os.Args[1]
-	subcommand := ""
-	if len(os.Args) >= 3 {
-		subcommand = os.Args[2]
-	}
+    command := os.Args[1]
+    args := os.Args[2:]
 
-	db, err := database.SetupSQLDatabase()
-	if err != nil {
-		log.Fatal("Failed to set up database: " + err.Error())
-	}
-	defer db.Close()
-
-	switch command {
-	case "migrate":
-		dir := "./migrations"
-		if err := cli.Migrate(db, dir, subcommand); err != nil {
-			log.Fatalf("Migration failed: %v", err)
-		}
-	case "seed":
-		target := "all"
-		if subcommand != "" {
-			target = subcommand
-		}
-		if err := cli.Seed(db, target); err != nil {
-			log.Fatalf("Seeding failed: %v", err)
-		}
-	default:
-		log.Fatalf("Unknown command: %s", command)
-	}
-
-	log.Printf("Command '%s %s' completed successfully", command, subcommand)
+    err := commands.Execute(command, args)
+    if err != nil {
+        fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+        os.Exit(1)
+    }
 }

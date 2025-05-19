@@ -1,18 +1,27 @@
-package cli
+package commands
 
 import (
-	"database/sql"
 	"errors"
 	"fmt"
+	"log"
+	"{{package_name}}/database"
 
 	"github.com/pressly/goose/v3"
 )
 
-func Migrate(db *sql.DB, dir string, mode string) error {
-	err := goose.SetDialect("postgres")
+func runMigration(dir string, mode string) error {
+
+    db, err := database.SetupSQLDatabase()
+	if err != nil {
+		log.Fatal("Failed to set up database: " + err.Error())
+	}
+	defer db.Close()
+
+	err = goose.SetDialect("postgres")
 	if err != nil {
 		return fmt.Errorf("migrate: %w", err)
 	}
+
 	switch mode {
 	case "up":
 		err = goose.Up(db, dir)

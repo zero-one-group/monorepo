@@ -1,15 +1,20 @@
-package cli
+package commands
 
 import (
-	"database/sql"
 	"errors"
 	"fmt"
 	"log"
-	"{{ package_name }}/seeders"
+	"{{package_name}}/database"
+	"{{package_name}}/seeders"
 )
 
-func Seed(db *sql.DB, target string) error {
+func runSeeder(target string) error {
 	log.Printf("Seeding target: %s", target)
+    db, err := database.SetupSQLDatabase()
+	if err != nil {
+		log.Fatal("Failed to set up database: " + err.Error())
+	}
+	defer db.Close()
 
 	switch target {
 	case "all":
