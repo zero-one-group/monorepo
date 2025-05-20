@@ -45,3 +45,42 @@ moon run build
 ```bash
 moon run start
 ```
+
+#### Running Migration
+
+1. Create new migration file
+```bash
+moon run migration-create -- {migration_name}
+```
+
+2. Migration up
+```bash
+moon run migration-up
+```
+
+3. Migration down
+```bash
+moon run migration-down
+```
+
+4. Migration reset
+```bash
+moon run migration-reset
+```
+
+4. Check Migration version
+```bash
+moon run migration-version
+```
+
+#### Running Seeders
+
+1. Run seeders for all tables
+```bash
+moon run seed -- all
+```
+
+2. Run seeder for certain table
+```bash
+moon run seed -- {table_name}
+```

@@ -69,3 +69,22 @@ tasks:
       runInCI: false
       cache: false
       shell: true
+
+  migration-create:
+    command: 'go run ./cmd/ migrate create'
+
+  migration-up:
+    command: 'go run ./cmd/ migrate up'
+
+  migration-down:
+    command: 'go run ./cmd/ migrate down'
+
+  migration-reset:
+    command: 'go run ./cmd/ migrate reset'
+
+  migration-version:
+    command: 'go run ./cmd/ migrate version'
+
+  seed:
+    command: 'go run ./cmd/ seed'
+

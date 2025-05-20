@@ -23,7 +23,7 @@ func init() {
 
 func main() {
 
-	dbPool, err := database.SetupDatabase()
+	dbPool, err := database.SetupPgxPool()
 	if err != nil {
 		log.Fatal("Failed to set up database: " + err.Error())
 	}
