@@ -7,7 +7,6 @@ Basic Go application for backend
 - [Moonrepo](https://moonrepo.dev/docs/getting-started/installation)
 - Postgres v17.x.x
 - Docker and Docker Compose (for containerized development)
-- Goose v3.x.x
 
 ### Quick Start
 
@@ -51,9 +50,8 @@ moon run start
 
 1. Create new migration file
 ```bash
-moon run migration-create -- {file_name} sql
+moon run migration-create -- {migration_name}
 ```
-**NOTE**: Need to install goose globally
 
 2. Migration up
 ```bash
@@ -68,6 +66,11 @@ moon run migration-down
 4. Migration reset
 ```bash
 moon run migration-reset
+```
+
+4. Check Migration version
+```bash
+moon run migration-version
 ```
 
 #### Running Seeders

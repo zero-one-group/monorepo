@@ -3,6 +3,7 @@ package commands
 import (
 	"errors"
 	"fmt"
+	"{{package_name}}/database"
 )
 
 
@@ -12,10 +13,16 @@ func Execute(command string, args []string) error {
 		subcommand = args[0]
 	}
 
+    db, err := database.SetupSQLDatabase()
+	if err != nil {
+		return fmt.Errorf("failed to connect to DB: %w", err)
+	}
+	defer db.Close()
+
     switch command {
 	case "migrate":
 		dir := "./migrations"
-		if err := runMigration(dir, subcommand); err != nil {
+		if err := runMigration(db, dir, args); err != nil {
 			return fmt.Errorf("migration failed: %w", err)
 		}
 	case "seed":
@@ -23,7 +30,7 @@ func Execute(command string, args []string) error {
 		if subcommand != "" {
 			target = subcommand
 		}
-		if err := runSeeder(target); err != nil {
+		if err := runSeeder(db, target); err != nil {
 			return fmt.Errorf("seeding failed: %w", err)
 		}
 	default:

@@ -71,7 +71,7 @@ tasks:
       shell: true
 
   migration-create:
-    command: 'goose -dir ./migrations create'
+    command: 'go run ./cmd/ migrate create'
 
   migration-up:
     command: 'go run ./cmd/ migrate up'
@@ -81,6 +81,9 @@ tasks:
 
   migration-reset:
     command: 'go run ./cmd/ migrate reset'
+
+  migration-version:
+    command: 'go run ./cmd/ migrate version'
 
   seed:
     command: 'go run ./cmd/ seed'

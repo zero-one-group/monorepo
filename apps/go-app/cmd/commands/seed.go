@@ -1,20 +1,15 @@
 package commands
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"log"
-	"go-app/database"
 	"go-app/seeders"
 )
 
-func runSeeder(target string) error {
+func runSeeder(db *sql.DB, target string) error {
 	log.Printf("Seeding target: %s", target)
-    db, err := database.SetupSQLDatabase()
-	if err != nil {
-		log.Fatal("Failed to set up database: " + err.Error())
-	}
-	defer db.Close()
 
 	switch target {
 	case "all":
