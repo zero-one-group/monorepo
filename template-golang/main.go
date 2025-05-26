@@ -11,6 +11,9 @@ import (
 	"{{ package_name }}/config"
 	"{{ package_name }}/database"
 	"{{ package_name }}/domain"
+	"{{ package_name }}/internal/repository/postgres"
+	"{{ package_name }}/internal/rest"
+	"{{ package_name }}/service"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -49,11 +52,20 @@ func main() {
 	// Register the routes
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, domain.Response{
-			Success: true,
+            Code: 200,
+            Status: "Succes",
 			Message: "All is well!",
-			Time:    time.Now(),
 		})
 	})
+
+    userRepo := postgres.NewUserRepository(dbPool)
+    userService := service.NewUserService(userRepo)
+
+
+    g := e.Group("/api")
+    usersGroup := g.Group("")
+
+    rest.NewUserHandler(usersGroup, userService)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
@@ -64,10 +76,10 @@ func main() {
 		host = "127.0.0.1"
 	}
 
-	// Get port from environment variable, default to {{ port_number }} if not set
+	// Get port from environment variable, default to 8000 if not set
 	port := os.Getenv("APP_PORT")
 	if port == "" {
-		port = "{{ port_number }}"
+		port = "8000"
 	}
 
 	// Server address and port to listen on
