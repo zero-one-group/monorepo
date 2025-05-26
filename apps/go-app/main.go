@@ -11,6 +11,9 @@ import (
 	"go-app/config"
 	"go-app/database"
 	"go-app/domain"
+	"go-app/internal/repository/postgres"
+	"go-app/internal/rest"
+	"go-app/service"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -49,11 +52,20 @@ func main() {
 	// Register the routes
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, domain.Response{
-			Success: true,
+            Code: 200,
+            Status: "Succes",
 			Message: "All is well!",
-			Time:    time.Now(),
 		})
 	})
+
+    userRepo := postgres.NewUserRepository(dbPool)
+    userService := service.NewUserService(userRepo)
+
+
+    g := e.Group("/api")
+    usersGroup := g.Group("")
+
+    rest.NewUserHandler(usersGroup, userService)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
