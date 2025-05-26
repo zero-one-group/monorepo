@@ -3,7 +3,7 @@ package seeders
 import (
 	"database/sql"
 
-	"go-app/utils"
+	"{{ package_name }}/utils"
 )
 
 func SeedUsers(db *sql.DB) error {

@@ -24,3 +24,7 @@ type UpdateUserRequest struct {
 	Name  string `json:"name" validate:"required"`
 	Email string `json:"email" validate:"required,email"`
 }
+
+type UserFilter struct {
+	Search string `json:"search" query:"search"`
+}

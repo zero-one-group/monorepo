@@ -50,9 +50,9 @@ func main() {
 	// Register the routes
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, domain.Response{
-			Success: true,
+            Code: 200,
+            Status: "Succes",
 			Message: "All is well!",
-			Time:    time.Now(),
 		})
 	})
 	apiV1 := e.Group("/api/v1")
