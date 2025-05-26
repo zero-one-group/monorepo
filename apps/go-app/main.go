@@ -11,6 +11,8 @@ import (
 	"go-app/config"
 	"go-app/database"
 	"go-app/domain"
+	router "go-app/route"
+	"go-app/service"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -28,7 +30,6 @@ func main() {
 		log.Fatal("Failed to set up database: " + err.Error())
 	}
 	defer dbPool.Close()
-
 
 	e := echo.New()
 	e.HideBanner = true
@@ -54,6 +55,9 @@ func main() {
 			Time:    time.Now(),
 		})
 	})
+	apiV1 := e.Group("/api/v1")
+	svc := service.NewUserService()
+	router.RegisterUserRoutes(apiV1, svc)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
