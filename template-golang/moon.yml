@@ -1,25 +1,25 @@
 # https://moonrepo.dev/docs/config/project
 # yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
-$schema: 'https://moonrepo.dev/schemas/project.json'
+$schema: "https://moonrepo.dev/schemas/project.json"
 
 type: application
 language: go
 toolchain:
   default: null
 stack: backend
-tags: ['app']
+tags: ["app"]
 
 # Overrides the name (identifier) of the project
-id: '{{ package_name | kebab_case }}'
+id: "{{ package_name | kebab_case }}"
 
 project:
-  name: '{{ package_name | kebab_case }}'
-  description: '{{ package_description }}'
+  name: "{{ package_name | kebab_case }}"
+  description: "{{ package_description }}"
 
 env:
   APP_PREFIX: "$(jq -r .name <$workspaceRoot'/package.json')"
-  APP_VERSION: '$(jq -r .version <$workspaceRoot''/package.json'')'
-  IMAGE_NAME: '$APP_PREFIX-$project'
+  APP_VERSION: "$(jq -r .version <$workspaceRoot'/package.json')"
+  IMAGE_NAME: "$APP_PREFIX-$project"
 
 tasks:
   dev:
@@ -29,27 +29,31 @@ tasks:
       envFile: "/.env"
 
   build:
-    command: 'go build -o build/{{ package_name | kebab_case }}'
+    command: "go build -o build/{{ package_name | kebab_case }}"
     outputs: ["build/{{ package_name | kebab_case }}"]
     deps: [tidy]
 
   start:
-    command: 'build/{{ package_name | kebab_case }}'
+    command: "build/{{ package_name | kebab_case }}"
+
+  test:
+    command: "go test ./... -count=1"
+    deps: [tidy]
     options:
       cache: false
 
   tidy:
-    command: 'go mod tidy && go mod vendor'
+    command: "go mod tidy && go mod vendor"
 
   kill-port:
     # This is a hack for killing the listen port before starting the app
-    command: 'pnpm --package=kill-port-process-cli dlx kill-port {{ port_number }}'
+    command: "pnpm --package=kill-port-process-cli dlx kill-port {{ port_number }}"
     deps: [tidy]
     options:
       internal: true
 
   docker-run:
-    command: 'docker run --network=host --rm -it --env-file .env --name $IMAGE_NAME $IMAGE_NAME:$APP_VERSION'
+    command: "docker run --network=host --rm -it --env-file .env --name $IMAGE_NAME $IMAGE_NAME:$APP_VERSION"
     options:
       mergeEnv: replace
       runFromWorkspaceRoot: true
@@ -60,7 +64,7 @@ tasks:
       shell: true
 
   docker-shell:
-    command: 'docker run --network=host --rm -it --env-file .env --entrypoint /bin/sh $IMAGE_NAME:$APP_VERSION'
+    command: "docker run --network=host --rm -it --env-file .env --entrypoint /bin/sh $IMAGE_NAME:$APP_VERSION"
     options:
       mergeEnv: replace
       runFromWorkspaceRoot: true
@@ -71,20 +75,19 @@ tasks:
       shell: true
 
   migration-create:
-    command: 'go run ./cmd/ migrate create'
+    command: "go run ./cmd/ migrate create"
 
   migration-up:
-    command: 'go run ./cmd/ migrate up'
+    command: "go run ./cmd/ migrate up"
 
   migration-down:
-    command: 'go run ./cmd/ migrate down'
+    command: "go run ./cmd/ migrate down"
 
   migration-reset:
-    command: 'go run ./cmd/ migrate reset'
+    command: "go run ./cmd/ migrate reset"
 
   migration-version:
-    command: 'go run ./cmd/ migrate version'
+    command: "go run ./cmd/ migrate version"
 
   seed:
-    command: 'go run ./cmd/ seed'
-
+    command: "go run ./cmd/ seed"
