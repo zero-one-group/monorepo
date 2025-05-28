@@ -87,5 +87,5 @@ moon run seed -- {table_name}
 #### Running Tests
 
 ```bash
-moon run go-app:test
+moon run {{ package_name | kebab_case }}:test
 ```
