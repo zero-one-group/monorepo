@@ -11,6 +11,8 @@ import (
 	"{{ package_name }}/config"
 	"{{ package_name }}/database"
 	"{{ package_name }}/domain"
+	router "{{ package_name }}/route"
+	"{{ package_name }}/service"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -28,7 +30,6 @@ func main() {
 		log.Fatal("Failed to set up database: " + err.Error())
 	}
 	defer dbPool.Close()
-
 
 	e := echo.New()
 	e.HideBanner = true
@@ -54,6 +55,9 @@ func main() {
 			Time:    time.Now(),
 		})
 	})
+	apiV1 := e.Group("/api/v1")
+	svc := service.NewUserService()
+	router.RegisterUserRoutes(apiV1, svc)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
@@ -64,10 +68,10 @@ func main() {
 		host = "127.0.0.1"
 	}
 
-	// Get port from environment variable, default to {{ port_number }} if not set
+	// Get port from environment variable, default to 8000 if not set
 	port := os.Getenv("APP_PORT")
 	if port == "" {
-		port = "{{ port_number }}"
+		port = "8000"
 	}
 
 	// Server address and port to listen on
