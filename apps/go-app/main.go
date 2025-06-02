@@ -13,7 +13,6 @@ import (
 	"go-app/domain"
 	"go-app/internal/repository/postgres"
 	"go-app/internal/rest"
-	router "go-app/route"
 	"go-app/service"
 
 	"github.com/labstack/echo/v4"
@@ -57,16 +56,13 @@ func main() {
 			Message: "All is well!",
 		})
 	})
-	apiV1 := e.Group("/api/v1")
-	svc := service.NewUserService()
-	router.RegisterUserRoutes(apiV1, svc)
 
     userRepo := postgres.NewUserRepository(dbPool)
     userService := service.NewUserService(userRepo)
 
 
-    g := e.Group("/api")
-    usersGroup := g.Group("")
+    apiV1 := e.Group("/api/v1")
+    usersGroup := apiV1.Group("")
 
     rest.NewUserHandler(usersGroup, userService)
 

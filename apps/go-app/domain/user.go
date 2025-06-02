@@ -1,14 +1,11 @@
 package domain
 
 import (
-	"errors"
 	"time"
 )
 
-var ErrUserNotFound = errors.New("user not found")
-
 type User struct {
-	ID        int       `json:"id"`
+	ID        string    `json:"id"`
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
 	CreatedAt time.Time `json:"created_at"`
@@ -16,8 +13,9 @@ type User struct {
 }
 
 type CreateUserRequest struct {
-	Name  string `json:"name" validate:"required"`
-	Email string `json:"email" validate:"required,email"`
+	Name  string    `json:"name" validate:"required"`
+	Email string    `json:"email" validate:"required,email"`
+    Password string `json:"password" validate:"required,password"`
 }
 
 type UpdateUserRequest struct {

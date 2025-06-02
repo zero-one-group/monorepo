@@ -6,13 +6,20 @@ type Response struct {
 	Message string    `json:"message"`
 }
 
-type ResponseMultipleData[D any] struct {
-	RequestID string `json:"request_id"` // string
+type ResponseSingleData[Data any] struct {
 	Code      int    `json:"code"`       // number
 	Status    string `json:"status"`     // string
-	Data      []D    `json:"data"`       // list of data
+	Data      Data    `json:"data"`      // of data
 	Message   string `json:"message"`    // string
 }
+
+type ResponseMultipleData[Data any] struct {
+	Code      int    `json:"code"`       // number
+	Status    string `json:"status"`     // string
+	Data      []Data `json:"data"`       // list of data
+	Message   string `json:"message"`    // string
+}
+
 
 type Empty struct{}
 
