@@ -50,6 +50,6 @@ telemetry: false
 # @see: https://moonrepo.dev/docs/config/workspace#templates
 generator:
   templates:
-    # - 'git://github.com/zero-one-group/monorepo#main'
+    - 'git://github.com/zero-one-group/monorepo#main'
     # - 'file://../../Repository/ZeroOne/monorepo'
-    - './'
+    # - './'
