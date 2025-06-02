@@ -31,28 +31,18 @@ cp .env.example .env
 moon ai-app:sync
 ```
 
-### Running the Application
+### Available Commands
 
-#### Development Mode
-
-```bash
-# Start the development server with hot reloading
-moon ai-app:dev
-```
-
-#### Production Mode
-
-```bash
-moon {app-name}:start
-```
-
-#### Using Custom App Name
-
-If you've renamed your application, use:
-
-```bash
-moon {app-name}:dev
-```
+| Command                                                         | Description                                      |
+| --------------------------------------------------------------- | ------------------------------------------------ |
+| `moon {{ package_name | kebab_case }}:sync`                     | Library synchronization                          |
+| `moon {{ package_name | kebab_case }}:dev`                      | Start development server with hot reload         |
+| `moon {{ package_name | kebab_case }}:start`                    | Start production server                          |
+| `moon {{ package_name | kebab_case }}:migrate`                  | Run database migrations                          |
+| `moon {{ package_name | kebab_case }}:migrate-create -- "name"` | Create a new migration with the specified name   |
+| `moon {{ package_name | kebab_case }}:migrate-reset`            | Reset all migrations (downgrade and reapply)     |
+| `moon {{ package_name | kebab_case }}:seed`                     | Seed the database with dummy data                |
+| `moon {{ package_name | kebab_case }}:check-in-dance`           | Run sync, migrate, and seed in sequence          |
 
 ## Development
 To get started with this template, we recommend the following:

@@ -7,11 +7,11 @@ language: python
 tags: ["app"]
 
 # Overrides the name (identifier) of the project
-id: "{{ package_name | kebab_case }}"
+id: "ai-app"
 
 project:
-  name: "{{ package_name | kebab_case }}"
-  description: "{{ package_description }}"
+  name: "ai-app"
+  description: "Artificial Intelligence App"
 
 env:
   APP_PREFIX: "$(jq -r .name <$workspaceRoot'/package.json')"
@@ -20,17 +20,50 @@ env:
 
 # Since this project can infer task from script (package.json), then you can run any script as moon task.
 # @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
-# Example: `moon {{ package_name | kebab_case }}:start`
+# Example: `moon ai-app:start`
 tasks:
+  sync:
+    command: "uv sync"
+
   dev:
-    command: "uv run fastapi dev app/main.py --port {{ port_number }}"
+    command: "uv run fastapi dev app/main.py --port 8080"
+    deps: ["sync"]
     options:
       envFile: ".env"
 
   start:
-    command: "uv run fastapi run app/main.py --port {{ port_number }}"
+    command: "uv run fastapi run app/main.py --port 8080"
+    deps: ["sync"]
     options:
       envFile: ".env"
 
-  sync:
-    command: "uv sync"
+  migrate:
+    command: "uv run alembic upgrade head"
+    deps: ["sync"]
+    options:
+      envFile: ".env"
+
+  migrate-create:
+    command: "uv run alembic revision -m "
+    deps: ["sync"]
+    options:
+      envFile: ".env"
+
+  migrate-reset:
+    command: "uv run alembic downgrade "
+    deps: ["sync"]
+    options:
+      envFile: ".env"
+
+  seed:
+    command: "uv run python -m app.database.seeder.main"
+    deps: ["sync"]
+    options:
+      envFile: ".env"
+
+  check-in-dance:
+    command: 'echo "All is good, ready to go!"'
+    deps: ["sync", "migrate", "seed"]
+    options:
+      envFile: ".env"
+      shell: true
