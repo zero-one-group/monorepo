@@ -32,5 +32,23 @@ tasks:
     options:
       envFile: ".env"
 
+  migrate:
+    command: "uv run alembic upgrade head"
+    deps: ["sync"]
+    options:
+      envFile: ".env"
+
+  migrate-create:
+    command: "uv run alembic revision -m "
+    deps: ["sync"]
+    options:
+      envFile: ".env"
+
+  migrate-reset:
+    command: "uv run alembic downgrade "
+    deps: ["sync"]
+    options:
+      envFile: ".env"
+
   sync:
     command: "uv sync"
