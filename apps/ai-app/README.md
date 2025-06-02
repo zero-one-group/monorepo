@@ -30,16 +30,19 @@ cp .env.example .env
 ```bash
 moon ai-app:sync
 ```
+
 ### Available Commands
 
-| Command                                                         | Description                                  |
-| --------------------------------------------------------------- | -------------------------------------------- |
-| `moon {{ package_name | kebab_case }}:dev`                      | Start development server with hot reload     |
-| `moon {{ package_name | kebab_case }}:start`                    | Start server in production mode              |
-| `moon {{ package_name | kebab_case }}:migrate`                  | Run database migrations                      |
-| `moon {{ package_name | kebab_case }}:migrate-create -- "name"` | Create a new migration with the given name   |
-| `moon {{ package_name | kebab_case }}:migrate-reset`            | Reset all migrations (downgrade & reapply)   |
-
+| Command                                                         | Description                                      |
+| --------------------------------------------------------------- | ------------------------------------------------ |
+| `moon {{ package_name | kebab_case }}:sync`                     | Library synchronization                          |
+| `moon {{ package_name | kebab_case }}:dev`                      | Start development server with hot reload         |
+| `moon {{ package_name | kebab_case }}:start`                    | Start production server                          |
+| `moon {{ package_name | kebab_case }}:migrate`                  | Run database migrations                          |
+| `moon {{ package_name | kebab_case }}:migrate-create -- "name"` | Create a new migration with the specified name   |
+| `moon {{ package_name | kebab_case }}:migrate-reset`            | Reset all migrations (downgrade and reapply)     |
+| `moon {{ package_name | kebab_case }}:seed`                     | Seed the database with dummy data                |
+| `moon {{ package_name | kebab_case }}:check-in-dance`           | Run sync, migrate, and seed in sequence          |
 
 ## Development
 To get started with this template, we recommend the following:

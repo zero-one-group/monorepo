@@ -22,13 +22,18 @@ env:
 # @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
 # Example: `moon ai-app:start`
 tasks:
+  sync:
+    command: "uv sync"
+
   dev:
     command: "uv run fastapi dev app/main.py --port 8080"
+    deps: ["sync"]
     options:
       envFile: ".env"
 
   start:
     command: "uv run fastapi run app/main.py --port 8080"
+    deps: ["sync"]
     options:
       envFile: ".env"
 
@@ -50,5 +55,15 @@ tasks:
     options:
       envFile: ".env"
 
-  sync:
-    command: "uv sync"
+  seed:
+    command: "uv run python -m app.database.seeder.main"
+    deps: ["sync"]
+    options:
+      envFile: ".env"
+
+  check-in-dance:
+    command: 'echo "All is good, ready to go!"'
+    deps: ["sync", "migrate", "seed"]
+    options:
+      envFile: ".env"
+      shell: true
