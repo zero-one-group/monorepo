@@ -4,6 +4,7 @@ services:
   jaeger:
     image: jaegertracing/all-in-one:1.49
     container_name: myorg_jaeger
+    profiles: ["instrumented"]
     # restart: always
     ports:
       # UDP ports for the Jaeger agent
