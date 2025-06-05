@@ -8,7 +8,8 @@ CREATE TABLE users (
     email VARCHAR NOT NULL UNIQUE,
     password TEXT NOT NULL,
     created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    deleted_at TIMESTAMPTZ
 );
 
 -- +goose StatementEnd

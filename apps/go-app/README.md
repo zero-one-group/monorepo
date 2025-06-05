@@ -84,3 +84,8 @@ moon run seed -- all
 ```bash
 moon run seed -- {table_name}
 ```
+#### Running Tests
+
+```bash
+moon run go-app:test
+```

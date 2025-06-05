@@ -35,8 +35,6 @@ tasks:
 
   start:
     command: "build/go-app"
-    options:
-      cache: false
 
   test:
     command: "go test ./... -count=1"
