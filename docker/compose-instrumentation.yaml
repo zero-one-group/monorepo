@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json
+
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:1.49
+    container_name: myorg_jaeger
+    profiles: ["instrumented"]
+    # restart: always
+    ports:
+      # UDP ports for the Jaeger agent
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      # HTTP ports for UI and collector
+      - "5778:5778" # service discovery
+      - "16686:16686" # UI
+      - "14268:14268" # collector (HTTP)
+      - "14250:14250" # collector (gRPC)
+      - "4317:4317" # OTLP gRPC (if you want OTLP→Jaeger)
+    environment:
+      # enable OTLP endpoint if you wish to send OTLP directly to Jaeger
+      COLLECTOR_OTLP_ENABLED: "true"

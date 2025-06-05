@@ -5,8 +5,10 @@ import (
 	"go-app/service"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/labstack/echo/v4"
+	"github.com/opentracing/opentracing-go"
 )
 
 func RegisterUserRoutes(e *echo.Group, svc *service.UserService) {
@@ -34,12 +36,20 @@ func createUserHandler(svc *service.UserService) echo.HandlerFunc {
 
 func getUserHandler(svc *service.UserService) echo.HandlerFunc {
 	return func(c echo.Context) error {
+		span, ctx := opentracing.StartSpanFromContext(
+			c.Request().Context(),
+			"RouteUser.GetUser",
+		)
+		defer span.Finish()
+		time.Sleep(time.Millisecond.Abs() * 300)
 		id, err := strconv.Atoi(c.Param("id"))
+		span.SetBaggageItem("user_id", c.Param("id"))
 		if err != nil {
 			return c.JSON(http.StatusBadRequest,
 				map[string]string{"error": "invalid user id"})
 		}
-		user, err := svc.GetUser(c.Request().Context(), id)
+		span.SetTag("user.id", id)
+		user, err := svc.GetUser(ctx, id)
 		if err != nil {
 			if err == domain.ErrUserNotFound {
 				return c.JSON(http.StatusNotFound,
@@ -95,4 +105,3 @@ func deleteUserHandler(svc *service.UserService) echo.HandlerFunc {
 		return c.NoContent(http.StatusNoContent)
 	}
 }
-

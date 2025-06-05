@@ -4,6 +4,9 @@ import (
 	"context"
 	"go-app/domain"
 	"sync"
+	"time"
+
+	"github.com/opentracing/opentracing-go"
 )
 
 // UserService holds users in‐memory.
@@ -44,8 +47,24 @@ func (s *UserService) GetUser(
 	ctx context.Context,
 	id int,
 ) (*domain.User, error) {
+	span, svcCtx := opentracing.StartSpanFromContext(
+		ctx,
+		"UserService.GetUser",
+	)
+	defer span.Finish()
+
 	s.mu.Lock()
 	defer s.mu.Unlock()
+
+	// NOTE: Example span on repository
+	spanRepo, _ := opentracing.StartSpanFromContext(
+		svcCtx,
+		"UserRepository.GetUser",
+	)
+	defer spanRepo.Finish()
+	spanRepo.SetOperationName("ExampleRepoGetUserByID")
+	spanRepo.SetTag("db.statement", "SELECT * FROM users WHERE id=$1")
+	time.Sleep(time.Second.Abs())
 
 	if u, ok := s.users[id]; ok {
 		// return a copy
@@ -55,6 +74,7 @@ func (s *UserService) GetUser(
 			Email: u.Email,
 		}, nil
 	}
+	spanRepo.SetTag("error", true)
 	return nil, domain.ErrUserNotFound
 }
 
@@ -94,4 +114,3 @@ func (s *UserService) DeleteUser(
 	}
 	return domain.ErrUserNotFound
 }
-

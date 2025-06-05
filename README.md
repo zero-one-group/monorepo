@@ -63,9 +63,10 @@ and [pgweb][pgweb] (PostgreSQL web interface).
 These commands are used for managing the local development server:
 
 ```sh
-pnpm compose:up       # Start local development server
-pnpm compose:down     # Stop local development server
-pnpm compose:cleanup  # Remove all local development server data
+pnpm compose:up             # Start local development server
+pnpm compose:down           # Stop local development server
+pnpm compose:cleanup        # Remove all local development server data
+pnpm compose:instrumented   # Start local development server with instrumentation
 ```
 
 ### Creating application from template
