@@ -3,26 +3,29 @@ package service
 import (
 	"context"
 	"fmt"
-	"go-app/domain"
-
 	"github.com/google/uuid"
+	"go-app/domain"
+	"sync"
+	"time"
+
+	"github.com/opentracing/opentracing-go"
 )
 
 type UserRepository interface {
-    CreateUser(ctx context.Context, user *domain.CreateUserRequest) (*domain.User, error)
+	CreateUser(ctx context.Context, user *domain.CreateUserRequest) (*domain.User, error)
 	GetUserList(ctx context.Context, filter *domain.UserFilter) ([]domain.User, error)
-    GetUser(ctx context.Context, id uuid.UUID) (*domain.User, error)
-    UpdateUser(ctx context.Context, id uuid.UUID, user *domain.User) (*domain.User, error)
-    DeleteUser(ctx context.Context, id uuid.UUID) error
+	GetUser(ctx context.Context, id uuid.UUID) (*domain.User, error)
+	UpdateUser(ctx context.Context, id uuid.UUID, user *domain.User) (*domain.User, error)
+	DeleteUser(ctx context.Context, id uuid.UUID) error
 }
 
 type UserService struct {
-	userRepo              UserRepository
+	userRepo UserRepository
 }
 
 func NewUserService(u UserRepository) *UserService {
 	return &UserService{
-		userRepo:       u,
+		userRepo: u,
 	}
 }
 
@@ -38,7 +41,6 @@ func (us *UserService) CreateUser(
 	return createdUser, nil
 }
 
-
 // GetUser fetches a user by ID.
 func (us *UserService) GetUser(
 	ctx context.Context,
@@ -49,6 +51,42 @@ func (us *UserService) GetUser(
 		return nil, err
 	}
 	return user, nil
+}
+
+// GetUser fetches a user by ID.
+func (s *UserService) GetUser(
+	ctx context.Context,
+	id int,
+) (*domain.User, error) {
+	span, svcCtx := opentracing.StartSpanFromContext(
+		ctx,
+		"UserService.GetUser",
+	)
+	defer span.Finish()
+
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	// NOTE: Example span on repository
+	spanRepo, _ := opentracing.StartSpanFromContext(
+		svcCtx,
+		"UserRepository.GetUser",
+	)
+	defer spanRepo.Finish()
+	spanRepo.SetOperationName("ExampleRepoGetUserByID")
+	spanRepo.SetTag("db.statement", "SELECT * FROM users WHERE id=$1")
+	time.Sleep(time.Second.Abs())
+
+	if u, ok := s.users[id]; ok {
+		// return a copy
+		return &domain.User{
+			ID:    u.ID,
+			Name:  u.Name,
+			Email: u.Email,
+		}, nil
+	}
+	spanRepo.SetTag("error", true)
+	return nil, domain.ErrUserNotFound
 }
 
 // UpdateUser updates name/email of an existing user.
@@ -69,8 +107,8 @@ func (us *UserService) UpdateUser(
 	existing.Name = u.Name
 	existing.Email = u.Email
 
-    _, err = us.userRepo.UpdateUser(ctx, id, existing);
-	if  err != nil {
+	_, err = us.userRepo.UpdateUser(ctx, id, existing)
+	if err != nil {
 		return nil, err
 	}
 
@@ -91,7 +129,6 @@ func (us *UserService) DeleteUser(
 		return domain.ErrUserNotFound
 	}
 
-
 	err = us.userRepo.DeleteUser(ctx, id)
 	if err != nil {
 		return err
@@ -107,5 +144,5 @@ func (us *UserService) GetUserList(ctx context.Context, filter *domain.UserFilte
 		return nil, err
 	}
 
-	return users,  nil
+	return users, nil
 }
