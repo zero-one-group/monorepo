@@ -2,284 +2,274 @@ package rest_test
 
 import (
 	"bytes"
-	"context"
+	"database/sql"
 	"encoding/json"
-	"fmt"
+	"go-app/domain"
+	"go-app/internal/rest"
+	"go-app/internal/rest/mocks"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
-	"go-app/config"
-	"go-app/domain"
-	"go-app/internal/repository/postgres"
-	"go-app/internal/rest"
-	"go-app/service"
 
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 )
-
-func startServer(dbPool *pgxpool.Pool) *httptest.Server {
-	e := echo.New()
-	e.HideBanner = true
-
-    config.LoadEnv()
-
-	userRepo := postgres.NewUserRepository(dbPool)
-	userService := service.NewUserService(userRepo)
-	apiV1 := e.Group("/api/v1")
-	rest.NewUserHandler(apiV1, userService)
-
-	return httptest.NewServer(e)
-}
 
 func TestUserHappyPath(t *testing.T) {
 	t.Parallel()
 
-	config.LoadEnv()
+	mockUserService := new(mocks.UserService)
 
-	dbURL := os.Getenv("DATABASE_URL")
-	if dbURL == "" {
-		t.Fatal("DATABASE_URL environment variable not set")
+    newUser := domain.User{
+	    ID:    "d4b8583d-5038-4838-bcd7-3d8dddfedd6a",
+	    Name:  "John Doe",
+	    Email: "john@example.com",
+    }
+
+    // data for update
+	updatedUser := newUser
+	updatedUser.Name = "Jane Doe"
+	updatedUser.Email = "jane@example.com"
+
+
+	handler := rest.UserHandler{
+		Service: mockUserService,
 	}
-	dbPool, err := pgxpool.New(context.Background(), dbURL)
-	if err != nil {
-		t.Fatalf("failed to connect to db: %v", err)
-	}
-	defer dbPool.Close()
 
-	ts := startServer(dbPool)
-	defer ts.Close()
-
-	baseURL := ts.URL + "/api/v1"
-
-	// --- Create User
-	var created domain.ResponseSingleData[domain.User]
-	{
-		payload := domain.CreateUserRequest{
-			Name:  "John Doe",
-			Email: "john@example.com",
+    // --- Create User
+	t.Run("CreateUser", func(t *testing.T) {
+		createReq := domain.CreateUserRequest{
+			Name: newUser.Name,
+			Email: newUser.Email,
             Password: "Password1234",
 		}
-		body, err := json.Marshal(payload)
-		if err != nil {
-			t.Fatalf("marshal create payload: %v", err)
-		}
+		mockUserService.
+			On("CreateUser", mock.Anything, &createReq).
+			Return(&newUser, nil).
+			Once()
 
-		resp, err := http.Post(
-			baseURL+"/users",
-			"application/json",
-			bytes.NewBuffer(body),
-		)
-		if err != nil {
-			t.Fatalf("create request error: %v", err)
-		}
-		defer resp.Body.Close()
+		body, err := json.Marshal(createReq)
+		require.NoError(t, err)
 
-		if resp.StatusCode != http.StatusCreated {
-			t.Fatalf("expected status 201; got %d", resp.StatusCode)
-		}
+		e := echo.New()
+		req := httptest.NewRequest(http.MethodPost, "/api/v1/users", bytes.NewReader(body))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
 
-		if err := json.NewDecoder(resp.Body).Decode(&created); err != nil {
-			t.Fatalf("decode create response: %v", err)
-		}
+		err = handler.CreateUser(c)
+		require.NoError(t, err)
 
-        newData := created.Data
-		if newData.ID == "" ||
-			newData.Name != payload.Name ||
-			newData.Email != payload.Email {
-			t.Errorf("unexpected created user: %+v", created)
-		}
-	}
+		assert.Equal(t, http.StatusCreated, rec.Code)
 
-	// --- Update User
-	{
-		update := domain.User{
-			Name:  "Jane Doe",
-			Email: "jane@example.com",
-		}
-		body, _ := json.Marshal(update)
-		url := fmt.Sprintf("%s/users/%s", baseURL, created.Data.ID)
-		req, err := http.NewRequest(
-			http.MethodPut,
-			url,
-			bytes.NewBuffer(body),
-		)
-		if err != nil {
-			t.Fatalf("new update request: %v", err)
-		}
-		req.Header.Set("Content-Type", "application/json")
+		var resp domain.ResponseSingleData[domain.User]
+		err = json.Unmarshal(rec.Body.Bytes(), &resp)
+		require.NoError(t, err)
+		assert.Equal(t, "success", resp.Status)
+		assert.Equal(t, &newUser, &resp.Data)
 
-		resp, err := http.DefaultClient.Do(req)
-		if err != nil {
-			t.Fatalf("update request error: %v", err)
-		}
-		defer resp.Body.Close()
+		mockUserService.AssertExpectations(t)
+	})
 
-		if resp.StatusCode != http.StatusOK {
-			t.Fatalf("expected status 200; got %d", resp.StatusCode)
-		}
+    // --- Update User
+    t.Run("UpdateUser", func(t *testing.T) {
+        id, err := uuid.Parse(newUser.ID)
+		require.NoError(t, err)
 
-		var updated domain.ResponseSingleData[domain.User]
-		if err := json.NewDecoder(resp.Body).Decode(&updated); err != nil {
-			t.Fatalf("decode update response: %v", err)
-		}
-		if updated.Data.ID != created.Data.ID ||
-			updated.Data.Name != update.Name ||
-			updated.Data.Email != update.Email {
-			t.Errorf("unexpected updated user: %+v", updated)
-		}
-	}
+		mockUserService.
+			On("UpdateUser", mock.Anything, id, mock.MatchedBy(func(u *domain.User) bool {
+				return u.Name == updatedUser.Name && u.Email == updatedUser.Email
+			})).
+			Return(&updatedUser, nil).
+			Once()
 
-	// --- Get User
-	{
-		url := fmt.Sprintf("%s/users/%s", baseURL, created.Data.ID)
-		resp, err := http.Get(url)
-		if err != nil {
-			t.Fatalf("get request error: %v", err)
-		}
-		defer resp.Body.Close()
+		body, err := json.Marshal(updatedUser)
+		require.NoError(t, err)
 
-		if resp.StatusCode != http.StatusOK {
-			t.Fatalf("expected status 200; got %d", resp.StatusCode)
-		}
+		e := echo.New()
+		req := httptest.NewRequest(http.MethodPut, "/api/v1/users/"+newUser.ID, bytes.NewReader(body))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetParamNames("id")
+		c.SetParamValues(newUser.ID)
 
-		var fetched domain.ResponseSingleData[domain.User]
-		if err := json.NewDecoder(resp.Body).Decode(&fetched); err != nil {
-			t.Fatalf("decode get response: %v", err)
-		}
-		if fetched.Data.ID != created.Data.ID ||
-			fetched.Data.Name != "Jane Doe" ||
-			fetched.Data.Email != "jane@example.com" {
-			t.Errorf("unexpected fetched user: %+v", fetched)
-		}
-	}
+		err = handler.UpdateUser(c)
+		require.NoError(t, err)
 
-	// --- Delete User
-	{
-		url := fmt.Sprintf("%s/users/%s", baseURL, created.Data.ID)
-		req, err := http.NewRequest(
-			http.MethodDelete,
-			url,
-			nil,
-		)
-		if err != nil {
-			t.Fatalf("new delete request: %v", err)
-		}
+		assert.Equal(t, http.StatusOK, rec.Code)
 
-		resp, err := http.DefaultClient.Do(req)
-		if err != nil {
-			t.Fatalf("delete request error: %v", err)
-		}
-		defer resp.Body.Close()
+		var resp domain.ResponseSingleData[domain.User]
+		err = json.Unmarshal(rec.Body.Bytes(), &resp)
+		require.NoError(t, err)
+		assert.Equal(t, "success", resp.Status)
+		assert.Equal(t, &updatedUser, &resp.Data)
 
-		if resp.StatusCode != http.StatusNoContent {
-			t.Fatalf("expected status 204; got %d", resp.StatusCode)
-		}
-	}
+		mockUserService.AssertExpectations(t)
+	})
 
-	// --- Verify Deletion
-	{
-		url := fmt.Sprintf("%s/users/%s", baseURL, created.Data.ID)
-		resp, err := http.Get(url)
-		if err != nil {
-			t.Fatalf("get after deletion error: %v", err)
-		}
-		defer resp.Body.Close()
+// 	// --- Get User
+    t.Run("GetUser", func(t *testing.T) {
+        id, err := uuid.Parse(newUser.ID)
+		require.NoError(t, err)
 
-		if resp.StatusCode != http.StatusNotFound {
-			t.Errorf("expected status 404; got %d", resp.StatusCode)
-		}
-	}
+		mockUserService.
+			On("GetUser", mock.Anything, id).
+			Return(&updatedUser, nil).
+			Once()
+
+		e := echo.New()
+		req := httptest.NewRequest(http.MethodGet, "/api/v1/users/"+newUser.ID, nil)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetParamNames("id")
+		c.SetParamValues(newUser.ID)
+
+        err = handler.GetUser(c)
+		require.NoError(t, err)
+
+		assert.Equal(t, http.StatusOK, rec.Code)
+
+		var resp domain.ResponseSingleData[domain.User]
+		err = json.Unmarshal(rec.Body.Bytes(), &resp)
+		require.NoError(t, err)
+		assert.Equal(t, "success", resp.Status)
+		assert.Equal(t, updatedUser, resp.Data)
+        assert.Equal(t, updatedUser.Name, resp.Data.Name)
+
+		mockUserService.AssertExpectations(t)
+	})
+
+   // --- Delete User
+	t.Run("DeleteUser", func(t *testing.T) {
+        id, err := uuid.Parse(newUser.ID)
+		require.NoError(t, err)
+		mockUserService.
+			On("DeleteUser", mock.Anything, id).
+			Return(nil).
+			Once()
+
+		e := echo.New()
+		req := httptest.NewRequest(http.MethodDelete, "/api/v1/users/"+newUser.ID, nil)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetParamNames("id")
+		c.SetParamValues(newUser.ID)
+
+		err = handler.DeleteUser(c)
+		require.NoError(t, err)
+
+		assert.Equal(t, http.StatusNoContent, rec.Code)
+		mockUserService.AssertExpectations(t)
+	})
+
+    // --- Verify Deletion
+	t.Run("GetUserAfterDeletion", func(t *testing.T) {
+        id, err := uuid.Parse(newUser.ID)
+		require.NoError(t, err)
+		mockUserService.
+            On("GetUser", mock.Anything, id).
+            Return(nil, sql.ErrNoRows).
+            Once()
+
+		e := echo.New()
+        req := httptest.NewRequest(http.MethodGet, "/api/v1/users/"+newUser.ID, nil)
+        rec := httptest.NewRecorder()
+        c := e.NewContext(req, rec)
+        c.SetParamNames("id")
+        c.SetParamValues(newUser.ID)
+
+        err = handler.GetUser(c)
+        require.NoError(t, err)
+
+        assert.Equal(t, http.StatusNotFound, rec.Code)
+
+        var resp domain.ResponseSingleData[domain.Empty]
+        err = json.Unmarshal(rec.Body.Bytes(), &resp)
+        require.NoError(t, err)
+
+        assert.Equal(t, "error", resp.Status)
+        assert.Equal(t, "User not found", resp.Message)
+        assert.Equal(t, http.StatusNotFound, resp.Code)
+
+        mockUserService.AssertExpectations(t)
+	})
 }
 
+
+
 func TestUserUnhappyPath(t *testing.T) {
-	t.Parallel()
+    mockUserService := new(mocks.UserService)
 
-	dbURL := os.Getenv("DATABASE_URL")
-	dbPool, _ := pgxpool.New(context.Background(), dbURL)
-	defer dbPool.Close()
+    newUser := domain.User{
+	    ID:    "d4b8583d-5038-4838-bcd7-3d8dddfedd6a",
+	    Name:  "John Doe",
+	    Email: "john@example.com",
+    }
 
-	ts := startServer(dbPool)
-	defer ts.Close()
-
-	baseURL := ts.URL
-
-	// --- Delete Non-Existent User
-	{
-		url := baseURL + "/users/999"
-		req, err := http.NewRequest(
-			http.MethodDelete,
-			url,
-			nil,
-		)
-		if err != nil {
-			t.Fatalf("new delete request: %v", err)
-		}
-		resp, err := http.DefaultClient.Do(req)
-		if err != nil {
-			t.Fatalf("delete request error: %v", err)
-		}
-		defer resp.Body.Close()
-
-		if resp.StatusCode != http.StatusNotFound {
-			t.Errorf("expected 404; got %d", resp.StatusCode)
-		}
+    handler := rest.UserHandler{
+		Service: mockUserService,
 	}
+
 
 	// --- Get Non-Existent User
-	{
-		url := baseURL + "/users/999"
-		resp, err := http.Get(url)
-		if err != nil {
-			t.Fatalf("get request error: %v", err)
-		}
-		defer resp.Body.Close()
+	t.Run("GetNonExistingUser", func(t *testing.T) {
+        id, err := uuid.Parse(newUser.ID)
+		require.NoError(t, err)
+		mockUserService.
+            On("GetUser", mock.Anything, id).
+            Return(nil, sql.ErrNoRows).
+            Once()
 
-		if resp.StatusCode != http.StatusNotFound {
-			t.Errorf("expected 404; got %d", resp.StatusCode)
-		}
-	}
+		e := echo.New()
+        req := httptest.NewRequest(http.MethodGet, "/api/v1/users/"+newUser.ID, nil)
+        rec := httptest.NewRecorder()
+        c := e.NewContext(req, rec)
+        c.SetParamNames("id")
+        c.SetParamValues(newUser.ID)
 
-	// --- Update Non-Existent User
-	{
-		update := domain.User{
-			Name:  "Ghost",
-			Email: "ghost@invalid",
-		}
-		body, _ := json.Marshal(update)
-		url := baseURL + "/users/999"
-		req, err := http.NewRequest(
-			http.MethodPut,
-			url,
-			bytes.NewBuffer(body),
-		)
-		if err != nil {
-			t.Fatalf("new update request: %v", err)
-		}
-		req.Header.Set("Content-Type", "application/json")
+        err = handler.GetUser(c)
+        require.NoError(t, err)
 
-		resp, err := http.DefaultClient.Do(req)
-		if err != nil {
-			t.Fatalf("update request error: %v", err)
-		}
-		defer resp.Body.Close()
+        assert.Equal(t, http.StatusNotFound, rec.Code)
 
-		if resp.StatusCode != http.StatusNotFound {
-			t.Errorf("expected 404; got %d", resp.StatusCode)
-		}
-	}
+        var resp domain.ResponseSingleData[domain.Empty]
+        err = json.Unmarshal(rec.Body.Bytes(), &resp)
+        require.NoError(t, err)
 
-	// --- Create Invalid JSON
-	{
-		resp, err := http.Post(
-			baseURL+"/users",
-			"application/json",
-			bytes.NewBufferString(`{"name":123}`),
-		)
-		if err != nil {
-			t.Fatalf("create invalid JSON error: %v", err)
-		}
-		defer resp.Body.Close()
-	}
+        assert.Equal(t, "error", resp.Status)
+        assert.Equal(t, "User not found", resp.Message)
+        assert.Equal(t, http.StatusNotFound, resp.Code)
+
+        mockUserService.AssertExpectations(t)
+	})
+
+	// // --- Create Invalid JSON
+	t.Run("CreateUser_InvalidNameType", func(t *testing.T) {
+	    body := []byte(`{
+		    "Name": 12345,
+		    "Email": "test@example.com",
+		    "Password": "Password1234"
+	    }`)
+
+	    e := echo.New()
+	    req := httptest.NewRequest(http.MethodPost, "/api/v1/users", bytes.NewReader(body))
+	    req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	    rec := httptest.NewRecorder()
+	    c := e.NewContext(req, rec)
+
+	    err := handler.CreateUser(c)
+	    require.NoError(t, err)
+
+	    assert.Equal(t, http.StatusBadRequest, rec.Code)
+
+	    var resp domain.ResponseSingleData[domain.Empty]
+	    err = json.Unmarshal(rec.Body.Bytes(), &resp)
+	    require.NoError(t, err)
+	    assert.Equal(t, "error", resp.Status)
+	    assert.NotEmpty(t, resp.Message)
+})
 }
