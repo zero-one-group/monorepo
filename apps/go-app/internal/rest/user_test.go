@@ -4,12 +4,12 @@ import (
 	"bytes"
 	"database/sql"
 	"encoding/json"
-	"go-app/domain"
-	"go-app/internal/rest"
-	"go-app/internal/rest/mocks"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"go-app/domain"
+	"go-app/internal/rest"
+	"go-app/internal/rest/mocks"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
@@ -138,7 +138,6 @@ func TestUserHappyPath(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, "success", resp.Status)
 		assert.Equal(t, updatedUser, resp.Data)
-        assert.Equal(t, updatedUser.Name, resp.Data.Name)
 
 		mockUserService.AssertExpectations(t)
 	})
