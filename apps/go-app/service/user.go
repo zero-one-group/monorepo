@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"github.com/google/uuid"
 	"go-app/domain"
 	"sync"
 	"time"
@@ -9,36 +11,45 @@ import (
 	"github.com/opentracing/opentracing-go"
 )
 
-// UserService holds users in‐memory.
-type UserService struct {
-	mu     sync.Mutex
-	users  map[int]*domain.User
-	nextID int
+type UserRepository interface {
+	CreateUser(ctx context.Context, user *domain.CreateUserRequest) (*domain.User, error)
+	GetUserList(ctx context.Context, filter *domain.UserFilter) ([]domain.User, error)
+	GetUser(ctx context.Context, id uuid.UUID) (*domain.User, error)
+	UpdateUser(ctx context.Context, id uuid.UUID, user *domain.User) (*domain.User, error)
+	DeleteUser(ctx context.Context, id uuid.UUID) error
 }
 
-// NewUserService constructs a fresh service.
-func NewUserService() *UserService {
+type UserService struct {
+	userRepo UserRepository
+}
+
+func NewUserService(u UserRepository) *UserService {
 	return &UserService{
-		users:  make(map[int]*domain.User),
-		nextID: 1,
+		userRepo: u,
 	}
 }
 
 // CreateUser adds a new user.
-func (s *UserService) CreateUser(
+func (us *UserService) CreateUser(
 	ctx context.Context,
-	u *domain.User,
+	u *domain.CreateUserRequest,
 ) (*domain.User, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	user := &domain.User{
-		ID:    s.nextID,
-		Name:  u.Name,
-		Email: u.Email,
+	createdUser, err := us.userRepo.CreateUser(ctx, u)
+	if err != nil {
+		return nil, err
 	}
-	s.users[s.nextID] = user
-	s.nextID++
+	return createdUser, nil
+}
+
+// GetUser fetches a user by ID.
+func (us *UserService) GetUser(
+	ctx context.Context,
+	id uuid.UUID,
+) (*domain.User, error) {
+	user, err := us.userRepo.GetUser(ctx, id)
+	if err != nil {
+		return nil, err
+	}
 	return user, nil
 }
 
@@ -79,38 +90,59 @@ func (s *UserService) GetUser(
 }
 
 // UpdateUser updates name/email of an existing user.
-func (s *UserService) UpdateUser(
+func (us *UserService) UpdateUser(
 	ctx context.Context,
-	id int,
+	id uuid.UUID,
 	u *domain.User,
 ) (*domain.User, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
 
-	if existing, ok := s.users[id]; ok {
-		existing.Name = u.Name
-		existing.Email = u.Email
-		// return a copy
-		return &domain.User{
-			ID:    existing.ID,
-			Name:  existing.Name,
-			Email: existing.Email,
-		}, nil
+	existing, err := us.userRepo.GetUser(ctx, id)
+	if err != nil {
+		return nil, err
 	}
-	return nil, domain.ErrUserNotFound
+	if existing == nil {
+		return nil, domain.ErrUserNotFound
+	}
+
+	existing.Name = u.Name
+	existing.Email = u.Email
+
+	_, err = us.userRepo.UpdateUser(ctx, id, existing)
+	if err != nil {
+		return nil, err
+	}
+
+	return existing, nil
 }
 
 // DeleteUser removes a user by ID.
-func (s *UserService) DeleteUser(
+func (us *UserService) DeleteUser(
 	ctx context.Context,
-	id int,
+	id uuid.UUID,
 ) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
 
-	if _, ok := s.users[id]; ok {
-		delete(s.users, id)
-		return nil
+	user, err := us.userRepo.GetUser(ctx, id)
+	if err != nil {
+		return err
 	}
-	return domain.ErrUserNotFound
+	if user == nil {
+		return domain.ErrUserNotFound
+	}
+
+	err = us.userRepo.DeleteUser(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (us *UserService) GetUserList(ctx context.Context, filter *domain.UserFilter) ([]domain.User, error) {
+	users, err := us.userRepo.GetUserList(ctx, filter)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	return users, nil
 }

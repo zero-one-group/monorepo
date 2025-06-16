@@ -11,5 +11,6 @@ dependencies = [
     "sqlalchemy>=2.0.40",
     "psycopg[binary]>=3.2.6",
     "openai>=v1.75.0",
-    "asyncpg>=0.30.0"
+    "asyncpg>=0.30.0",
+    "alembic>=1.6.1"
 ]
