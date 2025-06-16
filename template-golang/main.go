@@ -48,23 +48,24 @@ func main() {
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization, "X-Signature"},
 	}))
 
+	config.ApplyInstrumentation(e)
+
 	// Register the routes
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, domain.Response{
-            Code: 200,
-            Status: "Succes",
+			Code:    200,
+			Status:  "Succes",
 			Message: "All is well!",
 		})
 	})
 
-    userRepo := postgres.NewUserRepository(dbPool)
-    userService := service.NewUserService(userRepo)
+	userRepo := postgres.NewUserRepository(dbPool)
+	userService := service.NewUserService(userRepo)
 
+	apiV1 := e.Group("/api/v1")
+	usersGroup := apiV1.Group("")
 
-    apiV1 := e.Group("/api/v1")
-    usersGroup := apiV1.Group("")
-
-    rest.NewUserHandler(usersGroup, userService)
+	rest.NewUserHandler(usersGroup, userService)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
