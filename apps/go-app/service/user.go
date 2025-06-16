@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"go-app/domain"
-	"sync"
-	"time"
 
 	"github.com/opentracing/opentracing-go"
 )
@@ -46,47 +44,19 @@ func (us *UserService) GetUser(
 	ctx context.Context,
 	id uuid.UUID,
 ) (*domain.User, error) {
-	user, err := us.userRepo.GetUser(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
-}
-
-// GetUser fetches a user by ID.
-func (s *UserService) GetUser(
-	ctx context.Context,
-	id int,
-) (*domain.User, error) {
-	span, svcCtx := opentracing.StartSpanFromContext(
+	span, spanCtx := opentracing.StartSpanFromContext(
 		ctx,
 		"UserService.GetUser",
 	)
 	defer span.Finish()
 
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	// NOTE: Example span on repository
-	spanRepo, _ := opentracing.StartSpanFromContext(
-		svcCtx,
-		"UserRepository.GetUser",
-	)
-	defer spanRepo.Finish()
-	spanRepo.SetOperationName("ExampleRepoGetUserByID")
-	spanRepo.SetTag("db.statement", "SELECT * FROM users WHERE id=$1")
-	time.Sleep(time.Second.Abs())
-
-	if u, ok := s.users[id]; ok {
-		// return a copy
-		return &domain.User{
-			ID:    u.ID,
-			Name:  u.Name,
-			Email: u.Email,
-		}, nil
+	user, err := us.userRepo.GetUser(spanCtx, id)
+	if err != nil {
+		span.SetTag("error", true)
+		return nil, err
 	}
-	spanRepo.SetTag("error", true)
-	return nil, domain.ErrUserNotFound
+
+	return user, nil
 }
 
 // UpdateUser updates name/email of an existing user.

@@ -2,9 +2,10 @@ package postgres
 
 import (
 	"context"
-	"strings"
+	"github.com/opentracing/opentracing-go"
 	"go-app/domain"
 	"go-app/utils"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -45,8 +46,6 @@ func (u *UserRepository) CreateUser(ctx context.Context, user *domain.CreateUser
 	}, nil
 }
 
-
-
 func (u *UserRepository) GetUserList(ctx context.Context, filter *domain.UserFilter) ([]domain.User, error) {
 	query := `
 		SELECT
@@ -58,14 +57,14 @@ func (u *UserRepository) GetUserList(ctx context.Context, filter *domain.UserFil
 		FROM users u
         WHERE u.deleted_at is NULL`
 
-    var args []interface{}
+	var args []interface{}
 	var conditions []string
-    if filter != nil && filter.Search != "" {
-        conditions = append(conditions, `(u.name ILIKE $1 OR u.email ILIKE $1)`)
-        args = append(args, "%"+filter.Search+"%")
-    }
+	if filter != nil && filter.Search != "" {
+		conditions = append(conditions, `(u.name ILIKE $1 OR u.email ILIKE $1)`)
+		args = append(args, "%"+filter.Search+"%")
+	}
 
-    if len(conditions) > 0 {
+	if len(conditions) > 0 {
 		query += strings.Join(conditions, " AND ")
 	}
 	rows, err := u.Conn.Query(ctx, query, args...)
@@ -74,7 +73,7 @@ func (u *UserRepository) GetUserList(ctx context.Context, filter *domain.UserFil
 	}
 	defer rows.Close()
 
-    var users []domain.User
+	var users []domain.User
 
 	for rows.Next() {
 		var user domain.User
@@ -91,10 +90,16 @@ func (u *UserRepository) GetUserList(ctx context.Context, filter *domain.UserFil
 		users = append(users, user)
 	}
 
-    return users, nil
+	return users, nil
 }
 
 func (u *UserRepository) GetUser(ctx context.Context, id uuid.UUID) (*domain.User, error) {
+	span, _ := opentracing.StartSpanFromContext(
+		ctx,
+		"UserRepository.GetUser",
+	)
+	defer span.Finish()
+
 	query := `
 		SELECT
 			id,
@@ -104,6 +109,9 @@ func (u *UserRepository) GetUser(ctx context.Context, id uuid.UUID) (*domain.Use
 			updated_at
 		FROM users
 		WHERE id = $1 AND deleted_at IS NULL`
+	span.SetOperationName("GetUserByID")
+	span.SetTag("db.statement", query)
+	span.SetTag("db.var", id)
 
 	row := u.Conn.QueryRow(ctx, query, id)
 
@@ -116,6 +124,8 @@ func (u *UserRepository) GetUser(ctx context.Context, id uuid.UUID) (*domain.Use
 		&user.UpdatedAt,
 	)
 	if err != nil {
+		span.SetTag("error", true)
+		span.SetTag("message", err.Error())
 		return nil, err
 	}
 
@@ -131,7 +141,7 @@ func (u *UserRepository) UpdateUser(ctx context.Context, id uuid.UUID, user *dom
 		WHERE id = $3 AND deleted_at IS NULL`
 
 	_, err := u.Conn.Exec(ctx, query, user.Name, user.Email, id)
-    if err != nil {
+	if err != nil {
 		return nil, err
 	}
 
@@ -142,7 +152,6 @@ func (u *UserRepository) UpdateUser(ctx context.Context, id uuid.UUID, user *dom
 	return updatedUser, nil
 }
 
-
 func (u *UserRepository) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	query := `
 		UPDATE users
@@ -152,4 +161,3 @@ func (u *UserRepository) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	_, err := u.Conn.Exec(ctx, query, id)
 	return err
 }
-

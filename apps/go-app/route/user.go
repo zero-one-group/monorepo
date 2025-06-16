@@ -5,8 +5,8 @@ import (
 	"go-app/service"
 	"net/http"
 	"strconv"
-	"time"
 
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/opentracing/opentracing-go"
 )
@@ -41,23 +41,33 @@ func getUserHandler(svc *service.UserService) echo.HandlerFunc {
 			"RouteUser.GetUser",
 		)
 		defer span.Finish()
-		time.Sleep(time.Millisecond.Abs() * 300)
-		id, err := strconv.Atoi(c.Param("id"))
-		span.SetBaggageItem("user_id", c.Param("id"))
+
+		rawID := c.Param("id")
+		span.SetBaggageItem("user_id", rawID)
+
+		id, err := uuid.Parse(rawID)
 		if err != nil {
-			return c.JSON(http.StatusBadRequest,
-				map[string]string{"error": "invalid user id"})
+			return c.JSON(
+				http.StatusBadRequest,
+				map[string]string{"error": "invalid user id"},
+			)
 		}
-		span.SetTag("user.id", id)
+		span.SetTag("user.id", id.String())
+
 		user, err := svc.GetUser(ctx, id)
 		if err != nil {
 			if err == domain.ErrUserNotFound {
-				return c.JSON(http.StatusNotFound,
-					map[string]string{"error": "user not found"})
+				return c.JSON(
+					http.StatusNotFound,
+					map[string]string{"error": "user not found"},
+				)
 			}
-			return c.JSON(http.StatusInternalServerError,
-				map[string]string{"error": err.Error()})
+			return c.JSON(
+				http.StatusInternalServerError,
+				map[string]string{"error": err.Error()},
+			)
 		}
+
 		return c.JSON(http.StatusOK, user)
 	}
 }
