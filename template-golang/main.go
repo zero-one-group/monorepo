@@ -18,6 +18,7 @@ import (
 	"{{ package_name }}/service"
 
 	"github.com/labstack/echo/v4"
+	"github.com/lmittmann/tint"
 )
 
 func init() {
@@ -26,7 +27,11 @@ func init() {
 
 func main() {
 
-    logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+
+    w := os.Stdout
+    logger := slog.New(tint.NewHandler(w, &tint.Options{
+       ReplaceAttr: middleware.ColorizeLogging,
+    }))
 	slog.SetDefault(logger)
 
 	dbPool, err := database.SetupPgxPool()

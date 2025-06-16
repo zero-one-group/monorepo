@@ -4,12 +4,12 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"go-app/seeders"
 	"log/slog"
+	"go-app/seeders"
 )
 
 func runSeeder(db *sql.DB, target string) error {
-   slog.Info("Seeding target", "target", target)
+	slog.Info("Seeding target", "target", target)
 
 	switch target {
 	case "all":

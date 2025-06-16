@@ -5,6 +5,7 @@ import (
 	"time"
 
 	echo "github.com/labstack/echo/v4"
+	"github.com/lmittmann/tint"
 )
 
 func SlogLoggerMiddleware() echo.MiddlewareFunc {
@@ -12,20 +13,52 @@ func SlogLoggerMiddleware() echo.MiddlewareFunc {
 		return func(c echo.Context) error {
 			start := time.Now()
 			err := next(c)
-			stop := time.Since(start)
+			duration := time.Since(start)
 
 			req := c.Request()
 			res := c.Response()
+            status := res.Status
 
-			slog.Info("HTTP Request",
-				"status", res.Status,
-				"duration", stop,
-				"client_ip", c.RealIP(),
-				"method", req.Method,
-				"path", req.URL.Path,
-			)
 
-			return err
-		}
+            args := []any{
+                slog.Int("status", status),
+                slog.Any("duration", duration),
+                slog.String("client_ip", c.RealIP()),
+                slog.String("method", req.Method),
+                slog.String("path", req.URL.Path),
+            }
+
+			switch {
+			case status >= 500:
+				slog.Error("HTTP Request", args...)
+			case status >= 400:
+				slog.Warn("HTTP Request", args...)
+			default:
+				slog.Info("HTTP Request", args...)
+			}
+
+            return err
+        }
 	}
 }
+
+func ColorizeLogging(groups []string, a slog.Attr) slog.Attr {
+    const LevelTrace = slog.LevelDebug
+    if a.Key == slog.LevelKey && len(groups) == 0 {
+        level, ok := a.Value.Any().(slog.Level)
+        if ok {
+            switch level {
+            case slog.LevelError:
+                return tint.Attr(9, slog.String(a.Key, "ERR"))
+            case slog.LevelWarn:
+                return tint.Attr(12, slog.String(a.Key, "WRN"))
+            case slog.LevelInfo:
+                return tint.Attr(10, slog.String(a.Key, "INF"))
+            case LevelTrace:
+                return tint.Attr(10, slog.String(a.Key, "TRC"))
+            }
+        }
+    }
+    return a
+}
+
