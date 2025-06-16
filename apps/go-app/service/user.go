@@ -32,8 +32,15 @@ func (us *UserService) CreateUser(
 	ctx context.Context,
 	u *domain.CreateUserRequest,
 ) (*domain.User, error) {
-	createdUser, err := us.userRepo.CreateUser(ctx, u)
+	span, spanCtx := opentracing.StartSpanFromContext(
+		ctx,
+		"UserService.GetUser",
+	)
+	defer span.Finish()
+
+	createdUser, err := us.userRepo.CreateUser(spanCtx, u)
 	if err != nil {
+		span.SetTag("error", true)
 		return nil, err
 	}
 	return createdUser, nil
@@ -65,20 +72,28 @@ func (us *UserService) UpdateUser(
 	id uuid.UUID,
 	u *domain.User,
 ) (*domain.User, error) {
+	span, spanCtx := opentracing.StartSpanFromContext(
+		ctx,
+		"UserService.GetUser",
+	)
+	defer span.Finish()
 
 	existing, err := us.userRepo.GetUser(ctx, id)
 	if err != nil {
+		span.SetTag("error", true)
 		return nil, err
 	}
 	if existing == nil {
+		span.SetTag("error", true)
 		return nil, domain.ErrUserNotFound
 	}
 
 	existing.Name = u.Name
 	existing.Email = u.Email
 
-	_, err = us.userRepo.UpdateUser(ctx, id, existing)
+	_, err = us.userRepo.UpdateUser(spanCtx, id, existing)
 	if err != nil {
+		span.SetTag("error", true)
 		return nil, err
 	}
 
@@ -90,17 +105,25 @@ func (us *UserService) DeleteUser(
 	ctx context.Context,
 	id uuid.UUID,
 ) error {
+	span, spanCtx := opentracing.StartSpanFromContext(
+		ctx,
+		"UserService.GetUser",
+	)
+	defer span.Finish()
 
-	user, err := us.userRepo.GetUser(ctx, id)
+	user, err := us.userRepo.GetUser(spanCtx, id)
 	if err != nil {
+		span.SetTag("error", true)
 		return err
 	}
 	if user == nil {
+		span.SetTag("error", true)
 		return domain.ErrUserNotFound
 	}
 
-	err = us.userRepo.DeleteUser(ctx, id)
+	err = us.userRepo.DeleteUser(spanCtx, id)
 	if err != nil {
+		span.SetTag("error", true)
 		return err
 	}
 
@@ -108,9 +131,16 @@ func (us *UserService) DeleteUser(
 }
 
 func (us *UserService) GetUserList(ctx context.Context, filter *domain.UserFilter) ([]domain.User, error) {
-	users, err := us.userRepo.GetUserList(ctx, filter)
+	span, spanCtx := opentracing.StartSpanFromContext(
+		ctx,
+		"UserService.GetUser",
+	)
+	defer span.Finish()
+
+	users, err := us.userRepo.GetUserList(spanCtx, filter)
 	if err != nil {
 		fmt.Println(err)
+		span.SetTag("error", true)
 		return nil, err
 	}
 

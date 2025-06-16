@@ -39,12 +39,18 @@ func NewUserHandler(e *echo.Group, svc UserService) {
 }
 
 func (h *UserHandler) GetUserList(c echo.Context) error {
+	span, ctx := opentracing.StartSpanFromContext(
+		c.Request().Context(),
+		"RouteUser.GetUserList",
+	)
+	defer span.Finish()
+
 	filter := new(domain.UserFilter)
 	if err := c.Bind(filter); err != nil {
 		fmt.Println(err)
 	}
 
-	ctx := c.Request().Context()
+	span.SetTag("filter", filter)
 	users, err := h.Service.GetUserList(ctx, filter)
 	if err != nil {
 		fmt.Println(err)
@@ -110,6 +116,12 @@ func (h *UserHandler) GetUser(c echo.Context) error {
 }
 
 func (h *UserHandler) CreateUser(c echo.Context) error {
+	span, ctx := opentracing.StartSpanFromContext(
+		c.Request().Context(),
+		"RouteUser.CreateUser",
+	)
+	defer span.Finish()
+
 	var user domain.CreateUserRequest
 	if err := c.Bind(&user); err != nil {
 		return c.JSON(http.StatusBadRequest, domain.ResponseSingleData[domain.Empty]{
@@ -119,7 +131,7 @@ func (h *UserHandler) CreateUser(c echo.Context) error {
 		})
 	}
 
-	ctx := c.Request().Context()
+	span.SetTag("request", user)
 	createdUser, err := h.Service.CreateUser(ctx, &user)
 	if err != nil {
 		fmt.Println("CreateUser error:", err)
@@ -139,6 +151,12 @@ func (h *UserHandler) CreateUser(c echo.Context) error {
 }
 
 func (h *UserHandler) UpdateUser(c echo.Context) error {
+	span, ctx := opentracing.StartSpanFromContext(
+		c.Request().Context(),
+		"RouteUser.UpdateUser",
+	)
+	defer span.Finish()
+
 	idParam := c.Param("id")
 	id, err := uuid.Parse(idParam)
 	if err != nil {
@@ -158,7 +176,7 @@ func (h *UserHandler) UpdateUser(c echo.Context) error {
 		})
 	}
 
-	ctx := c.Request().Context()
+	span.SetTag("payload", user)
 	updatedUser, err := h.Service.UpdateUser(ctx, id, &user)
 	if err != nil {
 		fmt.Println("UpdateUser error:", err)
@@ -178,6 +196,12 @@ func (h *UserHandler) UpdateUser(c echo.Context) error {
 }
 
 func (h *UserHandler) DeleteUser(c echo.Context) error {
+	span, ctx := opentracing.StartSpanFromContext(
+		c.Request().Context(),
+		"RouteUser.DeleteUser",
+	)
+	defer span.Finish()
+
 	idParam := c.Param("id")
 	id, err := uuid.Parse(idParam)
 	if err != nil {
@@ -188,7 +212,8 @@ func (h *UserHandler) DeleteUser(c echo.Context) error {
 		})
 	}
 
-	ctx := c.Request().Context()
+	span.SetTag("id", id)
+
 	if err := h.Service.DeleteUser(ctx, id); err != nil {
 		fmt.Println("DeleteUser error:", err)
 		return c.JSON(http.StatusInternalServerError, domain.ResponseSingleData[domain.Empty]{

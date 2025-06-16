@@ -22,12 +22,18 @@ func NewUserRepository(conn *pgxpool.Pool) *UserRepository {
 }
 
 func (u *UserRepository) CreateUser(ctx context.Context, user *domain.CreateUserRequest) (*domain.User, error) {
+	span, _ := opentracing.StartSpanFromContext(
+		ctx,
+		"UserRepository.CreateUser",
+	)
+	defer span.Finish()
 
 	query := `
 		INSERT INTO users (name, email, password, created_at, updated_at)
 		VALUES ($1, $2, $3, NOW(), NOW())
 		RETURNING id`
 
+	span.SetTag("db.query", query)
 	hashedPassword, err := utils.HashPassword(user.Password)
 	if err != nil {
 		return nil, err
@@ -47,6 +53,12 @@ func (u *UserRepository) CreateUser(ctx context.Context, user *domain.CreateUser
 }
 
 func (u *UserRepository) GetUserList(ctx context.Context, filter *domain.UserFilter) ([]domain.User, error) {
+	span, _ := opentracing.StartSpanFromContext(
+		ctx,
+		"UserRepository.GetUserList",
+	)
+	defer span.Finish()
+
 	query := `
 		SELECT
 			u.id,
@@ -133,6 +145,12 @@ func (u *UserRepository) GetUser(ctx context.Context, id uuid.UUID) (*domain.Use
 }
 
 func (u *UserRepository) UpdateUser(ctx context.Context, id uuid.UUID, user *domain.User) (*domain.User, error) {
+	span, _ := opentracing.StartSpanFromContext(
+		ctx,
+		"UserRepository.UpdateUser",
+	)
+	defer span.Finish()
+
 	query := `
 		UPDATE users
 		SET name = $1,
@@ -153,6 +171,12 @@ func (u *UserRepository) UpdateUser(ctx context.Context, id uuid.UUID, user *dom
 }
 
 func (u *UserRepository) DeleteUser(ctx context.Context, id uuid.UUID) error {
+	span, _ := opentracing.StartSpanFromContext(
+		ctx,
+		"UserRepository.DeleteUser",
+	)
+	defer span.Finish()
+
 	query := `
 		UPDATE users
 		SET deleted_at = NOW()
