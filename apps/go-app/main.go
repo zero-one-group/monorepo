@@ -24,6 +24,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
 func init() {
@@ -66,18 +67,9 @@ func main() {
 	e.Use(middleware.Cors())
 
 	ctx := context.Background()
-	tp, shutdown, err := config.InitTracer(ctx)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to init tracer: %v\n", err)
-		os.Exit(1)
-	}
-	// make sure we flush any spans on exit
-	defer func() {
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancel()
-		_ = shutdown(ctx)
-	}()
 
+	tp, shutdown := initTracer(ctx)
+	defer flushTracer(shutdown)
 	// 2) Create Echo and register middleware
 	e.Use(
 		otelecho.Middleware(
@@ -142,4 +134,17 @@ func main() {
 	}
 }
 
+func initTracer(ctx context.Context) (*sdktrace.TracerProvider, func(context.Context) error) {
+	tp, shutdown, err := config.InitTracer(ctx)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to init tracer: %v\n", err)
+		os.Exit(1)
+	}
+	return tp, shutdown
+}
 
+func flushTracer(shutdown func(context.Context) error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	_ = shutdown(ctx)
+}
