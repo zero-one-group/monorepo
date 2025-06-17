@@ -89,3 +89,13 @@ moon run seed -- {table_name}
 ```bash
 moon run go-app:test
 ```
+
+## Production
+
+### Instrumentation
+Tracing is enabled exclusively in the production environment. Set `APP_ENVIRONMENT` to `production` to activate tracing. Alternatively, you may customize the tracing rules in `apps/go-app/config/tracer.go`.
+
+For instructions on customizing span tracing, please refer to the example located at:
+- `apps/go-app/internal/rest/user.go`
+    - From rest layer all the way down to repository layer
+

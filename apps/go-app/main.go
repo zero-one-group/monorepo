@@ -70,7 +70,7 @@ func main() {
 
 	tp, shutdown := initTracer(ctx)
 	defer flushTracer(shutdown)
-	// 2) Create Echo and register middleware
+
 	e.Use(
 		otelecho.Middleware(
 			os.Getenv("SERVICE_NAME"),
