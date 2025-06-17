@@ -19,6 +19,11 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/lmittmann/tint"
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/gommon/log"
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/gommon/log"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho"
 )
 
 func init() {
@@ -60,18 +65,41 @@ func main() {
     e.Use(middleware.SlogLoggerMiddleware())
 	e.Use(middleware.Cors())
 
+	ctx := context.Background()
+	tp, shutdown, err := config.InitTracer(ctx)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to init tracer: %v\n", err)
+		os.Exit(1)
+	}
+	// make sure we flush any spans on exit
+	defer func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		_ = shutdown(ctx)
+	}()
+
+	// 2) Create Echo and register middleware
+	e.Use(
+		otelecho.Middleware(
+			os.Getenv("SERVICE_NAME"),
+			otelecho.WithTracerProvider(tp),
+		),
+	)
+
 	// Register the routes
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, domain.Response{
-            Code: 200,
-            Status: "Succes",
+			Code:    200,
+			Status:  "Succes",
 			Message: "All is well!",
 		})
 	})
 
-    userRepo := postgres.NewUserRepository(dbPool)
-    userService := service.NewUserService(userRepo)
+	userRepo := postgres.NewUserRepository(dbPool)
+	userService := service.NewUserService(userRepo)
 
+	apiV1 := e.Group("/api/v1")
+	usersGroup := apiV1.Group("")
 
     apiV1 := e.Group("/api/v1")
     usersGroup := apiV1.Group("")

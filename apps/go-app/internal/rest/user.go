@@ -5,19 +5,20 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"net/http"
 	"go-app/domain"
+	"net/http"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	"github.com/opentracing/opentracing-go"
 )
 
 type UserService interface {
-    CreateUser(ctx context.Context, user *domain.CreateUserRequest) (*domain.User, error)
+	CreateUser(ctx context.Context, user *domain.CreateUserRequest) (*domain.User, error)
 	GetUserList(ctx context.Context, filter *domain.UserFilter) ([]domain.User, error)
-    GetUser(ctx context.Context, id uuid.UUID) (*domain.User, error)
-    UpdateUser(ctx context.Context, id uuid.UUID, user *domain.User) (*domain.User, error)
-    DeleteUser(ctx context.Context, id uuid.UUID) error
+	GetUser(ctx context.Context, id uuid.UUID) (*domain.User, error)
+	UpdateUser(ctx context.Context, id uuid.UUID, user *domain.User) (*domain.User, error)
+	DeleteUser(ctx context.Context, id uuid.UUID) error
 }
 
 type UserHandler struct {
@@ -30,23 +31,23 @@ func NewUserHandler(e *echo.Group, svc UserService) {
 	}
 	userGroup := e.Group("/users") // users group
 
-    userGroup.GET("", handler.GetUserList)
-    userGroup.GET("/:id", handler.GetUser)
-    userGroup.POST("", handler.CreateUser)
-    userGroup.PUT("/:id", handler.UpdateUser)
-    userGroup.DELETE("/:id", handler.DeleteUser)
+	userGroup.GET("", handler.GetUserList)
+	userGroup.GET("/:id", handler.GetUser)
+	userGroup.POST("", handler.CreateUser)
+	userGroup.PUT("/:id", handler.UpdateUser)
+	userGroup.DELETE("/:id", handler.DeleteUser)
 }
 
 func (h *UserHandler) GetUserList(c echo.Context) error {
-    filter := new(domain.UserFilter)
+	filter := new(domain.UserFilter)
 	if err := c.Bind(filter); err != nil {
-        fmt.Println(err)
+		fmt.Println(err)
 	}
 
 	ctx := c.Request().Context()
 	users, err := h.Service.GetUserList(ctx, filter)
 	if err != nil {
-        fmt.Println(err)
+		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, domain.ResponseMultipleData[domain.Empty]{
 			Code:    http.StatusInternalServerError,
 			Status:  "error",
@@ -58,10 +59,10 @@ func (h *UserHandler) GetUserList(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, domain.ResponseMultipleData[domain.User]{
-        Data:       users,
-		Code:       http.StatusOK,
-		Status:     "Success",
-		Message:    "Successfully retrieve user list",
+		Data:    users,
+		Code:    http.StatusOK,
+		Status:  "Success",
+		Message: "Successfully retrieve user list",
 	})
 }
 
@@ -77,6 +78,12 @@ func (h *UserHandler) GetUser(c echo.Context) error {
 	}
 
 	ctx := c.Request().Context()
+	span, _ := opentracing.StartSpanFromContext(
+		ctx,
+		"UserRepository.CreateUser",
+	)
+	defer span.Finish()
+
 	user, err := h.Service.GetUser(ctx, id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -93,7 +100,7 @@ func (h *UserHandler) GetUser(c echo.Context) error {
 			Status:  "error",
 			Message: "Failed to get user: " + err.Error(),
 		})
-    }
+	}
 
 	return c.JSON(http.StatusOK, domain.ResponseSingleData[domain.User]{
 		Data:    *user,
@@ -198,6 +205,3 @@ func (h *UserHandler) DeleteUser(c echo.Context) error {
 		Message: "User successfully deleted",
 	})
 }
-
-
-
