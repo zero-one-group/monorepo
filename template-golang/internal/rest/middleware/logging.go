@@ -29,12 +29,10 @@ func SlogLoggerMiddleware() echo.MiddlewareFunc {
             }
 
 			switch {
-			case status >= 500:
-				slog.Error("HTTP Request", args...)
-			case status >= 400:
-				slog.Warn("HTTP Request", args...)
+			case status >= 500 || status >= 400:
+				slog.Error("Middleware logger", args...)
 			default:
-				slog.Info("HTTP Request", args...)
+				slog.Info("Middleware logger", args...)
 			}
 
             return err
