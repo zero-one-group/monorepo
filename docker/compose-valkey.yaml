@@ -10,7 +10,7 @@ services:
     image: valkey/valkey:${VALKEY_VERSION:-8-alpine}
     container_name: myorg_valkey
     hostname: valkey
-    restart: always
+    # restart: always
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
       - VALKEY_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
