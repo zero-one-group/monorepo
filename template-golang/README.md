@@ -89,3 +89,13 @@ moon run seed -- {table_name}
 ```bash
 moon run {{ package_name | kebab_case }}:test
 ```
+
+## Production
+
+### Instrumentation
+Tracing is enabled exclusively in the production environment. Set `APP_ENVIRONMENT` to `production` to activate tracing. Alternatively, you may customize the tracing rules in `apps/{{ package_name | kebab_case }}/config/tracer.go`.
+
+For instructions on customizing span tracing, please refer to the example located at:
+- `apps/{{ package_name | kebab_case }}/internal/rest/user.go`
+    - From rest layer all the way down to repository layer
+
