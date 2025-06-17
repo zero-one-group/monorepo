@@ -28,10 +28,20 @@ func init() {
 func main() {
 
 
+    env := os.Getenv("APP_ENVIRONMENT")
+    var handler slog.Handler
+
     w := os.Stdout
-    logger := slog.New(tint.NewHandler(w, &tint.Options{
-       ReplaceAttr: middleware.ColorizeLogging,
-    }))
+    if env == "local" {
+        handler = tint.NewHandler(w, &tint.Options{
+            ReplaceAttr: middleware.ColorizeLogging,
+        })
+    } else {
+        // or continue setup log for another env
+        handler = slog.NewTextHandler(w, nil)
+    }
+
+	logger := slog.New(handler)
 	slog.SetDefault(logger)
 
 	dbPool, err := database.SetupPgxPool()

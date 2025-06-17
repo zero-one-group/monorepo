@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"go-app/domain"
 	"net/http"
+	"go-app/domain"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
@@ -87,6 +87,7 @@ func (h *UserHandler) GetUser(c echo.Context) error {
 			})
 		}
 
+		fmt.Println("GetUser error:", err)
 		return c.JSON(http.StatusInternalServerError, domain.ResponseSingleData[domain.Empty]{
 			Code:    http.StatusInternalServerError,
 			Status:  "error",

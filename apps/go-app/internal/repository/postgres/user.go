@@ -2,10 +2,9 @@ package postgres
 
 import (
 	"context"
+	"strings"
 	"go-app/domain"
 	"go-app/utils"
-	"log/slog"
-	"strings"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -117,7 +116,6 @@ func (u *UserRepository) GetUser(ctx context.Context, id uuid.UUID) (*domain.Use
 		&user.UpdatedAt,
 	)
 	if err != nil {
-        slog.Error("Error", "err", err)
 		return nil, err
 	}
 
