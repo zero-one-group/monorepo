@@ -56,10 +56,11 @@ func main() {
 	e.Logger.SetOutput(os.Stdout)
 	e.Logger.SetLevel(0)
 
-	ctx := context.Background()
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer stop()
 
-	tp, shutdown := initTracer(ctx)
-	defer flushTracer(shutdown)
+	tp, shutdown := config.InitTracer(ctx)
+	defer shutdown(ctx)
 
 	e.Use(middleware.AttachTraceProvider(tp))
 	e.Use(middleware.SlogLoggerMiddleware())
@@ -81,9 +82,6 @@ func main() {
 	usersGroup := apiV1.Group("")
 
 	rest.NewUserHandler(usersGroup, userService)
-
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
-	defer stop()
 
 	// Get host from environment variable, default to 127.0.0.1 if not set
 	host := os.Getenv("APP_HOST")
@@ -117,19 +115,4 @@ func main() {
 	if err := e.Shutdown(ctx); err != nil {
 		slog.Error("Shutdown error", "error", err)
 	}
-}
-
-func initTracer(ctx context.Context) (*sdktrace.TracerProvider, func(context.Context) error) {
-	tp, shutdown, err := config.InitTracer(ctx)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to init tracer: %v\n", err)
-		os.Exit(1)
-	}
-	return tp, shutdown
-}
-
-func flushTracer(shutdown func(context.Context) error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	_ = shutdown(ctx)
 }

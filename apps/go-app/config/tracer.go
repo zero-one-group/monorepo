@@ -21,7 +21,6 @@ import (
 func InitTracer(ctx context.Context) (
 	*sdktrace.TracerProvider,
 	func(context.Context) error,
-	error,
 ) {
 	env := os.Getenv("APP_ENVIRONMENT")
 
@@ -37,7 +36,7 @@ func InitTracer(ctx context.Context) (
 				propagation.Baggage{},
 			),
 		)
-		return tp, func(context.Context) error { return nil }, nil
+		return tp, func(context.Context) error { return nil }
 	}
 
 	// 2) Production: real OTLP/gRPC exporter
@@ -56,7 +55,9 @@ func InitTracer(ctx context.Context) (
 		),
 	)
 	if err != nil {
-		return nil, nil, fmt.Errorf("creating OTLP exporter: %w", err)
+		fmt.Printf("Err creating OTLP exporter: %w\n", err)
+		os.Exit(1)
+		return nil, nil
 	}
 
 	res, err := resource.New(
@@ -70,7 +71,9 @@ func InitTracer(ctx context.Context) (
 		resource.WithTelemetrySDK(),
 	)
 	if err != nil {
-		return nil, nil, fmt.Errorf("creating resource: %w", err)
+		fmt.Printf("Err creating resources: %w\n", err)
+		os.Exit(1)
+		return nil, nil
 	}
 
 	tp := sdktrace.NewTracerProvider(
@@ -92,5 +95,5 @@ func InitTracer(ctx context.Context) (
 		return tp.Shutdown(ctx)
 	}
 
-	return tp, shutdown, nil
+	return tp, shutdown
 }
