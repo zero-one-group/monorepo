@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,11 +14,11 @@ import (
 	"go-app/domain"
 	"go-app/internal/repository/postgres"
 	"go-app/internal/rest"
+	"go-app/internal/rest/middleware"
 	"go-app/service"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
-	"github.com/labstack/gommon/log"
+	"github.com/lmittmann/tint"
 )
 
 func init() {
@@ -26,27 +27,38 @@ func init() {
 
 func main() {
 
+
+    env := os.Getenv("APP_ENVIRONMENT")
+    var handler slog.Handler
+
+    w := os.Stdout
+    if env == "local" {
+        handler = tint.NewHandler(w, &tint.Options{
+            ReplaceAttr: middleware.ColorizeLogging,
+        })
+    } else {
+        // or continue setup log for another env
+        handler = slog.NewTextHandler(w, nil)
+    }
+
+	logger := slog.New(handler)
+	slog.SetDefault(logger)
+
 	dbPool, err := database.SetupPgxPool()
 	if err != nil {
-		log.Fatal("Failed to set up database: " + err.Error())
+		slog.Error("Failed to set up database", slog.String("error", err.Error()))
+        os.Exit(1)
 	}
 	defer dbPool.Close()
 
 	e := echo.New()
 	e.HideBanner = true
-	e.Logger.SetLevel(log.INFO)
 
-	// Register logger middleware
-	// @see: https://echo.labstack.com/docs/middleware/logger
-	e.Use(middleware.Logger())
+	e.Logger.SetOutput(os.Stdout)
+	e.Logger.SetLevel(0)
 
-	// Register CORS middleware
-	// @see: https://echo.labstack.com/docs/middleware/cors
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
-		AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization, "X-Signature"},
-	}))
+    e.Use(middleware.SlogLoggerMiddleware())
+	e.Use(middleware.Cors())
 
 	// Register the routes
 	e.GET("/", func(c echo.Context) error {
@@ -63,7 +75,6 @@ func main() {
 
     apiV1 := e.Group("/api/v1")
     usersGroup := apiV1.Group("")
-
     rest.NewUserHandler(usersGroup, userService)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
@@ -85,9 +96,10 @@ func main() {
 	serverAddr := fmt.Sprintf("%s:%s", host, port)
 
 	go func() {
-		e.Logger.Infof("Server starting on %s", serverAddr)
+        slog.Info("Server starting", "address", serverAddr)
 		if err := e.Start(serverAddr); err != nil && err != http.ErrServerClosed {
-			e.Logger.Fatal("shutting down the server")
+			slog.Error("Server failed", "error", err)
+            os.Exit(1)
 		}
 	}()
 
@@ -95,7 +107,11 @@ func main() {
 	<-ctx.Done()
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
+
+    slog.Info("Shutting down server gracefully...")
 	if err := e.Shutdown(ctx); err != nil {
-		e.Logger.Fatal(err)
+		slog.Error("Shutdown error", "error", err)
 	}
 }
+
+
