@@ -6,23 +6,24 @@ import (
 	"{{ package_name }}/domain"
 
 	"github.com/google/uuid"
+	"go.opentelemetry.io/otel"
 )
 
 type UserRepository interface {
-    CreateUser(ctx context.Context, user *domain.CreateUserRequest) (*domain.User, error)
+	CreateUser(ctx context.Context, user *domain.CreateUserRequest) (*domain.User, error)
 	GetUserList(ctx context.Context, filter *domain.UserFilter) ([]domain.User, error)
-    GetUser(ctx context.Context, id uuid.UUID) (*domain.User, error)
-    UpdateUser(ctx context.Context, id uuid.UUID, user *domain.User) (*domain.User, error)
-    DeleteUser(ctx context.Context, id uuid.UUID) error
+	GetUser(ctx context.Context, id uuid.UUID) (*domain.User, error)
+	UpdateUser(ctx context.Context, id uuid.UUID, user *domain.User) (*domain.User, error)
+	DeleteUser(ctx context.Context, id uuid.UUID) error
 }
 
 type UserService struct {
-	userRepo              UserRepository
+	userRepo UserRepository
 }
 
 func NewUserService(u UserRepository) *UserService {
 	return &UserService{
-		userRepo:       u,
+		userRepo: u,
 	}
 }
 
@@ -38,13 +39,16 @@ func (us *UserService) CreateUser(
 	return createdUser, nil
 }
 
-
 // GetUser fetches a user by ID.
 func (us *UserService) GetUser(
 	ctx context.Context,
 	id uuid.UUID,
 ) (*domain.User, error) {
-	user, err := us.userRepo.GetUser(ctx, id)
+	tracer := otel.Tracer("service.user")
+	ctxTrace, span := tracer.Start(ctx, "UserService.GetUser")
+	defer span.End()
+
+	user, err := us.userRepo.GetUser(ctxTrace, id)
 	if err != nil {
 		return nil, err
 	}
@@ -69,8 +73,8 @@ func (us *UserService) UpdateUser(
 	existing.Name = u.Name
 	existing.Email = u.Email
 
-    _, err = us.userRepo.UpdateUser(ctx, id, existing);
-	if  err != nil {
+	_, err = us.userRepo.UpdateUser(ctx, id, existing)
+	if err != nil {
 		return nil, err
 	}
 
@@ -91,7 +95,6 @@ func (us *UserService) DeleteUser(
 		return domain.ErrUserNotFound
 	}
 
-
 	err = us.userRepo.DeleteUser(ctx, id)
 	if err != nil {
 		return err
@@ -107,5 +110,5 @@ func (us *UserService) GetUserList(ctx context.Context, filter *domain.UserFilte
 		return nil, err
 	}
 
-	return users,  nil
+	return users, nil
 }

@@ -27,19 +27,18 @@ func init() {
 
 func main() {
 
+	env := os.Getenv("APP_ENVIRONMENT")
+	var handler slog.Handler
 
-    env := os.Getenv("APP_ENVIRONMENT")
-    var handler slog.Handler
-
-    w := os.Stdout
-    if env == "local" {
-        handler = tint.NewHandler(w, &tint.Options{
-            ReplaceAttr: middleware.ColorizeLogging,
-        })
-    } else {
-        // or continue setup log for another env
-        handler = slog.NewTextHandler(w, nil)
-    }
+	w := os.Stdout
+	if env == "local" {
+		handler = tint.NewHandler(w, &tint.Options{
+			ReplaceAttr: middleware.ColorizeLogging,
+		})
+	} else {
+		// or continue setup log for another env
+		handler = slog.NewTextHandler(w, nil)
+	}
 
 	logger := slog.New(handler)
 	slog.SetDefault(logger)
@@ -47,7 +46,7 @@ func main() {
 	dbPool, err := database.SetupPgxPool()
 	if err != nil {
 		slog.Error("Failed to set up database", slog.String("error", err.Error()))
-        os.Exit(1)
+		os.Exit(1)
 	}
 	defer dbPool.Close()
 
@@ -57,28 +56,32 @@ func main() {
 	e.Logger.SetOutput(os.Stdout)
 	e.Logger.SetLevel(0)
 
-    e.Use(middleware.SlogLoggerMiddleware())
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer stop()
+
+	tp, shutdown := config.InitTracer(ctx)
+	defer shutdown(ctx)
+
+	e.Use(middleware.AttachTraceProvider(tp))
+	e.Use(middleware.SlogLoggerMiddleware())
 	e.Use(middleware.Cors())
 
 	// Register the routes
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, domain.Response{
-            Code: 200,
-            Status: "Succes",
+			Code:    200,
+			Status:  "Succes",
 			Message: "All is well!",
 		})
 	})
 
-    userRepo := postgres.NewUserRepository(dbPool)
-    userService := service.NewUserService(userRepo)
+	userRepo := postgres.NewUserRepository(dbPool)
+	userService := service.NewUserService(userRepo)
 
+	apiV1 := e.Group("/api/v1")
+	usersGroup := apiV1.Group("")
 
-    apiV1 := e.Group("/api/v1")
-    usersGroup := apiV1.Group("")
-    rest.NewUserHandler(usersGroup, userService)
-
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
-	defer stop()
+	rest.NewUserHandler(usersGroup, userService)
 
 	// Get host from environment variable, default to 127.0.0.1 if not set
 	host := os.Getenv("APP_HOST")
@@ -96,10 +99,10 @@ func main() {
 	serverAddr := fmt.Sprintf("%s:%s", host, port)
 
 	go func() {
-        slog.Info("Server starting", "address", serverAddr)
+		slog.Info("Server starting", "address", serverAddr)
 		if err := e.Start(serverAddr); err != nil && err != http.ErrServerClosed {
 			slog.Error("Server failed", "error", err)
-            os.Exit(1)
+			os.Exit(1)
 		}
 	}()
 
@@ -108,10 +111,8 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-    slog.Info("Shutting down server gracefully...")
+	slog.Info("Shutting down server gracefully...")
 	if err := e.Shutdown(ctx); err != nil {
 		slog.Error("Shutdown error", "error", err)
 	}
 }
-
-

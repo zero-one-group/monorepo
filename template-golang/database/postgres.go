@@ -6,14 +6,14 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/exaring/otelpgx"
 	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
-
 func SetupPgxPool() (*pgxpool.Pool, error) {
 	dbURL := os.Getenv("DATABASE_URL")
-    if dbURL == "" {
+	if dbURL == "" {
 		return nil, fmt.Errorf("DATABASE_URL environment variable not set")
 	}
 
@@ -26,12 +26,17 @@ func SetupPgxPool() (*pgxpool.Pool, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to create connection pool: %w", err)
 	}
+	config.ConnConfig.Tracer = otelpgx.NewTracer()
+
+	if err := otelpgx.RecordStats(dbPool); err != nil {
+		return nil, fmt.Errorf("unable to record database stats: %w", err)
+	}
 
 	if err := dbPool.Ping(context.Background()); err != nil {
 		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
 
-    fmt.Println("Connected to DB Postgresql...")
+	fmt.Println("Connected to DB Postgresql...")
 
 	return dbPool, nil
 }

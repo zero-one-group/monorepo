@@ -8,6 +8,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
 )
 
 type UserRepository struct {
@@ -45,8 +47,6 @@ func (u *UserRepository) CreateUser(ctx context.Context, user *domain.CreateUser
 	}, nil
 }
 
-
-
 func (u *UserRepository) GetUserList(ctx context.Context, filter *domain.UserFilter) ([]domain.User, error) {
 	query := `
 		SELECT
@@ -58,14 +58,14 @@ func (u *UserRepository) GetUserList(ctx context.Context, filter *domain.UserFil
 		FROM users u
         WHERE u.deleted_at is NULL`
 
-    var args []interface{}
+	var args []interface{}
 	var conditions []string
-    if filter != nil && filter.Search != "" {
-        conditions = append(conditions, `(u.name ILIKE $1 OR u.email ILIKE $1)`)
-        args = append(args, "%"+filter.Search+"%")
-    }
+	if filter != nil && filter.Search != "" {
+		conditions = append(conditions, `(u.name ILIKE $1 OR u.email ILIKE $1)`)
+		args = append(args, "%"+filter.Search+"%")
+	}
 
-    if len(conditions) > 0 {
+	if len(conditions) > 0 {
 		query += strings.Join(conditions, " AND ")
 	}
 	rows, err := u.Conn.Query(ctx, query, args...)
@@ -74,7 +74,7 @@ func (u *UserRepository) GetUserList(ctx context.Context, filter *domain.UserFil
 	}
 	defer rows.Close()
 
-    var users []domain.User
+	var users []domain.User
 
 	for rows.Next() {
 		var user domain.User
@@ -91,10 +91,14 @@ func (u *UserRepository) GetUserList(ctx context.Context, filter *domain.UserFil
 		users = append(users, user)
 	}
 
-    return users, nil
+	return users, nil
 }
 
 func (u *UserRepository) GetUser(ctx context.Context, id uuid.UUID) (*domain.User, error) {
+	tracer := otel.Tracer("repo.user")
+	ctx, span := tracer.Start(ctx, "UserRepository.GetUser")
+	defer span.End()
+
 	query := `
 		SELECT
 			id,
@@ -105,6 +109,8 @@ func (u *UserRepository) GetUser(ctx context.Context, id uuid.UUID) (*domain.Use
 		FROM users
 		WHERE id = $1 AND deleted_at IS NULL`
 
+	span.SetAttributes(attribute.String("query.statement", query))
+	span.SetAttributes(attribute.String("query.parameter", id.String()))
 	row := u.Conn.QueryRow(ctx, query, id)
 
 	var user domain.User
@@ -116,6 +122,7 @@ func (u *UserRepository) GetUser(ctx context.Context, id uuid.UUID) (*domain.Use
 		&user.UpdatedAt,
 	)
 	if err != nil {
+		span.RecordError(err)
 		return nil, err
 	}
 
@@ -131,7 +138,7 @@ func (u *UserRepository) UpdateUser(ctx context.Context, id uuid.UUID, user *dom
 		WHERE id = $3 AND deleted_at IS NULL`
 
 	_, err := u.Conn.Exec(ctx, query, user.Name, user.Email, id)
-    if err != nil {
+	if err != nil {
 		return nil, err
 	}
 
@@ -142,7 +149,6 @@ func (u *UserRepository) UpdateUser(ctx context.Context, id uuid.UUID, user *dom
 	return updatedUser, nil
 }
 
-
 func (u *UserRepository) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	query := `
 		UPDATE users
@@ -152,4 +158,3 @@ func (u *UserRepository) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	_, err := u.Conn.Exec(ctx, query, id)
 	return err
 }
-
