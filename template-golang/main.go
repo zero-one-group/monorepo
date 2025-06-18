@@ -19,10 +19,6 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/lmittmann/tint"
-	"github.com/labstack/echo/v4/middleware"
-	"github.com/labstack/gommon/log"
-	"github.com/labstack/echo/v4/middleware"
-	"github.com/labstack/gommon/log"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
@@ -33,19 +29,18 @@ func init() {
 
 func main() {
 
+	env := os.Getenv("APP_ENVIRONMENT")
+	var handler slog.Handler
 
-    env := os.Getenv("APP_ENVIRONMENT")
-    var handler slog.Handler
-
-    w := os.Stdout
-    if env == "local" {
-        handler = tint.NewHandler(w, &tint.Options{
-            ReplaceAttr: middleware.ColorizeLogging,
-        })
-    } else {
-        // or continue setup log for another env
-        handler = slog.NewTextHandler(w, nil)
-    }
+	w := os.Stdout
+	if env == "local" {
+		handler = tint.NewHandler(w, &tint.Options{
+			ReplaceAttr: middleware.ColorizeLogging,
+		})
+	} else {
+		// or continue setup log for another env
+		handler = slog.NewTextHandler(w, nil)
+	}
 
 	logger := slog.New(handler)
 	slog.SetDefault(logger)
@@ -53,7 +48,7 @@ func main() {
 	dbPool, err := database.SetupPgxPool()
 	if err != nil {
 		slog.Error("Failed to set up database", slog.String("error", err.Error()))
-        os.Exit(1)
+		os.Exit(1)
 	}
 	defer dbPool.Close()
 
@@ -63,7 +58,7 @@ func main() {
 	e.Logger.SetOutput(os.Stdout)
 	e.Logger.SetLevel(0)
 
-    e.Use(middleware.SlogLoggerMiddleware())
+	e.Use(middleware.SlogLoggerMiddleware())
 	e.Use(middleware.Cors())
 
 	ctx := context.Background()
@@ -93,9 +88,7 @@ func main() {
 	apiV1 := e.Group("/api/v1")
 	usersGroup := apiV1.Group("")
 
-    apiV1 := e.Group("/api/v1")
-    usersGroup := apiV1.Group("")
-    rest.NewUserHandler(usersGroup, userService)
+	rest.NewUserHandler(usersGroup, userService)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
@@ -116,10 +109,10 @@ func main() {
 	serverAddr := fmt.Sprintf("%s:%s", host, port)
 
 	go func() {
-        slog.Info("Server starting", "address", serverAddr)
+		slog.Info("Server starting", "address", serverAddr)
 		if err := e.Start(serverAddr); err != nil && err != http.ErrServerClosed {
 			slog.Error("Server failed", "error", err)
-            os.Exit(1)
+			os.Exit(1)
 		}
 	}()
 
@@ -128,7 +121,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-    slog.Info("Shutting down server gracefully...")
+	slog.Info("Shutting down server gracefully...")
 	if err := e.Shutdown(ctx); err != nil {
 		slog.Error("Shutdown error", "error", err)
 	}
