@@ -19,8 +19,6 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/lmittmann/tint"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho"
-	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
 func init() {
@@ -58,20 +56,14 @@ func main() {
 	e.Logger.SetOutput(os.Stdout)
 	e.Logger.SetLevel(0)
 
-	e.Use(middleware.SlogLoggerMiddleware())
-	e.Use(middleware.Cors())
-
 	ctx := context.Background()
 
 	tp, shutdown := initTracer(ctx)
 	defer flushTracer(shutdown)
 
-	e.Use(
-		otelecho.Middleware(
-			os.Getenv("SERVICE_NAME"),
-			otelecho.WithTracerProvider(tp),
-		),
-	)
+	e.Use(middleware.AttachTraceProvider(tp))
+	e.Use(middleware.SlogLoggerMiddleware())
+	e.Use(middleware.Cors())
 
 	// Register the routes
 	e.GET("/", func(c echo.Context) error {
