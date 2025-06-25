@@ -3,7 +3,9 @@
     "version": "0.0.0",
     "private": true,
     "lint-staged": {
-        "*.{js,cjs,mjs,ts,mts,tsx,css,json,astro}": ["pnpm exec biome check --write ."]
+        "*.{js,cjs,mjs,ts,mts,tsx,css,json,astro}": [
+            "pnpm exec biome check --write --colors=force --"
+        ]
     },
     "scripts": {
         "dev": "moon '#app:dev'",
