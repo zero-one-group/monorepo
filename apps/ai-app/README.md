@@ -64,6 +64,14 @@ To get started with this template, we recommend the following:
 
     These utilities and base classes are provided to improve developer experience by reducing boilerplate and enforcing consistent patterns across app.
 
+## Production
+
+### Instrumentation
+Tracing is enabled exclusively in the production environment. Set `APP_ENVIRONMENT` to `production` to activate tracing. Alternatively, you may customize the tracing rules in `app/core/trace.py`.
+
+For instructions on customizing span tracing, please refer to the example located at:
+- `apps/ai-app/app/repository/openai/greeting.py`
+
 ### Error Handling
 
 - We’ve set up a global exception handler in `app/main.py`. It catches every `AppError` raised anywhere in your code and turns it into a structured JSON error response with the correct HTTP status.
