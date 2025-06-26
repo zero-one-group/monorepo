@@ -158,8 +158,8 @@
             "out",
             "tmp",
             "temp",
-            "templates",
-            "template-*"
+            "template-*",
+            "templates-*"
         ]
     }
 }
