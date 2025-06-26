@@ -4,7 +4,7 @@
     "private": true,
     "lint-staged": {
         "*.{js,cjs,mjs,ts,mts,tsx,css,json,astro}": [
-            "pnpm exec biome check --write --colors=force --"
+            "pnpm exec biome check --write . --colors=force --"
         ]
     },
     "scripts": {

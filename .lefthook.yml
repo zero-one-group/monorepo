@@ -3,3 +3,8 @@ pre-commit:
   commands:
     lint-staged:
       run: npx lint-staged
+
+    # NextJS Template
+    lint-nextjs-template:
+      glob: 'template-nextjs/**/{*,.*}.{js,ts,jsx,tsx,mjs,json}'
+      run: pnpm exec biome check template-nextjs --write --colors=force
