@@ -10,9 +10,11 @@ class Env(BaseSettings):
     """
 
     ML_PREFIX_API: str
+    APP_NAME: str = "ai-app"
     APP_ENVIRONMENT: str = "development"
     DATABASE_URL: str
     OPENAI_API_KEY: str
+    OTEL_EXPORTER_OTLP_ENDPOINT: str
 
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", case_sensitive=True, extra="ignore"

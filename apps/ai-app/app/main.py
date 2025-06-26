@@ -1,12 +1,36 @@
+from contextlib import asynccontextmanager
+
 from app.core.database import Database
 from app.core.env import get_env
 from app.core.exception import AppError
 from app.core.logging import RequestIdMiddleware, logger
+from app.core.trace import init_tracer, instrument_app
 from app.router.openai import router as openai_router
 from app.router.root import router as root_router
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # see: https://fastapi.tiangolo.com/advanced/events/#async-context-manager
+    # On startup hook
+    logger.debug(
+        "Initializing Machine Learning app",
+        extra={
+            "docs_url": "/",
+            "root_path": env.ML_PREFIX_API,
+        },
+    )
+
+    yield
+
+    # On shutdown hook
+    logger.info("Application shutting down, preparing for graceful shutdown")
+    logger.info("Disposing database connections")
+    await Database.dispose()
+
 
 env = get_env()
 app = FastAPI(
@@ -15,14 +39,18 @@ app = FastAPI(
     version="0.1.0",
     docs_url="/docs",
     root_path=env.ML_PREFIX_API,
+    lifespan=lifespan,
 )
-logger.debug(
-    "Initializing Machine Learning app",
-    extra={
-        "docs_url": "/",
-        "root_path": env.ML_PREFIX_API,
-    },
-)
+
+if env.APP_ENVIRONMENT == "production":
+    logger.info(
+        "The environment is set to production; instrumentation is being configured."
+    )
+    init_tracer(
+        service_name=env.APP_NAME,
+        otlp_endpoint=env.OTEL_EXPORTER_OTLP_ENDPOINT,
+    )
+    instrument_app(app)
 
 app.add_middleware(
     CORSMiddleware,
@@ -35,13 +63,6 @@ app.add_middleware(RequestIdMiddleware)
 
 app.include_router(root_router)
 app.include_router(openai_router)
-
-
-@app.on_event("shutdown")
-async def shutdown():
-    logger.info("Application shutting down, preparing for graceful shutdown")
-    logger.info("Disposing database connections")
-    await Database.dispose()
 
 
 @app.exception_handler(AppError)
