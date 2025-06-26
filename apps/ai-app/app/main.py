@@ -2,6 +2,7 @@ from app.core.database import Database
 from app.core.env import get_env
 from app.core.exception import AppError
 from app.core.logging import RequestIdMiddleware, logger
+from app.core.trace import init_tracer, instrument_app
 from app.router.openai import router as openai_router
 from app.router.root import router as root_router
 from fastapi import FastAPI, Request
@@ -16,6 +17,10 @@ app = FastAPI(
     docs_url="/docs",
     root_path=env.ML_PREFIX_API,
 )
+
+init_tracer("ai-app", env.OTEL_EXPORTER_OTLP_ENDPOINT)
+instrument_app(app)
+
 logger.debug(
     "Initializing Machine Learning app",
     extra={
