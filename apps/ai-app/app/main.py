@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from app.core.database import Database
 from app.core.env import get_env
 from app.core.exception import AppError
@@ -9,6 +11,20 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # see: https://fastapi.tiangolo.com/advanced/events/#async-context-manager
+    # On startup hook
+
+    yield
+
+    # On shutdown hook
+    logger.info("Application shutting down, preparing for graceful shutdown")
+    logger.info("Disposing database connections")
+    await Database.dispose()
+
+
 env = get_env()
 app = FastAPI(
     title="Machine Learning API",
@@ -16,6 +32,7 @@ app = FastAPI(
     version="0.1.0",
     docs_url="/docs",
     root_path=env.ML_PREFIX_API,
+    lifespan=lifespan,
 )
 
 if env.APP_ENVIRONMENT == "production":
@@ -47,13 +64,6 @@ app.add_middleware(RequestIdMiddleware)
 
 app.include_router(root_router)
 app.include_router(openai_router)
-
-
-@app.on_event("shutdown")
-async def shutdown():
-    logger.info("Application shutting down, preparing for graceful shutdown")
-    logger.info("Disposing database connections")
-    await Database.dispose()
 
 
 @app.exception_handler(AppError)
