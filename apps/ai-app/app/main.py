@@ -18,8 +18,15 @@ app = FastAPI(
     root_path=env.ML_PREFIX_API,
 )
 
-init_tracer("ai-app", env.OTEL_EXPORTER_OTLP_ENDPOINT)
-instrument_app(app)
+if env.APP_ENVIRONMENT == "production":
+    logger.info(
+        "The environment is set to production; instrumentation is being configured."
+    )
+    init_tracer(
+        service_name=env.APP_NAME,
+        otlp_endpoint=env.OTEL_EXPORTER_OTLP_ENDPOINT,
+    )
+    instrument_app(app)
 
 logger.debug(
     "Initializing Machine Learning app",
