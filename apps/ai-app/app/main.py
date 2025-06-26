@@ -16,6 +16,13 @@ from fastapi.responses import JSONResponse
 async def lifespan(app: FastAPI):
     # see: https://fastapi.tiangolo.com/advanced/events/#async-context-manager
     # On startup hook
+    logger.debug(
+        "Initializing Machine Learning app",
+        extra={
+            "docs_url": "/",
+            "root_path": env.ML_PREFIX_API,
+        },
+    )
 
     yield
 
@@ -44,14 +51,6 @@ if env.APP_ENVIRONMENT == "production":
         otlp_endpoint=env.OTEL_EXPORTER_OTLP_ENDPOINT,
     )
     instrument_app(app)
-
-logger.debug(
-    "Initializing Machine Learning app",
-    extra={
-        "docs_url": "/",
-        "root_path": env.ML_PREFIX_API,
-    },
-)
 
 app.add_middleware(
     CORSMiddleware,
