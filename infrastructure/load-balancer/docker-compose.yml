@@ -1,0 +1,90 @@
+services:
+  nginx:
+    image: nginxinc/nginx-unprivileged:1.28-alpine-slim
+    container_name: nginx-unprivileged-optimized
+    restart: unless-stopped
+
+    # Use port mapping to get standard ports without privileges
+    ports:
+      - "80:8080"   # Host port 80 -> Container port 8080
+      - "443:8443"  # Host port 443 -> Container port 8443
+
+    # Unprivileged user (65532 as in your example)
+    user: "65532:65532"
+
+    # Maximum security (matching your example exactly)
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+    # Optimized volumes and tmpfs
+    volumes:
+      # Configuration (read-only bind mount)
+      - type: bind
+        source: ./conf/nginx.conf
+        target: /etc/nginx/nginx.conf
+        read_only: true
+
+      # ACME challenge directory for Let's Encrypt
+      - type: bind
+        source: ./webroot
+        target: /var/www/acme-challenge
+        read_only: false
+
+      # SSL certificates directory
+      - type: bind
+        source: ./ssl
+        target: /etc/nginx/ssl
+        read_only: true
+
+      # Custom web content
+      - type: bind
+        source: ./html
+        target: /usr/share/nginx/html
+        read_only: true
+
+      # Logs directory (persistent, owned by 65532)
+      - type: bind
+        source: ./logs
+        target: /var/log/nginx
+
+    # Tmpfs mounts (as per your example pattern)
+    tmpfs:
+      - /tmp:size=100m,uid=65532,gid=65532,mode=1777
+      - /var/cache/nginx:size=50m,uid=65532,gid=65532,mode=0755
+      - /var/run:size=10m,uid=65532,gid=65532,mode=0755
+
+    # Updated health check for standard ports
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/nginx-health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    # Optimized logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # Environment variables for optimization
+    environment:
+      - NGINX_ENTRYPOINT_QUIET_LOGS=1
+
+    # Network optimizations for bridge mode
+    networks:
+      - nginx-net
+
+# Optimized bridge network
+networks:
+  nginx-net:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1500
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
