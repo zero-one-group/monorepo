@@ -1,6 +1,6 @@
+from app.core.instrumentation import get_tracer
 from app.core.logging import get_logger
 from app.core.response import ErrorResponse, SuccessResponse, success_response
-from app.core.trace import get_tracer
 from app.repository.openai.dependency import DepGreetingRepoOpenAI
 
 tracer = get_tracer("service.greetings")

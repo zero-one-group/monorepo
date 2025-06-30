@@ -1,5 +1,5 @@
+from app.core.instrumentation import get_tracer
 from app.core.response import ErrorResponse, SuccessResponse
-from app.core.trace import get_tracer
 from app.services.dependency import DepGreetingService
 from fastapi import APIRouter
 
