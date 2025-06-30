@@ -3,8 +3,8 @@ from contextlib import asynccontextmanager
 from app.core.database import Database
 from app.core.env import get_env
 from app.core.exception import AppError
+from app.core.instrumentation import instrument_app
 from app.core.logging import RequestIdMiddleware, logger
-from app.core.trace import instrument_app
 from app.router.openai import router as openai_router
 from app.router.root import router as root_router
 from fastapi import FastAPI, Request
@@ -42,11 +42,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-if env.APP_ENVIRONMENT == "production":
-    logger.info(
-        "The environment is set to production; instrumentation is being configured."
-    )
-    instrument_app(app)
+instrument_app(app)
 
 app.add_middleware(
     CORSMiddleware,

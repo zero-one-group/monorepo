@@ -1,6 +1,6 @@
 from app.core.exception import AppError
+from app.core.instrumentation import get_tracer
 from app.core.logging import get_logger
-from app.core.trace import get_tracer
 from openai import AsyncOpenAI
 from prometheus_client import Counter, Histogram
 
