@@ -1,4 +1,5 @@
 from app.core.env import get_env
+from app.core.logging import logger
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
@@ -26,13 +27,16 @@ def init_tracer(
     trace.set_tracer_provider(provider)
 
 
-# TODO:
-# - Rename file into instrumentation.py
-# - Move the switch and logger inside this file
-# - Rename the switch into ENABLE_INSTRUMENTATIONS (raise first)
 def instrument_app(app) -> None:
-    # Tracing
     env = get_env()
+    if env.APP_ENVIRONMENT != "production":
+        return
+
+    logger.info(
+        "The environment is set to production; instrumentation is being configured."
+    )
+
+    # Tracing
     init_tracer(
         service_name=env.APP_NAME,
         otlp_endpoint=env.OTEL_EXPORTER_OTLP_ENDPOINT,
