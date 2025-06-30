@@ -1,0 +1,8 @@
+test:
+  stage: test
+  interruptible: true
+  script:
+    - echo "Running test..."
+  variables:
+    GIT_DEPTH: 1
+    AUTH_TIMEOUT: 10

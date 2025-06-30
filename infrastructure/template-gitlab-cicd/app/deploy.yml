@@ -1,0 +1,50 @@
+.deploy:apps:
+  interruptible: true
+  image:
+    name: buildpack-deps:24.04-curl
+  before_script:
+    - /bin/bash -c "$(curl -sL https://git.io/vokNn)"
+    - apt-fast update -qy
+    - DEBIAN_FRONTEND=noninteractive apt-fast install -y rsync openssh-client gettext-base
+  script:
+    - touch $CI_PROJECT_DIR/infra/swarm/.env && cp $ENV $CI_PROJECT_DIR/infra/swarm/.env
+    - echo "export ENVIRONMENT=\"$ENVIRONMENT\"" > $CI_PROJECT_DIR/infra/swarm/variable.txt
+    - source $CI_PROJECT_DIR/infra/swarm/variable.txt
+    - echo "$SSH_PRIVATE_KEY_SWARM" > private_key.pem
+    - chmod 600 private_key.pem
+    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-apps-prod-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-prod.yml
+    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-apps-development-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-development.yml
+    - rsync -avz -e 'ssh -o StrictHostKeyChecking=no -i private_key.pem -o ProxyCommand="ssh -W %h:%p -i private_key.pem -o StrictHostKeyChecking=no $USERNAME@$BASTION_HOST"' $CI_PROJECT_DIR/infra/swarm/ $USERNAME@$SERVER_ADDRESS:./lgtm
+
+    - |
+      ssh -o StrictHostKeyChecking=no -i private_key.pem -o ProxyCommand="ssh -W %h:%p -i private_key.pem -o StrictHostKeyChecking=no $USERNAME@$BASTION_HOST" $USERNAME@$SERVER_ADDRESS <<EOF
+      source ~/lgtm/variable.txt
+      cd ~/lgtm
+      aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin <AWS_ACCOUNT_NUMBER>.dkr.ecr.ap-southeast-1.amazonaws.com
+
+      if [ "$ENVIRONMENT" = "production" ]; then
+          echo "Inside prod block"
+          docker stack deploy -c "docker-swarm-prod.yml" hilogate --with-registry-auth
+
+      fi
+
+      if [ "$ENVIRONMENT" = "development" ]; then
+          echo "Inside development block"
+          docker stack deploy -c "docker-swarm-development.yml" hilogate --with-registry-auth
+      fi
+      EOF
+
+.deploy:development-swarm:
+  stage: deploy:development
+  interruptible: true
+  extends:
+    - .deploy:apps
+    - .rules:development
+  variables:
+    VERSION: $CI_COMMIT_SHORT_SHA
+    SERVER_ADDRESS: $SERVER
+    ENVIRONMENT: development
+  environment:
+    name: 'development'
+    action: 'prepare'
+  needs: ['build:development-docker']

@@ -1,0 +1,16 @@
+services:
+  apps-staging:
+    image: 137068226915.dkr.ecr.ap-southeast-3.amazonaws.com/lgtm-image:$VERSION
+    ports:
+      - '8082:8080'
+    deploy:
+      mode: replicated
+      replicas: 1
+    env_file:
+      - ./.env
+    networks:
+      - overlay-network
+
+networks:
+  overlay-network:
+    external: true

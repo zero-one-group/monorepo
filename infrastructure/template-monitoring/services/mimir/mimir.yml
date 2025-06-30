@@ -1,0 +1,67 @@
+multitenancy_enabled: false
+
+common:
+  storage:
+    backend: s3
+    s3:
+      endpoint: s3.ap-southeast-1.amazonaws.com
+      region: ap-southeast-1
+
+blocks_storage:
+  backend: s3  # Inherits settings from common.storage
+  s3:
+    bucket_name: lgtm-buckets-monitoring
+  storage_prefix: blocks  # Moved outside of s3 block
+  bucket_store:
+    sync_dir: /var/mimir/tsdb-sync
+  tsdb:
+    dir: /var/mimir/tsdb
+    flush_blocks_on_shutdown: true
+
+alertmanager_storage:
+  backend: s3
+  s3:
+    bucket_name: lgtm-buckets-monitoring
+  storage_prefix: alertmanager  # Moved outside of s3 block
+
+ruler_storage:
+  backend: s3
+  s3:
+    bucket_name: lgtm-buckets-monitoring
+  storage_prefix: ruler  # Moved outside of s3 block
+
+compactor:
+  data_dir: /var/mimir/compactor
+  sharding_ring:
+    kvstore:
+      store: memberlist
+
+distributor:
+  ring:
+    instance_addr: 127.0.0.1
+    kvstore:
+      store: memberlist
+
+ingester:
+  ring:
+    instance_addr: 127.0.0.1
+    kvstore:
+      store: memberlist
+    replication_factor: 1
+
+ruler:
+  rule_path: /var/mimir/ruler
+  alertmanager_url: http://127.0.0.1:8080/alertmanager
+  ring:
+    heartbeat_period: 2s
+    heartbeat_timeout: 10s
+
+server:
+  http_listen_port: 9090
+  grpc_listen_port: 9095
+  log_level: error
+  http_listen_address: 0.0.0.0
+
+store_gateway:
+  sharding_ring:
+    replication_factor: 1
