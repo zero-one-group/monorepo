@@ -1,0 +1,12 @@
+[project]
+name = "data-pipeline"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12.8"
+dependencies = [
+    "dlt>=1.13.0",
+    "prefect-client>=3.4.8",
+    "sqlmesh>=0.201.0",
+]
+
