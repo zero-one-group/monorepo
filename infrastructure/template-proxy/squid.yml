@@ -1,0 +1,39 @@
+services:
+  egress-proxy:
+    image: ubuntu/squid:latest
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+          - node.labels.proxy==true
+    networks:
+      - overlay-network
+    ports:
+      - target: 3128
+        published: 3128
+        protocol: tcp
+        mode: host
+    configs:
+      - source: squid_config
+        target: /etc/squid/squid.conf
+    volumes:
+      - squid-logs:/var/log/squid
+    healthcheck:
+      test: ["CMD", "squid", "-k", "check"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  overlay-network:
+    external: true
+
+configs:
+  squid_config:
+    file: ./config/squid.conf
+
+volumes:
+  squid-logs:
+    name: squid-logs

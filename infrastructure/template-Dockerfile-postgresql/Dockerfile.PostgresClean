@@ -1,0 +1,231 @@
+FROM alpine:3.22
+
+# 70 is the standard uid/gid for "postgres" in Alpine
+RUN set -eux; \
+	addgroup -g 70 -S postgres; \
+	adduser -u 70 -S -D -G postgres -H -h /var/lib/postgresql -s /bin/sh postgres; \
+	install --verbose --directory --owner postgres --group postgres --mode 1777 /var/lib/postgresql
+
+# grab gosu for easy step-down from root
+ENV GOSU_VERSION 1.17.4
+RUN set -eux; \
+    apk add --no-cache --virtual .gosu-deps \
+        ca-certificates \
+        dpkg \
+        gnupg \
+    ; \
+    wget -O /usr/local/bin/gosu "https://github.com/sadewa25/gosu/releases/download/$GOSU_VERSION/gosu-amd64"; \
+    apk del --no-network .gosu-deps; \
+    chmod +x /usr/local/bin/gosu; \
+    gosu --version; \
+    gosu nobody true
+
+ENV LANG en_US.utf8
+RUN mkdir /docker-entrypoint-initdb.d
+
+# PostgreSQL and PostGIS versions
+ENV PG_MAJOR 17
+ENV PG_VERSION 17.5
+ENV PG_SHA256 fcb7ab38e23b264d1902cb25e6adafb4525a6ebcbd015434aeef9eda80f528d8
+ENV POSTGIS_VERSION 3.5.3
+ENV POSTGIS_SHA256 44222ed2b8f742ffc1ceb429b09ebb484c7880f9ba27bf7b6b197346cdd25437
+
+ENV DOCKER_PG_LLVM_DEPS \
+		llvm19-dev \
+		clang19
+
+# Build PostgreSQL AND PostGIS in one stage
+RUN set -eux; \
+	\
+# Download PostgreSQL
+	wget -O postgresql.tar.bz2 "https://ftp.postgresql.org/pub/source/v$PG_VERSION/postgresql-$PG_VERSION.tar.bz2"; \
+	echo "$PG_SHA256 *postgresql.tar.bz2" | sha256sum -c -; \
+	mkdir -p /usr/src/postgresql; \
+	tar --extract --file postgresql.tar.bz2 --directory /usr/src/postgresql --strip-components 1; \
+	rm postgresql.tar.bz2; \
+	\
+# Download PostGIS
+	wget -O postgis.tar.gz "https://github.com/postgis/postgis/archive/${POSTGIS_VERSION}.tar.gz"; \
+	echo "${POSTGIS_SHA256} *postgis.tar.gz" | sha256sum -c -; \
+	mkdir -p /usr/src/postgis; \
+	tar --extract --file postgis.tar.gz --directory /usr/src/postgis --strip-components 1; \
+	rm postgis.tar.gz; \
+	\
+# Install build dependencies (PostgreSQL + PostGIS)
+	apk add --no-cache --virtual .build-deps \
+		$DOCKER_PG_LLVM_DEPS \
+		bison \
+		coreutils \
+		dpkg-dev dpkg \
+		flex \
+		g++ \
+		gcc \
+		krb5-dev \
+		libc-dev \
+		libedit-dev \
+		libxml2-dev \
+		libxslt-dev \
+		linux-headers \
+		make \
+		openldap-dev \
+		openssl-dev \
+		perl-dev \
+		perl-ipc-run \
+		perl-utils \
+		python3-dev \
+		tcl-dev \
+		util-linux-dev \
+		zlib-dev \
+		icu-dev \
+		lz4-dev \
+		zstd-dev \
+# PostGIS build dependencies
+		gdal-dev \
+		geos-dev \
+		proj-dev \
+		proj-util \
+		sfcgal-dev \
+		autoconf \
+		automake \
+		cunit-dev \
+		file \
+		gettext-dev \
+		git \
+		json-c-dev \
+		libtool \
+		pcre2-dev \
+		perl \
+		protobuf-c-dev \
+	; \
+	\
+# Build PostgreSQL
+	cd /usr/src/postgresql; \
+	awk '$1 == "#define" && $2 == "DEFAULT_PGSOCKET_DIR" && $3 == "\"/tmp\"" { $3 = "\"/var/run/postgresql\""; print; next } { print }' src/include/pg_config_manual.h > src/include/pg_config_manual.h.new; \
+	grep '/var/run/postgresql' src/include/pg_config_manual.h.new; \
+	mv src/include/pg_config_manual.h.new src/include/pg_config_manual.h; \
+	gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
+	wget -O config/config.guess 'https://git.savannah.gnu.org/cgit/config.git/plain/config.guess?id=7d3d27baf8107b630586c962c057e22149653deb'; \
+	wget -O config/config.sub 'https://git.savannah.gnu.org/cgit/config.git/plain/config.sub?id=7d3d27baf8107b630586c962c057e22149653deb'; \
+	export LLVM_CONFIG="/usr/lib/llvm19/bin/llvm-config"; \
+	export CLANG=clang-19; \
+	./configure \
+		--enable-option-checking=fatal \
+		--build="$gnuArch" \
+		--enable-integer-datetimes \
+		--enable-tap-tests \
+		--disable-rpath \
+		--with-uuid=e2fs \
+		--with-pgport=5432 \
+		--with-system-tzdata=/usr/share/zoneinfo \
+		--prefix=/usr/local \
+		--with-includes=/usr/local/include \
+		--with-libraries=/usr/local/lib \
+		--with-gssapi \
+		--with-ldap \
+		--with-tcl \
+		--with-perl \
+		--with-python \
+		--with-openssl \
+		--with-libxml \
+		--with-libxslt \
+		--with-icu \
+		--with-llvm \
+		--with-lz4 \
+		--with-zstd \
+	; \
+	make -j "$(nproc)" world-bin; \
+	make install-world-bin; \
+	make -C contrib install; \
+	\
+# Build PostGIS (without testing - SOLUTION 1)
+	cd /usr/src/postgis; \
+	gettextize; \
+	./autogen.sh; \
+	./configure \
+		--enable-lto \
+		--with-pgconfig=/usr/local/bin/pg_config; \
+	make -j$(nproc); \
+	make install; \
+	\
+# Install essential proj data for PostGIS (with error handling)
+	projsync --system-directory --file ch_swisstopo_CHENyx06_ETRS || echo "Failed to sync ch_swisstopo_CHENyx06_ETRS"; \
+	projsync --system-directory --file us_noaa_eshpgn || echo "Failed to sync us_noaa_eshpgn"; \
+	projsync --system-directory --file us_noaa_prvi || echo "Failed to sync us_noaa_prvi"; \
+	projsync --system-directory --file us_noaa_wmhpgn || echo "Failed to sync us_noaa_wmhpgn"; \
+	\
+# Create version info without testing
+	echo "PostgreSQL ${PG_VERSION} built successfully" > /_pgis_full_version.txt; \
+	echo "PostGIS ${POSTGIS_VERSION} built successfully" >> /_pgis_full_version.txt; \
+	echo "Build completed at $(date)" >> /_pgis_full_version.txt; \
+	\
+# Determine runtime dependencies
+	runDeps="$( \
+		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local \
+			| tr ',' '\n' \
+			| sort -u \
+			| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
+			| grep -v -e perl -e python -e tcl \
+	)"; \
+	apk add --no-cache --virtual .postgresql-rundeps \
+		$runDeps \
+		bash \
+		tzdata \
+		zstd \
+		icu-data-full \
+		$([ "$(apk --print-arch)" != 'ppc64le' ] && echo 'nss_wrapper') \
+	; \
+# Add PostGIS runtime dependencies
+	apk add --no-cache --virtual .postgis-rundeps \
+		gdal \
+		geos \
+		proj \
+		sfcgal \
+		json-c \
+		libstdc++ \
+		pcre2 \
+		protobuf-c \
+		ca-certificates \
+	; \
+	apk del --no-network .build-deps; \
+	cd /; \
+	rm -rf /usr/src/postgresql /usr/src/postgis /usr/local/share/doc /usr/local/share/man; \
+	postgres --version; \
+	cat /_pgis_full_version.txt
+
+# make the sample config easier to munge (and "correct by default")
+RUN set -eux; \
+	cp -v /usr/local/share/postgresql/postgresql.conf.sample /usr/local/share/postgresql/postgresql.conf.sample.orig; \
+	sed -ri "s!^#?(listen_addresses)\s*=\s*\S+.*!\1 = '*'!" /usr/local/share/postgresql/postgresql.conf.sample; \
+	grep -F "listen_addresses = '*'" /usr/local/share/postgresql/postgresql.conf.sample; \
+	\
+# Configure pg_stat_statements
+	sed -ri "s!^#?(shared_preload_libraries)\s*=\s*.*!\1 = 'pg_stat_statements'!" /usr/local/share/postgresql/postgresql.conf.sample; \
+	grep -F "shared_preload_libraries = 'pg_stat_statements'" /usr/local/share/postgresql/postgresql.conf.sample; \
+	\
+# Optional: Configure pg_stat_statements settings
+	echo "" >> /usr/local/share/postgresql/postgresql.conf.sample; \
+	echo "# pg_stat_statements configuration" >> /usr/local/share/postgresql/postgresql.conf.sample; \
+	echo "pg_stat_statements.max = 10000" >> /usr/local/share/postgresql/postgresql.conf.sample; \
+	echo "pg_stat_statements.track = all" >> /usr/local/share/postgresql/postgresql.conf.sample; \
+	echo "pg_stat_statements.track_utility = on" >> /usr/local/share/postgresql/postgresql.conf.sample; \
+	echo "pg_stat_statements.save = on" >> /usr/local/share/postgresql/postgresql.conf.sample
+
+RUN install --verbose --directory --owner postgres --group postgres --mode 3777 /var/run/postgresql
+
+ENV PGDATA /var/lib/postgresql/data
+RUN install --verbose --directory --owner postgres --group postgres --mode 1777 "$PGDATA"
+VOLUME /var/lib/postgresql/data
+
+# Copy the entrypoint scripts and make them executable
+COPY docker-entrypoint.sh docker-ensure-initdb.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh /usr/local/bin/docker-ensure-initdb.sh && \
+    ln -sT docker-ensure-initdb.sh /usr/local/bin/docker-enforce-initdb.sh
+
+# Add your superior PostGIS initialization script
+COPY initdb-postgis.sh /docker-entrypoint-initdb.d/10_postgis.sh
+RUN chmod +x /docker-entrypoint-initdb.d/10_postgis.sh
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+STOPSIGNAL SIGINT
+EXPOSE 5432
+CMD ["postgres"]

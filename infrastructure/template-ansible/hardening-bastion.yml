@@ -1,0 +1,262 @@
+- name: Hardening bastion ubuntu server
+  hosts: bastion
+  become: yes
+  vars:
+    new_user: sentinel
+    ssh_public_key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    timeout_seconds: 300
+    ssh_log_file: /var/log/ssh-attempts.log
+    ssh_audit_file: /var/log/ssh-audit.log
+
+  tasks:
+    - name: Update SSH configuration
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: present
+        validate: 'sshd -t -f %s'
+      with_items:
+        - regexp: "^PasswordAuthentication"
+          line: "PasswordAuthentication no"
+        - regexp: "^PermitRootLogin"
+          line: "PermitRootLogin no"
+      notify: restart sshd
+
+    - name: Ensure rsyslog is installed
+      apt:
+        name: rsyslog
+        state: present
+        update_cache: yes
+
+    - name: Enable and start rsyslog
+      service:
+        name: rsyslog
+        state: started
+        enabled: yes
+
+    - name: Create SSH attempts log file
+      file:
+        path: "{{ ssh_log_file }}"
+        state: touch
+        owner: syslog
+        group: adm
+        mode: '0640'
+
+    - name: Create SSH audit log file
+      file:
+        path: "{{ ssh_audit_file }}"
+        state: touch
+        owner: syslog
+        group: adm
+        mode: '0640'
+
+    - name: Configure main rsyslog configuration
+      lineinfile:
+        path: /etc/rsyslog.conf
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: present
+      with_items:
+        - regexp: "^\\$ModLoad imuxsock"
+          line: "$ModLoad imuxsock"
+        - regexp: "^\\$SystemLogSocketName"
+          line: "$SystemLogSocketName /dev/log"
+      notify: restart rsyslog
+
+    - name: Configure rsyslog for detailed SSH logging
+      blockinfile:
+        path: /etc/rsyslog.d/10-ssh-logging.conf
+        create: yes
+        block: |
+          # Enable high precision timestamps
+          $ModLoad imuxsock
+          $SystemLogSocketName /dev/log
+
+          # Disable buffering
+          $ActionQueueType Direct
+          $SystemLogRateLimitInterval 0
+          $SystemLogRateLimitBurst 0
+
+          # SSH logging rules
+          :programname, isequal, "sshd" {
+            # Log everything to attempts file
+            action(
+              type="omfile"
+              file="{{ ssh_log_file }}"
+              flushOnTXEnd="on"
+              ioBufferSize="1"
+            )
+
+            # Log specific events to audit file
+            if $msg contains "Failed password" or $msg contains "Accepted" or $msg contains "Invalid user" then {
+              action(
+                type="omfile"
+                file="{{ ssh_audit_file }}"
+                template="RSYSLOG_TraditionalFileFormat"
+                flushOnTXEnd="on"
+                ioBufferSize="1"
+              )
+            }
+            stop
+          }
+      notify: restart rsyslog
+
+    - name: Create log rotation configuration
+      copy:
+        dest: /etc/logrotate.d/ssh-monitoring
+        content: |
+          {{ ssh_log_file }} {
+              rotate 7
+              daily
+              compress
+              missingok
+              notifempty
+              create 0640 syslog adm
+          }
+          {{ ssh_audit_file }} {
+              rotate 7
+              daily
+              compress
+              missingok
+              notifempty
+              create 0640 syslog adm
+          }
+
+    - name: Create SSH monitoring script
+      copy:
+        dest: /usr/local/bin/ssh-monitor
+        mode: '0755'
+        content: |
+          #!/bin/bash
+
+          echo "=== SSH Activity Report ==="
+          echo "Generated at: $(date)"
+          echo
+
+          echo "=== Authentication Statistics ==="
+          echo "Successful logins in the last 24 hours:"
+          grep "Accepted" {{ ssh_audit_file }} | grep "$(date +%Y-%m-%d)" | wc -l
+
+          echo "Failed attempts in the last 24 hours:"
+          grep "Failed password" {{ ssh_audit_file }} | grep "$(date +%Y-%m-%d)" | wc -l
+
+          echo
+          echo "=== Top 10 IP Addresses (Failed Attempts) ==="
+          grep "Failed password" {{ ssh_audit_file }} | grep -oE "from ([0-9]{1,3}\.){3}[0-9]{1,3}" | cut -d' ' -f2 | sort | uniq -c | sort -nr | head -10
+
+          echo
+          echo "=== Recent Successful Logins ==="
+          grep "Accepted" {{ ssh_audit_file }} | tail -5
+
+          echo
+          echo "=== Recent Failed Attempts ==="
+          grep "Failed password" {{ ssh_audit_file }} | tail -5
+
+          echo
+          echo "=== Invalid Users ==="
+          grep "Invalid user" {{ ssh_audit_file }} | awk '{print $8}' | sort | uniq -c | sort -nr | head -10
+
+          echo
+          echo "=== Hourly Attempt Distribution ==="
+          grep "Failed password" {{ ssh_audit_file }} | awk '{print $1}' | cut -d: -f2 | sort | uniq -c | awk '{printf "%02d:00 - %02d:00: %s attempts\n", $2, ($2+1)%24, $1}'
+
+          echo
+          echo "=== Username Statistics ==="
+          echo "Top 10 attempted usernames:"
+          grep "Failed password" {{ ssh_audit_file }} | awk '{print $9}' | sort | uniq -c | sort -nr | head -10
+
+    - name: Add cron job for daily SSH summary
+      cron:
+        name: "Daily SSH summary"
+        minute: "0"
+        hour: "0"
+        job: "/usr/local/bin/ssh-monitor > /var/log/ssh-daily-summary.log"
+        user: root
+
+    - name: Create the 'wheel' group
+      group:
+        name: wheel
+        state: present
+
+    - name: Create user accounts
+      user:
+        name: "{{ new_user }}"
+        shell: /bin/bash
+        groups: wheel
+        state: present
+
+    - name: Add authorized keys
+      authorized_key:
+        user: "{{ new_user }}"
+        key: "{{ ssh_public_key }}"
+
+    - name: Ensure .ssh directory exists for new user
+      file:
+        path: "/home/{{ new_user }}/.ssh"
+        state: directory
+        owner: "{{ new_user }}"
+        group: "{{ new_user }}"
+        mode: '0700'
+
+    - name: Copy existing private key to new user
+      copy:
+        src: "/home/ubuntu/.ssh/id_rsa"
+        dest: "/home/{{ new_user }}/.ssh/id_rsa"
+        owner: "{{ new_user }}"
+        group: "{{ new_user }}"
+        mode: '0600'
+
+    - name: Grant sudo privileges to the new user
+      lineinfile:
+        dest: /etc/sudoers
+        line: "%wheel ALL=(ALL) NOPASSWD:ALL"
+        insertafter: EOF
+        validate: 'visudo -cf %s'
+
+    - name: Add TMOUT environment variable to /etc/profile
+      lineinfile:
+        path: /etc/profile
+        line: "{{ item }}"
+        state: present
+      with_items:
+        - "TMOUT={{ timeout_seconds }}"
+        - "readonly TMOUT"
+        - "export TMOUT"
+
+    - name: Add TMOUT settings to bash.bashrc
+      lineinfile:
+        path: /etc/bash.bashrc
+        line: "{{ item }}"
+        state: present
+      with_items:
+        - "TMOUT={{ timeout_seconds }}"
+        - "readonly TMOUT"
+        - "export TMOUT"
+
+    - name: Disable Ubuntu user
+      command: usermod -L -e 1 ubuntu
+
+  handlers:
+    - name: restart sshd
+      service:
+        name: sshd
+        state: restarted
+
+    - name: restart rsyslog
+      service:
+        name: rsyslog
+        state: restarted
+      notify: verify rsyslog restart
+
+    - name: verify rsyslog restart
+      shell: |
+        # Wait for rsyslog to fully start
+        sleep 2
+        # Test logging
+        logger -t sshd "Test message after rsyslog restart"
+        sleep 1
+        if ! grep -q "Test message after rsyslog restart" {{ ssh_log_file }}; then
+          echo "Warning: Logs are not being written properly after restart"
+          exit 1
+        fi
