@@ -2,7 +2,7 @@ from typing import Generic, Optional, TypeVar
 
 from fastapi import status
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 T = TypeVar("T")
 
@@ -19,8 +19,8 @@ class SuccessResponse(ResponseModel[T], Generic[T]):
     success: bool = True
     error_code: None = None
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "success": True,
                 "message": "Operation completed successfully",
@@ -28,14 +28,15 @@ class SuccessResponse(ResponseModel[T], Generic[T]):
                 "error_code": None,
             }
         }
+    )
 
 
 class ErrorResponse(ResponseModel[None]):
     success: bool = False
     data: None = None
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "success": False,
                 "message": "An error occurred",
@@ -43,6 +44,7 @@ class ErrorResponse(ResponseModel[None]):
                 "error_code": "INTERNAL_ERROR",
             }
         }
+    )
 
 
 def success_response(
@@ -54,6 +56,5 @@ def success_response(
     Wraps a SuccessResponse in a JSONResponse so FastAPI
     returns the proper HTTP status code.
     """
-    payload = SuccessResponse(
-        message=message, data=data).dict(exclude_none=True)
+    payload = SuccessResponse(message=message, data=data).model_dump(exclude_none=True)
     return JSONResponse(status_code=status_code, content=payload)
