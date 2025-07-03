@@ -99,7 +99,6 @@ services:
         condition: on-failure
       placement:
         constraints:
-          - node.role==worker
           - node.labels.node_type==monitoring
     command: [ "-config.file=/etc/tempo.yml" ]
     ports:

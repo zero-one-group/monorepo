@@ -1,0 +1,108 @@
+services:
+  nginx:
+    image: prihuda22/nginx:1.29.0-geoip-naxsi
+    container_name: nginx-unprivileged-optimized
+    restart: unless-stopped
+
+    # Updated port mapping
+    ports:
+      - "80:3080"
+      - "443:3443"
+
+    # User permissions
+    user: "65532:65532"
+
+    # Security settings
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+    # Optimized volumes
+    volumes:
+      # Configuration (read-only bind mount)
+      - type: bind
+        source: ./conf/default.conf
+        target: /etc/nginx/conf.d/default.conf
+        read_only: true
+
+      - type: bind
+        source: ./conf/nginx.conf
+        target: /etc/nginx/nginx.conf
+        read_only: true
+
+      # NAXSI rules directory - add this new binding
+      - type: bind
+        source: ./naxsi
+        target: /etc/nginx/naxsi
+        read_only: true
+
+      # ACME challenge directory for Let's Encrypt
+      - type: bind
+        source: ./webroot
+        target: /var/www/acme-challenge
+        read_only: false
+
+      # SSL certificates directory
+      - type: bind
+        source: ./ssl
+        target: /etc/nginx/ssl
+        read_only: true
+
+      # Basicauth nginx reporting
+      - type: bind
+        source: ./auth
+        target: /etc/nginx/auth
+        read_only: true
+
+      # Custom web content
+      - type: bind
+        source: ./html
+        target: /var/www/html
+        read_only: false
+
+      # Logs directory (persistent, owned by 65532)
+      - type: bind
+        source: ./logs
+        target: /var/log/nginx
+
+    # Rest of configuration remains the same
+    tmpfs:
+      - /tmp:size=100m,uid=65532,gid=65532,mode=1777
+      - /var/cache/nginx:size=50m,uid=65532,gid=65532,mode=0755
+      - /var/cache/nginx/client_temp:size=10m,uid=65532,gid=65532,mode=0755
+      - /var/cache/nginx/proxy_temp:size=10m,uid=65532,gid=65532,mode=0755
+      - /var/cache/nginx/fastcgi_temp:size=10m,uid=65532,gid=65532,mode=0755
+      - /var/cache/nginx/uwsgi_temp:size=10m,uid=65532,gid=65532,mode=0755
+      - /var/cache/nginx/scgi_temp:size=10m,uid=65532,gid=65532,mode=0755
+      - /var/run:size=10m,uid=65532,gid=65532,mode=0755
+
+    # Rest of your configuration remains the same
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3080/nginx-health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "3"
+
+    environment:
+      - NGINX_ENTRYPOINT_QUIET_LOGS=1
+
+    networks:
+      - nginx-net
+
+networks:
+  nginx-net:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1500
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
