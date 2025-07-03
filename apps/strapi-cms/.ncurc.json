@@ -5,15 +5,8 @@
     "color": true,
     "root": true,
     "deep": false,
-    "install": "always",
+    "install": "never",
     "packageManager": "pnpm",
     "silent": false,
-    "reject": [
-        "@types/react-dom",
-        "@types/react",
-        "react-dom",
-        "react-router-dom",
-        "react",
-        "typescript"
-    ]
+    "reject": ["@types/react-dom", "@types/react", "react-dom", "react-router-dom", "react", "vite"]
 }

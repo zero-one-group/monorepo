@@ -2,3 +2,8 @@ packages:
 - 'apps/*'
 - 'packages/*'
 - '!**/test/**'
+
+catalog:
+  '@biomejs/biome': ^2.0.6
+  'npm-check-updates': ^18.0.1
+  'typescript': ~5.8.3
