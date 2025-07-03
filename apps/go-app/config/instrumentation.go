@@ -3,12 +3,14 @@ package config
 import (
 	"context"
 	"fmt"
+	"go-app/internal/metrics"
 	"go-app/internal/rest/middleware"
 	"os"
 	"time"
 
 	"github.com/labstack/echo-contrib/echoprometheus"
 	"github.com/labstack/echo/v4"
+	"github.com/prometheus/client_golang/prometheus"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
@@ -24,9 +26,13 @@ import (
 func ApplyInstrumentation(
 	ctx context.Context,
 	e *echo.Echo,
+	metrics *metrics.Metrics,
 ) (func(context.Context) error, error) {
 	// Apply Prometheus middleware and metrics endpoint.
-	initMetrics(e)
+	err := initMetrics(e, metrics)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize tracer: %w", err)
+	}
 
 	// Initialize the OpenTelemetry tracer provider.
 	tp, shutdown, err := initTracer(ctx)
@@ -39,11 +45,16 @@ func ApplyInstrumentation(
 }
 
 // initMetrics configures Prometheus metrics for the Echo instance.
-func initMetrics(e *echo.Echo) {
+func initMetrics(e *echo.Echo, metrics *metrics.Metrics) error {
 	serviceName := os.Getenv("SERVICE_NAME")
 	// @see: https://echo.labstack.com/docs/middleware/prometheus#custom-configuration
 	e.Use(echoprometheus.NewMiddleware(serviceName))
 	e.GET("/metrics", echoprometheus.NewHandler())
+
+	if err := prometheus.Register(metrics.UserRepoCalls); err != nil {
+		return err
+	}
+	return nil
 }
 
 // initTracer initializes an OTel tracer provider. In non-production
