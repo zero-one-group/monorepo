@@ -4,6 +4,7 @@
         "files": [
             "apps",
             "packages",
+            "infrastructure",
             "templates",
             "template-astro",
             "template-fastapi-ai",
