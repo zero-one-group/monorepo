@@ -237,7 +237,7 @@ services:
       - overlay-network
 
   portainer:
-    image: portainer/portainer-ce:2.31.1
+    image: portainer/portainer-ce:2.31.3
     deploy:
       mode: replicated
       replicas: 1

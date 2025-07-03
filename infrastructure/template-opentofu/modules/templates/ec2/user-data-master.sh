@@ -149,7 +149,7 @@ docker service create \
   --mount type=bind,src=//var/run/docker.sock,dst=/var/run/docker.sock \
   --mount type=bind,src=//var/lib/docker/volumes,dst=/var/lib/docker/volumes \
   --mount type=bind,src=//,dst=/host \
-  portainer/agent:2.21.5
+  portainer/agent:2.31.3
 
 # Extract and save the worker join token
 docker swarm join-token worker -q > /tmp/worker-token.txt

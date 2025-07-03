@@ -11,6 +11,10 @@ cache:
     memcached:
       addresses: dns+memcached-tempo:11211
 
+query_frontend:
+  metrics:
+    max_duration: 12h
+
 distributor:
   receivers:
     jaeger:
