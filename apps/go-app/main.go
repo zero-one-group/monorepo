@@ -59,11 +59,9 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
 
-	tp, shutdown := config.InitTracer(ctx)
+	shutdown, err := config.ApplyInstrumentation(ctx, e)
 	defer shutdown(ctx)
 
-	e.Use(middleware.AttachTraceProvider(tp))
-	config.ApplyInstrumentation(e)
 	e.Use(middleware.SlogLoggerMiddleware())
 	e.Use(middleware.Cors())
 

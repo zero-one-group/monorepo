@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"fmt"
+	"go-app/internal/rest/middleware"
 	"os"
 	"time"
 
@@ -28,17 +29,20 @@ func ApplyInstrumentation(
 	initMetrics(e)
 
 	// Initialize the OpenTelemetry tracer provider.
-	shutdown, err := initTracer(ctx)
+	tp, shutdown, err := initTracer(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize tracer: %w", err)
 	}
 
+	e.Use(middleware.AttachTraceProvider(tp))
 	return shutdown, nil
 }
 
 // initMetrics configures Prometheus metrics for the Echo instance.
 func initMetrics(e *echo.Echo) {
-	e.Use(echoprometheus.NewMiddleware("myapp"))
+	serviceName := os.Getenv("SERVICE_NAME")
+	// @see: https://echo.labstack.com/docs/middleware/prometheus#custom-configuration
+	e.Use(echoprometheus.NewMiddleware(serviceName))
 	e.GET("/metrics", echoprometheus.NewHandler())
 }
 
@@ -47,7 +51,7 @@ func initMetrics(e *echo.Echo) {
 // and an error.
 func initTracer(
 	ctx context.Context,
-) (func(context.Context) error, error) {
+) (*sdktrace.TracerProvider, func(context.Context) error, error) {
 	env := os.Getenv("APP_ENVIRONMENT")
 
 	// In non-prod, install a NeverSample provider so no spans are exported.
@@ -63,7 +67,7 @@ func initTracer(
 			),
 		)
 		// Return a no-op shutdown function
-		return func(context.Context) error { return nil }, nil
+		return tp, func(context.Context) error { return nil }, nil
 	}
 
 	// In production, configure a real OTLP/gRPC exporter.
@@ -82,7 +86,7 @@ func initTracer(
 		),
 	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create OTLP exporter: %w", err)
+		return nil, nil, fmt.Errorf("failed to create OTLP exporter: %w", err)
 	}
 
 	res, err := resource.New(
@@ -96,7 +100,7 @@ func initTracer(
 		resource.WithTelemetrySDK(),
 	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create OTel resources: %w", err)
+		return nil, nil, fmt.Errorf("failed to create OTel resources: %w", err)
 	}
 
 	tp := sdktrace.NewTracerProvider(
@@ -118,6 +122,5 @@ func initTracer(
 		return tp.Shutdown(ctx)
 	}
 
-	return shutdown, nil
+	return tp, shutdown, nil
 }
-
