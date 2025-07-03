@@ -5,8 +5,23 @@
     "color": true,
     "root": true,
     "deep": false,
-    "install": "always",
+    "install": "never",
     "packageManager": "pnpm",
     "silent": false,
-    "reject": ["react-resizable-panels", "typescript"]
+    "reject": [
+        "react-resizable-panels",
+        "recharts",
+        "@storybook/addon-a11y",
+        "@storybook/addon-essentials",
+        "@storybook/addon-links",
+        "@storybook/addon-themes",
+        "@storybook/blocks",
+        "@storybook/core-events",
+        "@storybook/manager-api",
+        "@storybook/react",
+        "@storybook/react-vite",
+        "@storybook/test",
+        "@storybook/theming",
+        "storybook"
+    ]
 }

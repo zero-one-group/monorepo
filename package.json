@@ -15,7 +15,7 @@
         "compose:up": "docker compose -f docker/compose.yaml up --detach --remove-orphans",
         "compose:down": "docker compose -f docker/compose.yaml down --remove-orphans && docker compose -f docker/compose.yaml --profile instrumented down --remove-orphans",
         "compose:instrumented": "docker compose -f docker/compose.yaml --profile instrumented up --detach --remove-orphans",
-        "update-deps": "npm-check-updates --configFileName .ncurc.json",
+        "update-deps": "npm-check-updates --configFileName .ncurc.json && moon :update-deps",
         "cleanup": "pnpm --stream --color \"/cleanup:(?!deps|cache)/\"",
         "cleanup:deps": "pnpm dlx rimraf pnpm-lock.yaml node_modules",
         "cleanup:cache": "pnpm dlx rimraf .moon/cache --verbose",
@@ -24,18 +24,18 @@
         "typecheck": "moon :typecheck"
     },
     "devDependencies": {
-        "@biomejs/biome": "^1.9.4",
-        "@clack/prompts": "^0.10.1",
+        "@biomejs/biome": "catalog:",
+        "@clack/prompts": "^0.11.0",
         "@noble/hashes": "^1.8.0",
-        "@types/node": "^22.15.14",
+        "@types/node": "^24.0.10",
         "citty": "^0.1.6",
         "consola": "^3.4.2",
-        "dotenv": "^16.5.0",
-        "npm-check-updates": "^18.0.1",
-        "tsx": "^4.19.4"
+        "dotenv": "^17.0.1",
+        "npm-check-updates": "catalog:",
+        "tsx": "^4.20.3"
     },
     "pnpm": {
         "onlyBuiltDependencies": ["@biomejs/biome", "@swc/core", "core-js-pure", "esbuild", "sharp"]
     },
-    "packageManager": "pnpm@10.10.0"
+    "packageManager": "pnpm@10.12.4"
 }
