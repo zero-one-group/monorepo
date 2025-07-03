@@ -41,3 +41,34 @@ build:development-docker:
     name: 'development'
     action: 'prepare'
 
+build:staging-docker:
+  stage: build:staging
+  interruptible: true
+  tags:
+    - linux
+    - project
+  extends:
+    - .build:apps
+    - .rules:development
+  variables:
+    TAGGING: $CI_COMMIT_REF_NAME
+  environment:
+    name: 'development'
+    action: 'prepare'
+
+build:production-docker:
+  stage: build:production
+  interruptible: true
+  tags:
+    - linux
+    - project
+  extends:
+    - .build:apps
+    - .rules:development
+  variables:
+    TAGGING: $CI_COMMIT_REF_NAME
+  environment:
+    name: 'development'
+    action: 'prepare'
+
+

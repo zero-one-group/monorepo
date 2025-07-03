@@ -14,6 +14,7 @@
     - chmod 600 private_key.pem
     - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-apps-prod-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-prod.yml
     - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-apps-development-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-development.yml
+    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-apps-staging-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-staging.yml
     - rsync -avz -e 'ssh -o StrictHostKeyChecking=no -i private_key.pem -o ProxyCommand="ssh -W %h:%p -i private_key.pem -o StrictHostKeyChecking=no $USERNAME@$BASTION_HOST"' $CI_PROJECT_DIR/infra/swarm/ $USERNAME@$SERVER_ADDRESS:./lgtm
 
     - |
@@ -25,6 +26,12 @@
       if [ "$ENVIRONMENT" = "production" ]; then
           echo "Inside prod block"
           docker stack deploy -c "docker-swarm-prod.yml" hilogate --with-registry-auth
+
+      fi
+
+      if [ "$ENVIRONMENT" = "staging" ]; then
+          echo "Inside prod block"
+          docker stack deploy -c "docker-swarm-staging.yml" hilogate --with-registry-auth
 
       fi
 
@@ -48,3 +55,33 @@
     name: 'development'
     action: 'prepare'
   needs: ['build:development-docker']
+
+.deploy:staging-swarm:
+  stage: deploy:staging
+  interruptible: true
+  extends:
+    - .deploy:apps
+    - .rules:staging
+  variables:
+    VERSION: $CI_COMMIT_REF_NAME
+    SERVER_ADDRESS: $SERVER
+    ENVIRONMENT: staging
+  environment:
+    name: 'staging'
+    action: 'prepare'
+  needs: ['build:staging-docker']
+
+.deploy:production-swarm:
+  stage: deploy:production
+  interruptible: true
+  extends:
+    - .deploy:apps
+    - .rules:production
+  variables:
+    VERSION: $CI_COMMIT_REF_NAME
+    SERVER_ADDRESS: $SERVER
+    ENVIRONMENT: production
+  environment:
+    name: 'production'
+    action: 'prepare'
+  needs: ['build:production-docker']

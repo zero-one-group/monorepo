@@ -2,10 +2,18 @@ services:
   apps:
     image: 137068226915.dkr.ecr.ap-southeast-3.amazonaws.com/lgtm-image:$VERSION
     ports:
-      - '8081:8080'
+      - '8080:8080'
     deploy:
       mode: replicated
-      replicas: 1
+      replicas: 4
+      update_config:
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+        parallelism: 2
+      placement:
+        constraints:
+          - node.role==worker
     env_file:
       - ./.env
     networks:
