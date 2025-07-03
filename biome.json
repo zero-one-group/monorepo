@@ -10,18 +10,17 @@
         "ignoreUnknown": true,
         "includes": [
             "**",
-            "!**/.astro/**",
-            "!**/.next/**",
-            "!**/build/**",
-            "!**/dist/**",
-            "!**/out/**",
-            "!**/logs/**",
-            "!**/tmp/**",
-            "!**/temp/**",
+            "!**/.astro",
+            "!**/.next",
+            "!**/.react-router",
+            "!**/build",
+            "!**/dist",
+            "!**/out",
+            "!**/logs",
+            "!**/tmp",
+            "!**/temp",
             "!infrastructure/**",
-            "!template/**",
-            "!templates/**",
-            "!template-*/**"
+            "!template*"
         ]
     },
     "formatter": {
@@ -33,6 +32,7 @@
     },
     "linter": {
         "enabled": true,
+        "includes": ["!.astro"],
         "rules": {
             "recommended": true,
             "a11y": {
@@ -48,7 +48,7 @@
             "correctness": {
                 "noUnusedImports": {
                     "level": "error",
-                    "fix": "safe"
+                    "fix": "none"
                 },
                 "noUnusedVariables": {
                     "level": "warn",
@@ -64,7 +64,7 @@
             "nursery": {
                 "useSortedClasses": {
                     "level": "warn",
-                    "fix": "safe",
+                    "fix": "none",
                     "options": {
                         "attributes": ["classList"],
                         "functions": ["clsx", "cn", "cx", "cva", "tv", "tw"]
@@ -168,26 +168,5 @@
                 "organizeImports": "on"
             }
         }
-    },
-    "overrides": [
-        {
-            "includes": ["!**/*.astro"],
-            "linter": {
-                "rules": {
-                    "correctness": {
-                        "noUnusedImports": "off",
-                        "noUnusedVariables": "off"
-                    },
-                    "style": {
-                        "useConst": "off",
-                        "useImportType": "off"
-                    }
-                }
-            },
-            "formatter": {
-                "indentWidth": 2,
-                "bracketSpacing": true
-            }
-        }
-    ]
+    }
 }
