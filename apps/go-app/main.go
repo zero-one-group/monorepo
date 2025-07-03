@@ -63,6 +63,7 @@ func main() {
 	defer shutdown(ctx)
 
 	e.Use(middleware.AttachTraceProvider(tp))
+	config.ApplyInstrumentation(e)
 	e.Use(middleware.SlogLoggerMiddleware())
 	e.Use(middleware.Cors())
 
