@@ -6,6 +6,7 @@ import (
 	"go-app/internal/metrics"
 	"go-app/internal/rest/middleware"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/labstack/echo-contrib/echoprometheus"
@@ -26,12 +27,26 @@ import (
 func ApplyInstrumentation(
 	ctx context.Context,
 	e *echo.Echo,
-	metrics *metrics.Metrics,
+	appMetrics *metrics.Metrics,
 ) (func(context.Context) error, error) {
-	// Apply Prometheus middleware and metrics endpoint.
-	err := initMetrics(e, metrics)
+	enableInstrumentationStr := os.Getenv("ENABLE_INSTRUMENTATION")
+	enableInstrumentation, err := strconv.ParseBool(enableInstrumentationStr)
 	if err != nil {
-		return nil, fmt.Errorf("failed to initialize tracer: %w", err)
+		enableInstrumentation = false
+		fmt.Printf("Warning: ENABLE_INSTRUMENTATION environment variable '%s' could not be parsed as boolean. Defaulting to false. Error: %v\n", enableInstrumentationStr, err)
+	}
+
+	if !enableInstrumentation {
+		fmt.Println("Instrumentation is disabled by ENABLE_INSTRUMENTATION environment variable.")
+		return func(context.Context) error { return nil }, nil
+	}
+
+	fmt.Println("Instrumentation is enabled.")
+
+	// Apply Prometheus middleware and metrics endpoint.
+	err = initMetrics(e, appMetrics)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize metrics: %w", err)
 	}
 
 	// Initialize the OpenTelemetry tracer provider.
@@ -45,15 +60,22 @@ func ApplyInstrumentation(
 }
 
 // initMetrics configures Prometheus metrics for the Echo instance.
-func initMetrics(e *echo.Echo, metrics *metrics.Metrics) error {
+func initMetrics(e *echo.Echo, appMetrics *metrics.Metrics) error {
 	serviceName := os.Getenv("SERVICE_NAME")
 	// @see: https://echo.labstack.com/docs/middleware/prometheus#custom-configuration
 	e.Use(echoprometheus.NewMiddleware(serviceName))
 	e.GET("/metrics", echoprometheus.NewHandler())
 
-	if err := prometheus.Register(metrics.UserRepoCalls); err != nil {
-		return err
+	// Register all custom metrics from the appMetrics struct
+	if err := prometheus.Register(appMetrics.UserRepoCalls); err != nil {
+		return fmt.Errorf("failed to register UserRepoCalls metric: %w", err)
 	}
+	// Register other metrics here if you add them to your metrics.Metrics struct
+	// if err := prometheus.Register(appMetrics.OtherMetric); err != nil {
+	// 	return fmt.Errorf("failed to register OtherMetric: %w", err)
+	// }
+
+	fmt.Println("Prometheus metrics initialized and registered.")
 	return nil
 }
 
@@ -129,9 +151,10 @@ func initTracer(
 	)
 
 	shutdown := func(ctx context.Context) error {
-		fmt.Println("Shutting down tracer provider...")
+		fmt.Println("Shutting down OpenTelemetry tracer provider...")
 		return tp.Shutdown(ctx)
 	}
 
 	return tp, shutdown, nil
 }
+
