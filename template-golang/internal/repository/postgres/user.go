@@ -4,6 +4,7 @@ import (
 	"context"
 	"strings"
 	"{{ package_name }}/domain"
+	"{{ package_name }}/internal/metrics"
 	"{{ package_name }}/utils"
 
 	"github.com/google/uuid"
@@ -13,12 +14,14 @@ import (
 )
 
 type UserRepository struct {
-	Conn *pgxpool.Pool
+	Conn    *pgxpool.Pool
+	Metrics *metrics.Metrics
 }
 
-func NewUserRepository(conn *pgxpool.Pool) *UserRepository {
+func NewUserRepository(conn *pgxpool.Pool, metrics *metrics.Metrics) *UserRepository {
 	return &UserRepository{
-		Conn: conn,
+		Conn:    conn,
+		Metrics: metrics,
 	}
 }
 
@@ -123,9 +126,11 @@ func (u *UserRepository) GetUser(ctx context.Context, id uuid.UUID) (*domain.Use
 	)
 	if err != nil {
 		span.RecordError(err)
+		u.Metrics.UserRepoCalls.WithLabelValues("GetUser", "error").Inc()
 		return nil, err
 	}
 
+	u.Metrics.UserRepoCalls.WithLabelValues("GetUser", "success").Inc()
 	return &user, nil
 }
 
