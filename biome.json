@@ -1,22 +1,45 @@
 {
-    "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-    "organizeImports": {
-        "enabled": true
-    },
+    "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
     "vcs": {
         "enabled": true,
         "clientKind": "git",
         "useIgnoreFile": true,
         "defaultBranch": "main"
     },
+    "files": {
+        "ignoreUnknown": true,
+        "includes": [
+            "**",
+            "!**/.astro/**",
+            "!**/.next/**",
+            "!**/build/**",
+            "!**/dist/**",
+            "!**/out/**",
+            "!**/logs/**",
+            "!**/tmp/**",
+            "!**/temp/**",
+            "!infrastructure/**",
+            "!template/**",
+            "!templates/**",
+            "!template-*/**"
+        ]
+    },
+    "formatter": {
+        "enabled": true,
+        "formatWithErrors": false,
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineWidth": 100
+    },
     "linter": {
         "enabled": true,
-        "ignore": ["vite-env.d.ts"],
         "rules": {
             "recommended": true,
             "a11y": {
                 "noSvgWithoutTitle": "off",
-                "useKeyWithClickEvents": "off"
+                "useKeyWithClickEvents": "off",
+                "useSemanticElements": "off",
+                "useValidAnchor": "off"
             },
             "complexity": {
                 "noBannedTypes": "off",
@@ -24,16 +47,19 @@
             },
             "correctness": {
                 "noUnusedImports": {
-                    "level": "off",
-                    "fix": "none"
+                    "level": "error",
+                    "fix": "safe"
                 },
                 "noUnusedVariables": {
                     "level": "warn",
-                    "fix": "none"
+                    "fix": "none",
+                    "options": {
+                        "ignoreRestSiblings": true
+                    }
                 },
-                "useJsxKeyInIterable": "error",
+                "noChildrenProp": "off",
                 "noUnknownFunction": "off",
-                "noUnknownUnit": "error"
+                "useJsxKeyInIterable": "error"
             },
             "nursery": {
                 "useSortedClasses": {
@@ -41,7 +67,7 @@
                     "fix": "safe",
                     "options": {
                         "attributes": ["classList"],
-                        "functions": ["cn", "clx", "clsx", "cva", "tw"]
+                        "functions": ["clsx", "cn", "cx", "cva", "tv", "tw"]
                     }
                 }
             },
@@ -53,10 +79,26 @@
                 "noDangerouslySetInnerHtml": "off"
             },
             "style": {
+                "noNonNullAssertion": "off",
+                "noParameterAssign": "warn",
+                "useAsConstAssertion": "error",
+                "useDefaultParameterLast": "error",
+                "useEnumInitializers": "error",
+                "useSelfClosingElements": "error",
+                "useSingleVarDeclarator": "error",
                 "noUnusedTemplateLiteral": "off",
+                "useNumberNamespace": "error",
+                "noInferrableTypes": "error",
+                "noUselessElse": "error",
                 "useConsistentArrayType": "warn",
                 "useExportType": "warn",
-                "useImportType": "warn",
+                "useImportType": {
+                    "level": "off",
+                    "fix": "none",
+                    "options": {
+                        "style": "auto"
+                    }
+                },
                 "useFilenamingConvention": {
                     "level": "off",
                     "options": {
@@ -65,35 +107,30 @@
                 }
             },
             "suspicious": {
-                "noArrayIndexKey": "error",
+                "noArrayIndexKey": "warn",
                 "noAssignInExpressions": "off",
                 "noCommentText": "off",
-                "noConsoleLog": {
-                    "level": "info",
-                    "fix": "none"
-                },
                 "noDebugger": "off",
                 "noExplicitAny": "off",
+                "noConsole": {
+                    "level": "warn",
+                    "fix": "none",
+                    "options": {
+                        "allow": [
+                            "assert",
+                            "error",
+                            "info",
+                            "warn",
+                            "debug",
+                            "time",
+                            "timeEnd",
+                            "timeLog"
+                        ]
+                    }
+                },
                 "noDuplicateAtImportRules": "error",
                 "noEmptyBlock": "warn"
             }
-        }
-    },
-    "formatter": {
-        "enabled": true,
-        "formatWithErrors": false,
-        "indentStyle": "space",
-        "indentWidth": 4,
-        "lineWidth": 100
-    },
-    "css": {
-        "parser": {
-            "allowWrongLineComments": false
-        },
-        "formatter": {
-            "enabled": true,
-            "quoteStyle": "double",
-            "indentWidth": 2
         }
     },
     "javascript": {
@@ -109,15 +146,32 @@
             "bracketSameLine": false
         }
     },
+    "css": {
+        "parser": {
+            "allowWrongLineComments": false
+        },
+        "formatter": {
+            "enabled": true,
+            "quoteStyle": "double"
+        }
+    },
     "json": {
         "formatter": {
             "indentWidth": 4,
             "trailingCommas": "none"
         }
     },
+    "assist": {
+        "enabled": true,
+        "actions": {
+            "source": {
+                "organizeImports": "on"
+            }
+        }
+    },
     "overrides": [
         {
-            "include": ["*.astro"],
+            "includes": ["!**/*.astro"],
             "linter": {
                 "rules": {
                     "correctness": {
@@ -135,31 +189,5 @@
                 "bracketSpacing": true
             }
         }
-    ],
-    "files": {
-        "ignoreUnknown": true,
-        "include": [
-            "**/*.js",
-            "**/*.cjs",
-            "**/*.mjs",
-            "**/*.ts",
-            "**/*.mts",
-            "**/*.tsx",
-            "**/*.css",
-            "**/*.json",
-            "**/*.astro"
-        ],
-        "ignore": [
-            ".github",
-            ".astro",
-            ".next",
-            "build",
-            "dist",
-            "out",
-            "tmp",
-            "temp",
-            "templates",
-            "template-*"
-        ]
-    }
+    ]
 }
