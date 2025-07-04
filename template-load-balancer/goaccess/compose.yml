@@ -1,0 +1,19 @@
+services:
+  goaccess:
+    image: allinurl/goaccess:1.9.4
+    container_name: goaccess
+    ports:
+      - 0.0.0.0:7890:7890
+    volumes:
+      - ./config:/srv/config
+      - /home/ubuntu/lgtm-stack/infra/load-balancer/logs:/srv/logs
+      - /home/ubuntu/lgtm-stack/infra/load-balancer/ssl:/srv/certs
+      - /home/ubuntu/lgtm-stack/infra/load-balancer/html:/srv/report
+    command: ["--no-global-config", "--config-file=/srv/config/goaccess.conf"]
+    restart: unless-stopped
+    networks:
+      - load-balancer_nginx-net
+
+networks:
+  load-balancer_nginx-net:
+    external: true

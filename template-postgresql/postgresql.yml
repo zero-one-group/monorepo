@@ -1,0 +1,73 @@
+services:
+  postgresql:
+    image: prihuda22/postgresql:17.5-alpine3.22
+    ports:
+      - target: 5432
+        published: 5432
+        protocol: tcp
+        mode: host
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-test_db}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_password
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    secrets:
+      - postgres_password
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+    configs:
+      - source: postgresql_conf_v1
+        target: /var/lib/postgresql/postgresql.conf
+        mode: 0644
+    command: ["postgres", "-c", "config_file=/var/lib/postgresql/postgresql.conf"]
+    networks:
+      - overlay-network
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.node_type==database
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+      update_config:
+        parallelism: 1
+        delay: 30s
+        failure_action: rollback
+        order: stop-first
+      rollback_config:
+        parallelism: 1
+        delay: 30s
+        order: stop-first
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-logging}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    stop_grace_period: 60s
+
+networks:
+  overlay-network:
+    external: true
+
+volumes:
+  postgresql_data:
+    name: postgresql_data
+    driver: local
+
+secrets:
+  postgres_password:
+    external: true
+
+configs:
+  postgresql_conf_v1:
+    file: ./postgresql_small.conf

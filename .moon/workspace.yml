@@ -40,6 +40,7 @@ docker:
 projects:
   globs:
     - 'apps/*'
+    - 'infra/*'
     - 'packages/*'
 
 # When enabled, will check for a newer moon version and send anonymous usage data to the
