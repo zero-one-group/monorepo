@@ -44,3 +44,9 @@ variables:
     prompt: 'AWS region (you can change it later)?'
     required: false
 
+  mobile_app_name:
+    type: 'string'
+    default: 'CHANGEME_MOBILE_APP_NAMES'
+    prompt: 'Mobile apps name on deploy.yml for mobile ci/cd (you can change it later)?'
+    required: false
+

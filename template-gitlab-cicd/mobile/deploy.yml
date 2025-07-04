@@ -25,7 +25,7 @@
       I have successfully built and uploaded the APK file for your project.
 
       Here are the details about the build:
-        • *Project*: Diamond Mobile
+        • *Project*: {{ mobile_app_name }} Mobile
         • *Environment*: $CI_ENVIRONMENT_NAME
         • *APK Name*: $APP_NAME
         • *Latest Commit*: <$CI_PROJECT_URL/-/commit/$CI_COMMIT_SHA|$CI_COMMIT_SHORT_SHA>
