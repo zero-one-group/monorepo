@@ -80,24 +80,24 @@ Follow the prompts to create a new application.
 
 Current available templates are:
 
-| Template Name                                  | Description                                        |
-|------------------------------------------------|----------------------------------------------------|
-| [`template-golang`](./template-golang)         | Basic Go application for backend                   |
-| [`template-react-app`](./template-react-app)   | SPA React Router application with Tailwind CSS     |
-| [`template-react-ssr`](./template-react-ssr)   | SSR React Router application with Tailwind CSS     |
-| [`template-shared-ui`](./template-shared-ui)   | Collections of UI components based on `shadcn/ui`  |
-| [`template-nextjs`](./template-nextjs)         | Next.js application with Tailwind CSS              |
-| [`template-strapi`](./template-strapi)         | Strapi headless CMS with PostgreSQL and Nodemailer |
-| [`template-astro`](./template-astro)           | Astro website with Tailwind CSS                    |
-| [`template-fastapi-ai`](./template-fastapi-ml) | FastAPI template for AI apps                       |
-| [`template-opentofu`](./template-opentofu)         | IAC tools for provisioning server                   |
-| [`template-ansible`](./template-react-app)   | Ansible for automation and hardening server     |
-| [`template-load-balancer`](./template-load-balancer)   | Load balancer and reverse proxy using Nginx     |
-| [`template-gitlab-cicd`](./template-gitlab-cicd)   | Gitlab CI/CD initiate template  |
-| [`template-postgresql`](./template-postgresql)         | Initial template for database              |
-| [`template-squidproxy`](./template-squidproxy)         | To make egress from one ip in multiple nodes container |
-| [`template-monitoring`](./template-monitoring)           | Monitoring using LGTV stack                    |
-| [`template-swarm`](./template-swarm) | Swarm configuration for each service                       |
+| Template Name                                         | Description                                           |
+|-------------------------------------------------------|-------------------------------------------------------|
+| [`template-golang`](./template-golang)                | Basic Go application for backend                      |
+| [`template-react-app`](./template-react-app)          | SPA React Router application with Tailwind CSS        |
+| [`template-react-ssr`](./template-react-ssr)          | SSR React Router application with Tailwind CSS        |
+| [`template-shared-ui`](./template-shared-ui)          | Collections of UI components based on `shadcn/ui`     |
+| [`template-nextjs`](./template-nextjs)                | Next.js application with Tailwind CSS                 |
+| [`template-strapi`](./template-strapi)                | Strapi headless CMS with PostgreSQL and Nodemailer    |
+| [`template-astro`](./template-astro)                  | Astro website with Tailwind CSS                       |
+| [`template-fastapi-ai`](./template-fastapi-ml)        | FastAPI template for AI apps                          |
+| [`template-opentofu`](./template-opentofu)            | IAC tools for provisioning server                     |
+| [`template-ansible`](./template-ansible)              | Ansible for automation and hardening server           |
+| [`template-load-balancer`](./template-load-balancer)  | Load balancer and reverse proxy using Nginx           |
+| [`template-gitlab-cicd`](./template-gitlab-cicd)      | Gitlab CI/CD initiate template                        |
+| [`template-postgresql`](./template-postgresql)        | Initial template for database                         |
+| [`template-squidproxy`](./template-squidproxy)        | To make egress from one ip in multiple nodes container|
+| [`template-monitoring`](./template-monitoring)        | Monitoring using LGTV stack                           |
+| [`template-swarm`](./template-swarm)                  | Swarm configuration for each service                  |
 
 ### Moon commands
 
