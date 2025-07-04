@@ -1,0 +1,80 @@
+.deploy:mobile:upload-to-slack:
+  image: prihuda22/flutter-android:3.27.4
+  script:
+    - export JOB_START="$( echo $CI_JOB_STARTED_AT | awk -F "[T:+-]" '{print $3"-"$2"-"$1" "$4":"$5":"$6" WIB"}' )"
+    - export PIPELINE_START="$( echo $CI_PIPELINE_CREATED_AT | awk -F "[T:+-]" '{print $3"-"$2"-"$1" "$4":"$5":"$6" WIB"}' )"
+    - |
+      if [ "$FLAVOR" = "staging" ] || [ "$FLAVOR" = "prod" ]; then
+        input_string=${CI_COMMIT_TAG}; [[ $input_string =~ ^([0-9]+\.[0-9]+\.[0-9]+).* ]]; version=${BASH_REMATCH[1]}
+        export APP_NAME=$CI_PROJECT_NAME-$CI_ENVIRONMENT_NAME-$version
+      else
+        export APP_NAME=$CI_PROJECT_NAME-$CI_ENVIRONMENT_NAME-$CI_COMMIT_SHORT_SHA
+      fi
+    - |
+      if [ "$FLAVOR" = "staging" ] || [ "$FLAVOR" = "prod" ]; then
+        input_string=${CI_COMMIT_TAG}; [[ $input_string =~ ^([0-9]+\.[0-9]+\.[0-9]+).* ]]; version=${BASH_REMATCH[1]}
+        flutter build apk --release --flavor ${FLAVOR} --dart-define-from-file=configs/config_${FLAVOR}.json --build-name=$version
+      else
+        flutter build apk --release --flavor ${FLAVOR} --dart-define-from-file=configs/config_${FLAVOR}.json
+      fi
+    - mv build/app/outputs/flutter-apk/app-${FLAVOR}-release.apk ./$APP_NAME.apk
+    - |
+      export SLACK_MSG="\
+      Hello Everyone :wave:!
+
+      I have successfully built and uploaded the APK file for your project.
+
+      Here are the details about the build:
+        • *Project*: Diamond Mobile
+        • *Environment*: $CI_ENVIRONMENT_NAME
+        • *APK Name*: $APP_NAME
+        • *Latest Commit*: <$CI_PROJECT_URL/-/commit/$CI_COMMIT_SHA|$CI_COMMIT_SHORT_SHA>
+        • *Pipeline*: <$CI_PIPELINE_URL|$CI_PIPELINE_ID>
+        • *Pipeline Start*: $PIPELINE_START
+        • *Build Start*: $JOB_START
+        • *Triggerer*: $GITLAB_USER_LOGIN
+
+      Enjoy :tada:!"
+    - |
+      curl -F "title=${APP_NAME}" \
+         -F "file=@${APP_NAME}.apk" \
+         -F "token=${SLACK_TOKEN}" \
+         -F "initial_comment=${SLACK_MSG}" \
+         -F "channels=${SLACK_CHANNEL}" \
+         -H "Authorization: Bearer " \
+         https://slack.com/api/files.upload
+  when: manual
+  allow_failure: false
+
+deploy:development:mobile:upload-to-slack:
+  extends:
+    - .rules:development
+    - .base_mobile
+    - .deploy:mobile:upload-to-slack
+  stage: deploy:development-mobile
+  variables:
+    FLAVOR: 'dev'
+
+deploy:staging:mobile:upload-to-slack:
+  extends:
+    - .rules:mobile-staging
+    - .base_mobile
+    - .deploy:mobile:upload-to-slack
+  stage: deploy:staging
+  environment:
+    name: 'staging'
+    action: 'prepare'
+  variables:
+    FLAVOR: 'staging'
+
+deploy:production:mobile:upload-to-slack:
+  extends:
+    - .rules:mobile-production
+    - .base_mobile
+    - .deploy:mobile:upload-to-slack
+  stage: deploy:production
+  environment:
+    name: 'production'
+    action: 'prepare'
+  variables:
+    FLAVOR: 'prod'

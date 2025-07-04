@@ -90,6 +90,14 @@ Current available templates are:
 | [`template-strapi`](./template-strapi)         | Strapi headless CMS with PostgreSQL and Nodemailer |
 | [`template-astro`](./template-astro)           | Astro website with Tailwind CSS                    |
 | [`template-fastapi-ai`](./template-fastapi-ml) | FastAPI template for AI apps                       |
+| [`template-opentofu`](./template-opentofu)         | IAC tools for provisioning server                   |
+| [`template-ansible`](./template-react-app)   | Ansible for automation and hardening server     |
+| [`template-load-balancer`](./template-load-balancer)   | Load balancer and reverse proxy using Nginx     |
+| [`template-gitlab-cicd`](./template-gitlab-cicd)   | Gitlab CI/CD initiate template  |
+| [`template-postgresql`](./template-postgresql)         | Initial template for database              |
+| [`template-squidproxy`](./template-squidproxy)         | To make egress from one ip in multiple nodes container |
+| [`template-monitoring`](./template-monitoring)           | Monitoring using LGTV stack                    |
+| [`template-swarm`](./template-swarm) | Swarm configuration for each service                       |
 
 ### Moon commands
 

@@ -9,6 +9,10 @@
     if: $CI_COMMIT_TAG =~ /^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)-staging$/
   on-prod-tag: &on-prod
     if: $CI_COMMIT_TAG =~ /^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)-prod$/
+  on-mobile-staging-tag: &on-mobile-staging
+    if: $CI_COMMIT_TAG =~ /^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)-mobile-staging$/
+  on-mobile-prod-tag: &on-mobile-prod
+    if: $CI_COMMIT_TAG =~ /^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)-mobile-prod$/
 
 .common-rules:
   never: &never
@@ -36,3 +40,11 @@
 .rules:production:
   rules:
     - <<: *on-prod
+
+.rules:mobile-staging:
+  rules:
+    - <<: *on-mobile-staging
+
+.rules:mobile-production:
+  rules:
+    - <<: *on-mobile-prod

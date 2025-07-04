@@ -1,6 +1,8 @@
 test:
   stage: test
   interruptible: true
+  extends:
+    - .rules:merge-request
   script:
     - echo "Running test..."
   variables:
