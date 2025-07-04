@@ -1,11 +1,11 @@
 variable "project" {
-  default     = "lgtm"
+  default     = "{{ project_name }}"
   type        = string
   description = "Project name"
 }
 
 variable "region" {
-  default     = "ap-southeast-1"
+  default     = "{{ region }}"
   type        = string
   description = "Region use for all resource"
 }

@@ -3,10 +3,10 @@
 $schema: 'https://moonrepo.dev/schemas/template.json'
 
 # REQUIRED: Name of the template in a human readable format.
-title: 'Opentofu'
+title: 'database'
 
 # REQUIRED: Description of what the template is for and other relevant information.
-description: 'IAC tools for provisioning server'
+description: 'Database using Postgresql'
 
 # Destination path for the package.
 destination: 'infra/[package_name]'
@@ -16,24 +16,12 @@ destination: 'infra/[package_name]'
 variables:
   package_name:
     type: 'string'
-    default: 'opentofu'
+    default: 'database'
     prompt: 'Package name (identifier)?'
     required: true
 
-  project_name:
-    type: 'string'
-    default: 'CHANGEME_IO_TF_PROJECT'
-    prompt: 'in root io.tf there is project it will change that value (you can change it later)?'
-    required: false
-
-  region:
-    type: 'string'
-    default: 'CHANGEME_AWS_REGION'
-    prompt: 'AWS region (you can change it later)?'
-    required: false
-
   package_description:
     type: 'string'
-    default: 'IAC tools for provisioning server in AWS'
+    default: 'Database using Postgresql'
     prompt: 'Package description?'
     required: true

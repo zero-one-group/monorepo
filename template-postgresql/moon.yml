@@ -4,7 +4,6 @@ $schema: 'https://moonrepo.dev/schemas/project.json'
 
 type: configuration
 language: unknown
-platform: system
 stack: infrastructure
 tags: ['config']
 
@@ -15,34 +14,15 @@ project:
   name: '{{ package_name | kebab_case }}'
   description: '{{ package_description }}'
 
+env:
+  STACK_NAME: "$(jq -r .name <$workspaceRoot'/package.json')"
+
 # Since this project can infer task from script (package.json), then you can run any script as moon task.
 # @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
 # Example: `moon {{ package_name | kebab_case }}:start`
 tasks:
-  init:
-    command: 'tofu init'
-    options:
-      mergeEnv: replace
-      runFromWorkspaceRoot: false
-      interactive: false
-      outputStyle: buffer-only-failure
-      runInCI: false
-      cache: false
-      shell: true
-
-  plan:
-    command: 'tofu plan'
-    options:
-      mergeEnv: replace
-      runFromWorkspaceRoot: false
-      interactive: false
-      outputStyle: buffer-only-failure
-      runInCI: false
-      cache: false
-      shell: true
-
-  apply:
-    command: 'tofu apply --auto-approve'
+  start:
+    command: 'docker stack deploy -c postgresql.yml $STACK_NAME'
     options:
       mergeEnv: replace
       runFromWorkspaceRoot: false

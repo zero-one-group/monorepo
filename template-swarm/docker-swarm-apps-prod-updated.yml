@@ -1,0 +1,24 @@
+services:
+  apps:
+    image: {{ aws_account_number }}.dkr.ecr.{{ region }}.amazonaws.com/{{ repository_name }}:$VERSION
+    ports:
+      - '8080:8080'
+    deploy:
+      mode: replicated
+      replicas: 4
+      update_config:
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+        parallelism: 2
+      placement:
+        constraints:
+          - node.role==worker
+    env_file:
+      - ./.env
+    networks:
+      - overlay-network
+
+networks:
+  overlay-network:
+    external: true

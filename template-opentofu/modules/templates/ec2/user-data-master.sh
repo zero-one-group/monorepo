@@ -120,9 +120,9 @@ AVAILABILITY_ZONE=$(curl -s http://169.254.169.254/latest/meta-data/placement/av
 docker swarm init > /tmp/swarm-init.txt 2>&1
 
 # Add proxy label to the node
-docker node update --label-add proxy=true $(docker node ls --format "{{.ID}}")
+docker node update --label-add proxy=true $(docker node ls --format {% raw %}"{{.ID}}"{% endraw %})
 # Add datacenter label based on AZ
-docker node update --label-add datacenter=$AVAILABILITY_ZONE $(docker node ls --format "{{.ID}}")
+docker node update --label-add datacenter=$AVAILABILITY_ZONE $(docker node ls --format {% raw %}"{{.ID}}"{% endraw %})
 
 # Create overlay network for swarm
 docker network create --driver overlay overlay-network
@@ -201,7 +201,7 @@ else
 fi
 
 # Create a script to handle node labeling
-cat > /usr/local/bin/update-node-labels.sh << EOF
+cat > /usr/local/bin/update-node-labels.sh << 'EOF'
 #!/bin/bash
 
 # Set AWS Region from parent script
@@ -245,7 +245,7 @@ get_az_from_ip() {
 # Function to check if a node is the monitoring node
 is_monitoring_node() {
     local node_id=\$1
-    local hostname=\$(docker node inspect \$node_id --format '{{.Description.Hostname}}')
+    local hostname=\$(docker node inspect \$node_id --format {% raw %}'{{.Description.Hostname}}'{% endraw %})
     if [[ "\$hostname" == monitoring* ]]; then
         return 0  # true
     else
@@ -255,7 +255,7 @@ is_monitoring_node() {
 
 is_database_node() {
     local node_id=\$1
-    local hostname=\$(docker node inspect \$node_id --format '{{.Description.Hostname}}')
+    local hostname=\$(docker node inspect \$node_id --format {% raw %}'{{.Description.Hostname}}'{% endraw %})
     if [[ "\$hostname" == *db* ]]; then
         return 0  # true
     else
@@ -265,7 +265,7 @@ is_database_node() {
 
 # Function to label nodes
 label_nodes() {
-    for NODE_ID in \$(docker node ls --format '{{.ID}}'); do
+    for NODE_ID in \$(docker node ls --format {% raw %}'{{.ID}}'{% endraw %}); do
         if is_monitoring_node "\$NODE_ID"; then
             # Apply monitoring label for monitoring node
             docker node update --label-add node_type=monitoring \$NODE_ID
@@ -276,7 +276,7 @@ label_nodes() {
             echo "Applied database label to node \$NODE_ID"
         else
             # Apply AZ-based label for other nodes
-            NODE_IP=\$(docker node inspect \$NODE_ID --format '{{.Status.Addr}}')
+            NODE_IP=\$(docker node inspect \$NODE_ID --format {% raw %}'{{.Status.Addr}}'{% endraw %})
             NODE_AZ=\$(get_az_from_ip "\$NODE_IP")
 
             if [ ! -z "\$NODE_AZ" ] && [ "\$NODE_AZ" != "None" ]; then
