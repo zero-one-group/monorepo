@@ -44,6 +44,18 @@ variables:
     prompt: 'Apps domain (you can change it later)?'
     required: false
 
+  wildcard_domain:
+    type: 'string'
+    default: 'CHANGEME_WILDCARD_DOMAIN'
+    prompt: 'Wildcard domain (you can change it later)?'
+    required: false
+
+  email_generate_certbot:
+    type: 'string'
+    default: 'CHANGEME_EMAIL_GENERATE_CERTBOT'
+    prompt: 'Email for register in order to generate certbot (you can change it later)?'
+    required: false
+
   nginx_monitoring_ssl:
     type: 'string'
     default: 'CHANGEME_NGINX_MONITORING_SSL'
