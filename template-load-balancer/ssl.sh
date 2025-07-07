@@ -1,7 +1,7 @@
 #!/bin/bash
 
-DOMAIN="apps-lgtm.zero-one.cloud"
-WILDCARD_DOMAIN="*.zero-one.cloud"
+DOMAIN="{{ apps_domain }}"
+WILDCARD_DOMAIN="{{ wildcard_domain }}"
 SSL_DIR="./ssl"
 NGINX_UID="65532"
 
@@ -50,7 +50,7 @@ create_letsencrypt_standalone() {
         --preferred-challenges http \
         --http-01-port 80 \
         -d $DOMAIN \
-        --email rafiqul@zero-one-group.com \
+        --email {{ email_generate_certbot }} \
         --agree-tos \
         --non-interactive
 
@@ -90,7 +90,7 @@ create_letsencrypt_webroot() {
     sudo certbot certonly --webroot \
         --webroot-path ./webroot \
         -d $DOMAIN \
-        --email rafiqul@zero-one-group.com \
+        --email {{ email_generate_certbot }} \
         --agree-tos \
         --non-interactive
 
@@ -132,7 +132,7 @@ create_letsencrypt_dns() {
             sudo certbot certonly --manual \
                 --preferred-challenges dns \
                 -d $WILDCARD_DOMAIN \
-                --email rafiqul@zero-one-group.com \
+                --email {{ email_generate_certbot }} \
                 --agree-tos \
                 --manual-public-ip-logging-ok
 
@@ -162,7 +162,7 @@ create_letsencrypt_dns() {
                 --dns-cloudflare-credentials $CF_CREDS \
                 --dns-cloudflare-propagation-seconds 60 \
                 -d $WILDCARD_DOMAIN \
-                --email rafiqul@zero-one-group.com \
+                --email {{ email_generate_certbot }} \
                 --agree-tos \
                 --non-interactive
 
@@ -180,7 +180,7 @@ create_letsencrypt_dns() {
         echo "✅ Certbot completed successfully"
 
         # Find the certificate directory
-        CERT_DIR=$(sudo find /etc/letsencrypt/live/ -name "*zero-one.cloud*" -type d | head -n1)
+        CERT_DIR=$(sudo find /etc/letsencrypt/live/ -name "{{ wildcard_domain }}" -type d | head -n1)
 
         if [ -n "$CERT_DIR" ] && [ -d "$CERT_DIR" ]; then
             echo "📂 Found certificate directory: $CERT_DIR"
