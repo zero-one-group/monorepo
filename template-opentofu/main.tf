@@ -1,12 +1,12 @@
-    terraform {
-    backend "s3" {
-        bucket         = "lgtm-bucket-states"
-        key            = "state/terraform.tfstate"
-        region         = "ap-southeast-1"
-        encrypt        = true
-        dynamodb_table = "lgtm-locks"
-    }
-    }
+terraform {
+  backend "s3" {
+    bucket         = "lgtm-bucket-states"
+    key            = "state/terraform.tfstate"
+    region         = "ap-southeast-1"
+    encrypt        = true
+    dynamodb_table = "lgtm-locks"
+  }
+}
 
 terraform {
   required_providers {
