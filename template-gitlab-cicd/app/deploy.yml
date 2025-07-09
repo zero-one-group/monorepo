@@ -12,16 +12,16 @@
     - source $CI_PROJECT_DIR/infra/swarm/variable.txt
     - echo "$SSH_PRIVATE_KEY_SWARM" > private_key.pem
     - chmod 600 private_key.pem
-    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-prod-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-prod.yml
-    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-staging-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-staging.yml
-    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-development-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-development.yml
+    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-apps-prod-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-apps-prod.yml
+    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-apps-staging-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-apps-staging.yml
+    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-apps-development-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-apps-development.yml
     - rsync -avz -e 'ssh -o StrictHostKeyChecking=no -i private_key.pem -o ProxyCommand="ssh -W %h:%p -i private_key.pem -o StrictHostKeyChecking=no $USERNAME_BASTION@$BASTION_HOST"' $CI_PROJECT_DIR/infra/swarm/ $USERNAME@$SERVER_ADDRESS:./{{ app_name }}
 
     - |
       ssh -o StrictHostKeyChecking=no -i private_key.pem -o ProxyCommand="ssh -W %h:%p -i private_key.pem -o StrictHostKeyChecking=no $USERNAME_BASTION@$BASTION_HOST" $USERNAME@$SERVER_ADDRESS <<EOF
       source ~/{{ app_name }}/variable.txt
       cd ~/{{ app_name }}
-      aws ecr get-login-password --region ap-southeast-3 | docker login --username AWS --password-stdin {{ aws_account_number }}.dkr.ecr.ap-southeast-3.amazonaws.com
+      aws ecr get-login-password --region {{ region }} | docker login --username AWS --password-stdin {{ aws_account_number }}.dkr.ecr.{{ region }}.amazonaws.com
 
       if [ "$ENVIRONMENT" = "production" ]; then
           echo "Inside staging block"

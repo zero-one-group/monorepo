@@ -1,6 +1,6 @@
 .build:{{ app_name }}:
   image:
-    name: martizih/kaniko:v1.24.3-debug
+    name: martizih/kaniko:v1.25.0-debug
     entrypoint: [""]
   interruptible: true
   tags:
