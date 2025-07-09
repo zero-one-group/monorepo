@@ -5,10 +5,10 @@
     if: $CI_PIPELINE_SOURCE == 'schedule'
   on-main: &on-main
     if: $CI_COMMIT_BRANCH == "main"
-  on-staging-tag: &on-staging
-    if: $CI_COMMIT_TAG =~ /^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)-staging$/
-  on-prod-tag: &on-prod
-    if: $CI_COMMIT_TAG =~ /^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)-prod$/
+  on-api-staging-tag: &on-api-staging
+    if: $CI_COMMIT_TAG =~ /^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)-api-staging$/
+  on-api-prod-tag: &on-api-prod
+    if: $CI_COMMIT_TAG =~ /^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)-api-prod$/
   on-mobile-staging-tag: &on-mobile-staging
     if: $CI_COMMIT_TAG =~ /^(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\.(?P<patch>0|[1-9]\d*)-mobile-staging$/
   on-mobile-prod-tag: &on-mobile-prod
@@ -28,18 +28,31 @@
     - <<: *on-schedule
     - <<: *on-mr
 
-.rules:development:
+.rules:development-api:
   rules:
     - <<: *on-schedule
+      <<: *never
     - <<: *on-main
+      changes:
+        - apps/api/**/*
 
-.rules:staging:
+.rules:development-infra:
   rules:
-    - <<: *on-staging
+    - <<: *on-schedule
+      <<: *never
+    - <<: *on-main
+      changes:
+          - .gitlab-ci.yml
+          - infra/pipelines/**/*
+          - infra/swarm/**/*
 
-.rules:production:
+.rules:api-staging:
   rules:
-    - <<: *on-prod
+    - <<: *on-api-staging
+
+.rules:api-prod:
+  rules:
+    - <<: *on-api-prod
 
 .rules:mobile-staging:
   rules:

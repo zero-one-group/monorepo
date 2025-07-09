@@ -109,7 +109,7 @@ create_letsencrypt_webroot() {
 create_letsencrypt_dns() {
     echo "🌐 Creating Let's Encrypt wildcard certificate (DNS challenge)..."
     echo "⚠️  This will create a wildcard certificate for $WILDCARD_DOMAIN ONLY"
-    echo "    (This covers all *.zero-one.cloud subdomains including $DOMAIN)"
+    echo "    (This covers all $WILDCARD_DOMAIN subdomains including $DOMAIN)"
 
     # Install certbot if needed
     if ! command -v certbot &> /dev/null; then
@@ -179,8 +179,18 @@ create_letsencrypt_dns() {
     if [ $certbot_exit_code -eq 0 ]; then
         echo "✅ Certbot completed successfully"
 
-        # Find the certificate directory
-        CERT_DIR=$(sudo find /etc/letsencrypt/live/ -name "{{ wildcard_domain }}" -type d | head -n1)
+        # Extract the base domain without the wildcard prefix
+        BASE_DOMAIN=${WILDCARD_DOMAIN#\*.}
+        echo "🔍 Looking for certificate directory using base domain: $BASE_DOMAIN"
+
+        # Find the certificate directory using the base domain
+        CERT_DIR=$(sudo find /etc/letsencrypt/live/ -name "$BASE_DOMAIN" -type d | head -n1)
+
+        # If not found, try a more flexible search
+        if [ -z "$CERT_DIR" ] || [ ! -d "$CERT_DIR" ]; then
+            echo "🔍 First approach failed, trying broader search..."
+            CERT_DIR=$(sudo find /etc/letsencrypt/live/ -type d | grep -i "$BASE_DOMAIN" | head -n1)
+        fi
 
         if [ -n "$CERT_DIR" ] && [ -d "$CERT_DIR" ]; then
             echo "📂 Found certificate directory: $CERT_DIR"
@@ -270,4 +280,3 @@ echo ""
 echo "✅ SSL setup completed!"
 echo "Certificate: $CERT_FINAL_PATH"
 echo "Private key: $KEY_FINAL_PATH"
-
