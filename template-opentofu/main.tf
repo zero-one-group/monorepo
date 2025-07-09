@@ -123,7 +123,7 @@ module "sg_lb" {
       to_port                  = 22
       source_security_group_id = module.sg_bastion.sg_id
       description              = "SSH access from bastion"
-  }, ]
+  }]
   egress_rule = [{
     protocol    = -1
     from_port   = 0
@@ -216,7 +216,15 @@ module "sg_monitoring" {
       from_port   = 3100
       to_port     = 3100
       cidr_blocks = ["10.201.0.0/20"]
-      description = "PSQL Exporter"
+      description = "Loki"
+    },
+    {
+      # Portainer Agent
+      protocol    = "tcp"
+      from_port   = 9001
+      to_port     = 9001
+      cidr_blocks = ["10.201.0.0/20"]
+      description = "Portainer Agent"
     },
     {
       # Grafana
@@ -233,14 +241,6 @@ module "sg_monitoring" {
       to_port                  = 9000
       source_security_group_id = module.sg_lb.sg_id
       description              = "Portainer"
-    },
-    {
-      # Apps(port depend on needs)
-      protocol                 = "tcp"
-      from_port                = 8080
-      to_port                  = 8080
-      source_security_group_id = module.sg_lb.sg_id
-      description              = "API"
   }]
   egress_rule = []
   common_tags = local.common_tags
@@ -280,6 +280,13 @@ module "sg_swarm_master" {
     to_port                  = 22
     source_security_group_id = module.sg_bastion.sg_id
     description              = "SSH access from bastion"
+    }, {
+    # Apps(port depend on needs)
+    protocol                 = "tcp"
+    from_port                = 8080
+    to_port                  = 8080
+    source_security_group_id = module.sg_lb.sg_id
+    description              = "API"
   }]
   egress_rule = [{
     protocol    = -1

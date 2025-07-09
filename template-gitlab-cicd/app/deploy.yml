@@ -1,4 +1,4 @@
-.deploy:apps:
+.deploy:{{ app_name }}:
   interruptible: true
   image:
     name: buildpack-deps:24.04-curl
@@ -12,32 +12,32 @@
     - source $CI_PROJECT_DIR/infra/swarm/variable.txt
     - echo "$SSH_PRIVATE_KEY_SWARM" > private_key.pem
     - chmod 600 private_key.pem
-    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-apps-prod-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-prod.yml
-    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-apps-development-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-development.yml
-    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-apps-staging-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-staging.yml
-    - rsync -avz -e 'ssh -o StrictHostKeyChecking=no -i private_key.pem -o ProxyCommand="ssh -W %h:%p -i private_key.pem -o StrictHostKeyChecking=no $USERNAME@$BASTION_HOST"' $CI_PROJECT_DIR/infra/swarm/ $USERNAME@$MANAGER_NODES:./{{ app_name }}
+    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-prod-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-prod.yml
+    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-staging-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-staging.yml
+    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-development-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-development.yml
+    - rsync -avz -e 'ssh -o StrictHostKeyChecking=no -i private_key.pem -o ProxyCommand="ssh -W %h:%p -i private_key.pem -o StrictHostKeyChecking=no $USERNAME_BASTION@$BASTION_HOST"' $CI_PROJECT_DIR/infra/swarm/ $USERNAME@$SERVER_ADDRESS:./{{ app_name }}
 
     - |
-      ssh -o StrictHostKeyChecking=no -i private_key.pem -o ProxyCommand="ssh -W %h:%p -i private_key.pem -o StrictHostKeyChecking=no $USERNAME@$BASTION_HOST" $USERNAME@$MANAGER_NODES <<EOF
-      source ~/lgtm/variable.txt
-      cd ~/lgtm
-      aws ecr get-login-password --region {{ region }} | docker login --username AWS --password-stdin {{ aws_account_number }}.dkr.ecr.{{ region }}.amazonaws.com
+      ssh -o StrictHostKeyChecking=no -i private_key.pem -o ProxyCommand="ssh -W %h:%p -i private_key.pem -o StrictHostKeyChecking=no $USERNAME_BASTION@$BASTION_HOST" $USERNAME@$SERVER_ADDRESS <<EOF
+      source ~/{{ app_name }}/variable.txt
+      cd ~/{{ app_name }}
+      aws ecr get-login-password --region ap-southeast-3 | docker login --username AWS --password-stdin {{ aws_account_number }}.dkr.ecr.ap-southeast-3.amazonaws.com
 
       if [ "$ENVIRONMENT" = "production" ]; then
-          echo "Inside prod block"
-          docker stack deploy -c "docker-swarm-prod.yml" hilogate --with-registry-auth
+          echo "Inside staging block"
+          docker stack deploy -c "docker-swarm-api-staging.yml" {{ app_name }} --with-registry-auth
 
       fi
 
       if [ "$ENVIRONMENT" = "staging" ]; then
-          echo "Inside prod block"
-          docker stack deploy -c "docker-swarm-staging.yml" hilogate --with-registry-auth
+          echo "Inside staging block"
+          docker stack deploy -c "docker-swarm-api-staging.yml" {{ app_name }} --with-registry-auth
 
       fi
 
       if [ "$ENVIRONMENT" = "development" ]; then
           echo "Inside development block"
-          docker stack deploy -c "docker-swarm-development.yml" hilogate --with-registry-auth
+          docker stack deploy -c "docker-swarm-api-development.yml" {{ app_name }} --with-registry-auth
       fi
       EOF
 
@@ -45,7 +45,7 @@
   stage: deploy:development
   interruptible: true
   extends:
-    - .deploy:apps
+    - .deploy:{{ app_name }}
     - .rules:development
   variables:
     VERSION: $CI_COMMIT_SHORT_SHA
@@ -59,7 +59,7 @@
   stage: deploy:staging
   interruptible: true
   extends:
-    - .deploy:apps
+    - .deploy:{{ app_name }}
     - .rules:staging
   variables:
     VERSION: $CI_COMMIT_REF_NAME
@@ -73,7 +73,7 @@
   stage: deploy:production
   interruptible: true
   extends:
-    - .deploy:apps
+    - .deploy:{{ app_name }}
     - .rules:production
   variables:
     VERSION: $CI_COMMIT_REF_NAME

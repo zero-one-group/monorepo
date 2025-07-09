@@ -4,6 +4,8 @@ set -e
 
 DOMAIN="{{ apps_domain }}"
 NGINX_MONITORING="{{ nginx_monitoring_domain }}"
+PORTAINER_DOMAIN="{{ portainer_monitoring_domain }}"
+GRAFANA_DOMAIN="{{ grafana_monitoring_domain }}"
 NGINX_UID="65532"
 CONTAINER_NAME="nginx-unprivileged-optimized"
 
@@ -224,9 +226,9 @@ else
     echo "✅ Deployment verified - no changes needed!"
 fi
 echo "🐳 Main App: https://$DOMAIN"
-echo "🐳 Portainer: https://portainer-lgtm.zero-one.cloud"
-echo "🌐 Grafana: https://grafana-lgtm.zero-one.cloud"
-echo "🌐 Nginx: https://nginx-lgtm.zero-one.cloud"
+echo "🐳 Portainer: https://$PORTAINER_DOMAIN"
+echo "🌐 Grafana: https://$GRAFANA_DOMAIN"
+echo "🌐 Nginx: https://$NGINX_MONITORING"
 
 # Show container status
 echo ""
