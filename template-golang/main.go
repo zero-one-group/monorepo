@@ -59,10 +59,10 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
 
-	tp, shutdown := config.InitTracer(ctx)
+	appMetrics := metrics.NewMetrics()
+	shutdown, err := config.ApplyInstrumentation(ctx, e, appMetrics)
 	defer shutdown(ctx)
 
-	e.Use(middleware.AttachTraceProvider(tp))
 	e.Use(middleware.SlogLoggerMiddleware())
 	e.Use(middleware.Cors())
 
@@ -74,8 +74,7 @@ func main() {
 			Message: "All is well!",
 		})
 	})
-
-	userRepo := postgres.NewUserRepository(dbPool)
+	userRepo := postgres.NewUserRepository(dbPool, appMetrics)
 	userService := service.NewUserService(userRepo)
 
 	apiV1 := e.Group("/api/v1")
