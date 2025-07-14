@@ -32,13 +32,12 @@ func NewUserHandler(e *echo.Group, svc UserService) {
 	handler := &UserHandler{
 		Service: svc,
 	}
-	userGroup := e.Group("/users") // users group
 
-	userGroup.GET("", handler.GetUserList)
-	userGroup.GET("/:id", handler.GetUser)
-	userGroup.POST("", handler.CreateUser)
-	userGroup.PUT("/:id", handler.UpdateUser)
-	userGroup.DELETE("/:id", handler.DeleteUser)
+	e.GET("", handler.GetUserList)
+	e.GET("/:id", handler.GetUser)
+	e.POST("", handler.CreateUser)
+	e.PUT("/:id", handler.UpdateUser)
+	e.DELETE("/:id", handler.DeleteUser)
 }
 
 func (h *UserHandler) GetUserList(c echo.Context) error {

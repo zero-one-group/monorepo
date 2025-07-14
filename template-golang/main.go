@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"time"
+	"{{ package_name }}/internal/metrics"
 
 	"{{ package_name }}/config"
 	"{{ package_name }}/database"
@@ -66,13 +67,19 @@ func main() {
 			Message: "All is well!",
 		})
 	})
+
 	userRepo := postgres.NewUserRepository(dbPool, appMetrics)
 	userService := service.NewUserService(userRepo)
 
+	authRepo := postgres.NewAuthRepository(dbPool)
+	authSevice := service.NewAuthService(authRepo)
+
 	apiV1 := e.Group("/api/v1")
-	usersGroup := apiV1.Group("")
+	usersGroup := apiV1.Group("/users")
+	authGroup := apiV1.Group("/auth")
 
 	rest.NewUserHandler(usersGroup, userService)
+	rest.NewAuthHandler(authGroup, authSevice)
 
 	// Get host from environment variable, default to 127.0.0.1 if not set
 	host := os.Getenv("APP_HOST")

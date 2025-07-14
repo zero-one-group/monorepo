@@ -3,8 +3,8 @@ package postgres
 import (
 	"context"
 	"errors"
-	"go-app/domain"
-	"go-app/utils"
+	"{{ package_name }}/domain"
+	"{{ package_name }}/utils"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
