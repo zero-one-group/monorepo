@@ -7,7 +7,7 @@ from typing import Annotated
 
 from app.core.env import get_env
 from fastapi import Depends, Request
-from pythonjsonlogger.jsonlogger import JsonFormatter
+from pythonjsonlogger.json import JsonFormatter
 from starlette.middleware.base import BaseHTTPMiddleware
 
 # Singleton logger instance
