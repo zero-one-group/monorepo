@@ -16,7 +16,7 @@ ENV PATH="$MOON_INSTALL_DIR:$PATH" LEFTHOOK=0 CI=true
 WORKDIR /srv
 
 # Install system dependencies and moon cli
-RUN apt-get update && apt-get -yqq --no-install-recommends install curl tini jq ca-certificates
+RUN apt-get update && apt-get -yqq --no-install-recommends install curl tini jq ca-certificates git
 RUN apt -yqq purge && update-ca-certificates && apt -yqq autoremove && apt -yqq clean
 RUN curl -fsSL https://moonrepo.dev/install/moon.sh | bash
 
@@ -38,7 +38,6 @@ RUN go env -w GOCACHE=/go-cache
 RUN go env -w GOMODCACHE=/gomod-cache
 
 # Copy workspace skeleton
-COPY --from=skeleton /root/.proto /root/.proto
 COPY --from=skeleton /srv/.moon/docker/workspace .
 
 # Install toolchain and dependencies
@@ -64,7 +63,7 @@ ARG  DATABASE_URL SMTP_HOST SMTP_PORT SMTP_USERNAME SMTP_PASSWORD SMTP_EMAIL_FRO
 # ----- Read application environment variables --------------------------------
 
 # Copy the build output files from the installer stage.
-COPY --from=builder --chown=nonroot:nonroot /srv/apps/go-app/build/release/go-app /srv/go-app
+COPY --from=builder --chown=nonroot:nonroot /srv/apps/go-app/build/go-app /srv/go-app
 
 # Copy some necessary system utilities from previous stage (~7MB).
 # To enhance security, consider avoiding the copying of sysutils.
