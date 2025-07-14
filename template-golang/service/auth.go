@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"time"
-	"go-app/config"
-	"go-app/domain"
+	"{{ package_name }}/config"
+	"{{ package_name }}/domain"
 
 	"github.com/golang-jwt/jwt/v5"
 )

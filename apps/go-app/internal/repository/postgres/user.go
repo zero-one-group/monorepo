@@ -2,10 +2,10 @@ package postgres
 
 import (
 	"context"
+	"strings"
 	"go-app/domain"
 	"go-app/internal/metrics"
 	"go-app/utils"
-	"strings"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
