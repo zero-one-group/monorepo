@@ -49,8 +49,20 @@ tasks:
     options:
       envFile: ".env"
 
+  migrate-auto:
+    command: "uv run alembic revision --autogenerate -m "
+    deps: ["sync"]
+    options:
+      envFile: ".env"
+
+  migrate-down:
+    command: "uv run alembic downgrade -1"
+    deps: ["sync"]
+    options:
+      envFile: ".env"
+
   migrate-reset:
-    command: "uv run alembic downgrade "
+    command: "uv run alembic downgrade base"
     deps: ["sync"]
     options:
       envFile: ".env"
