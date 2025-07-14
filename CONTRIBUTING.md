@@ -85,29 +85,20 @@ After development in `apps/` is complete and the application is stable and ready
 
 ## 3. Development Workflow
 
-### Creating a New Application
+### Creating a New Template
 
-To create a new application, use the provided moon command:
+To establish a new template, manually initialize the desired project within the `apps/` directory. Once the project is considered stable and ready as a template, migrate the code to a dedicated template folder following the established naming conventions (e.g., `template-{app-name}`).
 
-```bash
-moon generate app
-```
+Helpful Resource:
+* [moonrepo Toolchain Configuration](https://moonrepo.dev/docs/config/toolchain)
 
-Follow the prompts to select a template and configure your new application. This will create a new project in the `apps/` directory with the appropriate `template-{app-name}` naming.
+### Contributing to an Existing Template
 
-Useful link:
-*   [moonrepo Toolchain Configuration](https://moonrepo.dev/docs/config/toolchain)
+Select an existing template or create an issue to address the required updates. Create a branch and perform the necessary development work. After completing the updates, migrate the code to existing template folder following the appropriate naming conventions (e.g., `template-{app-name}`, `template-go-app`).
 
-### Moving Changes to Templates
+Subsequently, submit a pull request in accordance with the [Pull Request Guidelines](#pull-request-guidelines).
 
-Once an application developed in `apps/` is mature and considered a stable "template," the code should be migrated to a dedicated template folder (e.g., `templates/go-app`). This process typically involves:
-
-1.  **Ensuring stability:** The application in `apps/` should be well-tested and production-ready.
-2.  **Refactoring for reusability:** Remove any project-specific configurations that shouldn't be part of a generic template.
-3.  **Updating the template:** Copy the code to the relevant `templates/` sub-directory.
-4.  **Updating `README.md` (if applicable):** If the new template introduces new conventions or tools, update this document.
-5.  **Replace all the package name:** Once the template is updated and verified, make sure you change
-    the package name(e.g: in template-go-app from `"go-app/internal/rest/middleware"` to `"{{ package_name }}/internal/rest/middleware"`).
+**Note:** Ensure that all package names are updated accordingly. For example, after verifying the template, change the package name from `"go-app/internal/rest/middleware"` to `"{{ package_name }}/internal/rest/middleware"` within the template code.
 
 ---
 
