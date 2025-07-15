@@ -41,6 +41,109 @@
       fi
       EOF
 
+    # Migration Script
+    # Install manually go using gvm and node using nvm for specific version then check $PATH with echo $PATH after got the result then adjust on line 53, 65, 76
+    - |
+      ssh -o StrictHostKeyChecking=no -i private_key.pem -o ProxyCommand="ssh -W %h:%p -i private_key.pem -o StrictHostKeyChecking=no $USERNAME_BASTION@$BASTION_HOST" $USERNAME@$SERVER_ADDRESS <<EOF
+      cd ~/{{ app_name }}
+      cp .env ~/{{ app_name }}-repo/apps/api
+      source ~/imigrasi/variable.txt
+      if [ "$ENVIRONMENT" = "development" ]; then
+          echo "Inside development block"
+          export PATH="/home/ubuntu/.gvm/pkgsets/go1.24.5/global/bin:/home/ubuntu/.gvm/gos/go1.24.5/bin:/home/ubuntu/.gvm/pkgsets/go1.24.5/global/overlay/bin:/home/ubuntu/.gvm/bin:/home/ubuntu/.nvm/versions/node/v22.17.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/ubuntu/.moon/bin"
+          cd ~/{{ app_name }}-repo
+          git fetch origin
+          git stash
+          git checkout -q main
+          git pull origin main
+          pnpm install
+          echo "Running database migrations..."
+          moon api:migration-up || { echo "Migration failed. Check for missing migrations."; exit 1; }
+      fi
+      if [ "$ENVIRONMENT" = "staging" ]; then
+          echo "Inside staging block"
+          export PATH="/home/ubuntu/.gvm/pkgsets/go1.24.5/global/bin:/home/ubuntu/.gvm/gos/go1.24.5/bin:/home/ubuntu/.gvm/pkgsets/go1.24.5/global/overlay/bin:/home/ubuntu/.gvm/bin:/home/ubuntu/.nvm/versions/node/v22.17.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/ubuntu/.moon/bin"
+          cd ~/{{ app_name }}-repo
+          git fetch origin
+          git stash
+          git checkout -q "$CI_COMMIT_REF_NAME"
+          pnpm install
+          echo "Running database migrations..."
+          moon api:migration-up || { echo "Migration failed. Check for missing migrations."; exit 1; }
+      fi
+      if [ "$ENVIRONMENT" = "production" ]; then
+          echo "Inside prod block"
+          export PATH="/home/ubuntu/.gvm/pkgsets/go1.24.5/global/bin:/home/ubuntu/.gvm/gos/go1.24.5/bin:/home/ubuntu/.gvm/pkgsets/go1.24.5/global/overlay/bin:/home/ubuntu/.gvm/bin:/home/ubuntu/.nvm/versions/node/v22.17.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/ubuntu/.moon/bin"
+          cd ~/{{ app_name }}-repo
+          git fetch origin
+          git stash
+          git checkout -q "$CI_COMMIT_REF_NAME"
+          pnpm install
+          echo "Running database migrations..."
+          moon api:migration-up || { echo "Migration failed. Check for missing migrations."; exit 1; }
+      fi
+      EOF
+
+.deploy:api-seed:
+  interruptible: true
+  image:
+    name: buildpack-deps:24.04-curl
+  before_script:
+    - /bin/bash -c "$(curl -sL https://git.io/vokNn)"
+    - apt-fast update -qy
+    - DEBIAN_FRONTEND=noninteractive apt-fast install -y rsync openssh-client gettext-base
+  script:
+    - touch $CI_PROJECT_DIR/infra/swarm/.env && cp $ENV $CI_PROJECT_DIR/infra/swarm/.env
+    - echo "export ENVIRONMENT=\"$ENVIRONMENT\"" > $CI_PROJECT_DIR/infra/swarm/variable.txt
+    - source $CI_PROJECT_DIR/infra/swarm/variable.txt
+    - echo "$SSH_PRIVATE_KEY_SWARM" > private_key.pem
+    - chmod 600 private_key.pem
+    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-staging-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-staging.yml
+    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-development-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-development.yml
+    - rsync -avz -e 'ssh -o StrictHostKeyChecking=no -i private_key.pem -o ProxyCommand="ssh -W %h:%p -i private_key.pem -o StrictHostKeyChecking=no $USERNAME_BASTION@$BASTION_HOST"' $CI_PROJECT_DIR/infra/swarm/ $USERNAME@$SERVER_ADDRESS:./{{ app_name }}
+
+    # Seeder script
+    - |
+      ssh -o StrictHostKeyChecking=no -i private_key.pem -o ProxyCommand="ssh -W %h:%p -i private_key.pem -o StrictHostKeyChecking=no $USERNAME_BASTION@$BASTION_HOST" $USERNAME@$SERVER_ADDRESS <<EOF
+      cd ~/{{ app_name }}
+      cp .env ~/{{ app_name }}-repo/apps/api
+      source ~/{{ app_name }}/variable.txt
+      if [ "$ENVIRONMENT" = "development" ]; then
+          echo "Inside development block"
+          export PATH="/home/ubuntu/.gvm/pkgsets/go1.24.5/global/bin:/home/ubuntu/.gvm/gos/go1.24.5/bin:/home/ubuntu/.gvm/pkgsets/go1.24.5/global/overlay/bin:/home/ubuntu/.gvm/bin:/home/ubuntu/.nvm/versions/node/v22.17.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/ubuntu/.moon/bin"
+          cd ~/{{ app_name }}-repo
+          git fetch origin
+          git stash
+          git checkout -q main
+          git pull origin main
+          pnpm install
+          echo "Running database seeders..."
+          moon api:seed || { echo "Seeder failed. Check for missing seeders."; exit 1; }
+      fi
+      if [ "$ENVIRONMENT" = "staging" ]; then
+          echo "Inside staging block"
+          export PATH="/home/ubuntu/.gvm/pkgsets/go1.24.5/global/bin:/home/ubuntu/.gvm/gos/go1.24.5/bin:/home/ubuntu/.gvm/pkgsets/go1.24.5/global/overlay/bin:/home/ubuntu/.gvm/bin:/home/ubuntu/.nvm/versions/node/v22.17.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/ubuntu/.moon/bin"
+          cd ~/{{ app_name }}-repo
+          git fetch origin
+          git stash
+          git checkout -q "$CI_COMMIT_REF_NAME"
+          pnpm install
+          echo "Running database seeders..."
+          moon api:seed || { echo "Seeder failed. Check for missing seeders."; exit 1; }
+      fi
+      if [ "$ENVIRONMENT" = "production" ]; then
+          echo "Inside prod block"
+          export PATH="/home/ubuntu/.gvm/pkgsets/go1.24.5/global/bin:/home/ubuntu/.gvm/gos/go1.24.5/bin:/home/ubuntu/.gvm/pkgsets/go1.24.5/global/overlay/bin:/home/ubuntu/.gvm/bin:/home/ubuntu/.nvm/versions/node/v22.17.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/ubuntu/.moon/bin"
+          cd ~/{{ app_name }}-repo
+          git fetch origin
+          git stash
+          git checkout -q "$CI_COMMIT_REF_NAME"
+          pnpm install
+          echo "Running database seeders..."
+          moon api:seed || { echo "Seeder failed. Check for missing seeders."; exit 1; }
+      fi
+      EOF
+
 .deploy:development-swarm:
   stage: deploy:development
   interruptible: true
@@ -54,6 +157,19 @@
     name: 'development'
     action: 'prepare'
   needs: ['build:development-docker']
+
+deploy:development-api-seed:
+  stage: deploy:development
+  extends:
+    - .deploy:api-seed
+    - .rules:development-api-seed
+  variables:
+    VERSION: $CI_COMMIT_SHORT_SHA
+    SERVER_ADDRESS: $SERVER
+    ENVIRONMENT: development
+  environment:
+    name: 'development'
+    action: 'prepare'
 
 .deploy:staging-swarm:
   stage: deploy:staging

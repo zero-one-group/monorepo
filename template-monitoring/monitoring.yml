@@ -17,6 +17,15 @@ services:
       - "3000:3000"
     volumes:
       - grafana_data:/var/lib/grafana
+    configs:
+      - source: grafana_datasources
+        target: /etc/grafana/provisioning/datasources/datasources.yml
+      - source: grafana_dashboard
+        target: /etc/grafana/provisioning/dashboards/dashboard.yml
+      - source: grafana_dashboard_vm
+        target: /etc/grafana/provisioning/dashboards/instance-dashboard.json
+      - source: grafana_dashboard_nginx
+        target: /etc/grafana/provisioning/dashboards/nginx-dashboard.json
     environment:
       - GF_SERVER_HTTP_ADDR=0.0.0.0
       - GF_SERVER_HTTP_PORT=3000
@@ -265,6 +274,14 @@ networks:
 configs:
   tempo_config:
     file: ./services/tempo/tempo.yml
+  grafana_datasources:
+    file: ./services/grafana/datasources/datasources.yml
+  grafana_dashboard:
+    file: ./services/grafana/dashboards/dashboard.yml
+  grafana_dashboard_vm:
+    file: ./services/grafana/dashboards/instance-dashboard.json
+  grafana_dashboard_nginx:
+    file: ./services/grafana/dashboards/nginx-dashboard.json
   loki_config:
     file: ./services/loki/loki-config.yml
   otelcol_config:

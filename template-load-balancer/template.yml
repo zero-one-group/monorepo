@@ -20,12 +20,6 @@ variables:
     prompt: 'Package name (identifier)?'
     required: true
 
-  nginx_monitoring_domain:
-    type: 'string'
-    default: 'CHANGEME_NGINX_DOMAIN'
-    prompt: 'Nginx monitoring domain (you can change it later)?'
-    required: false
-
   portainer_monitoring_domain:
     type: 'string'
     default: 'CHANGEME_PORTAINER_DOMAIN'
@@ -54,12 +48,6 @@ variables:
     type: 'string'
     default: 'CHANGEME_EMAIL_GENERATE_CERTBOT'
     prompt: 'Email for register in order to generate certbot (you can change it later)?'
-    required: false
-
-  nginx_monitoring_ssl:
-    type: 'string'
-    default: 'CHANGEME_NGINX_MONITORING_SSL'
-    prompt: 'Nginx monitoring ssl (you can change it later)?'
     required: false
 
   apps_ssl:
