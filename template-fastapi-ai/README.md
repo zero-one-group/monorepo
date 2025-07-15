@@ -14,22 +14,37 @@ Short brief description about the project.
 
 1. Create a new project using this template:
 
-```bash
-moon generate template-fastapi-ai
-```
+    ```bash
+    moon generate template-fastapi-ai
+    ```
 
 2. Set up environment variables:
 
-```bash
-cp .env.example .env
-# Edit .env with your configuration
-```
+    ```bash
+    cp .env.example .env
+    # Edit .env with your configuration
+    ```
 
 3. Install dependencies:
 
-```bash
-moon {{ package_name | kebab_case }}:sync
-```
+    ```bash
+    moon {{ package_name | kebab_case }}:sync
+    ```
+
+### Available Commands
+
+| Command                                                                | Description                                                            |
+|------------------------------------------------------------------------|------------------------------------------------------------------------|
+| `moon {{ package_name \| kebab_case }}:sync`                           | Synchronize project dependencies using uv package manager              |
+| `moon {{ package_name \| kebab_case }}:dev`                            | Start FastAPI development server with hot reload on port 8080          |
+| `moon {{ package_name \| kebab_case }}:start`                          | Launch FastAPI production server on port 8080                          |
+| `moon {{ package_name \| kebab_case }}:migrate`                        | Apply pending Alembic database migrations                              |
+| `moon {{ package_name \| kebab_case }}:migrate-create -- "name"`       | Create a new empty Alembic migration file with the specified name      |
+| `moon {{ package_name \| kebab_case }}:migrate-autogenerate -- "name"` | Generate an Alembic migration by detecting model changes automatically |
+| `moon {{ package_name \| kebab_case }}:migrate-down`                   | Rollback the most recent database migration                            |
+| `moon {{ package_name \| kebab_case }}:migrate-reset`                  | Reset database by rolling back all migrations (useful for clean slate) |
+| `moon {{ package_name \| kebab_case }}:seed`                           | Populate database with dummy data using the seeder script              |
+| `moon {{ package_name \| kebab_case }}:check-in-dance`                 | Complete setup: sync, migrate, and seed in sequence                    |
 
 ### Running the Application
 
@@ -55,6 +70,7 @@ moon {{ package_name | kebab_case }}:dev
 ```
 
 ## Development
+
 To get started with this template, we recommend the following:
 
 1. Walk through the “Greeting API” example
@@ -77,16 +93,18 @@ To get started with this template, we recommend the following:
 ## Production
 
 ### Instrumentation
+
 Tracing is enabled exclusively in the production environment. Set `APP_ENVIRONMENT` to `production` to activate tracing. Alternatively, you may customize the tracing rules in `app/core/trace.py`.
 
 For instructions on customizing span tracing, please refer to the example located at:
-- `apps/ai-app/app/repository/openai/greeting.py`
 
+- `apps/ai-app/app/repository/openai/greeting.py`
 
 ### Error Handling
 
 - We’ve set up a global exception handler in `app/main.py`. It catches every `AppError` raised anywhere in your code and turns it into a structured JSON error response with the correct HTTP status.
 - To trigger an error response, simply raise an `AppError` from `app/core/exceptions.py` at any layer (repository, service, or even directly in a route).
+
   ```python
   from app.core.exceptions import AppError
 
@@ -99,7 +117,9 @@ For instructions on customizing span tracing, please refer to the example locate
           data={"user_id": supplied_id}
       )
   ```
+
 - The global handler will produce a response like:
+
   ```json
   {
     "success": false,
@@ -108,12 +128,13 @@ For instructions on customizing span tracing, please refer to the example locate
     "data": { "user_id": 123 }
   }
   ```
+
 - No further wiring is needed—just raise `AppError` and FastAPI does the rest.
 
 ### Useful Links
+
 - [FastAPI Dependency Injection](https://fastapi.tiangolo.com/tutorial/dependencies/)
-    - TL;DR: Declare your dependencies as function parameters, and FastAPI will resolve and inject them for you automatically, no manual wiring required.
-    - For more details, see any dependency.py in your layers (e.g. app/repository/dependency.py).
+  - TL;DR: Declare your dependencies as function parameters, and FastAPI will resolve and inject them for you automatically, no manual wiring required.
+  - For more details, see any dependency.py in your layers (e.g. app/repository/dependency.py).
 - [FastAPI Deployment](https://fastapi.tiangolo.com/deployment/)
 - [FastAPI Handling Errors](https://fastapi.tiangolo.com/tutorial/handling-errors/#install-custom-exception-handlers)
-
