@@ -33,18 +33,18 @@ Short brief description about the project.
 
 ### Available Commands
 
-| Command                                                          | Description                                                            |
-|------------------------------------------------------------------|------------------------------------------------------------------------|
-| `moon {{ package_name \| kebab_case }}:sync`                     | Synchronize project dependencies using uv package manager              |
-| `moon {{ package_name \| kebab_case }}:dev`                      | Start FastAPI development server with hot reload on port 8080          |
-| `moon {{ package_name \| kebab_case }}:start`                    | Launch FastAPI production server on port 8080                          |
-| `moon {{ package_name \| kebab_case }}:migrate`                  | Apply pending Alembic database migrations                              |
-| `moon {{ package_name \| kebab_case }}:migrate-create -- "name"` | Create a new empty Alembic migration file with the specified name      |
-| `moon {{ package_name \| kebab_case }}:migrate-auto -- "name"`   | Generate an Alembic migration by detecting model changes automatically |
-| `moon {{ package_name \| kebab_case }}:migrate-down`             | Rollback the most recent database migration                            |
-| `moon {{ package_name \| kebab_case }}:migrate-reset`            | Reset database by rolling back all migrations (useful for clean slate) |
-| `moon {{ package_name \| kebab_case }}:seed`                     | Populate database with dummy data using the seeder script              |
-| `moon {{ package_name \| kebab_case }}:check-in-dance`           | Complete setup: sync, migrate, and seed in sequence                    |
+| Command                                                                | Description                                                            |
+|------------------------------------------------------------------------|------------------------------------------------------------------------|
+| `moon {{ package_name \| kebab_case }}:sync`                           | Synchronize project dependencies using uv package manager              |
+| `moon {{ package_name \| kebab_case }}:dev`                            | Start FastAPI development server with hot reload on port 8080          |
+| `moon {{ package_name \| kebab_case }}:start`                          | Launch FastAPI production server on port 8080                          |
+| `moon {{ package_name \| kebab_case }}:migrate`                        | Apply pending Alembic database migrations                              |
+| `moon {{ package_name \| kebab_case }}:migrate-create -- "name"`       | Create a new empty Alembic migration file with the specified name      |
+| `moon {{ package_name \| kebab_case }}:migrate-autogenerate -- "name"` | Generate an Alembic migration by detecting model changes automatically |
+| `moon {{ package_name \| kebab_case }}:migrate-down`                   | Rollback the most recent database migration                            |
+| `moon {{ package_name \| kebab_case }}:migrate-reset`                  | Reset database by rolling back all migrations (useful for clean slate) |
+| `moon {{ package_name \| kebab_case }}:seed`                           | Populate database with dummy data using the seeder script              |
+| `moon {{ package_name \| kebab_case }}:check-in-dance`                 | Complete setup: sync, migrate, and seed in sequence                    |
 
 ### Running the Application
 
