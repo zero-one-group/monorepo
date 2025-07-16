@@ -3,7 +3,6 @@
 set -e
 
 DOMAIN="{{ apps_domain }}"
-NGINX_MONITORING="{{ nginx_monitoring_domain }}"
 PORTAINER_DOMAIN="{{ portainer_monitoring_domain }}"
 GRAFANA_DOMAIN="{{ grafana_monitoring_domain }}"
 NGINX_UID="65532"
@@ -28,7 +27,7 @@ is_container_running() {
 }
 
 # Create directories
-mkdir -p {conf,ssl,logs,html,auth,webroot,naxsi}
+mkdir -p {conf,ssl,logs,html,webroot,naxsi}
 
 # Track if any changes were made
 CHANGES_MADE=false
@@ -87,31 +86,8 @@ else
     exit 1
 fi
 
-# Check if .htpasswd already exists
-if [ -f "./auth/.htpasswd" ]; then
-    echo "✅ Basic auth file already exists, skipping creation"
-else
-    echo "🔒 Setting up Basic Authentication for $DOMAIN"
-
-    # Check if htpasswd is installed
-    if ! command -v htpasswd &> /dev/null; then
-        echo "❌ htpasswd not found. Installing apache2-utils..."
-        sudo apt-get update && sudo apt-get install -y apache2-utils
-    fi
-
-    # Prompt for username and password
-    read -p "Enter username for basic auth: " auth_user
-    read -s -p "Enter password for basic auth: " auth_pass
-    echo ""
-
-    # Create htpasswd file
-    htpasswd -b -c ./auth/.htpasswd "$auth_user" "$auth_pass"
-    echo "✅ Basic auth credentials created"
-    CHANGES_MADE=true
-fi
-
 # Set ownership
-sudo chown -R $NGINX_UID:$NGINX_UID logs ssl webroot conf html auth naxsi 2>/dev/null || true
+sudo chown -R $NGINX_UID:$NGINX_UID logs ssl webroot conf html naxsi 2>/dev/null || true
 
 # SSL Setup
 echo "🔐 Checking SSL certificate..."
@@ -211,13 +187,11 @@ http_code=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost/" 2>/dev/nu
 https_apps=$(curl -s -k -o /dev/null -w "%{http_code}" -H "Host: apps-lgtm.zero-one.cloud" "https://localhost/" 2>/dev/null || echo "000")
 https_portainer=$(curl -s -k -o /dev/null -w "%{http_code}" -H "Host: portainer-lgtm.zero-one.cloud" "https://localhost/" 2>/dev/null || echo "000")
 https_grafana=$(curl -s -k -o /dev/null -w "%{http_code}" -H "Host: grafana-lgtm.zero-one.cloud" "https://localhost/" 2>/dev/null || echo "000")
-https_nginx=$(curl -s -k -o /dev/null -w "%{http_code}" -H "Host: nginx-lgtm.zero-one.cloud" "https://localhost/" 2>/dev/null || echo "000")
 
 echo "HTTP redirect: $http_code"
 echo "HTTPS apps: $https_apps"
 echo "HTTPS portainer: $https_portainer"
 echo "HTTPS grafana: $https_grafana"
-echo "HTTPS nginx: $https_nginx"
 
 echo ""
 if [ "$CHANGES_MADE" = true ]; then
@@ -228,7 +202,6 @@ fi
 echo "🐳 Main App: https://$DOMAIN"
 echo "🐳 Portainer: https://$PORTAINER_DOMAIN"
 echo "🌐 Grafana: https://$GRAFANA_DOMAIN"
-echo "🌐 Nginx: https://$NGINX_MONITORING"
 
 # Show container status
 echo ""

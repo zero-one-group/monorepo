@@ -49,3 +49,9 @@ variables:
     default: 'Monitoring using LGTV stack'
     prompt: 'Package description?'
     required: true
+
+  grafana_password:
+    type: 'string'
+    default: 'CHANGEME_GRAFANA_PASSWORD'
+    prompt: 'Grafana password (you can change it later)?'
+    required: false

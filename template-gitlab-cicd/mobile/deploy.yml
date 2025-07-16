@@ -1,23 +1,23 @@
 .deploy:mobile:upload-to-slack:
-  image: prihuda22/flutter-android:3.27.4
+  image: prihuda22/flutter-android:3.32.6-2
   script:
     - export JOB_START="$( echo $CI_JOB_STARTED_AT | awk -F "[T:+-]" '{print $3"-"$2"-"$1" "$4":"$5":"$6" WIB"}' )"
     - export PIPELINE_START="$( echo $CI_PIPELINE_CREATED_AT | awk -F "[T:+-]" '{print $3"-"$2"-"$1" "$4":"$5":"$6" WIB"}' )"
+    - bash <(curl -fsSL https://moonrepo.dev/install/moon.sh)
+    - export PATH="$HOME/.moon/bin:$PATH"
+    - mkdir -p $CI_PROJECT_DIR/envs $CI_PROJECT_DIR/apps/mobile/envs
+    - cp $ENV_MOBILE $CI_PROJECT_DIR/envs/env.${FLAVOR}.json
+    - cp $ENV_MOBILE $CI_PROJECT_DIR/apps/mobile/envs/env.${FLAVOR}.json
+    - moon mobile:final_build-apk-${FLAVOR}
     - |
-      if [ "$FLAVOR" = "staging" ] || [ "$FLAVOR" = "prod" ]; then
-        input_string=${CI_COMMIT_TAG}; [[ $input_string =~ ^([0-9]+\.[0-9]+\.[0-9]+).* ]]; version=${BASH_REMATCH[1]}
-        export APP_NAME=$CI_PROJECT_NAME-$CI_ENVIRONMENT_NAME-$version
-      else
-        export APP_NAME=$CI_PROJECT_NAME-$CI_ENVIRONMENT_NAME-$CI_COMMIT_SHORT_SHA
-      fi
-    - |
-      if [ "$FLAVOR" = "staging" ] || [ "$FLAVOR" = "prod" ]; then
-        input_string=${CI_COMMIT_TAG}; [[ $input_string =~ ^([0-9]+\.[0-9]+\.[0-9]+).* ]]; version=${BASH_REMATCH[1]}
-        flutter build apk --release --flavor ${FLAVOR} --dart-define-from-file=configs/config_${FLAVOR}.json --build-name=$version
-      else
-        flutter build apk --release --flavor ${FLAVOR} --dart-define-from-file=configs/config_${FLAVOR}.json
-      fi
-    - mv build/app/outputs/flutter-apk/app-${FLAVOR}-release.apk ./$APP_NAME.apk
+        # Find and move the generated APK
+        SOURCE_FILE=$(find $CI_PROJECT_DIR/generate_app/ -name "*.apk" -type f | head -n1)
+        if [ -n "$SOURCE_FILE" ]; then
+          echo "Found APK: $(basename "$SOURCE_FILE")"
+        else
+          echo "Error: No APK file found in generate_app directory"
+          exit 1
+        fi
     - |
       export SLACK_MSG="\
       Hello Everyone :wave:!
@@ -27,7 +27,7 @@
       Here are the details about the build:
         • *Project*: {{ mobile_app_name }} Mobile
         • *Environment*: $CI_ENVIRONMENT_NAME
-        • *APK Name*: $APP_NAME
+        • *APK Name*: $(basename "$SOURCE_FILE")
         • *Latest Commit*: <$CI_PROJECT_URL/-/commit/$CI_COMMIT_SHA|$CI_COMMIT_SHORT_SHA>
         • *Pipeline*: <$CI_PIPELINE_URL|$CI_PIPELINE_ID>
         • *Pipeline Start*: $PIPELINE_START
@@ -36,24 +36,58 @@
 
       Enjoy :tada:!"
     - |
-      curl -F "title=${APP_NAME}" \
-         -F "file=@${APP_NAME}.apk" \
-         -F "token=${SLACK_TOKEN}" \
-         -F "initial_comment=${SLACK_MSG}" \
-         -F "channels=${SLACK_CHANNEL}" \
-         -H "Authorization: Bearer " \
-         https://slack.com/api/files.upload
+        FILE_SIZE=$(stat -c%s "${SOURCE_FILE}")
+        FILENAME=$(basename "${SOURCE_FILE}")
+
+        UPLOAD_RESPONSE=$(curl -s -X POST "https://slack.com/api/files.getUploadURLExternal" \
+          -H "Authorization: Bearer ${SLACK_TOKEN}" \
+          -F "filename=${FILENAME}" \
+          -F "length=${FILE_SIZE}")
+
+        STEP1_OK=$(echo "$UPLOAD_RESPONSE" | jq -r '.ok')
+        if [ "$STEP1_OK" != "true" ]; then
+          echo "❌ Failed to get upload URL"
+          echo "$UPLOAD_RESPONSE" | jq -r '.error'
+          exit 1
+        fi
+
+        UPLOAD_URL=$(echo "$UPLOAD_RESPONSE" | jq -r '.upload_url')
+        FILE_ID=$(echo "$UPLOAD_RESPONSE" | jq -r '.file_id')
+
+        curl -s -X POST "$UPLOAD_URL" -F "file=@${SOURCE_FILE}" > /dev/null
+        if [ $? -ne 0 ]; then
+          echo "❌ File upload failed"
+          exit 1
+        fi
+
+        COMPLETE_RESPONSE=$(curl -s -X POST "https://slack.com/api/files.completeUploadExternal" \
+          -H "Authorization: Bearer ${SLACK_TOKEN}" \
+          -F "files=[{\"id\":\"${FILE_ID}\",\"title\":\"${FILENAME}\"}]" \
+          -F "channel_id=${SLACK_CHANNEL}" \
+          -F "initial_comment=${SLACK_MSG}")
+
+        SUCCESS=$(echo "$COMPLETE_RESPONSE" | jq -r '.ok')
+        if [ "$SUCCESS" = "true" ]; then
+          echo "✅ File uploaded to Slack"
+        else
+          echo "❌ Upload failed: $(echo "$COMPLETE_RESPONSE" | jq -r '.error')"
+          exit 1
+        fi
+
   when: manual
   allow_failure: false
 
 deploy:development:mobile:upload-to-slack:
   extends:
-    - .rules:development
+    - .rules:development-mobile
     - .base_mobile
     - .deploy:mobile:upload-to-slack
-  stage: deploy:development-mobile
+  stage: deploy:development
   variables:
     FLAVOR: 'dev'
+  environment:
+    name: 'development'
+    action: 'prepare'
 
 deploy:staging:mobile:upload-to-slack:
   extends:
@@ -65,16 +99,4 @@ deploy:staging:mobile:upload-to-slack:
     name: 'staging'
     action: 'prepare'
   variables:
-    FLAVOR: 'staging'
-
-deploy:production:mobile:upload-to-slack:
-  extends:
-    - .rules:mobile-production
-    - .base_mobile
-    - .deploy:mobile:upload-to-slack
-  stage: deploy:production
-  environment:
-    name: 'production'
-    action: 'prepare'
-  variables:
-    FLAVOR: 'prod'
+    FLAVOR: 'stag'

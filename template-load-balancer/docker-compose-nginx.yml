@@ -1,6 +1,6 @@
 services:
   nginx:
-    image: prihuda22/nginx:1.29.0-geoip-naxsi
+    image: prihuda22/nginx:1.29.0-geoip-naxsi-150725
     container_name: nginx-unprivileged-optimized
     restart: unless-stopped
 
