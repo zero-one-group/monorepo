@@ -8,11 +8,11 @@ import (
 	"os"
 	"os/signal"
 	"time"
+	"go-app/internal/metrics"
 
 	"go-app/config"
 	"go-app/database"
 	"go-app/domain"
-	"go-app/internal/metrics"
 	"go-app/internal/repository/postgres"
 	"go-app/internal/rest"
 	"go-app/internal/rest/middleware"
@@ -75,13 +75,19 @@ func main() {
 			Message: "All is well!",
 		})
 	})
+
 	userRepo := postgres.NewUserRepository(dbPool, appMetrics)
 	userService := service.NewUserService(userRepo)
 
+	authRepo := postgres.NewAuthRepository(dbPool)
+	authSevice := service.NewAuthService(authRepo)
+
 	apiV1 := e.Group("/api/v1")
-	usersGroup := apiV1.Group("")
+	usersGroup := apiV1.Group("/users")
+	authGroup := apiV1.Group("/auth")
 
 	rest.NewUserHandler(usersGroup, userService)
+	rest.NewAuthHandler(authGroup, authSevice)
 
 	// Get host from environment variable, default to 127.0.0.1 if not set
 	host := os.Getenv("APP_HOST")

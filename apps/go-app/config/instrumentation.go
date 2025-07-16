@@ -3,11 +3,11 @@ package config
 import (
 	"context"
 	"fmt"
-	"go-app/internal/metrics"
-	"go-app/internal/rest/middleware"
 	"os"
 	"strconv"
 	"time"
+	"go-app/internal/metrics"
+	"go-app/internal/rest/middleware"
 
 	"github.com/labstack/echo-contrib/echoprometheus"
 	"github.com/labstack/echo/v4"
@@ -157,4 +157,3 @@ func initTracer(
 
 	return tp, shutdown, nil
 }
-
