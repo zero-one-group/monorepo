@@ -99,7 +99,7 @@ export default defineCommand({
         if (isCancel(appName)) { cancel('Operation cancelled.'); process.exit(0) }
 
         const appDirName = appName.toLowerCase().replace(/ /g, '-');
-        const appDir = join(process.cwd(), 'apps', appDirName);
+        const appDir = join(process.cwd(), 'apps', `mobile-${appDirName}`);
         if (!existsSync(appDir)) {
           mkdirSync(appDir, { recursive: true })
           _console.info(`Created folder: ${appDir}`)
