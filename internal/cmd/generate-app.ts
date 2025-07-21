@@ -89,7 +89,17 @@ export default defineCommand({
       })
 
       if (appType === 'mobile') {
-        const appDir = join(process.cwd(), 'apps', 'mobile')
+       
+
+        const appName = await text({
+          message: 'What is the app\'s name?',
+          placeholder: 'default : ZOG Mobile Starter',
+          defaultValue: 'ZOG Mobile Starter',
+        })
+        if (isCancel(appName)) { cancel('Operation cancelled.'); process.exit(0) }
+
+        const appDirName = appName.toLowerCase().replace(/ /g, '-');
+        const appDir = join(process.cwd(), 'apps', appDirName);
         if (!existsSync(appDir)) {
           mkdirSync(appDir, { recursive: true })
           _console.info(`Created folder: ${appDir}`)
@@ -105,13 +115,6 @@ export default defineCommand({
           cancel('Operation cancelled.')
           process.exit(0)
         }
-
-        const appName = await text({
-          message: 'What is the app\'s name?',
-          placeholder: 'default : ZOG Mobile Starter',
-          defaultValue: 'ZOG Mobile Starter',
-        })
-        if (isCancel(appName)) { cancel('Operation cancelled.'); process.exit(0) }
 
         const packageName = await text({
           message: 'What is the app\'s package name?',
