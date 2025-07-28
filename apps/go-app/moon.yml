@@ -38,7 +38,12 @@ tasks:
 
   test:
     command: "go test ./... -count=1"
-    deps: [tidy]
+    deps: ["tidy", "generate-mock"]
+    options:
+      cache: false
+
+  generate-mock:
+    command: "mockery"
     options:
       cache: false
 
@@ -91,3 +96,10 @@ tasks:
 
   seed:
     command: "go run ./cmd/ seed"
+
+  install-mockery:
+    command: "../../.moon/scripts/install_mockery.sh v3.5.1"
+    options:
+      shell: true
+      runInCI: false
+      cache: false
