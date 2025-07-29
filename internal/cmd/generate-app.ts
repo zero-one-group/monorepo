@@ -84,11 +84,11 @@ export default defineCommand({
           { value: 'react-ssr', label: 'React SSR' },
           { value: 'shared-ui', label: 'Shared UI' },
           { value: 'strapi', label: 'Strapi' },
-          { value: 'mobile', label: 'Mobile' },
+          { value: 'flutter', label: 'Flutter' },
         ],
       })
 
-      if (appType === 'mobile') {
+      if (appType === 'flutter') {
        
 
         const appName = await text({
@@ -99,7 +99,7 @@ export default defineCommand({
         if (isCancel(appName)) { cancel('Operation cancelled.'); process.exit(0) }
 
         const appDirName = appName.toLowerCase().replace(/ /g, '-');
-        const appDir = join(process.cwd(), 'apps', `mobile-${appDirName}`);
+        const appDir = join(process.cwd(), 'apps', `flutter-${appDirName}`);
         if (!existsSync(appDir)) {
           mkdirSync(appDir, { recursive: true })
           _console.info(`Created folder: ${appDir}`)
@@ -108,7 +108,7 @@ export default defineCommand({
         }
 
         const confirmAction = await confirm({
-          message: `Do you want to generate the mobile app in "${appDir}"?`,
+          message: `Do you want to generate the mobile flutter app in "${appDir}"?`,
           initialValue: true,
         })
         if (isCancel(confirmAction) || !confirmAction) {
@@ -216,8 +216,8 @@ export default defineCommand({
           },
         ])
 
-        s.stop('Mobile app generated!')
-        outro(`You're all set! Your new mobile app is ready in "apps/mobile"! 🚀`)
+        s.stop('Mobile Flutter app generated!')
+        outro(`You're all set! Your new mobile flutter app is ready in "${appDir}"! 🚀`)
         return
       }
 
