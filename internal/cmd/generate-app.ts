@@ -1,5 +1,5 @@
 import { execSync } from 'node:child_process'
-import { existsSync } from 'node:fs'
+import { existsSync, mkdirSync, unlinkSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { intro, outro, spinner, tasks } from '@clack/prompts'
 import { cancel, confirm, isCancel, select, text } from '@clack/prompts'
@@ -84,8 +84,142 @@ export default defineCommand({
           { value: 'react-ssr', label: 'React SSR' },
           { value: 'shared-ui', label: 'Shared UI' },
           { value: 'strapi', label: 'Strapi' },
+          { value: 'flutter', label: 'Flutter' },
         ],
       })
+
+      if (appType === 'flutter') {
+       
+
+        const appName = await text({
+          message: 'What is the app\'s name?',
+          placeholder: 'default : ZOG Mobile Starter',
+          defaultValue: 'ZOG Mobile Starter',
+        })
+        if (isCancel(appName)) { cancel('Operation cancelled.'); process.exit(0) }
+
+        const appDirName = appName.toLowerCase().replace(/ /g, '-');
+        const appDir = join(process.cwd(), 'apps', `flutter-${appDirName}`);
+        if (!existsSync(appDir)) {
+          mkdirSync(appDir, { recursive: true })
+          _console.info(`Created folder: ${appDir}`)
+        } else {
+          _console.info(`Folder already exists: ${appDir}`)
+        }
+
+        const confirmAction = await confirm({
+          message: `Do you want to generate the mobile flutter app in "${appDir}"?`,
+          initialValue: true,
+        })
+        if (isCancel(confirmAction) || !confirmAction) {
+          cancel('Operation cancelled.')
+          process.exit(0)
+        }
+
+        const packageName = await text({
+          message: 'What is the app\'s package name?',
+          placeholder: 'default : zog_starter',
+          defaultValue: 'zog_starter',
+        })
+        if (isCancel(packageName)) { cancel('Operation cancelled.'); process.exit(0) }
+
+        const devFirebaseProjectId = await text({
+          message: 'What is the development app\'s Firebase project ID?',
+          placeholder: 'default : zog-starter-dev',
+          defaultValue: 'zog-starter-dev',
+        })
+        if (isCancel(devFirebaseProjectId)) { cancel('Operation cancelled.'); process.exit(0) }
+
+        const stgFirebaseProjectId = await text({
+          message: 'What is the staging app\'s Firebase project ID?',
+          placeholder: 'default : zog-starter-stg',
+          defaultValue: 'zog-starter-stg',
+        })
+        if (isCancel(stgFirebaseProjectId)) { cancel('Operation cancelled.'); process.exit(0) }
+
+        const prodFirebaseProjectId = await text({
+          message: 'What is the production app\'s Firebase project ID?',
+          placeholder: 'default : zog-starter-prod',
+          defaultValue: 'zog-starter-prod',
+        })
+        if (isCancel(prodFirebaseProjectId)) { cancel('Operation cancelled.'); process.exit(0) }
+
+        const androidAppId = await text({
+          message: 'What is the Android App ID?',
+          placeholder: 'default : com.zog.mobile',
+          defaultValue: 'com.zog.mobile',
+        })
+        if (isCancel(androidAppId)) { cancel('Operation cancelled.'); process.exit(0) }
+
+        const iosBundleId = await text({
+          message: 'What is the iOS Bundle ID?',
+          placeholder: 'default : com.zog.mobile',
+          defaultValue: 'com.zog.mobile',
+        })
+        if (isCancel(iosBundleId)) { cancel('Operation cancelled.'); process.exit(0) }
+
+        const s = spinner()
+        s.start('Running mason commands...')
+
+        await tasks([
+          {
+            title: 'Initialize mason',
+            task: async () => {
+              const masonYaml = join(appDir, 'mason.yaml')
+              if (existsSync(masonYaml)) {
+                unlinkSync(masonYaml)
+              }
+              execSync('mason init', { cwd: appDir, stdio: 'inherit' })
+            },
+          },
+          {
+            title: 'Add app_scaffolding brick',
+            task: async () => {
+              execSync(
+                'mason add app_scaffolding --git-url https://github.com/zero-one-group/zog-mobile-bricks.git --git-path app_scaffolding',
+                { cwd: appDir, stdio: 'inherit' }
+              )
+            },
+          },
+          {
+            title: 'Run mason get',
+            task: async () => {
+              execSync('mason get', { cwd: appDir, stdio: 'inherit' })
+            },
+          },
+          {
+            title: 'Run mason make app_scaffolding',
+            task: async () => {
+              const config = {
+                appName,
+                packageName,
+                devFirebaseProjectId,
+                stgFirebaseProjectId,
+                prodFirebaseProjectId,
+                androidAppId,
+                iosBundleId,
+              }
+              const configPath = join(appDir, 'config.json')
+              writeFileSync(configPath, JSON.stringify(config, null, 2))
+
+              try {
+                execSync(
+                  `mason make app_scaffolding --on-conflict overwrite --config-path config.json`,
+                  { cwd: appDir, stdio: 'inherit' }
+                )
+              } finally {
+                if (existsSync(configPath)) {
+                  unlinkSync(configPath)
+                }
+              }
+            },
+          },
+        ])
+
+        s.stop('Mobile Flutter app generated!')
+        outro(`You're all set! Your new mobile flutter app is ready in "${appDir}"! 🚀`)
+        return
+      }
 
       if (isCancel(appType)) {
         cancel('Operation cancelled.')
