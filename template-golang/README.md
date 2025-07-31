@@ -86,9 +86,26 @@ moon run seed -- {table_name}
 ```
 #### Running Tests
 
+##### 1. Install mockery (v3.5.1)
+
+We use [mockery](https://github.com/vektra/mockery) to generate interface mocks. Make sure you have exactly v3.5.1:
+
+Option A – via moon command: `moon {{ package_name | kebab_case }}:install-mockery`
+Option B – via GitHub binary
+
+Verify you have the right version:
+```bash
+mockery --version
+# ⇒ mockery version 3.5.1
+```
+
+##### 2. Run the test suite
+
 ```bash
 moon run {{ package_name | kebab_case }}:test
 ```
+
+NOTE: Everytime test run, it will automatically generate mock
 
 ## Production
 
