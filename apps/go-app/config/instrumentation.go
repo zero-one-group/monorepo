@@ -82,32 +82,33 @@ func initMetrics(e *echo.Echo, appMetrics *metrics.Metrics) error {
 // initTracer initializes an OTel tracer provider. In non-production
 // environments, it uses a no-op provider. It returns a shutdown function
 // and an error.
-func initTracer(
-	ctx context.Context,
-) (*sdktrace.TracerProvider, func(context.Context) error, error) {
+func initTracer(ctx context.Context) (*sdktrace.TracerProvider, func(context.Context) error, error) {
 	env := os.Getenv("APP_ENVIRONMENT")
-
-	// In non-prod, install a NeverSample provider so no spans are exported.
-	if env != "production" {
-		tp := sdktrace.NewTracerProvider(
-			sdktrace.WithSampler(sdktrace.NeverSample()),
-		)
-		otel.SetTracerProvider(tp)
-		otel.SetTextMapPropagator(
-			propagation.NewCompositeTextMapPropagator(
-				propagation.TraceContext{},
-				propagation.Baggage{},
-			),
-		)
-		// Return a no-op shutdown function
-		return tp, func(context.Context) error { return nil }, nil
-	}
-
-	// In production, configure a real OTLP/gRPC exporter.
 	serviceName := os.Getenv("SERVICE_NAME")
 	endpoint := os.Getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
 	if endpoint == "" {
 		endpoint = "localhost:4317"
+	}
+
+	var sampler sdktrace.Sampler
+	if env != "production" {
+		// dev/staging: always sample
+		sampler = sdktrace.AlwaysSample()
+		fmt.Println("Tracing sampler: AlwaysSample (non-prod)")
+	} else {
+		// production: probabilistic sampling
+		rate := 0.7 // Default: 70%
+		if s := os.Getenv("TRACING_SAMPLE_RATE"); s != "" {
+			if f, err := strconv.ParseFloat(s, 64); err == nil && f >= 0 && f <= 1 {
+				rate = f
+			} else {
+				fmt.Printf("WARN: invalid TRACING_SAMPLE_RATE='%s', using %0.2f\n", s, rate)
+			}
+		}
+
+		// use ParentBased so child spans follow the root decision
+		sampler = sdktrace.ParentBased(sdktrace.TraceIDRatioBased(rate))
+		fmt.Printf("Tracing sampler: ParentBased(TraceIDRatioBased(%0.2f)) (prod)\n", rate)
 	}
 
 	exporter, err := otlptrace.New(
@@ -137,11 +138,10 @@ func initTracer(
 	}
 
 	tp := sdktrace.NewTracerProvider(
-		sdktrace.WithSampler(sdktrace.AlwaysSample()),
+		sdktrace.WithSampler(sampler),
 		sdktrace.WithBatcher(exporter),
 		sdktrace.WithResource(res),
 	)
-
 	otel.SetTracerProvider(tp)
 	otel.SetTextMapPropagator(
 		propagation.NewCompositeTextMapPropagator(
@@ -157,4 +157,3 @@ func initTracer(
 
 	return tp, shutdown, nil
 }
-
