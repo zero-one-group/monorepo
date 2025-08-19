@@ -60,7 +60,7 @@ func main() {
 	defer stop()
 
 	appMetrics := metrics.NewMetrics()
-	shutdown, err := config.ApplyInstrumentation(ctx, e, appMetrics)
+	shutdown, err := config.ApplyObservability(ctx, e, appMetrics)
 	defer shutdown(ctx)
 
 	e.Use(middleware.SlogLoggerMiddleware())
