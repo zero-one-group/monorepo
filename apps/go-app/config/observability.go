@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo-contrib/echoprometheus"
+	"github.com/labstack/echo-contrib/pprof"
 	"github.com/labstack/echo/v4"
 	"github.com/prometheus/client_golang/prometheus"
 	"go.opentelemetry.io/otel"
@@ -21,10 +22,38 @@ import (
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
+func ApplyObservability(
+	ctx context.Context,
+	e *echo.Echo,
+	appMetrics *metrics.Metrics,
+) (func(context.Context) error, error) {
+	// 1. Profiling (only outside production and when explicitly enabled)
+	applyProfiling(e)
+
+	// 2. Instrumentation (metrics + tracing)
+	return applyInstrumentation(ctx, e, appMetrics)
+}
+
+// ApplyProfiling registers the standard pprof handlers on the Echo router.
+// Call it only when ENABLE_PPROF=true.
+func applyProfiling(e *echo.Echo) {
+	enabled, _ := strconv.ParseBool(os.Getenv("ENABLE_PPROF"))
+	if !enabled {
+		return
+	}
+	if os.Getenv("APP_ENVIRONMENT") == "production" {
+		fmt.Println("pprof disabled in production")
+		return
+	}
+
+	pprof.Register(e)
+	fmt.Println("pprof handlers mounted on /debug/pprof")
+}
+
 // ApplyInstrumentation configures Prometheus metrics and OpenTelemetry tracing
 // for the Echo instance. It returns a shutdown function for the tracer provider
 // and an error if the setup fails.
-func ApplyInstrumentation(
+func applyInstrumentation(
 	ctx context.Context,
 	e *echo.Echo,
 	appMetrics *metrics.Metrics,
