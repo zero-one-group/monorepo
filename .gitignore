@@ -114,3 +114,7 @@ terraform.tfvars*
 __pycache__/
 
 # Specific directories for individual projects
+
+# Personal Note
+AUDIT.md
+TODO.md

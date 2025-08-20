@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"fmt"
+	"log/slog"
 	"{{ package_name }}/domain"
 
 	"github.com/google/uuid"
@@ -106,7 +106,7 @@ func (us *UserService) DeleteUser(
 func (us *UserService) GetUserList(ctx context.Context, filter *domain.UserFilter) ([]domain.User, error) {
 	users, err := us.userRepo.GetUserList(ctx, filter)
 	if err != nil {
-		fmt.Println(err)
+		slog.Error("Failed to get user list", slog.String("error", err.Error()))
 		return nil, err
 	}
 
