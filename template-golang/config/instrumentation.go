@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"os"
 	"strconv"
 	"time"
@@ -33,15 +34,18 @@ func ApplyInstrumentation(
 	enableInstrumentation, err := strconv.ParseBool(enableInstrumentationStr)
 	if err != nil {
 		enableInstrumentation = false
-		fmt.Printf("Warning: ENABLE_INSTRUMENTATION environment variable '%s' could not be parsed as boolean. Defaulting to false. Error: %v\n", enableInstrumentationStr, err)
+		slog.Warn("Invalid ENABLE_INSTRUMENTATION environment variable, defaulting to false",
+			slog.String("value", enableInstrumentationStr),
+			slog.String("error", err.Error()),
+		)
 	}
 
 	if !enableInstrumentation {
-		fmt.Println("Instrumentation is disabled by ENABLE_INSTRUMENTATION environment variable.")
+		slog.Info("Instrumentation is disabled by ENABLE_INSTRUMENTATION environment variable")
 		return func(context.Context) error { return nil }, nil
 	}
 
-	fmt.Println("Instrumentation is enabled.")
+	slog.Info("Instrumentation is enabled")
 
 	// Apply Prometheus middleware and metrics endpoint.
 	err = initMetrics(e, appMetrics)
@@ -75,7 +79,7 @@ func initMetrics(e *echo.Echo, appMetrics *metrics.Metrics) error {
 	// 	return fmt.Errorf("failed to register OtherMetric: %w", err)
 	// }
 
-	fmt.Println("Prometheus metrics initialized and registered.")
+	slog.Info("Prometheus metrics initialized and registered")
 	return nil
 }
 
@@ -94,7 +98,7 @@ func initTracer(ctx context.Context) (*sdktrace.TracerProvider, func(context.Con
 	if env != "production" {
 		// dev/staging: always sample
 		sampler = sdktrace.AlwaysSample()
-		fmt.Println("Tracing sampler: AlwaysSample (non-prod)")
+		slog.Info("Tracing sampler configured", slog.String("type", "AlwaysSample (non-prod)"))
 	} else {
 		// production: probabilistic sampling
 		rate := 0.7 // Default: 70%
@@ -102,13 +106,19 @@ func initTracer(ctx context.Context) (*sdktrace.TracerProvider, func(context.Con
 			if f, err := strconv.ParseFloat(s, 64); err == nil && f >= 0 && f <= 1 {
 				rate = f
 			} else {
-				fmt.Printf("WARN: invalid TRACING_SAMPLE_RATE='%s', using %0.2f\n", s, rate)
+				slog.Warn("Invalid TRACING_SAMPLE_RATE, using default",
+				slog.String("invalid_value", s),
+				slog.Float64("default_rate", rate),
+			)
 			}
 		}
 
 		// use ParentBased so child spans follow the root decision
 		sampler = sdktrace.ParentBased(sdktrace.TraceIDRatioBased(rate))
-		fmt.Printf("Tracing sampler: ParentBased(TraceIDRatioBased(%0.2f)) (prod)\n", rate)
+		slog.Info("Tracing sampler configured",
+			slog.String("type", "ParentBased(TraceIDRatioBased) (prod)"),
+			slog.Float64("sample_rate", rate),
+		)
 	}
 
 	exporter, err := otlptrace.New(
@@ -151,7 +161,7 @@ func initTracer(ctx context.Context) (*sdktrace.TracerProvider, func(context.Con
 	)
 
 	shutdown := func(ctx context.Context) error {
-		fmt.Println("Shutting down OpenTelemetry tracer provider...")
+		slog.Info("Shutting down OpenTelemetry tracer provider")
 		return tp.Shutdown(ctx)
 	}
 

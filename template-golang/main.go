@@ -12,6 +12,7 @@ import (
 	"{{ package_name }}/config"
 	"{{ package_name }}/database"
 	"{{ package_name }}/domain"
+	"{{ package_name }}/internal/metrics"
 	"{{ package_name }}/internal/repository/postgres"
 	"{{ package_name }}/internal/rest"
 	"{{ package_name }}/internal/rest/middleware"
@@ -63,8 +64,12 @@ func main() {
 	shutdown, err := config.ApplyInstrumentation(ctx, e, appMetrics)
 	defer shutdown(ctx)
 
+	e.Use(middleware.RequestIDMiddleware())
 	e.Use(middleware.SlogLoggerMiddleware())
 	e.Use(middleware.Cors())
+	
+	// Set custom error handler
+	e.HTTPErrorHandler = middleware.ErrorHandler()
 
 	// Register the routes
 	e.GET("/", func(c echo.Context) error {

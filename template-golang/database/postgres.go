@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log/slog"
 	"os"
 
 	"github.com/exaring/otelpgx"
@@ -36,7 +37,7 @@ func SetupPgxPool() (*pgxpool.Pool, error) {
 		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
 
-	fmt.Println("Connected to DB Postgresql...")
+	slog.Info("Successfully connected to PostgreSQL database")
 
 	return dbPool, nil
 }
@@ -56,6 +57,6 @@ func SetupSQLDatabase() (*sql.DB, error) {
 		return nil, fmt.Errorf("sql ping error: %w", err)
 	}
 
-	fmt.Println("Connected to DB via *sql.DB...")
+	slog.Info("Successfully connected to database via *sql.DB")
 	return db, nil
 }

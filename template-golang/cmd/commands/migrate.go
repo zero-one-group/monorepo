@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log/slog"
 
 	"github.com/pressly/goose/v3"
 )
@@ -31,8 +32,9 @@ func runMigration(db *sql.DB, dir string, args []string) error {
 		err = goose.Down(db, dir)
 	case "reset":
 		err = goose.Reset(db, dir)
-    case "version":
-        version := goose.Version(db, dir)
+	case "version":
+		version := goose.Version(db, dir)
+		slog.Info("Current migration version", slog.Int64("version", version))
 		fmt.Printf("Current migration version: %d\n", version)
 	default:
 		err = errors.New(mode + " is not Migrate function")
