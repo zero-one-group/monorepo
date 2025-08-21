@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"go-app/internal/metrics"
 	"go-app/internal/rest/middleware"
+	"log/slog"
 	"os"
 	"strconv"
 	"time"
@@ -37,11 +38,11 @@ func ApplyInstrumentation(
 	}
 
 	if !enableInstrumentation {
-		fmt.Println("Instrumentation is disabled by ENABLE_INSTRUMENTATION environment variable.")
+		slog.Info("Instrumentation is disabled by ENABLE_INSTRUMENTATION environment variable")
 		return func(context.Context) error { return nil }, nil
 	}
 
-	fmt.Println("Instrumentation is enabled.")
+	slog.Info("Instrumentation is enabled")
 
 	// Apply Prometheus middleware and metrics endpoint.
 	err = initMetrics(e, appMetrics)
@@ -75,7 +76,7 @@ func initMetrics(e *echo.Echo, appMetrics *metrics.Metrics) error {
 	// 	return fmt.Errorf("failed to register OtherMetric: %w", err)
 	// }
 
-	fmt.Println("Prometheus metrics initialized and registered.")
+	slog.Info("Prometheus metrics initialized and registered")
 	return nil
 }
 
@@ -94,7 +95,7 @@ func initTracer(ctx context.Context) (*sdktrace.TracerProvider, func(context.Con
 	if env != "production" {
 		// dev/staging: always sample
 		sampler = sdktrace.AlwaysSample()
-		fmt.Println("Tracing sampler: AlwaysSample (non-prod)")
+		slog.Info("Tracing sampler: AlwaysSample (non-prod)")
 	} else {
 		// production: probabilistic sampling
 		rate := 0.7 // Default: 70%
@@ -151,7 +152,7 @@ func initTracer(ctx context.Context) (*sdktrace.TracerProvider, func(context.Con
 	)
 
 	shutdown := func(ctx context.Context) error {
-		fmt.Println("Shutting down OpenTelemetry tracer provider...")
+		slog.Info("Shutting down OpenTelemetry tracer provider")
 		return tp.Shutdown(ctx)
 	}
 

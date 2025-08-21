@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"go-app/domain"
+	"log/slog"
 
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel"
@@ -106,7 +106,7 @@ func (us *UserService) DeleteUser(
 func (us *UserService) GetUserList(ctx context.Context, filter *domain.UserFilter) ([]domain.User, error) {
 	users, err := us.userRepo.GetUserList(ctx, filter)
 	if err != nil {
-		fmt.Println(err)
+		slog.Error("Failed to get user list", slog.String("error", err.Error()))
 		return nil, err
 	}
 
