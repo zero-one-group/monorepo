@@ -1,10 +1,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"go-app/cmd/commands"
 	"go-app/config"
-	"log/slog"
+	"go-app/internal/logging"
 	"os"
 )
 
@@ -14,7 +15,7 @@ func init() {
 
 func main() {
 	if len(os.Args) < 2 {
-		slog.Error("Expected a command")
+		logging.LogErrorMessage(context.Background(), "Expected a command")
 		os.Exit(1)
 	}
 

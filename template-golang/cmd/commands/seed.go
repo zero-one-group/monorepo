@@ -1,15 +1,18 @@
 package commands
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"fmt"
 	"log/slog"
+	"{{package_name}}/internal/logging"
 	"{{package_name}}/seeders"
 )
 
 func runSeeder(db *sql.DB, target string) error {
-	slog.Info("Seeding target", "target", target)
+	ctx := context.Background()
+	logging.LogInfo(ctx, "Seeding target", slog.String("target", target))
 
 	switch target {
 	case "all":
