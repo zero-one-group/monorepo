@@ -4,8 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log/slog"
 	"os"
+
+	"go-app/internal/logging"
 
 	"github.com/exaring/otelpgx"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -33,11 +34,12 @@ func SetupPgxPool() (*pgxpool.Pool, error) {
 		return nil, fmt.Errorf("unable to record database stats: %w", err)
 	}
 
-	if err := dbPool.Ping(context.Background()); err != nil {
+	ctx := context.Background()
+	if err := dbPool.Ping(ctx); err != nil {
 		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
 
-	slog.Info("Connected to PostgreSQL database")
+	logging.LogInfo(ctx, "Connected to PostgreSQL database")
 
 	return dbPool, nil
 }
@@ -57,6 +59,6 @@ func SetupSQLDatabase() (*sql.DB, error) {
 		return nil, fmt.Errorf("sql ping error: %w", err)
 	}
 
-	slog.Info("Connected to database via *sql.DB")
+	logging.LogInfo(context.Background(), "Connected to database via *sql.DB")
 	return db, nil
 }

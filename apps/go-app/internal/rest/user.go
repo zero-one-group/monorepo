@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"go-app/domain"
+	"go-app/internal/logging"
 	"log/slog"
 	"net/http"
 
@@ -41,15 +42,16 @@ func NewUserHandler(e *echo.Group, svc UserService) {
 }
 
 func (h *UserHandler) GetUserList(c echo.Context) error {
+	ctx := c.Request().Context()
+
 	filter := new(domain.UserFilter)
 	if err := c.Bind(filter); err != nil {
-		slog.Warn("Failed to bind user filter", slog.String("error", err.Error()))
+		logging.LogWarn(ctx, "Failed to bind user filter", slog.String("error", err.Error()))
 	}
 
-	ctx := c.Request().Context()
 	users, err := h.Service.GetUserList(ctx, filter)
 	if err != nil {
-		slog.Error("Failed to get user list", slog.String("error", err.Error()))
+		logging.LogError(ctx, err, "get_user_list")
 		return c.JSON(http.StatusInternalServerError, domain.ResponseMultipleData[domain.Empty]{
 			Code:    http.StatusInternalServerError,
 			Status:  "error",
@@ -99,7 +101,7 @@ func (h *UserHandler) GetUser(c echo.Context) error {
 		}
 
 		span.SetStatus(codes.Error, "service error")
-		slog.Error("Failed to get user", slog.String("user_id", id.String()), slog.String("error", err.Error()))
+		logging.LogError(ctx, err, "get_user")
 		return c.JSON(http.StatusInternalServerError, domain.ResponseSingleData[domain.Empty]{
 			Code:    http.StatusInternalServerError,
 			Status:  "error",
@@ -128,7 +130,7 @@ func (h *UserHandler) CreateUser(c echo.Context) error {
 	ctx := c.Request().Context()
 	createdUser, err := h.Service.CreateUser(ctx, &user)
 	if err != nil {
-		slog.Error("Failed to create user", slog.String("error", err.Error()))
+		logging.LogError(ctx, err, "create_user")
 		return c.JSON(http.StatusInternalServerError, domain.ResponseSingleData[domain.Empty]{
 			Code:    http.StatusInternalServerError,
 			Status:  "error",
@@ -167,7 +169,7 @@ func (h *UserHandler) UpdateUser(c echo.Context) error {
 	ctx := c.Request().Context()
 	updatedUser, err := h.Service.UpdateUser(ctx, id, &user)
 	if err != nil {
-		slog.Error("Failed to update user", slog.String("user_id", id.String()), slog.String("error", err.Error()))
+		logging.LogError(ctx, err, "update_user")
 		return c.JSON(http.StatusInternalServerError, domain.ResponseSingleData[domain.Empty]{
 			Code:    http.StatusInternalServerError,
 			Status:  "error",
@@ -196,7 +198,7 @@ func (h *UserHandler) DeleteUser(c echo.Context) error {
 
 	ctx := c.Request().Context()
 	if err := h.Service.DeleteUser(ctx, id); err != nil {
-		slog.Error("Failed to delete user", slog.String("user_id", id.String()), slog.String("error", err.Error()))
+		logging.LogError(ctx, err, "delete_user")
 		return c.JSON(http.StatusInternalServerError, domain.ResponseSingleData[domain.Empty]{
 			Code:    http.StatusInternalServerError,
 			Status:  "error",

@@ -17,26 +17,38 @@ func SlogLoggerMiddleware() echo.MiddlewareFunc {
 
 			req := c.Request()
 			res := c.Response()
-            status := res.Status
+			status := res.Status
+			requestID := GetRequestIDFromEcho(c)
 
-
-            args := []any{
-                slog.Int("status", status),
-                slog.Any("duration", duration),
-                slog.String("client_ip", c.RealIP()),
-                slog.String("method", req.Method),
-                slog.String("path", req.URL.Path),
-            }
-
-			switch {
-			case status >= 500 || status >= 400:
-				slog.Error("Middleware logger", args...)
-			default:
-				slog.Info("Middleware logger", args...)
+			args := []any{
+				slog.String("request_id", requestID),
+				slog.Int("status", status),
+				slog.Any("duration", duration),
+				slog.String("client_ip", c.RealIP()),
+				slog.String("method", req.Method),
+				slog.String("path", req.URL.Path),
+				slog.String("user_agent", req.UserAgent()),
+				slog.Int64("bytes_in", req.ContentLength),
+				slog.Int64("bytes_out", res.Size),
 			}
 
-            return err
-        }
+			// Add query parameters if present
+			if req.URL.RawQuery != "" {
+				args = append(args, slog.String("query", req.URL.RawQuery))
+			}
+
+			// Log with appropriate level based on status code
+			switch {
+			case status >= 500:
+				slog.Error("HTTP Request", args...)
+			case status >= 400:
+				slog.Warn("HTTP Request", args...)
+			default:
+				slog.Info("HTTP Request", args...)
+			}
+
+			return err
+		}
 	}
 }
 
