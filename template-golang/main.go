@@ -12,13 +12,14 @@ import (
 	"{{ package_name }}/config"
 	"{{ package_name }}/database"
 	"{{ package_name }}/domain"
+	"{{ package_name }}/internal/logging"
+	"{{ package_name }}/internal/metrics"
 	"{{ package_name }}/internal/repository/postgres"
 	"{{ package_name }}/internal/rest"
 	"{{ package_name }}/internal/rest/middleware"
 	"{{ package_name }}/service"
 
 	"github.com/labstack/echo/v4"
-	"github.com/lmittmann/tint"
 )
 
 func init() {
@@ -26,26 +27,12 @@ func init() {
 }
 
 func main() {
-
-	env := os.Getenv("APP_ENVIRONMENT")
-	var handler slog.Handler
-
-	w := os.Stdout
-	if env == "local" {
-		handler = tint.NewHandler(w, &tint.Options{
-			ReplaceAttr: middleware.ColorizeLogging,
-		})
-	} else {
-		// or continue setup log for another env
-		handler = slog.NewTextHandler(w, nil)
-	}
-
-	logger := slog.New(handler)
-	slog.SetDefault(logger)
+	// Initialize logging configuration
+	config.SetupLogging()
 
 	dbPool, err := database.SetupPgxPool()
 	if err != nil {
-		slog.Error("Failed to set up database", slog.String("error", err.Error()))
+		logging.LogError(context.Background(), err, "database_setup")
 		os.Exit(1)
 	}
 	defer dbPool.Close()
@@ -63,6 +50,7 @@ func main() {
 	shutdown, err := config.ApplyInstrumentation(ctx, e, appMetrics)
 	defer shutdown(ctx)
 
+	e.Use(middleware.RequestIDMiddleware())
 	e.Use(middleware.SlogLoggerMiddleware())
 	e.Use(middleware.Cors())
 
@@ -98,9 +86,9 @@ func main() {
 	serverAddr := fmt.Sprintf("%s:%s", host, port)
 
 	go func() {
-		slog.Info("Server starting", "address", serverAddr)
+		logging.LogInfo(ctx, "Server starting", slog.String("address", serverAddr))
 		if err := e.Start(serverAddr); err != nil && err != http.ErrServerClosed {
-			slog.Error("Server failed", "error", err)
+			logging.LogError(ctx, err, "server_start")
 			os.Exit(1)
 		}
 	}()
@@ -110,8 +98,8 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	slog.Info("Shutting down server gracefully...")
+	logging.LogInfo(ctx, "Shutting down server gracefully...")
 	if err := e.Shutdown(ctx); err != nil {
-		slog.Error("Shutdown error", "error", err)
+		logging.LogError(ctx, err, "server_shutdown")
 	}
 }

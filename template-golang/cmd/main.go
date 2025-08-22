@@ -1,11 +1,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"log/slog"
-	"os"
 	"{{package_name}}/cmd/commands"
 	"{{package_name}}/config"
+	"{{package_name}}/internal/logging"
+	"os"
 )
 
 func init() {
@@ -14,7 +15,7 @@ func init() {
 
 func main() {
 	if len(os.Args) < 2 {
-		slog.Error("Expected a command")
+		logging.LogErrorMessage(context.Background(), "Expected a command")
 		os.Exit(1)
 	}
 
