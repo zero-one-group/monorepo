@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"{{package_name}}/domain"
-	"{{package_name}}/internal/logging"
 	"log/slog"
 	"net/http"
+	"{{package_name}}/domain"
+	"{{package_name}}/internal/logging"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"

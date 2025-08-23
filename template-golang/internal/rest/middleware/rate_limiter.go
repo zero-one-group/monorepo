@@ -61,16 +61,16 @@ func (store *RateLimiterStore) getRateLimiter(ip string, r rate.Limit, b int) *r
 
 func RateLimitMiddleware(requestsPerSecond float64, burstSize int) echo.MiddlewareFunc {
 	store := NewRateLimiterStore()
-	
+
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			ip := c.RealIP()
 			limiter := store.getRateLimiter(ip, rate.Limit(requestsPerSecond), burstSize)
-			
+
 			if !limiter.Allow() {
 				return echo.NewHTTPError(http.StatusTooManyRequests, "Rate limit exceeded")
 			}
-			
+
 			return next(c)
 		}
 	}

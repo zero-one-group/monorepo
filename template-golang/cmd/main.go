@@ -3,10 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 	"{{package_name}}/cmd/commands"
 	"{{package_name}}/config"
 	"{{package_name}}/internal/logging"
-	"os"
 )
 
 func init() {

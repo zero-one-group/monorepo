@@ -23,5 +23,5 @@ func ComparePassword(password, hash string) bool {
 		fmt.Printf("Password is invalid: %v\n", password)
 		return false
 	}
-	 return true
+	return true
 }

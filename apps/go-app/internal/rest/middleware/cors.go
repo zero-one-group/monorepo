@@ -11,12 +11,12 @@ import (
 
 func Cors() echo.MiddlewareFunc {
 
-    allowedOrigins := os.Getenv("CORS_ALLOW_ORIGINS")
+	allowedOrigins := os.Getenv("CORS_ALLOW_ORIGINS")
 	if allowedOrigins == "" {
 		allowedOrigins = "*"
 	}
 
-    origins := strings.Split(allowedOrigins, ",")
+	origins := strings.Split(allowedOrigins, ",")
 	return echoMiddleware.CORSWithConfig(echoMiddleware.CORSConfig{
 		AllowOrigins: origins,
 		AllowMethods: []string{

@@ -5,9 +5,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"log/slog"
 	"go-app/internal/logging"
 	"go-app/seeders"
+	"log/slog"
 )
 
 func runSeeder(db *sql.DB, target string) error {
@@ -23,8 +23,8 @@ func runSeeder(db *sql.DB, target string) error {
 	case "users":
 		if err := seeders.SeedUsers(db); err != nil {
 			return fmt.Errorf("seeding users failed: %w", err)
-        }
-    // continue for other tables
+		}
+		// continue for other tables
 	default:
 		return errors.New("unknown seed target: " + target)
 	}

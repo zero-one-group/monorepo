@@ -42,6 +42,11 @@ tasks:
     options:
       cache: false
 
+  fmt:
+    command: "gofmt -s -w ."
+    options:
+      cache: false
+
   generate-mock:
     command: "mockery"
     options:

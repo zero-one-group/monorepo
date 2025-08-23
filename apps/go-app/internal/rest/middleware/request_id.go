@@ -26,7 +26,7 @@ func RequestIDMiddleware() echo.MiddlewareFunc {
 
 			// Set request ID in response headers
 			c.Response().Header().Set(RequestIDHeader, requestID)
-			
+
 			// Store request ID in context for use in handlers
 			ctx := context.WithValue(c.Request().Context(), RequestIDKey, requestID)
 			c.SetRequest(c.Request().WithContext(ctx))

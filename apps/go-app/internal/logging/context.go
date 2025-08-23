@@ -162,4 +162,3 @@ func LogErrorWithStackTrace(ctx context.Context, err error, operation string, st
 	args = append(args, details...)
 	logger.Error("Operation Failed with Stack Trace", args...)
 }
-
