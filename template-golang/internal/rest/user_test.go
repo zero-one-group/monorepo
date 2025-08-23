@@ -3,12 +3,12 @@ package rest_test
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"testing"
 	"{{ package_name }}/domain"
 	"{{ package_name }}/internal/repository/postgres"
 	"{{ package_name }}/internal/rest"
 	"{{ package_name }}/service"
-	"net/http"
-	"testing"
 
 	"github.com/stretchr/testify/require"
 )

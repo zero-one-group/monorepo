@@ -2,6 +2,8 @@ package postgres
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"strings"
 	"{{ package_name }}/domain"
 	"{{ package_name }}/internal/metrics"
@@ -140,18 +142,25 @@ func (u *UserRepository) UpdateUser(ctx context.Context, id uuid.UUID, user *dom
 		SET name = $1,
 			email = $2,
 			updated_at = NOW()
-		WHERE id = $3 AND deleted_at IS NULL`
+		WHERE id = $3 AND deleted_at IS NULL
+		RETURNING id, name, email, created_at, updated_at`
 
-	_, err := u.Conn.Exec(ctx, query, user.Name, user.Email, id)
+	var updatedUser domain.User
+	err := u.Conn.QueryRow(ctx, query, user.Name, user.Email, id).Scan(
+		&updatedUser.ID,
+		&updatedUser.Name,
+		&updatedUser.Email,
+		&updatedUser.CreatedAt,
+		&updatedUser.UpdatedAt,
+	)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, domain.ErrUserNotFound
+		}
 		return nil, err
 	}
 
-	updatedUser, err := u.GetUser(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-	return updatedUser, nil
+	return &updatedUser, nil
 }
 
 func (u *UserRepository) DeleteUser(ctx context.Context, id uuid.UUID) error {
@@ -160,6 +169,14 @@ func (u *UserRepository) DeleteUser(ctx context.Context, id uuid.UUID) error {
 		SET deleted_at = NOW()
 		WHERE id = $1 AND deleted_at IS NULL`
 
-	_, err := u.Conn.Exec(ctx, query, id)
-	return err
+	result, err := u.Conn.Exec(ctx, query, id)
+	if err != nil {
+		return err
+	}
+
+	if result.RowsAffected() == 0 {
+		return domain.ErrUserNotFound
+	}
+
+	return nil
 }

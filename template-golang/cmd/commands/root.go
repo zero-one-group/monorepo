@@ -6,20 +6,19 @@ import (
 	"{{package_name}}/database"
 )
 
-
 func Execute(command string, args []string) error {
-    subcommand := ""
+	subcommand := ""
 	if len(args) > 0 {
 		subcommand = args[0]
 	}
 
-    db, err := database.SetupSQLDatabase()
+	db, err := database.SetupSQLDatabase()
 	if err != nil {
 		return fmt.Errorf("failed to connect to DB: %w", err)
 	}
 	defer db.Close()
 
-    switch command {
+	switch command {
 	case "migrate":
 		dir := "./migrations"
 		if err := runMigration(db, dir, args); err != nil {

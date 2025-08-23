@@ -2,8 +2,8 @@ package logging
 
 import (
 	"context"
-	"{{package_name}}/internal/rest/middleware"
 	"log/slog"
+	"{{package_name}}/internal/rest/middleware"
 )
 
 // UserInfo holds user context information for logging
