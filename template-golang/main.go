@@ -53,6 +53,10 @@ func main() {
 	e.Use(middleware.RequestIDMiddleware())
 	e.Use(middleware.SlogLoggerMiddleware())
 	e.Use(middleware.Cors())
+	e.Use(middleware.SecurityHeadersMiddleware())
+	e.Use(middleware.CompressionMiddleware())
+	e.Use(middleware.RateLimitMiddleware(10.0, 20))
+	e.Use(middleware.TimeoutMiddleware(30 * time.Second))
 
 	// Register the routes
 	e.GET("/", func(c echo.Context) error {
