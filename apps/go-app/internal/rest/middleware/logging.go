@@ -53,22 +53,21 @@ func SlogLoggerMiddleware() echo.MiddlewareFunc {
 }
 
 func ColorizeLogging(groups []string, a slog.Attr) slog.Attr {
-    const LevelTrace = slog.LevelDebug
-    if a.Key == slog.LevelKey && len(groups) == 0 {
-        level, ok := a.Value.Any().(slog.Level)
-        if ok {
-            switch level {
-            case slog.LevelError:
-                return tint.Attr(9, slog.String(a.Key, "ERR"))
-            case slog.LevelWarn:
-                return tint.Attr(12, slog.String(a.Key, "WRN"))
-            case slog.LevelInfo:
-                return tint.Attr(10, slog.String(a.Key, "INF"))
-            case LevelTrace:
-                return tint.Attr(10, slog.String(a.Key, "TRC"))
-            }
-        }
-    }
-    return a
+	const LevelTrace = slog.LevelDebug
+	if a.Key == slog.LevelKey && len(groups) == 0 {
+		level, ok := a.Value.Any().(slog.Level)
+		if ok {
+			switch level {
+			case slog.LevelError:
+				return tint.Attr(9, slog.String(a.Key, "ERR"))
+			case slog.LevelWarn:
+				return tint.Attr(12, slog.String(a.Key, "WRN"))
+			case slog.LevelInfo:
+				return tint.Attr(10, slog.String(a.Key, "INF"))
+			case LevelTrace:
+				return tint.Attr(10, slog.String(a.Key, "TRC"))
+			}
+		}
+	}
+	return a
 }
-

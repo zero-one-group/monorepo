@@ -123,4 +123,3 @@ func doRequest[T any](t *testing.T, method, url string, payload any) (T, int) {
 	)
 	return out, resp.StatusCode
 }
-
