@@ -13,7 +13,7 @@
         "cmd": "tsx --tsconfig tsconfig.json -r dotenv/config internal/cli.ts",
         "compose:cleanup": "docker compose -f docker/compose.yaml down --remove-orphans --volumes",
         "compose:up": "docker compose -f docker/compose.yaml up --detach --remove-orphans",
-        "compose:down": "docker compose -f docker/compose.yaml down --remove-orphans && docker compose -f docker/compose.yaml --profile instrumented down --remove-orphans",
+        "compose:down": "docker compose -f docker/compose.yaml down -v --remove-orphans && docker compose -f docker/compose.yaml --profile instrumented down -v --remove-orphans",
         "compose:instrumented": "docker compose -f docker/compose.yaml --profile instrumented up --detach --remove-orphans",
         "update-deps": "npm-check-updates --configFileName .ncurc.json && moon :update-deps",
         "cleanup": "pnpm --stream --color \"/cleanup:(?!deps|cache)/\"",
