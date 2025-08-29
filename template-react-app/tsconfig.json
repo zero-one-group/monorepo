@@ -19,7 +19,9 @@
         "verbatimModuleSyntax": true,
         "baseUrl": ".",
         "paths": {
-            "#/*": ["./app/*"]
+            "#/*": ["./app/*"],
+            "react": ["./node_modules/@types/react/index.d.ts"],
+            "react-dom": ["./node_modules/@types/react-dom/index.d.ts"]
         }
     },
     "include": [
@@ -30,5 +32,5 @@
         "tests/**/*",
         "tests-e2e/**/*"
     ],
-    "exclude": ["tests-results"],
+    "exclude": ["tests-results"]
 }
