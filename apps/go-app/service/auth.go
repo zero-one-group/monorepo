@@ -4,24 +4,10 @@ import (
 	"context"
 	"go-app/domain"
 	"go-app/utils"
-
-	"github.com/golang-jwt/jwt/v5"
 )
 
 type AuthRepository interface {
 	AuthenticateUser(ctx context.Context, email, password string) (*domain.User, error)
-}
-
-type JwtClaim struct {
-	ID    string `json:"id"`
-	Email string `json:"email"`
-	jwt.RegisteredClaims
-}
-
-type RefreshClaim struct {
-	ID    string `json:"id"`
-	Email string `json:"email"`
-	jwt.RegisteredClaims
 }
 
 type AuthService struct {

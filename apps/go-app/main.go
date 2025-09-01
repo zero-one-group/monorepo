@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	"go-app/internal/metrics"
 	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
+	"go-app/internal/metrics"
 
 	"go-app/config"
 	"go-app/database"

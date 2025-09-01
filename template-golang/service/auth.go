@@ -2,30 +2,12 @@ package service
 
 import (
 	"context"
-	"errors"
-	"log/slog"
-	"os"
-	"strconv"
-	"time"
-	"{{ package_name }}/domain"
-
-	"github.com/golang-jwt/jwt/v5"
+	"{{package_name}}/domain"
+	"{{package_name}}/utils"
 )
 
 type AuthRepository interface {
 	AuthenticateUser(ctx context.Context, email, password string) (*domain.User, error)
-}
-
-type JwtClaim struct {
-	ID    string `json:"id"`
-	Email string `json:"email"`
-	jwt.RegisteredClaims
-}
-
-type RefreshClaim struct {
-	ID    string `json:"id"`
-	Email string `json:"email"`
-	jwt.RegisteredClaims
 }
 
 type AuthService struct {
