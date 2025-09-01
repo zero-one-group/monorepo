@@ -1,0 +1,243 @@
+apiVersion: 1
+groups:
+  - orgId: 1
+    name: infrastructure-monitoring
+    folder: monitoring
+    interval: 10s
+    rules:
+      # ===== HIGH CPU ALERT - ALL NODE_EXPORTER INSTANCES =====
+      - uid: high_cpu_all_instances
+        title: High CPU Usage
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 60
+              to: 0
+            datasourceUid: Metrics
+            model:
+              datasource:
+                type: prometheus
+                uid: Metrics
+              editorMode: code
+              expr: 100 - (avg(rate(node_cpu_seconds_total{job="node_exporter",mode="idle"}[1m])) by (instance) * 100)
+              instant: true
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: false
+              refId: A
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params: [85]
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params: [C]
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+                  unloadEvaluator:
+                    params: [85]
+                    type: lt
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: Alerting
+        execErrState: Alerting
+        for: 10s
+        annotations:
+          summary_firing: '{% raw %}{{ printf "High CPU Usage Detected on %s! CPU usage is %.2f%%" $labels.instance $values.A.Value }}{% endraw %}'
+          summary_resolved: '{% raw %}{{ printf "CPU Usage Normal on %s! CPU usage is %.2f%%" $labels.instance $values.A.Value }}{% endraw %}'
+        isPaused: false
+        notification_settings:
+          receiver: Slack Alert
+
+      # ===== HIGH MEMORY ALERT - ALL NODE_EXPORTER INSTANCES =====
+      - uid: high_memory_all_instances
+        title: High RAM Usage
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 60
+              to: 0
+            datasourceUid: Metrics
+            model:
+              datasource:
+                type: prometheus
+                uid: Metrics
+              editorMode: code
+              expr: (1 - (node_memory_MemAvailable_bytes{job="node_exporter"} / node_memory_MemTotal_bytes{job="node_exporter"})) * 100
+              instant: true
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: false
+              refId: A
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params: [85]
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params: [C]
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+                  unloadEvaluator:
+                    params: [85]
+                    type: lt
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: Alerting
+        execErrState: Alerting
+        for: 20s
+        annotations:
+          summary_firing: '{% raw %}{{ printf "High RAM Usage Detected on %s! RAM usage is %.2f%%" $labels.instance $values.A.Value }}{% endraw %}'
+          summary_resolved: '{% raw %}{{ printf "RAM Usage Normal on %s! RAM usage is %.2f%%" $labels.instance $values.A.Value }}{% endraw %}'
+        isPaused: false
+        notification_settings:
+          receiver: Slack Alert
+
+      # ===== HIGH STORAGE ALERT - ALL NODE_EXPORTER INSTANCES =====
+      - uid: high_storage_all_instances
+        title: High Storage Usage
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 120
+              to: 0
+            datasourceUid: Metrics
+            model:
+              datasource:
+                type: prometheus
+                uid: Metrics
+              editorMode: code
+              expr: (node_filesystem_size_bytes{job="node_exporter",fstype=~"ext.*|xfs",mountpoint="/"} - node_filesystem_free_bytes{job="node_exporter",fstype=~"ext.*|xfs",mountpoint="/"}) * 100 / (node_filesystem_avail_bytes{job="node_exporter",fstype=~"ext.*|xfs",mountpoint="/"} + (node_filesystem_size_bytes{job="node_exporter",fstype=~"ext.*|xfs",mountpoint="/"} - node_filesystem_free_bytes{job="node_exporter",fstype=~"ext.*|xfs",mountpoint="/"}))
+              instant: true
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: false
+              refId: A
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params: [90]
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params: [C]
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+                  unloadEvaluator:
+                    params: [90]
+                    type: lt
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: Alerting
+        execErrState: Alerting
+        for: 1m
+        annotations:
+          summary_firing: '{% raw %}{{ printf "High Storage Usage Detected on %s! Disk usage is %.2f%%" $labels.instance $values.A.Value }}{% endraw %}'
+          summary_resolved: '{% raw %}{{ printf "Storage Usage Normal on %s! Disk usage is %.2f%%" $labels.instance $values.A.Value }}{% endraw %}'
+        isPaused: false
+        notification_settings:
+          receiver: Slack Alert
+
+      # ===== INSTANCE DOWN/UPTIME CHECK - ALL NODE_EXPORTER INSTANCES =====
+      - uid: instance_down_all_instances
+        title: Instance Down
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 60
+              to: 0
+            datasourceUid: Metrics
+            model:
+              datasource:
+                type: prometheus
+                uid: Metrics
+              editorMode: code
+              expr: up{job="node_exporter"}
+              instant: true
+              intervalMs: 1000
+              maxDataPoints: 43200
+              range: false
+              refId: A
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params: [1]
+                    type: lt
+                  operator:
+                    type: and
+                  query:
+                    params: [C]
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+                  unloadEvaluator:
+                    params: [1]
+                    type: gte
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: Alerting
+        execErrState: Alerting
+        for: 10s
+        annotations:
+          summary_firing: '🔴 {% raw %}{{ $labels.instance }}{% endraw %} is DOWN!'
+          summary_resolved: '🟢 {% raw %}{{ $labels.instance }}{% endraw %} is UP!'
+        isPaused: false
+        notification_settings:
+          receiver: Slack Alert
+
+# Aggressive notification policies
+policies:
+  - orgId: 1
+    receiver: Slack Alert
+    group_by: [alertname, instance]
+    group_wait: 0s
+    group_interval: 30s
+    repeat_interval: 10m

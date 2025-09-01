@@ -1,21 +1,13 @@
 .build:{{ app_name }}:
   image:
-    name: martizih/kaniko:v1.25.0-debug
+    name: martizih/kaniko:v1.25.3-debug
     entrypoint: [""]
   interruptible: true
   tags:
     - linux
     - project
-  before_script:
-     - |
-      echo '{
-        "credHelpers": {
-          "'$ECR_HOST'": "ecr-login",
-          "public.ecr.aws": "ecr-login"
-        }
-      }' > /kaniko/.docker/config.json
   script:
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/apps/{{ app_name }}/Dockerfile --destination $ECR_HOST/$REPOSITORY_NAME:$TAGGING-{{ app_name }} --single-snapshot=true --snapshot-mode=redo --compression-level=4
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/apps/{{ app_name }}/Dockerfile --destination $ECR_HOST/$REPOSITORY_NAME:$TAGGING-{{ app_name }} --snapshot-mode=redo --compression-level=4
 
 build:development-docker:
   stage: build:development

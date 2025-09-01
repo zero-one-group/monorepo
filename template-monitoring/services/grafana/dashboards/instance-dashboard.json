@@ -513,7 +513,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "((1 - (1 - avg(rate(node_cpu_seconds_total{job=\"$job\", mode=\"idle\"}[$__rate_interval])) by (instance)) ^ 1.3) ^ (1/3) * 0.5 + \n( 1 - (1 - avg(node_memory_MemAvailable_bytes{job=\"$job\"} / node_memory_MemTotal_bytes{job=\"$job\"}) by (instance)) ^ 6) ^ (1/3) * 0.3 + \n(1 - max(rate(node_disk_io_time_seconds_total{job=\"$job\"}[$__rate_interval]))by (instance) ^ 1.1) ^ (1/2) * 0.2) * 100",
+          "expr": "{% raw %}((1 - (1 - avg(rate(node_cpu_seconds_total{job=\"$job\", mode=\"idle\"}[$__rate_interval])) by (instance)) ^ 1.3) ^ (1/3) * 0.5 + \n( 1 - (1 - avg(node_memory_MemAvailable_bytes{job=\"$job\"} / node_memory_MemTotal_bytes{job=\"$job\"}) by (instance)) ^ 6) ^ (1/3) * 0.3 + \n(1 - max(rate(node_disk_io_time_seconds_total{job=\"$job\"}[$__rate_interval]))by (instance) ^ 1.1) ^ (1/2) * 0.2) * 100{% endraw %}",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -527,7 +527,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "node_memory_MemTotal_bytes{job=\"$job\"}",
+          "expr": "{% raw %}node_memory_MemTotal_bytes{job=\"$job\"}{% endraw %}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -542,7 +542,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "(1 - (node_memory_MemAvailable_bytes{job=\"$job\"} / (node_memory_MemTotal_bytes{job=\"$job\"}))) * 100",
+          "expr": "{% raw %}(1 - (node_memory_MemAvailable_bytes{job=\"$job\"} / (node_memory_MemTotal_bytes{job=\"$job\"}))) * 100{% endraw %}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -557,7 +557,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "clamp_min((1 - avg(rate(node_cpu_seconds_total{job=\"$job\", mode=\"idle\"}[$__rate_interval])) by (instance)) * 100, 0)",
+          "expr": "{% raw %}clamp_min((1 - avg(rate(node_cpu_seconds_total{job=\"$job\", mode=\"idle\"}[$__rate_interval])) by (instance)) * 100, 0){% endraw %}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -572,7 +572,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "max(node_filesystem_avail_bytes{job=\"$job\"}) by (instance)",
+          "expr": "{% raw %}max(node_filesystem_avail_bytes{job=\"$job\"}) by (instance){% endraw %}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -587,7 +587,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(irate(node_network_transmit_bytes_total{job=\"$job\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval]) * 8) by (instance)",
+          "expr": "{% raw %}sum(irate(node_network_transmit_bytes_total{job=\"$job\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval]) * 8) by (instance){% endraw %}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -602,7 +602,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(irate(node_network_receive_bytes_total{job=\"$job\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval]) * 8) by (instance)",
+          "expr": "{% raw %}sum(irate(node_network_receive_bytes_total{job=\"$job\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval]) * 8) by (instance){% endraw %}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -617,7 +617,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "node_netstat_Tcp_CurrEstab{job=\"$job\"} - 0",
+          "expr": "{% raw %}node_netstat_Tcp_CurrEstab{job=\"$job\"} - 0{% endraw %}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -632,7 +632,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "irate(node_netstat_Tcp_RetransSegs{job=\"$job\"}[$__rate_interval])",
+          "expr": "{% raw %}irate(node_netstat_Tcp_RetransSegs{job=\"$job\"}[$__rate_interval]){% endraw %}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -647,7 +647,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(time() - node_boot_time_seconds{job=\"$job\"}) by (instance)",
+          "expr": "{% raw %}sum(time() - node_boot_time_seconds{job=\"$job\"}) by (instance){% endraw %}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -877,7 +877,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "sum(irate(node_network_transmit_bytes_total{job=\"$job\", instance=~\".*\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval])) * 10",
+          "expr": "{% raw %}sum(irate(node_network_transmit_bytes_total{job=\"$job\", instance=~\".*\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval])) * 10{% endraw %}",
           "instant": false,
           "interval": "",
           "legendFormat": "Upload",
@@ -890,7 +890,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "sum(irate(node_network_receive_bytes_total{job=\"$job\", instance=~\".*\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval])) * 10",
+          "expr": "{% raw %}sum(irate(node_network_receive_bytes_total{job=\"$job\", instance=~\".*\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval])) * 10{% endraw %}",
           "hide": false,
           "instant": false,
           "interval": "",
@@ -904,7 +904,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "sum(irate(node_network_transmit_bytes_total{job=\"$job\", instance=~\".*\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval]) + irate(node_network_receive_bytes_total{job=\"$job\", instance=~\".*\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval])) * 10",
+          "expr": "{% raw %}sum(irate(node_network_transmit_bytes_total{job=\"$job\", instance=~\".*\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval]) + irate(node_network_receive_bytes_total{job=\"$job\", instance=~\".*\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval])) * 10{% endraw %}",
           "hide": false,
           "instant": false,
           "legendFormat": "Total",
@@ -1029,7 +1029,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "count(up{job=\"$job\"} == 1)",
+          "expr": "{% raw %}count(up{job=\"$job\"} == 1){% endraw %}",
           "hide": false,
           "instant": true,
           "interval": "",
@@ -1044,7 +1044,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(node_netstat_Tcp_CurrEstab{job=\"$job\"})",
+          "expr": "{% raw %}sum(node_netstat_Tcp_CurrEstab{job=\"$job\"}){% endraw %}",
           "hide": false,
           "instant": true,
           "interval": "",
@@ -1059,7 +1059,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "(sum(irate(node_network_receive_bytes_total{job=\"$job\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval]) + irate(node_network_transmit_bytes_total{job=\"$job\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval]))) * 8",
+          "expr": "{% raw %}(sum(irate(node_network_receive_bytes_total{job=\"$job\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval]) + irate(node_network_transmit_bytes_total{job=\"$job\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval]))) * 8{% endraw %}",
           "instant": true,
           "interval": "",
           "legendFormat": "Total Throughput",
@@ -1196,9 +1196,9 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "node_load5{job=\"$job\"}",
+          "expr": "{% raw %}node_load5{job=\"$job\"}{% endraw %}",
           "instant": false,
-          "legendFormat": "{{instance}}",
+          "legendFormat": "{% raw %}{{instance}}{% endraw %}",
           "range": true,
           "refId": "A"
         },
@@ -1267,7 +1267,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/.*(ðŸ‡­ðŸ‡°|HK|Hong|æ¸¯)/"
+              "options": "/.*(🇭🇰|HK|Hong|港)/"
             },
             "properties": [
               {
@@ -1282,7 +1282,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/.*(ðŸ‡¯ðŸ‡µ|JP|Japan|æ—¥)/"
+              "options": "/.*(🇯🇵|JP|Japan|日)/"
             },
             "properties": [
               {
@@ -1297,7 +1297,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/.*(ðŸ‡ºðŸ‡¸|US|United States|ç¾Ž)/"
+              "options": "/.*(🇺🇸|US|United States|美)/"
             },
             "properties": [
               {
@@ -1312,7 +1312,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/.*(ðŸ‡¬ðŸ‡§|UK|United Kingdom|è‹±)/"
+              "options": "/.*(🇬🇧|UK|United Kingdom|英)/"
             },
             "properties": [
               {
@@ -1327,7 +1327,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/.*(ðŸ‡©ðŸ‡ª|DE|Deutschland|Germany|å¾·)/"
+              "options": "/.*(🇩🇪|DE|Deutschland|Germany|德)/"
             },
             "properties": [
               {
@@ -1342,7 +1342,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/.*ðŸ‡¸ðŸ‡¬|SG|Singapore|æ–°)/"
+              "options": "/.*🇸🇬|SG|Singapore|新)/"
             },
             "properties": [
               {
@@ -1357,7 +1357,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/.*(ðŸ‡¹ðŸ‡¼|TW|Taiwan|å°)/"
+              "options": "/.*(🇹🇼|TW|Taiwan|台)/"
             },
             "properties": [
               {
@@ -1372,7 +1372,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/.*(ä¸­è½¬|relay)/"
+              "options": "/.*(中转|relay)/"
             },
             "properties": [
               {
@@ -1421,9 +1421,9 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "irate(node_network_transmit_bytes_total{job=\"$job\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval]) * 8 + irate(node_network_receive_bytes_total{job=\"$job\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval]) * 8",
+          "expr": "{% raw %}irate(node_network_transmit_bytes_total{job=\"$job\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval]) * 8 + irate(node_network_receive_bytes_total{job=\"$job\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval]) * 8{% endraw %}",
           "instant": false,
-          "legendFormat": "{{instance}}",
+          "legendFormat": "{% raw %}{{instance}}{% endraw %}",
           "range": true,
           "refId": "A"
         }
@@ -1500,7 +1500,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/.*(ðŸ‡­ðŸ‡°|HK|Hong|æ¸¯)/"
+              "options": "/.*(🇭🇰|HK|Hong|港)/"
             },
             "properties": [
               {
@@ -1515,7 +1515,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/.*(ðŸ‡¯ðŸ‡µ|JP|Japan|æ—¥)/"
+              "options": "/.*(🇯🇵|JP|Japan|日)/"
             },
             "properties": [
               {
@@ -1530,7 +1530,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/.*(ðŸ‡ºðŸ‡¸|US|United States|ç¾Ž)/"
+              "options": "/.*(🇺🇸|US|United States|美)/"
             },
             "properties": [
               {
@@ -1545,7 +1545,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/.*(ðŸ‡¬ðŸ‡§|UK|United Kingdom|è‹±)/"
+              "options": "/.*(🇬🇧|UK|United Kingdom|英)/"
             },
             "properties": [
               {
@@ -1560,7 +1560,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/.*(ðŸ‡©ðŸ‡ª|DE|Deutschland|Germany|å¾·)/"
+              "options": "/.*(🇩🇪|DE|Deutschland|Germany|德)/"
             },
             "properties": [
               {
@@ -1575,7 +1575,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/.*ðŸ‡¸ðŸ‡¬|SG|Singapore|æ–°)/"
+              "options": "/.*🇸🇬|SG|Singapore|新)/"
             },
             "properties": [
               {
@@ -1590,7 +1590,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/.*(ðŸ‡¹ðŸ‡¼|TW|Taiwan|å°)/"
+              "options": "/.*(🇹🇼|TW|Taiwan|台)/"
             },
             "properties": [
               {
@@ -1605,7 +1605,7 @@
           {
             "matcher": {
               "id": "byRegexp",
-              "options": "/.*(ä¸­è½¬|relay)/"
+              "options": "/.*(中转|relay)/"
             },
             "properties": [
               {
@@ -1651,9 +1651,9 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "irate(node_network_transmit_bytes_total{job=\"$job\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval]) * 8",
+          "expr": "{% raw %}irate(node_network_transmit_bytes_total{job=\"$job\", device=~\"(eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*)\"}[$__rate_interval]) * 8{% endraw %}",
           "instant": false,
-          "legendFormat": "{{instance}}",
+          "legendFormat": "{% raw %}{{instance}}{% endraw %}",
           "range": true,
           "refId": "A"
         }
@@ -1765,7 +1765,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "sum(node_netstat_Tcp_CurrEstab{job=\"$job\"})",
+          "expr": "{% raw %}sum(node_netstat_Tcp_CurrEstab{job=\"$job\"}){% endraw %}",
           "instant": false,
           "legendFormat": "Current Established",
           "range": true,
@@ -1777,7 +1777,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "sum(node_sockstat_TCP_tw{job=\"$job\"})",
+          "expr": "{% raw %}sum(node_sockstat_TCP_tw{job=\"$job\"}){% endraw %}",
           "hide": false,
           "instant": false,
           "legendFormat": "TIME_WAIT",
@@ -1959,7 +1959,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(increase(node_network_transmit_bytes_total{job=\"$job\", device=~\"eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*\"}[30d]))",
+          "expr": "{% raw %}sum(increase(node_network_transmit_bytes_total{job=\"$job\", device=~\"eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*\"}[30d])){% endraw %}",
           "hide": false,
           "instant": true,
           "interval": "",
@@ -1974,7 +1974,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(increase(node_network_receive_bytes_total{job=\"$job\", device=~\"eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*\"}[30d]))",
+          "expr": "{% raw %}sum(increase(node_network_receive_bytes_total{job=\"$job\", device=~\"eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*\"}[30d])){% endraw %}",
           "hide": false,
           "instant": true,
           "interval": "",
@@ -1989,7 +1989,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(increase(node_network_transmit_bytes_total{job=\"$job\", device=~\"eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*\"}[30d])) + sum(increase(node_network_receive_bytes_total{job=\"$job\", device=~\"eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*\"}[30d]))",
+          "expr": "{% raw %}sum(increase(node_network_transmit_bytes_total{job=\"$job\", device=~\"eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*\"}[30d])) + sum(increase(node_network_receive_bytes_total{job=\"$job\", device=~\"eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*\"}[30d])){% endraw %}",
           "hide": false,
           "instant": true,
           "interval": "",
@@ -2011,7 +2011,7 @@
       },
       "id": 263,
       "panels": [],
-      "title": "NODE INFO $node",
+      "title": "{% raw %}NODE INFO $node{% endraw %}",
       "type": "row"
     },
     {
@@ -2126,7 +2126,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(increase(node_network_transmit_bytes_total{job=\"$job\", instance=\"$node\", device=~\"eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*\"}[30d]))",
+          "expr": "{% raw %}sum(increase(node_network_transmit_bytes_total{job=\"$job\", instance=\"$node\", device=~\"eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*\"}[30d])){% endraw %}",
           "hide": false,
           "instant": true,
           "interval": "",
@@ -2141,7 +2141,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(increase(node_network_receive_bytes_total{job=\"$job\", instance=\"$node\", device=~\"eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*\"}[30d]))",
+          "expr": "{% raw %}sum(increase(node_network_receive_bytes_total{job=\"$job\", instance=\"$node\", device=~\"eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*\"}[30d])){% endraw %}",
           "hide": false,
           "instant": true,
           "interval": "",
@@ -2156,7 +2156,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(increase(node_network_transmit_bytes_total{job=\"$job\", instance=\"$node\", device=~\"eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*\"}[30d])) + sum(increase(node_network_receive_bytes_total{job=\"$job\", instance=\"$node\", device=~\"eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*\"}[30d]))",
+          "expr": "{% raw %}sum(increase(node_network_transmit_bytes_total{job=\"$job\", instance=\"$node\", device=~\"eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*\"}[30d])) + sum(increase(node_network_receive_bytes_total{job=\"$job\", instance=\"$node\", device=~\"eth.*|ens.*|eno.*|enp.*|enx.*|enX.*|wlan.*|venet.*\"}[30d])){% endraw %}",
           "instant": true,
           "interval": "",
           "legendFormat": "Total",
@@ -2378,7 +2378,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "node_load1{job=\"$job\", instance=\"$node\"}",
+          "expr": "{% raw %}node_load1{job=\"$job\", instance=\"$node\"}{% endraw %}",
           "instant": false,
           "legendFormat": "1m",
           "range": true,
@@ -2390,7 +2390,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "node_load5{job=\"$job\", instance=\"$node\"}",
+          "expr": "{% raw %}node_load5{job=\"$job\", instance=\"$node\"}{% endraw %}",
           "hide": false,
           "instant": false,
           "legendFormat": "5m",
@@ -2403,7 +2403,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "node_load15{job=\"$job\", instance=\"$node\"}",
+          "expr": "{% raw %}node_load15{job=\"$job\", instance=\"$node\"}{% endraw %}",
           "hide": false,
           "instant": false,
           "legendFormat": "15m",
@@ -2416,7 +2416,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "count(node_cpu_seconds_total{job=\"$job\", instance=\"$node\", mode='system'}) by (instance)",
+          "expr": "{% raw %}count(node_cpu_seconds_total{job=\"$job\", instance=\"$node\", mode='system'}) by (instance){% endraw %}",
           "hide": false,
           "instant": false,
           "legendFormat": "CPU Cores",
@@ -2570,10 +2570,10 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "node_filesystem_size_bytes{job=\"$job\", instance=\"$node\",device!~'rootfs'} - node_filesystem_avail_bytes{job=\"$job\", instance=\"$node\",device!~'rootfs'}",
+          "expr": "{% raw %}node_filesystem_size_bytes{job=\"$job\", instance=\"$node\",device!~'rootfs'} - node_filesystem_avail_bytes{job=\"$job\", instance=\"$node\",device!~'rootfs'}{% endraw %}",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "{{mountpoint}}",
+          "legendFormat": "{% raw %}{{mountpoint}}{% endraw %}",
           "range": true,
           "refId": "A",
           "step": 240
@@ -2842,7 +2842,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "node_memory_MemTotal_bytes{instance=\"$node\",job=\"$job\"}",
+          "expr": "{% raw %}node_memory_MemTotal_bytes{instance=\"$node\",job=\"$job\"}{% endraw %}",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -2857,7 +2857,7 @@
             "type": "prometheus",
             "uid": "Metrics"
           },
-          "expr": "node_memory_MemTotal_bytes{instance=\"$node\",job=\"$job\"} - node_memory_MemFree_bytes{instance=\"$node\",job=\"$job\"} - (node_memory_Cached_bytes{instance=\"$node\",job=\"$job\"} + node_memory_Buffers_bytes{instance=\"$node\",job=\"$job\"} + node_memory_SReclaimable_bytes{instance=\"$node\",job=\"$job\"})",
+          "expr": "{% raw %}node_memory_MemTotal_bytes{instance=\"$node\",job=\"$job\"} - node_memory_MemFree_bytes{instance=\"$node\",job=\"$job\"} - (node_memory_Cached_bytes{instance=\"$node\",job=\"$job\"} + node_memory_Buffers_bytes{instance=\"$node\",job=\"$job\"} + node_memory_SReclaimable_bytes{instance=\"$node\",job=\"$job\"}){% endraw %}",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,
@@ -2870,7 +2870,7 @@
             "type": "prometheus",
             "uid": "Metrics"
           },
-          "expr": "node_memory_Cached_bytes{instance=\"$node\",job=\"$job\"} + node_memory_Buffers_bytes{instance=\"$node\",job=\"$job\"} + node_memory_SReclaimable_bytes{instance=\"$node\",job=\"$job\"}",
+          "expr": "{% raw %}node_memory_Cached_bytes{instance=\"$node\",job=\"$job\"} + node_memory_Buffers_bytes{instance=\"$node\",job=\"$job\"} + node_memory_SReclaimable_bytes{instance=\"$node\",job=\"$job\"}{% endraw %}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "RAM Cache + Buffer",
@@ -2882,7 +2882,7 @@
             "type": "prometheus",
             "uid": "Metrics"
           },
-          "expr": "node_memory_MemFree_bytes{instance=\"$node\",job=\"$job\"}",
+          "expr": "{% raw %}node_memory_MemFree_bytes{instance=\"$node\",job=\"$job\"}{% endraw %}",
           "format": "time_series",
           "hide": true,
           "intervalFactor": 1,
@@ -2895,7 +2895,7 @@
             "type": "prometheus",
             "uid": "Metrics"
           },
-          "expr": "(node_memory_SwapTotal_bytes{instance=\"$node\",job=\"$job\"} - node_memory_SwapFree_bytes{instance=\"$node\",job=\"$job\"})",
+          "expr": "{% raw %}(node_memory_SwapTotal_bytes{instance=\"$node\",job=\"$job\"} - node_memory_SwapFree_bytes{instance=\"$node\",job=\"$job\"}){% endraw %}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "SWAP Used",
@@ -3192,7 +3192,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"system\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+          "expr": "{% raw %}sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"system\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu))){% endraw %}",
           "format": "time_series",
           "hide": false,
           "instant": false,
@@ -3208,7 +3208,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"user\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+          "expr": "{% raw %}sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"user\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu))){% endraw %}",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,
@@ -3223,7 +3223,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"iowait\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+          "expr": "{% raw %}sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"iowait\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu))){% endraw %}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Busy Iowait",
@@ -3237,7 +3237,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=~\".*irq\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+          "expr": "{% raw %}sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=~\".*irq\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu))){% endraw %}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Busy IRQs",
@@ -3251,7 +3251,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\",  mode!='idle',mode!='user',mode!='system',mode!='iowait',mode!='irq',mode!='softirq'}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+          "expr": "{% raw %}sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\",  mode!='idle',mode!='user',mode!='system',mode!='iowait',mode!='irq',mode!='softirq'}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu))){% endraw %}",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,
@@ -3266,7 +3266,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"idle\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu)))",
+          "expr": "{% raw %}sum(irate(node_cpu_seconds_total{instance=\"$node\",job=\"$job\", mode=\"idle\"}[$__rate_interval])) / scalar(count(count(node_cpu_seconds_total{instance=\"$node\",job=\"$job\"}) by (cpu))){% endraw %}",
           "format": "time_series",
           "hide": true,
           "intervalFactor": 1,
@@ -3490,7 +3490,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "node_filesystem_size_bytes{job=\"$job\", instance=\"$node\", fstype=~\"ext.*|xfs|nfs\", mountpoint !~\".*pod.*\"} - 0",
+          "expr": "{% raw %}node_filesystem_size_bytes{job=\"$job\", instance=\"$node\", fstype=~\"ext.*|xfs|nfs\", mountpoint !~\".*pod.*\"} - 0{% endraw %}",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -3504,7 +3504,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "node_filesystem_avail_bytes{job=\"$job\", instance=\"$node\", fstype=~\"ext.*|xfs|nfs\", mountpoint !~\".*pod.*\"} - 0",
+          "expr": "{% raw %}node_filesystem_avail_bytes{job=\"$job\", instance=\"$node\", fstype=~\"ext.*|xfs|nfs\", mountpoint !~\".*pod.*\"} - 0{% endraw %}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -3519,7 +3519,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "(node_filesystem_size_bytes{job=\"$job\", instance=\"$node\", fstype=~\"ext.*|xfs|nfs\", mountpoint !~\".*pod.*\"} \n- node_filesystem_free_bytes{job=\"$job\", instance=\"$node\", fstype=~\"ext.*|xfs|nfs\", mountpoint !~\".*pod.*\"})\n* 100 / node_filesystem_size_bytes{job=\"$job\", instance=\"$node\", fstype=~\"ext.*|xfs|nfs\", mountpoint !~\".*pod.*\"}",
+          "expr": "{% raw %}(node_filesystem_size_bytes{job=\"$job\", instance=\"$node\", fstype=~\"ext.*|xfs|nfs\", mountpoint !~\".*pod.*\"} \n- node_filesystem_free_bytes{job=\"$job\", instance=\"$node\", fstype=~\"ext.*|xfs|nfs\", mountpoint !~\".*pod.*\"})\n* 100 / node_filesystem_size_bytes{job=\"$job\", instance=\"$node\", fstype=~\"ext.*|xfs|nfs\", mountpoint !~\".*pod.*\"}{% endraw %}",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -3728,10 +3728,10 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "irate(node_disk_read_bytes_total{job=\"$job\", instance=\"$node\"}[$__rate_interval])",
+          "expr": "{% raw %}irate(node_disk_read_bytes_total{job=\"$job\", instance=\"$node\"}[$__rate_interval]){% endraw %}",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "{{device}}_read",
+          "legendFormat": "{% raw %}{{device}}_read{% endraw %}",
           "range": true,
           "refId": "A",
           "step": 240
@@ -3742,10 +3742,10 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "irate(node_disk_written_bytes_total{job=\"$job\", instance=\"$node\"}[$__rate_interval])",
+          "expr": "{% raw %}irate(node_disk_written_bytes_total{job=\"$job\", instance=\"$node\"}[$__rate_interval]){% endraw %}",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "{{device}}_write",
+          "legendFormat": "{% raw %}{{device}}_write{% endraw %}",
           "range": true,
           "refId": "B",
           "step": 240
@@ -3785,7 +3785,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "â±ï¸ Uptime"
+              "options": "⏱️ Uptime"
             },
             "properties": [
               {
@@ -3801,7 +3801,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "ðŸ«™ Memory Total"
+              "options": "🫙 Memory Total"
             },
             "properties": [
               {
@@ -3813,7 +3813,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "ðŸ'¾ Disk Size"
+              "options": "💾 Disk Size"
             },
             "properties": [
               {
@@ -3860,9 +3860,9 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "avg(time() - node_boot_time_seconds{job=\"$job\", instance=\"$node\"})",
+          "expr": "{% raw %}avg(time() - node_boot_time_seconds{job=\"$job\", instance=\"$node\"}){% endraw %}",
           "instant": false,
-          "legendFormat": "â±ï¸ Uptime",
+          "legendFormat": "⏱️ Uptime",
           "range": true,
           "refId": "A"
         },
@@ -3872,10 +3872,10 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "count(node_cpu_seconds_total{job=\"$job\", instance=\"$node\", mode='system'})",
+          "expr": "{% raw %}count(node_cpu_seconds_total{job=\"$job\", instance=\"$node\", mode='system'}){% endraw %}",
           "hide": false,
           "instant": false,
-          "legendFormat": "ðŸ'Ž Core(s)",
+          "legendFormat": "💎 Core(s)",
           "range": true,
           "refId": "B"
         },
@@ -3885,10 +3885,10 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "max(node_filesystem_size_bytes{job=\"$job\", instance=\"$node\"})",
+          "expr": "{% raw %}max(node_filesystem_size_bytes{job=\"$job\", instance=\"$node\"}){% endraw %}",
           "hide": false,
           "instant": false,
-          "legendFormat": "ðŸ'¾ Disk Size",
+          "legendFormat": "💾 Disk Size",
           "range": true,
           "refId": "C"
         },
@@ -3898,10 +3898,10 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "sum(node_memory_MemTotal_bytes{job=\"$job\", instance=\"$node\"})",
+          "expr": "{% raw %}sum(node_memory_MemTotal_bytes{job=\"$job\", instance=\"$node\"}){% endraw %}",
           "hide": false,
           "instant": false,
-          "legendFormat": "ðŸ«™ Memory Total",
+          "legendFormat": "🫙 Memory Total",
           "range": true,
           "refId": "D"
         }
@@ -4257,7 +4257,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "node_netstat_Tcp_CurrEstab{job=\"$job\", instance=\"$node\"}",
+          "expr": "{% raw %}node_netstat_Tcp_CurrEstab{job=\"$job\", instance=\"$node\"}{% endraw %}",
           "interval": "",
           "legendFormat": "CurrEstab",
           "range": true,
@@ -4269,7 +4269,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "irate(node_netstat_Tcp_RetransSegs{job=\"$job\", instance=\"$node\"}[$__rate_interval])",
+          "expr": "{% raw %}irate(node_netstat_Tcp_RetransSegs{job=\"$job\", instance=\"$node\"}[$__rate_interval]){% endraw %}",
           "hide": false,
           "legendFormat": "Tcp_RetransSegs",
           "range": true,
@@ -4281,7 +4281,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "node_sockstat_sockets_used{job=\"$job\", instance=\"$node\"}",
+          "expr": "{% raw %}node_sockstat_sockets_used{job=\"$job\", instance=\"$node\"}{% endraw %}",
           "hide": false,
           "legendFormat": "sockets_used",
           "range": true,
@@ -4293,7 +4293,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "irate(node_netstat_Tcp_InSegs{job=\"$job\", instance=\"$node\"}[$__rate_interval])",
+          "expr": "{% raw %}irate(node_netstat_Tcp_InSegs{job=\"$job\", instance=\"$node\"}[$__rate_interval]){% endraw %}",
           "hide": false,
           "legendFormat": "Tcp_InSegs",
           "range": true,
@@ -4305,7 +4305,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "irate(node_netstat_Tcp_OutSegs{job=\"$job\", instance=\"$node\"}[$__rate_interval])",
+          "expr": "{% raw %}irate(node_netstat_Tcp_OutSegs{job=\"$job\", instance=\"$node\"}[$__rate_interval]){% endraw %}",
           "hide": false,
           "legendFormat": "Tcp_OutSegs",
           "range": true,
@@ -4317,7 +4317,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "node_sockstat_TCP_tw{job=\"$job\", instance=\"$node\"}",
+          "expr": "{% raw %}node_sockstat_TCP_tw{job=\"$job\", instance=\"$node\"}{% endraw %}",
           "hide": false,
           "legendFormat": "TCP_tw",
           "range": true,
@@ -4329,7 +4329,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "irate(node_netstat_TcpExt_ListenDrops{job=\"$job\", instance=\"$node\"}[$__rate_interval])",
+          "expr": "{% raw %}irate(node_netstat_TcpExt_ListenDrops{job=\"$job\", instance=\"$node\"}[$__rate_interval]){% endraw %}",
           "hide": false,
           "legendFormat": "TcpExt_ListenDrops",
           "range": true,
@@ -4341,7 +4341,7 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "node_sockstat_UDP_inuse{job=\"$job\", instance=\"$node\"}",
+          "expr": "{% raw %}node_sockstat_UDP_inuse{job=\"$job\", instance=\"$node\"}{% endraw %}",
           "hide": false,
           "legendFormat": "UDP_inuse",
           "range": true,
@@ -4838,10 +4838,10 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "irate(node_network_receive_bytes_total{job=\"$job\", instance=\"$node\"}[$__rate_interval]) * 8",
+          "expr": "{% raw %}irate(node_network_receive_bytes_total{job=\"$job\", instance=\"$node\"}[$__rate_interval]) * 8{% endraw %}",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "recv {{device}}",
+          "legendFormat": "{% raw %}recv {{device}}{% endraw %}",
           "range": true,
           "refId": "A",
           "step": 240
@@ -4852,10 +4852,10 @@
             "uid": "Metrics"
           },
           "editorMode": "code",
-          "expr": "irate(node_network_transmit_bytes_total{job=\"$job\", instance=\"$node\"}[$__rate_interval]) * 8",
+          "expr": "{% raw %}irate(node_network_transmit_bytes_total{job=\"$job\", instance=\"$node\"}[$__rate_interval]) * 8{% endraw %}",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "trans {{device}} ",
+          "legendFormat": "{% raw %}trans {{device}} {% endraw %}",
           "range": true,
           "refId": "B",
           "step": 240
@@ -4880,13 +4880,13 @@
           "type": "prometheus",
           "uid": "Metrics"
         },
-        "definition": "label_values(node_uname_info{job=\"$job\"}, instance)",
+        "definition": "{% raw %}label_values(node_uname_info{job=\"$job\"}, instance){% endraw %}",
         "includeAll": false,
         "label": "Host",
         "name": "node",
         "options": [],
         "query": {
-          "query": "label_values(node_uname_info{job=\"$job\"}, instance)",
+          "query": "{% raw %}label_values(node_uname_info{job=\"$job\"}, instance){% endraw %}",
           "refId": "Prometheus-node-Variable-Query"
         },
         "refresh": 1,

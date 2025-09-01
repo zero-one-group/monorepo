@@ -55,3 +55,15 @@ variables:
     default: 'CHANGEME_GRAFANA_PASSWORD'
     prompt: 'Grafana password (you can change it later)?'
     required: false
+
+  slack_token:
+    type: 'string'
+    default: 'CHANGEME_SLACK_TOKEN'
+    prompt: 'Slack token (you can change it later)?'
+    required: false
+
+  slack_channel_ID:
+    type: 'string'
+    default: 'CHANGEME_SLACK_CHANNEL_ID'
+    prompt: 'Slack channel ID (you can change it later)?'
+    required: false

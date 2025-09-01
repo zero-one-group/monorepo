@@ -1,6 +1,6 @@
 services:
   promtail:
-    image: grafana/promtail:3.5.1
+    image: grafana/promtail:3.5.2
     configs:
       - source: promtail_config
         target: /etc/promtail/promtail-config.yml
