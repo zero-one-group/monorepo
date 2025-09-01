@@ -167,7 +167,7 @@
           },
           "expr": "sum by (status) (count_over_time({job=~\"$job\", host=~\"$host\"} | json | __error__=\"\" [$__interval]))",
           "instant": false,
-          "legendFormat": "HTTP Status: {{status}}",
+          "legendFormat": "HTTP Status: {% raw %}{{status}}{% endraw %}",
           "range": true,
           "refId": "A"
         }
@@ -549,7 +549,7 @@
           },
           "direction": "backward",
           "editorMode": "code",
-          "expr": "{job=~\"$job\", host=~\"$host\"} | json | line_format \"[{{.geoip_country_code}}] {{.remote_addr}} {{.request_method}} {{.request_uri}} {{.status}} ({{.body_bytes_sent}}B) {{.request_time}}s\"",
+          "expr": "{job=~\"$job\", host=~\"$host\"} | json | line_format \"[{% raw %}{{.geoip_country_code}}{% endraw %}] {% raw %}{{.remote_addr}}{% endraw %} {% raw %}{{.request_method}}{% endraw %} {% raw %}{{.request_uri}}{% endraw %} {% raw %}{{.status}}{% endraw %} ({% raw %}{{.body_bytes_sent}}{% endraw %}B) {% raw %}{{.request_time}}{% endraw %}s\"",
           "legendFormat": "",
           "maxLines": 5000,
           "queryType": "range",
@@ -739,7 +739,7 @@
           },
           "expr": "sum by (geoip_country_code) (count_over_time({job=~\"$job\", host=~\"$host\"} | json | geoip_country_code != \"\" | __error__=\"\" [$__interval]))",
           "instant": false,
-          "legendFormat": "{{geoip_country_code}}",
+          "legendFormat": "{% raw %}{{geoip_country_code}}{% endraw %}",
           "range": true,
           "refId": "A"
         }
@@ -1083,7 +1083,7 @@
             "uid": "$datasource"
           },
           "expr": "sum by (status) (count_over_time({job=~\"$job\", host=~\"$host\"} | json | __error__=\"\" [$__interval]))",
-          "legendFormat": "HTTP Status {{status}}",
+          "legendFormat": "HTTP Status {% raw %}{{status}}{% endraw %}",
           "refId": "A"
         }
       ],

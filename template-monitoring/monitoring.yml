@@ -1,6 +1,6 @@
 services:
   grafana:
-    image: grafana/grafana:12.0.2
+    image: grafana/grafana:12.1.1
     deploy:
       mode: replicated
       replicas: 1
@@ -18,14 +18,20 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
     configs:
-      - source: grafana_datasources
-        target: /etc/grafana/provisioning/datasources/datasources.yml
-      - source: grafana_dashboard
-        target: /etc/grafana/provisioning/dashboards/dashboard.yml
-      - source: grafana_dashboard_vm
-        target: /etc/grafana/provisioning/dashboards/instance-dashboard.json
-      - source: grafana_dashboard_nginx
-        target: /etc/grafana/provisioning/dashboards/nginx-dashboard.json
+     - source: grafana_datasources
+       target: /etc/grafana/provisioning/datasources/datasources.yml
+     - source: grafana_dashboard
+       target: /etc/grafana/provisioning/dashboards/dashboard.yml
+     - source: grafana_dashboard_vm
+       target: /etc/grafana/provisioning/dashboards/instance-dashboard.json
+     - source: grafana_dashboard_nginx
+       target: /etc/grafana/provisioning/dashboards/nginx-dashboard.json
+     - source: grafana_alert_contact
+       target: /etc/grafana/provisioning/alerting/contact.yml
+     - source: grafana_alert_rules
+       target: /etc/grafana/provisioning/alerting/rules.yml
+     - source: grafana_alert_templates
+       target: /etc/grafana/provisioning/alerting/templates.yml
     environment:
       - GF_SERVER_HTTP_ADDR=0.0.0.0
       - GF_SERVER_HTTP_PORT=3000
@@ -35,7 +41,7 @@ services:
       - overlay-network
 
   victoriametrics:
-    image: victoriametrics/victoria-metrics:v1.120.0
+    image: victoriametrics/victoria-metrics:v1.124.0
     deploy:
       mode: replicated
       replicas: 1
@@ -56,30 +62,8 @@ services:
     networks:
       - overlay-network
 
-  victorialogs:
-    image: victoriametrics/victoria-logs:v1.23.3-victorialogs
-    deploy:
-      mode: replicated
-      replicas: 0
-      restart_policy:
-        condition: on-failure
-      placement:
-        constraints:
-          - node.labels.node_type==monitoring
-    ports:
-      - "9428:9428"
-    command:
-      - "--storageDataPath=/victoria-logs-data"
-      - "--retentionPeriod=7d"
-      - "--httpListenAddr=:9428"
-      - "--loggerLevel=INFO"
-    volumes:
-      - victorialogs_data:/victoria-logs-data
-    networks:
-      - overlay-network
-
   vmbackup:
-    image: victoriametrics/vmbackup:v1.120.0
+    image: victoriametrics/vmbackup:v1.124.0
     deploy:
       mode: replicated
       replicas: 0
@@ -100,7 +84,7 @@ services:
       - victoriametrics
 
   tempo:
-    image: grafana/tempo:2.8.1
+    image: grafana/tempo:2.8.2
     deploy:
       mode: replicated
       replicas: 1
@@ -125,7 +109,7 @@ services:
       - memcached-tempo
 
   pyroscope:
-    image: grafana/pyroscope:1.13.5
+    image: grafana/pyroscope:1.14.1
     deploy:
       mode: replicated
       replicas: 0
@@ -152,7 +136,7 @@ services:
       - tempo
 
   memcached-tempo:
-    image: memcached:1.6.38-bookworm
+    image: memcached:1.6.39-trixie
     deploy:
       mode: replicated
       replicas: 1
@@ -165,7 +149,7 @@ services:
       - overlay-network
 
   otelcol:
-    image: otel/opentelemetry-collector:0.128.0
+    image: otel/opentelemetry-collector:0.133.0
     deploy:
       mode: replicated
       replicas: 1
@@ -188,7 +172,7 @@ services:
       - victoriametrics
 
   promtail:
-    image: grafana/promtail:3.5.1
+    image: grafana/promtail:3.5.2
     configs:
       - source: promtail_config
         target: /etc/promtail/promtail-config.yml
@@ -204,7 +188,7 @@ services:
     user: "0"
 
   loki:
-    image: grafana/loki:3.5.1
+    image: grafana/loki:3.5.2
     command:
       - -config.file=/etc/loki/loki-config.yaml
     ports:
@@ -233,7 +217,7 @@ services:
       - memcached-loki
 
   memcached-loki:
-    image: memcached:1.6.38-bookworm
+    image: memcached:1.6.39-trixie
     deploy:
       mode: replicated
       replicas: 1
@@ -246,7 +230,7 @@ services:
       - overlay-network
 
   portainer:
-    image: portainer/portainer-ce:2.31.3
+    image: portainer/portainer-ce:2.33.1
     deploy:
       mode: replicated
       replicas: 1
@@ -282,6 +266,12 @@ configs:
     file: ./services/grafana/dashboards/instance-dashboard.json
   grafana_dashboard_nginx:
     file: ./services/grafana/dashboards/nginx-dashboard.json
+  grafana_alert_contact:
+    file: ./services/grafana/alerting/contact.yml
+  grafana_alert_rules:
+    file: ./services/grafana/alerting/rules.yml
+  grafana_alert_templates:
+    file: ./services/grafana/alerting/templates.yml
   loki_config:
     file: ./services/loki/loki-config.yml
   otelcol_config:

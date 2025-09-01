@@ -60,9 +60,9 @@ storage:
     wal:
       path: /var/tempo/wal  # Local WAL path
     s3:
-      bucket: lgtm-buckets-monitoring  # Replace with your bucket name
+      bucket: {{ bucket_names }}  # Replace with your bucket name
       endpoint: s3.amazonaws.com  # Or your S3-compatible endpoint
-      region: ap-southeast-1  # Replace with your region
+      region: {{ region }}  # Replace with your region
       prefix: tempo/traces  # Optional prefix for all S3 objects
 
 overrides:

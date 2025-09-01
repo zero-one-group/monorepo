@@ -17,25 +17,3 @@ project:
 # Since this project can infer task from script (package.json), then you can run any script as moon task.
 # @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
 # Example: `moon {{ package_name | kebab_case }}:start`
-tasks:
-  bastion:
-    command: 'ansible-playbook -i inventory.ini hardening-bastion.yml'
-    options:
-      mergeEnv: replace
-      runFromWorkspaceRoot: false
-      interactive: false
-      outputStyle: buffer-only-failure
-      runInCI: false
-      cache: false
-      shell: true
-
-  swarm:
-    command: 'ansible-playbook -i inventory.ini hardening-swarm.yml'
-    options:
-      mergeEnv: replace
-      runFromWorkspaceRoot: false
-      interactive: false
-      outputStyle: buffer-only-failure
-      runInCI: false
-      cache: false
-      shell: true

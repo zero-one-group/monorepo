@@ -21,36 +21,46 @@
       ssh -o StrictHostKeyChecking=no -i private_key.pem -o ProxyCommand="ssh -W %h:%p -i private_key.pem -o StrictHostKeyChecking=no $USERNAME_BASTION@$BASTION_HOST" $USERNAME@$SERVER_ADDRESS <<EOF
       source ~/{{ app_name }}/variable.txt
       cd ~/{{ app_name }}
-      aws ecr get-login-password --region {{ region }} | docker login --username AWS --password-stdin {{ aws_account_number }}.dkr.ecr.{{ region }}.amazonaws.com
 
       if [ "$ENVIRONMENT" = "production" ]; then
-          echo "Inside staging block"
-          docker stack deploy -c "docker-swarm-api-staging.yml" {{ app_name }} --with-registry-auth
-
+          echo "Inside production block"
+          docker stack deploy -c "docker-swarm-api-production.yml" {{ app_name }}
       fi
 
       if [ "$ENVIRONMENT" = "staging" ]; then
           echo "Inside staging block"
-          docker stack deploy -c "docker-swarm-api-staging.yml" {{ app_name }} --with-registry-auth
-
+          docker stack deploy -c "docker-swarm-api-staging.yml" {{ app_name }}
       fi
 
       if [ "$ENVIRONMENT" = "development" ]; then
           echo "Inside development block"
-          docker stack deploy -c "docker-swarm-api-development.yml" {{ app_name }} --with-registry-auth
+          docker stack deploy -c "docker-swarm-api-development.yml" {{ app_name }}
       fi
       EOF
 
-    # Migration Script
-    # Install manually go using gvm and node using nvm for specific version then check $PATH with echo $PATH after got the result then adjust on line 53, 65, 76
+    # Migration Script with snap-installed Go and Node.js
     - |
       ssh -o StrictHostKeyChecking=no -i private_key.pem -o ProxyCommand="ssh -W %h:%p -i private_key.pem -o StrictHostKeyChecking=no $USERNAME_BASTION@$BASTION_HOST" $USERNAME@$SERVER_ADDRESS <<EOF
+      # Install Go and Node.js via snap if not already installed
+      if ! command -v go >/dev/null 2>&1; then
+          sudo snap install go --classic
+      fi
+
+      if ! command -v node >/dev/null 2>&1; then
+          sudo snap install node --classic
+      fi
+
+      # Install pnpm globally if not already installed
+      if ! command -v pnpm >/dev/null 2>&1; then
+          sudo npm install -g pnpm
+      fi
+
       cd ~/{{ app_name }}
       cp .env ~/{{ app_name }}-repo/apps/api
-      source ~/imigrasi/variable.txt
+      source ~/{{ app_name }}/variable.txt
+
       if [ "$ENVIRONMENT" = "development" ]; then
           echo "Inside development block"
-          export PATH="/home/ubuntu/.gvm/pkgsets/go1.24.5/global/bin:/home/ubuntu/.gvm/gos/go1.24.5/bin:/home/ubuntu/.gvm/pkgsets/go1.24.5/global/overlay/bin:/home/ubuntu/.gvm/bin:/home/ubuntu/.nvm/versions/node/v22.17.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/ubuntu/.moon/bin"
           cd ~/{{ app_name }}-repo
           git fetch origin
           git stash
@@ -60,9 +70,9 @@
           echo "Running database migrations..."
           moon api:migration-up || { echo "Migration failed. Check for missing migrations."; exit 1; }
       fi
+
       if [ "$ENVIRONMENT" = "staging" ]; then
           echo "Inside staging block"
-          export PATH="/home/ubuntu/.gvm/pkgsets/go1.24.5/global/bin:/home/ubuntu/.gvm/gos/go1.24.5/bin:/home/ubuntu/.gvm/pkgsets/go1.24.5/global/overlay/bin:/home/ubuntu/.gvm/bin:/home/ubuntu/.nvm/versions/node/v22.17.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/ubuntu/.moon/bin"
           cd ~/{{ app_name }}-repo
           git fetch origin
           git stash
@@ -71,9 +81,9 @@
           echo "Running database migrations..."
           moon api:migration-up || { echo "Migration failed. Check for missing migrations."; exit 1; }
       fi
+
       if [ "$ENVIRONMENT" = "production" ]; then
-          echo "Inside prod block"
-          export PATH="/home/ubuntu/.gvm/pkgsets/go1.24.5/global/bin:/home/ubuntu/.gvm/gos/go1.24.5/bin:/home/ubuntu/.gvm/pkgsets/go1.24.5/global/overlay/bin:/home/ubuntu/.gvm/bin:/home/ubuntu/.nvm/versions/node/v22.17.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/ubuntu/.moon/bin"
+          echo "Inside production block"
           cd ~/{{ app_name }}-repo
           git fetch origin
           git stash
@@ -102,15 +112,29 @@
     - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-development-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-development.yml
     - rsync -avz -e 'ssh -o StrictHostKeyChecking=no -i private_key.pem -o ProxyCommand="ssh -W %h:%p -i private_key.pem -o StrictHostKeyChecking=no $USERNAME_BASTION@$BASTION_HOST"' $CI_PROJECT_DIR/infra/swarm/ $USERNAME@$SERVER_ADDRESS:./{{ app_name }}
 
-    # Seeder script
+    # Seeder script with snap-installed Go and Node.js
     - |
       ssh -o StrictHostKeyChecking=no -i private_key.pem -o ProxyCommand="ssh -W %h:%p -i private_key.pem -o StrictHostKeyChecking=no $USERNAME_BASTION@$BASTION_HOST" $USERNAME@$SERVER_ADDRESS <<EOF
+      # Install Go and Node.js via snap if not already installed
+      if ! command -v go >/dev/null 2>&1; then
+          sudo snap install go --classic
+      fi
+
+      if ! command -v node >/dev/null 2>&1; then
+          sudo snap install node --classic
+      fi
+
+      # Install pnpm globally if not already installed
+      if ! command -v pnpm >/dev/null 2>&1; then
+          sudo npm install -g pnpm
+      fi
+
       cd ~/{{ app_name }}
       cp .env ~/{{ app_name }}-repo/apps/api
       source ~/{{ app_name }}/variable.txt
+
       if [ "$ENVIRONMENT" = "development" ]; then
           echo "Inside development block"
-          export PATH="/home/ubuntu/.gvm/pkgsets/go1.24.5/global/bin:/home/ubuntu/.gvm/gos/go1.24.5/bin:/home/ubuntu/.gvm/pkgsets/go1.24.5/global/overlay/bin:/home/ubuntu/.gvm/bin:/home/ubuntu/.nvm/versions/node/v22.17.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/ubuntu/.moon/bin"
           cd ~/{{ app_name }}-repo
           git fetch origin
           git stash
@@ -120,9 +144,9 @@
           echo "Running database seeders..."
           moon api:seed || { echo "Seeder failed. Check for missing seeders."; exit 1; }
       fi
+
       if [ "$ENVIRONMENT" = "staging" ]; then
           echo "Inside staging block"
-          export PATH="/home/ubuntu/.gvm/pkgsets/go1.24.5/global/bin:/home/ubuntu/.gvm/gos/go1.24.5/bin:/home/ubuntu/.gvm/pkgsets/go1.24.5/global/overlay/bin:/home/ubuntu/.gvm/bin:/home/ubuntu/.nvm/versions/node/v22.17.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/ubuntu/.moon/bin"
           cd ~/{{ app_name }}-repo
           git fetch origin
           git stash
@@ -131,9 +155,9 @@
           echo "Running database seeders..."
           moon api:seed || { echo "Seeder failed. Check for missing seeders."; exit 1; }
       fi
+
       if [ "$ENVIRONMENT" = "production" ]; then
-          echo "Inside prod block"
-          export PATH="/home/ubuntu/.gvm/pkgsets/go1.24.5/global/bin:/home/ubuntu/.gvm/gos/go1.24.5/bin:/home/ubuntu/.gvm/pkgsets/go1.24.5/global/overlay/bin:/home/ubuntu/.gvm/bin:/home/ubuntu/.nvm/versions/node/v22.17.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/ubuntu/.moon/bin"
+          echo "Inside production block"
           cd ~/{{ app_name }}-repo
           git fetch origin
           git stash

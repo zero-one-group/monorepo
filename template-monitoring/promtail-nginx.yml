@@ -1,0 +1,18 @@
+services:
+  promtail:
+    image: grafana/promtail:3.5.2
+    volumes:
+      - ./services/promtail/promtail-config-nginx.yml:/etc/promtail/promtail-config.yml:ro
+      - /var/log:/var/log/host:ro
+      - ../load-balancer/logs:/var/log/nginx:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -config.file=/etc/promtail/promtail-config.yml
+    networks:
+      - load-balancer_nginx-net
+    user: "0"
+    restart: unless-stopped
+
+networks:
+  load-balancer_nginx-net:
+    external: true

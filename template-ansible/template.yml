@@ -38,6 +38,12 @@ variables:
     prompt: 'Bastion public IP (you can change it later)?'
     required: false
 
+  swarm_private_ip:
+    type: 'string'
+    default: 'CHANGEME_SWARM_IP_PRIVATE'
+    prompt: 'Swarm private IP (you can change it later)?'
+    required: false
+
   package_description:
     type: 'string'
     default: 'Ansible for automation and hardening server'

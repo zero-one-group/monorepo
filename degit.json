@@ -8,7 +8,7 @@
             "template-gitlab-cicd",
             "template-load-balancer",
             "template-monitoring",
-            "template-opentofu",
+            "template-terragrunt",
             "template-postgresql",
             "template-squidproxy",
             "template-swarm",

@@ -1,0 +1,30 @@
+# variables.yaml
+instance_types:
+  bastion: "t3a.micro"
+  master: "t3a.small"
+  worker: "t3a.small"
+  master-dev-staging: "t3a.micro"
+  worker-dev-staging: "t3a.micro"
+  monitoring: "t3a.medium"
+  database: "t3a.medium"
+  database-dev-staging: "t3a.small"
+  nginx: "t3a.medium"
+  nginx-dev-staging: "t3a.small"
+
+volumes:
+  bastion: 10
+  master: 20
+  monitoring: 30
+  worker: 20
+  database: 30
+  nginx: 30
+  database-dev-staging: 30
+
+user_data_files:
+  bastion: "user-data.sh"
+  master: "user-data-master.sh"
+  master_join: "user-data-master-join.sh"
+  worker: "user-data-worker.sh"
+  nginx: "user-data-nginx.sh"
+
+ubuntu_noble_ami: "ami-08e7e250e7e3deb9b"

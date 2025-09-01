@@ -1,6 +1,6 @@
 services:
   postgresql:
-    image: prihuda22/postgresql:17.5-alpine3.22
+    image: prihuda22/postgresql:17.6-ubuntu2404
     ports:
       - target: 5432
         published: 5432
