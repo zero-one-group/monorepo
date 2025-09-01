@@ -62,12 +62,23 @@ func (us *UserService) UpdateUser(
 	u *domain.User,
 ) (*domain.User, error) {
 
-	updatedUser, err := us.userRepo.UpdateUser(ctx, id, u)
+	existing, err := us.userRepo.GetUser(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	if existing == nil {
+		return nil, domain.ErrUserNotFound
+	}
+
+	existing.Name = u.Name
+	existing.Email = u.Email
+
+	_, err = us.userRepo.UpdateUser(ctx, id, existing)
 	if err != nil {
 		return nil, err
 	}
 
-	return updatedUser, nil
+	return existing, nil
 }
 
 // DeleteUser removes a user by ID.
@@ -76,7 +87,15 @@ func (us *UserService) DeleteUser(
 	id uuid.UUID,
 ) error {
 
-	err := us.userRepo.DeleteUser(ctx, id)
+	user, err := us.userRepo.GetUser(ctx, id)
+	if err != nil {
+		return err
+	}
+	if user == nil {
+		return domain.ErrUserNotFound
+	}
+
+	err = us.userRepo.DeleteUser(ctx, id)
 	if err != nil {
 		return err
 	}

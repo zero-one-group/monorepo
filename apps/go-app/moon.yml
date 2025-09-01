@@ -108,3 +108,8 @@ tasks:
       shell: true
       runInCI: false
       cache: false
+
+  generate-swagger:
+    command: "swag init -o docs --parseDependency"
+    options:
+      cache: false

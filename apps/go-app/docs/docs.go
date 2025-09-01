@@ -14,7 +14,164 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/api/v1/auth/login": {
+            "post": {
+                "description": "Authenticate user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users Authentication"
+                ],
+                "summary": "Login In",
+                "parameters": [
+                    {
+                        "description": "User signin credentials",
+                        "name": "json",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully logged in",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ResponseSingleData-domain_LoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ResponseSingleData-domain_Empty"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ResponseSingleData-domain_Empty"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ResponseSingleData-domain_Empty"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "domain.Empty": {
+            "type": "object"
+        },
+        "domain.LoginRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/domain.User"
+                }
+            }
+        },
+        "domain.ResponseSingleData-domain_Empty": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "number",
+                    "type": "integer"
+                },
+                "data": {
+                    "description": "of data",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.Empty"
+                        }
+                    ]
+                },
+                "message": {
+                    "description": "string",
+                    "type": "string"
+                }
+            }
+        },
+        "domain.ResponseSingleData-domain_LoginResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "number",
+                    "type": "integer"
+                },
+                "data": {
+                    "description": "of data",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.LoginResponse"
+                        }
+                    ]
+                },
+                "message": {
+                    "description": "string",
+                    "type": "string"
+                }
+            }
+        },
+        "domain.User": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Enter your bearer token in the format **Bearer \u003ctoken\u003e**",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it

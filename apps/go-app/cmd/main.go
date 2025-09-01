@@ -3,10 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 	"go-app/cmd/commands"
 	"go-app/config"
 	"go-app/internal/logging"
-	"os"
 )
 
 func init() {

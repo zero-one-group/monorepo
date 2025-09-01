@@ -123,18 +123,25 @@ func TestUserService_UpdateUser(t *testing.T) {
 
 	ctx := context.Background()
 	userID := uuid.New()
+	existingUser := &domain.User{
+		ID:    userID.String(),
+		Name:  "Old Name",
+		Email: "old@example.com",
+	}
 	updateReq := &domain.User{
 		Name:  "New Name",
 		Email: "new@example.com",
 	}
 
 	t.Run("Successfully updates a user", func(t *testing.T) {
+		mockUserRepo.On("GetUser", mock.Anything, userID).Return(existingUser, nil).Once()
+
 		expectedUpdatedUser := &domain.User{
 			ID:    userID.String(),
 			Name:  updateReq.Name,
 			Email: updateReq.Email,
 		}
-		mockUserRepo.On("UpdateUser", mock.Anything, userID, updateReq).Return(expectedUpdatedUser, nil).Once()
+		mockUserRepo.On("UpdateUser", mock.Anything, userID, expectedUpdatedUser).Return(expectedUpdatedUser, nil).Once()
 
 		user, err := userService.UpdateUser(ctx, userID, updateReq)
 
@@ -150,7 +157,7 @@ func TestUserService_UpdateUser(t *testing.T) {
 		mockUserRepo = new(mocks.UserRepository)
 		userService = service.NewUserService(mockUserRepo)
 
-		mockUserRepo.On("UpdateUser", mock.Anything, userID, updateReq).Return(nil, domain.ErrUserNotFound).Once()
+		mockUserRepo.On("GetUser", mock.Anything, userID).Return(nil, nil).Once()
 
 		user, err := userService.UpdateUser(ctx, userID, updateReq)
 
@@ -160,12 +167,12 @@ func TestUserService_UpdateUser(t *testing.T) {
 		mockUserRepo.AssertExpectations(t)
 	})
 
-	t.Run("Returns error if UpdateUser fails", func(t *testing.T) {
+	t.Run("Returns error if GetUser fails", func(t *testing.T) {
 		mockUserRepo = new(mocks.UserRepository)
 		userService = service.NewUserService(mockUserRepo)
 
-		repoErr := errors.New("update user repo error")
-		mockUserRepo.On("UpdateUser", mock.Anything, userID, updateReq).Return(nil, repoErr).Once()
+		repoErr := errors.New("get user repo error")
+		mockUserRepo.On("GetUser", mock.Anything, userID).Return(nil, repoErr).Once()
 
 		user, err := userService.UpdateUser(ctx, userID, updateReq)
 
@@ -176,6 +183,28 @@ func TestUserService_UpdateUser(t *testing.T) {
 		mockUserRepo.AssertExpectations(t)
 	})
 
+	t.Run("Returns error if UpdateUser fails", func(t *testing.T) {
+		mockUserRepo = new(mocks.UserRepository)
+		userService = service.NewUserService(mockUserRepo)
+
+		mockUserRepo.On("GetUser", mock.Anything, userID).Return(existingUser, nil).Once()
+
+		repoErr := errors.New("update user repo error")
+		expectedUpdatedUser := &domain.User{
+			ID:    userID.String(),
+			Name:  updateReq.Name,
+			Email: updateReq.Email,
+		}
+		mockUserRepo.On("UpdateUser", mock.Anything, userID, expectedUpdatedUser).Return(nil, repoErr).Once()
+
+		user, err := userService.UpdateUser(ctx, userID, updateReq)
+
+		assert.Error(t, err)
+		assert.Nil(t, user)
+		assert.Equal(t, repoErr, err)
+
+		mockUserRepo.AssertExpectations(t)
+	})
 }
 
 func TestUserService_DeleteUser(t *testing.T) {
@@ -184,8 +213,14 @@ func TestUserService_DeleteUser(t *testing.T) {
 
 	ctx := context.Background()
 	userID := uuid.New()
+	existingUser := &domain.User{
+		ID:    userID.String(),
+		Name:  "User to delete",
+		Email: "delete@example.com",
+	}
 
 	t.Run("Successfully deletes a user", func(t *testing.T) {
+		mockUserRepo.On("GetUser", mock.Anything, userID).Return(existingUser, nil).Once()
 		mockUserRepo.On("DeleteUser", mock.Anything, userID).Return(nil).Once()
 
 		err := userService.DeleteUser(ctx, userID)
@@ -198,7 +233,7 @@ func TestUserService_DeleteUser(t *testing.T) {
 		mockUserRepo = new(mocks.UserRepository)
 		userService = service.NewUserService(mockUserRepo)
 
-		mockUserRepo.On("DeleteUser", mock.Anything, userID).Return(domain.ErrUserNotFound).Once()
+		mockUserRepo.On("GetUser", mock.Anything, userID).Return(nil, nil).Once()
 
 		err := userService.DeleteUser(ctx, userID)
 
@@ -206,10 +241,25 @@ func TestUserService_DeleteUser(t *testing.T) {
 		mockUserRepo.AssertExpectations(t)
 	})
 
+	t.Run("Returns error if GetUser fails", func(t *testing.T) {
+		mockUserRepo = new(mocks.UserRepository)
+		userService = service.NewUserService(mockUserRepo)
+
+		repoErr := errors.New("get user repo error during delete")
+		mockUserRepo.On("GetUser", mock.Anything, userID).Return(nil, repoErr).Once()
+
+		err := userService.DeleteUser(ctx, userID)
+
+		assert.Error(t, err)
+		assert.Equal(t, repoErr, err)
+		mockUserRepo.AssertExpectations(t)
+	})
+
 	t.Run("Returns error if DeleteUser fails", func(t *testing.T) {
 		mockUserRepo = new(mocks.UserRepository)
 		userService = service.NewUserService(mockUserRepo)
 
+		mockUserRepo.On("GetUser", mock.Anything, userID).Return(existingUser, nil).Once()
 		repoErr := errors.New("delete user repo error")
 		mockUserRepo.On("DeleteUser", mock.Anything, userID).Return(repoErr).Once()
 
@@ -219,7 +269,6 @@ func TestUserService_DeleteUser(t *testing.T) {
 		assert.Equal(t, repoErr, err)
 		mockUserRepo.AssertExpectations(t)
 	})
-
 }
 
 func TestUserService_GetUserList(t *testing.T) {

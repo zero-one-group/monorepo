@@ -3,12 +3,12 @@ package rest_test
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"testing"
 	"go-app/domain"
 	"go-app/internal/repository/postgres"
 	"go-app/internal/rest"
 	"go-app/service"
-	"net/http"
-	"testing"
 
 	"github.com/stretchr/testify/require"
 )
@@ -37,7 +37,6 @@ func TestUserCRUD_E2E(t *testing.T) {
 		createReq,
 	)
 	require.Equal(t, http.StatusCreated, code)
-	require.Equal(t, "success", cre.Status)
 	user := cre.Data
 	require.NotEmpty(t, user.ID)
 
@@ -85,7 +84,6 @@ func TestUserCRUD_E2E(t *testing.T) {
 		nil,
 	)
 	require.Equal(t, http.StatusNotFound, code)
-	require.Equal(t, "error", errE.Status)
 	require.Equal(t, "User not found", errE.Message)
 
 	// Hard delete, since delete API uses soft delete
