@@ -2,8 +2,8 @@ package rest
 
 import (
 	"context"
-	"go-app/domain"
 	"net/http"
+	"go-app/domain"
 
 	"github.com/labstack/echo/v4"
 )

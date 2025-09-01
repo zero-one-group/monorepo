@@ -10,7 +10,6 @@ import (
 
 type AuthService interface {
 	Login(ctx context.Context, email, password string) (*domain.LoginResponse, error)
-	ValidateToken(token string) (string, error)
 }
 
 type AuthHandler struct {

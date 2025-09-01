@@ -1,0 +1,115 @@
+# https://moonrepo.dev/docs/config/project
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
+$schema: "https://moonrepo.dev/schemas/project.json"
+
+type: application
+language: go
+toolchain:
+  default: null
+stack: backend
+tags: ["app"]
+
+# Overrides the name (identifier) of the project
+id: "go-app"
+
+project:
+  name: "go-app"
+  description: "My backend application"
+
+env:
+  APP_PREFIX: "$(jq -r .name <$workspaceRoot'/package.json')"
+  APP_VERSION: "$(jq -r .version <$workspaceRoot'/package.json')"
+  IMAGE_NAME: "$APP_PREFIX-$project"
+
+tasks:
+  dev:
+    command: "air -c air.toml"
+    deps: [kill-port]
+    options:
+      envFile: "/.env"
+
+  build:
+    command: "go build -o build/go-app"
+    outputs: ["build/go-app"]
+    deps: [tidy]
+
+  start:
+    command: "build/go-app"
+
+  test:
+    command: "go test ./... -count=1"
+    deps: ["tidy", "generate-mock"]
+    options:
+      cache: false
+
+  fmt:
+    command: "gofmt -s -w ."
+    options:
+      cache: false
+
+  generate-mock:
+    command: "mockery"
+    options:
+      cache: false
+
+  tidy:
+    command: "go mod tidy && go mod vendor"
+
+  kill-port:
+    # This is a hack for killing the listen port before starting the app
+    command: "pnpm --package=kill-port-process-cli dlx kill-port 8000"
+    deps: [tidy]
+    options:
+      internal: true
+
+  docker-run:
+    command: "docker run --network=host --rm -it --env-file .env --name $IMAGE_NAME $IMAGE_NAME:$APP_VERSION"
+    options:
+      mergeEnv: replace
+      runFromWorkspaceRoot: true
+      interactive: false
+      outputStyle: buffer-only-failure
+      runInCI: false
+      cache: false
+      shell: true
+
+  docker-shell:
+    command: "docker run --network=host --rm -it --env-file .env --entrypoint /bin/sh $IMAGE_NAME:$APP_VERSION"
+    options:
+      mergeEnv: replace
+      runFromWorkspaceRoot: true
+      interactive: false
+      outputStyle: buffer-only-failure
+      runInCI: false
+      cache: false
+      shell: true
+
+  migration-create:
+    command: "go run ./cmd/ migrate create"
+
+  migration-up:
+    command: "go run ./cmd/ migrate up"
+
+  migration-down:
+    command: "go run ./cmd/ migrate down"
+
+  migration-reset:
+    command: "go run ./cmd/ migrate reset"
+
+  migration-version:
+    command: "go run ./cmd/ migrate version"
+
+  seed:
+    command: "go run ./cmd/ seed"
+
+  install-mockery:
+    command: "../../.moon/scripts/install_mockery.sh v3.5.1"
+    options:
+      shell: true
+      runInCI: false
+      cache: false
+
+  generate-swagger:
+    command: "swag init -o docs --parseDependency"
+    options:
+      cache: false

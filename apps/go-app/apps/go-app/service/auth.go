@@ -7,7 +7,7 @@ import (
 	"os"
 	"strconv"
 	"time"
-	"{{ package_name }}/domain"
+	"go-app/domain"
 
 	"github.com/golang-jwt/jwt/v5"
 )
