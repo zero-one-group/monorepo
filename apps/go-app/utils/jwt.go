@@ -1,18 +1,18 @@
 package utils
 
 import (
+	"go-app/domain"
 	"log/slog"
 	"os"
 	"strconv"
 	"time"
-	"go-app/domain"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
 func GenerateToken(userID string, email string) (string, string, error) {
 	secret := []byte(os.Getenv("JWT_SECRET"))
-	expiryTime, err := strconv.Atoi(os.Getenv("AUTH_TOKEN_EXPIRY_MINUTES"))
+	expiryTime, err := strconv.Atoi(os.Getenv("JWT_TOKEN_EXPIRY_MINUTES"))
 	if err != nil {
 		expiryTime = 60
 	}
