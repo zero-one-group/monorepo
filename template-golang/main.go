@@ -14,13 +14,13 @@ import (
 	"{{ package_name }}/database"
 	"{{ package_name }}/domain"
 	"{{ package_name }}/internal/logging"
-	"{{ package_name }}/internal/metrics"
 	"{{ package_name }}/internal/repository/postgres"
 	"{{ package_name }}/internal/rest"
 	"{{ package_name }}/internal/rest/middleware"
 	"{{ package_name }}/service"
 
 	"github.com/labstack/echo/v4"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 func init() {
@@ -63,7 +63,6 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, domain.Response{
 			Code:    200,
-			Status:  "Succes",
 			Message: "All is well!",
 		})
 	})
@@ -74,8 +73,18 @@ func main() {
 	authRepo := postgres.NewAuthRepository(dbPool)
 	authSevice := service.NewAuthService(authRepo)
 
+	// Swagger
+	enableSwagger := os.Getenv("ENABLE_SWAGGER")
+	if enableSwagger == "true" {
+		// @securityDefinitions.apikey BearerAuth
+		// @in header
+		// @name Authorization
+		// @description Enter your bearer token in the format **Bearer <token>**
+		e.GET("/swagger/*", echoSwagger.WrapHandler)
+	}
+
 	apiV1 := e.Group("/api/v1")
-	usersGroup := apiV1.Group("/users")
+	usersGroup := apiV1.Group("/users", middleware.ValidateUserToken())
 	authGroup := apiV1.Group("/auth")
 
 	rest.NewUserHandler(usersGroup, userService)

@@ -53,7 +53,6 @@ func (h *UserHandler) GetUserList(c echo.Context) error {
 		logging.LogError(ctx, err, "get_user_list")
 		return c.JSON(http.StatusInternalServerError, domain.ResponseMultipleData[domain.Empty]{
 			Code:    http.StatusInternalServerError,
-			Status:  "error",
 			Message: "Failed to list users: " + err.Error(),
 		})
 	}
@@ -64,7 +63,6 @@ func (h *UserHandler) GetUserList(c echo.Context) error {
 	return c.JSON(http.StatusOK, domain.ResponseMultipleData[domain.User]{
 		Data:    users,
 		Code:    http.StatusOK,
-		Status:  "Success",
 		Message: "Successfully retrieve user list",
 	})
 }
@@ -81,7 +79,6 @@ func (h *UserHandler) GetUser(c echo.Context) error {
 		span.SetStatus(codes.Error, "invalid UUID")
 		return c.JSON(http.StatusBadRequest, domain.ResponseSingleData[domain.Empty]{
 			Code:    http.StatusBadRequest,
-			Status:  "error",
 			Message: "Invalid user ID format",
 		})
 	}
@@ -94,7 +91,6 @@ func (h *UserHandler) GetUser(c echo.Context) error {
 			span.SetStatus(codes.Error, "not found")
 			return c.JSON(http.StatusNotFound, domain.ResponseSingleData[domain.Empty]{
 				Code:    http.StatusNotFound,
-				Status:  "error",
 				Message: "User not found",
 			})
 		}
@@ -103,7 +99,6 @@ func (h *UserHandler) GetUser(c echo.Context) error {
 		logging.LogError(ctx, err, "get_user")
 		return c.JSON(http.StatusInternalServerError, domain.ResponseSingleData[domain.Empty]{
 			Code:    http.StatusInternalServerError,
-			Status:  "error",
 			Message: "Failed to get user: " + err.Error(),
 		})
 	}
@@ -111,7 +106,6 @@ func (h *UserHandler) GetUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, domain.ResponseSingleData[domain.User]{
 		Data:    *user,
 		Code:    http.StatusOK,
-		Status:  "success",
 		Message: "Successfully retrieved user",
 	})
 }
@@ -121,7 +115,6 @@ func (h *UserHandler) CreateUser(c echo.Context) error {
 	if err := c.Bind(&user); err != nil {
 		return c.JSON(http.StatusBadRequest, domain.ResponseSingleData[domain.Empty]{
 			Code:    http.StatusBadRequest,
-			Status:  "error",
 			Message: "Invalid request payload",
 		})
 	}
@@ -132,7 +125,6 @@ func (h *UserHandler) CreateUser(c echo.Context) error {
 		logging.LogError(ctx, err, "create_user")
 		return c.JSON(http.StatusInternalServerError, domain.ResponseSingleData[domain.Empty]{
 			Code:    http.StatusInternalServerError,
-			Status:  "error",
 			Message: "Failed to create user: " + err.Error(),
 		})
 	}
@@ -140,7 +132,6 @@ func (h *UserHandler) CreateUser(c echo.Context) error {
 	return c.JSON(http.StatusCreated, domain.ResponseSingleData[domain.User]{
 		Data:    *createdUser,
 		Code:    http.StatusCreated,
-		Status:  "success",
 		Message: "User successfully created",
 	})
 }
@@ -151,7 +142,6 @@ func (h *UserHandler) UpdateUser(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, domain.ResponseSingleData[domain.Empty]{
 			Code:    http.StatusBadRequest,
-			Status:  "error",
 			Message: "Invalid user ID format",
 		})
 	}
@@ -160,7 +150,6 @@ func (h *UserHandler) UpdateUser(c echo.Context) error {
 	if err := c.Bind(&user); err != nil {
 		return c.JSON(http.StatusBadRequest, domain.ResponseSingleData[domain.Empty]{
 			Code:    http.StatusBadRequest,
-			Status:  "error",
 			Message: "Invalid request payload",
 		})
 	}
@@ -171,7 +160,6 @@ func (h *UserHandler) UpdateUser(c echo.Context) error {
 		logging.LogError(ctx, err, "update_user")
 		return c.JSON(http.StatusInternalServerError, domain.ResponseSingleData[domain.Empty]{
 			Code:    http.StatusInternalServerError,
-			Status:  "error",
 			Message: "Failed to update user: " + err.Error(),
 		})
 	}
@@ -179,7 +167,6 @@ func (h *UserHandler) UpdateUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, domain.ResponseSingleData[domain.User]{
 		Data:    *updatedUser,
 		Code:    http.StatusOK,
-		Status:  "success",
 		Message: "User successfully updated",
 	})
 }
@@ -190,7 +177,6 @@ func (h *UserHandler) DeleteUser(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, domain.ResponseSingleData[domain.Empty]{
 			Code:    http.StatusBadRequest,
-			Status:  "error",
 			Message: "Invalid user ID format",
 		})
 	}
@@ -200,14 +186,12 @@ func (h *UserHandler) DeleteUser(c echo.Context) error {
 		logging.LogError(ctx, err, "delete_user")
 		return c.JSON(http.StatusInternalServerError, domain.ResponseSingleData[domain.Empty]{
 			Code:    http.StatusInternalServerError,
-			Status:  "error",
 			Message: "Failed to delete user: " + err.Error(),
 		})
 	}
 
 	return c.JSON(http.StatusNoContent, domain.ResponseSingleData[domain.Empty]{
 		Code:    http.StatusNoContent,
-		Status:  "success",
 		Message: "User successfully deleted",
 	})
 }
