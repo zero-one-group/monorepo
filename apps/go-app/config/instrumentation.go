@@ -3,12 +3,12 @@ package config
 import (
 	"context"
 	"fmt"
-	"go-app/internal/metrics"
-	"go-app/internal/rest/middleware"
 	"log/slog"
 	"os"
 	"strconv"
 	"time"
+	"go-app/internal/metrics"
+	"go-app/internal/rest/middleware"
 
 	"github.com/labstack/echo-contrib/echoprometheus"
 	"github.com/labstack/echo/v4"

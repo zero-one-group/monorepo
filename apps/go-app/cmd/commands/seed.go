@@ -5,9 +5,9 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log/slog"
 	"go-app/internal/logging"
 	"go-app/seeders"
-	"log/slog"
 )
 
 func runSeeder(db *sql.DB, target string) error {

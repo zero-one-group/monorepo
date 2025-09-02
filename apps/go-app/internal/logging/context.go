@@ -2,8 +2,8 @@ package logging
 
 import (
 	"context"
-	"go-app/internal/rest/middleware"
 	"log/slog"
+	"go-app/internal/rest/middleware"
 )
 
 // UserInfo holds user context information for logging

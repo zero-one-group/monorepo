@@ -107,6 +107,12 @@ moon run go-app:test
 
 NOTE: Everytime test run, it will automatically generate mock
 
+##### 3. Generate documentation
+
+```bash
+moon run go-app:generate-swagger
+```
+
 ## Production
 
 ### Instrumentation

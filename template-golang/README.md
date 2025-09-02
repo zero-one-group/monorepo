@@ -107,6 +107,12 @@ moon run {{ package_name | kebab_case }}:test
 
 NOTE: Everytime test run, it will automatically generate mock
 
+##### 3. Generate documentation
+
+```bash
+moon run {{ package_name | kebab_case }}:generate-swagger
+```
+
 ## Production
 
 ### Instrumentation

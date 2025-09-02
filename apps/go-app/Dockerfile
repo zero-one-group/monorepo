@@ -87,3 +87,4 @@ EXPOSE $PORT
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["/srv/go-app"]
+

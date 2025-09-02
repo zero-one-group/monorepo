@@ -8,18 +8,19 @@ import (
 	"os"
 	"os/signal"
 	"time"
+	"go-app/internal/metrics"
 
 	"go-app/config"
 	"go-app/database"
 	"go-app/domain"
 	"go-app/internal/logging"
-	"go-app/internal/metrics"
 	"go-app/internal/repository/postgres"
 	"go-app/internal/rest"
 	"go-app/internal/rest/middleware"
 	"go-app/service"
 
 	"github.com/labstack/echo/v4"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 func init() {
@@ -62,17 +63,32 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, domain.Response{
 			Code:    200,
-			Status:  "Succes",
 			Message: "All is well!",
 		})
 	})
+
 	userRepo := postgres.NewUserRepository(dbPool, appMetrics)
 	userService := service.NewUserService(userRepo)
 
+	authRepo := postgres.NewAuthRepository(dbPool)
+	authSevice := service.NewAuthService(authRepo)
+
+	// Swagger
+	enableSwagger := os.Getenv("ENABLE_SWAGGER")
+	if enableSwagger == "true" {
+		// @securityDefinitions.apikey BearerAuth
+		// @in header
+		// @name Authorization
+		// @description Enter your bearer token in the format **Bearer <token>**
+		e.GET("/swagger/*", echoSwagger.WrapHandler)
+	}
+
 	apiV1 := e.Group("/api/v1")
-	usersGroup := apiV1.Group("")
+	usersGroup := apiV1.Group("/users", middleware.ValidateUserToken())
+	authGroup := apiV1.Group("/auth")
 
 	rest.NewUserHandler(usersGroup, userService)
+	rest.NewAuthHandler(authGroup, authSevice)
 
 	// Get host from environment variable, default to 127.0.0.1 if not set
 	host := os.Getenv("APP_HOST")
