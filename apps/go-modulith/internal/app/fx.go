@@ -4,14 +4,14 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/zero-one-group/go-modulith/internal/auth"
 	"github.com/zero-one-group/go-modulith/internal/config"
 	"github.com/zero-one-group/go-modulith/internal/database"
 	"github.com/zero-one-group/go-modulith/internal/logger"
 	"github.com/zero-one-group/go-modulith/internal/migration"
-	"github.com/zero-one-group/go-modulith/internal/product"
+	"github.com/zero-one-group/go-modulith/internal/module/auth"
+	"github.com/zero-one-group/go-modulith/internal/module/product"
+	"github.com/zero-one-group/go-modulith/internal/module/user"
 	"github.com/zero-one-group/go-modulith/internal/telemetry"
-	"github.com/zero-one-group/go-modulith/internal/user"
 	"github.com/zero-one-group/go-modulith/internal/validator"
 	"go.uber.org/fx"
 )

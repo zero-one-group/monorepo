@@ -7,14 +7,14 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/zero-one-group/go-modulith/internal/auth"
 	"github.com/zero-one-group/go-modulith/internal/config"
-	"github.com/zero-one-group/go-modulith/internal/product"
 	"github.com/zero-one-group/go-modulith/internal/database"
 	"github.com/zero-one-group/go-modulith/internal/errors"
 	custommiddleware "github.com/zero-one-group/go-modulith/internal/middleware"
+	"github.com/zero-one-group/go-modulith/internal/module/auth"
+	"github.com/zero-one-group/go-modulith/internal/module/product"
+	"github.com/zero-one-group/go-modulith/internal/module/user"
 	"github.com/zero-one-group/go-modulith/internal/validator"
-	"github.com/zero-one-group/go-modulith/internal/user"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/labstack/echo/otelecho"
 )
 

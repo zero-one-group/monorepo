@@ -35,9 +35,10 @@ A production-ready modular monolith REST API built with Go, featuring authentica
 │   ├── server/          # HTTP server entry point
 │   └── migrate/         # Database migration tool
 ├── internal/
-│   ├── auth/            # Authentication module
-│   ├── user/            # User management module
-│   ├── product/         # Product management module
+│   ├── module/
+│   │   ├── auth/        # Authentication module
+│   │   ├── user/        # User management module
+│   │   └── product/     # Product management module
 │   ├── database/        # Database connection and utilities
 │   ├── errors/          # Error handling
 │   ├── logger/          # Structured logging
