@@ -1,0 +1,330 @@
+version: '3'
+
+vars:
+  BINARY_NAME: go-modulith
+  DOCKER_IMAGE: go-modulith
+  DOCKER_TAG: latest
+
+tasks:
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list-all
+
+  # Application tasks
+  app:run:
+    desc: Run the application
+    deps: [db:start]
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: go_modulith
+      DB_SSL_MODE: disable
+      JWT_SECRET: super-secret-jwt-key-for-development
+      LOG_LEVEL: info
+      ENVIRONMENT: development
+    cmds:
+      - go run ./cmd/server
+
+  app:build:
+    desc: Build the application binary
+    cmds:
+      - go build -o bin/{{.BINARY_NAME}} ./cmd/server
+      - go build -o bin/migrate ./cmd/migrate
+
+  app:clean:
+    desc: Clean build artifacts
+    cmds:
+      - rm -rf bin/
+      - rm -f coverage.out coverage.html
+
+  app:install:
+    desc: Download and install dependencies
+    cmds:
+      - go mod download
+      - go mod tidy
+
+  # Database tasks
+  db:start:
+    desc: Start database services
+    cmds:
+      - docker-compose -f docker-compose.dev.yml up -d postgres redis jaeger
+
+  db:stop:
+    desc: Stop database services
+    cmds:
+      - docker-compose -f docker-compose.dev.yml down
+
+  db:logs:
+    desc: Show database logs
+    cmds:
+      - docker-compose -f docker-compose.dev.yml logs -f postgres
+
+  db:migrate-up:
+    desc: Run database migrations
+    deps: [db:start]
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: go_modulith
+      DB_SSL_MODE: disable
+    cmds:
+      - sleep 5  # Wait for database to be ready
+      - go run ./cmd/migrate -up
+
+  db:migrate-down:
+    desc: Rollback last database migration
+    deps: [db:start]
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: go_modulith
+      DB_SSL_MODE: disable
+    cmds:
+      - go run ./cmd/migrate -down
+
+  db:migrate-status:
+    desc: Show migration status
+    deps: [db:start]
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: go_modulith
+      DB_SSL_MODE: disable
+    cmds:
+      - go run ./cmd/migrate -status
+
+  db:migrate-reset:
+    desc: Reset all migrations
+    deps: [db:start]
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: go_modulith
+      DB_SSL_MODE: disable
+    cmds:
+      - go run ./cmd/migrate -reset
+
+  db:connect:
+    desc: Connect to database with psql
+    cmds:
+      - docker exec -it $(docker-compose -f docker-compose.dev.yml ps -q postgres) psql -U postgres -d go_modulith
+
+  # Docker tasks
+  docker:build:
+    desc: Build Docker image
+    cmds:
+      - docker build -t {{.DOCKER_IMAGE}}:{{.DOCKER_TAG}} .
+
+  docker:run:
+    desc: Run application with Docker Compose
+    cmds:
+      - docker-compose up --build
+
+  docker:run-detached:
+    desc: Run application with Docker Compose in background
+    cmds:
+      - docker-compose up -d --build
+
+  docker:down:
+    desc: Stop Docker Compose services
+    cmds:
+      - docker-compose down
+
+  docker:logs:
+    desc: Show Docker Compose logs
+    cmds:
+      - docker-compose logs -f
+
+  docker:clean:
+    desc: Clean Docker resources
+    cmds:
+      - docker-compose down -v --rmi all
+      - docker system prune -f
+
+  # Development tasks
+  dev:setup:
+    desc: Set up development environment
+    cmds:
+      - task: app:install
+      - task: db:start
+      - task: db:migrate-up
+      - echo "Development environment ready!"
+      - echo "Run task app:run to start the application"
+
+  dev:reset:
+    desc: Reset development environment
+    cmds:
+      - task: docker:clean
+      - task: app:clean
+      - task: dev:setup
+
+  # Testing tasks
+  test:unit:
+    desc: Run unit tests
+    cmds:
+      - go test -v ./...
+
+  test:integration:
+    desc: Run integration tests
+    deps: [db:start, db:migrate-up]
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: go_modulith
+      DB_SSL_MODE: disable
+      JWT_SECRET: test-secret
+      ENVIRONMENT: test
+    cmds:
+      - go test -v -tags=integration ./...
+
+  test:coverage:
+    desc: Run tests with coverage
+    cmds:
+      - go test -v -race -coverprofile=coverage.out ./...
+      - go tool cover -html=coverage.out -o coverage.html
+      - echo "Coverage report generated at coverage.html"
+
+  test:bench:
+    desc: Run benchmark tests
+    cmds:
+      - go test -bench=. -benchmem ./...
+
+  # Code quality tasks
+  tools:install:
+    desc: Install development tools
+    cmds:
+      - go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+      - go install github.com/pressly/goose/v3/cmd/goose@latest
+      - go install github.com/air-verse/air@latest
+
+  tools:lint:
+    desc: Run linting
+    cmds:
+      - golangci-lint run
+
+  tools:lint-fix:
+    desc: Run linting with auto-fix
+    cmds:
+      - golangci-lint run --fix
+
+  tools:fmt:
+    desc: Format code
+    cmds:
+      - go fmt ./...
+      - goimports -w .
+
+  tools:vet:
+    desc: Run go vet
+    cmds:
+      - go vet ./...
+
+  tools:sec:
+    desc: Run security analysis
+    cmds:
+      - gosec ./...
+
+  # Watch tasks
+  watch:dev:
+    desc: Watch and restart application on changes
+    deps: [db:start, db:migrate-up]
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: go_modulith
+      DB_SSL_MODE: disable
+      JWT_SECRET: super-secret-jwt-key-for-development
+      LOG_LEVEL: debug
+      ENVIRONMENT: development
+    cmds:
+      - air
+
+  watch:test:
+    desc: Watch and run tests on changes
+    cmds:
+      - find . -name "*.go" | entr -r go test ./...
+
+  # Documentation tasks
+  docs:swagger:
+    desc: Generate Swagger documentation
+    cmds:
+      - swag init -g ./cmd/server/main.go -o ./docs
+
+  docs:serve:
+    desc: Serve documentation
+    cmds:
+      - echo "API documentation available at:"
+      - echo "Swagger UI at http://localhost:8080/docs"
+      - echo "Jaeger UI at http://localhost:16686"
+
+  # Production tasks
+  prod:deploy:
+    desc: Deploy to production (placeholder)
+    cmds:
+      - echo "Production deployment not configured"
+
+  prod:health:
+    desc: Check application health
+    cmds:
+      - curl -f http://localhost:8080/health || exit 1
+      - curl -f http://localhost:8080/ready || exit 1
+
+  # Utility tasks
+  generate:env:
+    desc: Generate .env file from template
+    cmds:
+      - cp .env.example .env
+      - echo "Please update .env file with your configuration"
+
+  logs:app:
+    desc: Show application logs
+    cmds:
+      - docker-compose logs -f app
+
+  logs:db:
+    desc: Show database logs
+    cmds:
+      - docker-compose logs -f postgres
+
+  logs:all:
+    desc: Show all service logs
+    cmds:
+      - docker-compose logs -f
+
+  # CI/CD tasks
+  ci:test:
+    desc: Run CI test suite
+    cmds:
+      - task: tools:lint
+      - task: tools:vet
+      - task: test:unit
+      - task: test:integration
+
+  ci:build:
+    desc: Build for CI/CD
+    cmds:
+      - task: app:build
+      - task: docker:build
+
+  # Cleanup tasks
+  clean:all:
+    desc: Clean everything
+    cmds:
+      - task: app:clean
+      - task: docker:clean
+      - rm -f .env
+      - rm -f coverage.out coverage.html

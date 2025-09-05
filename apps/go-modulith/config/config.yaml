@@ -1,0 +1,57 @@
+# Configuration file - all values can be overridden by environment variables
+# Environment variables use uppercase and underscores (e.g. DB_HOST, SERVER_PORT)
+
+database:
+  host: localhost
+  port: 5432
+  user: postgres
+  password: postgres
+  dbname: go_modulith
+  sslmode: disable
+  max_open_connections: 25
+  max_idle_connections: 5
+  connection_max_lifetime: 5m
+  connection_max_idle_time: 5m
+
+jwt:
+  secret: your-super-secret-jwt-key-change-this-in-production
+  access_expiry: 15m
+  refresh_expiry: 24h
+
+server:
+  host: 0.0.0.0
+  port: 8080
+  read_timeout: 30s
+  write_timeout: 30s
+  shutdown_timeout: 15s
+
+logging:
+  level: info
+  format: json
+
+opentelemetry:
+  endpoint: http://localhost:4317
+  service_name: go-modulith
+  service_version: 1.0.0
+
+rate_limit:
+  requests: 100
+  window: 1m
+
+cors:
+  allowed_origins:
+    - http://localhost:3000
+    - http://localhost:8080
+  allowed_methods:
+    - GET
+    - POST
+    - PUT
+    - DELETE
+    - OPTIONS
+  allowed_headers:
+    - Origin
+    - Content-Type
+    - Accept
+    - Authorization
+
+environment: development
