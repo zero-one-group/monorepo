@@ -24,7 +24,7 @@ func NewHTTPServer(httpAddr string) *HTTPServer {
 }
 
 func (s *HTTPServer) Start() error {
-	databaseURL := os.Getenv("DB_POSTGRES_URL")
+	databaseURL := os.Getenv("DATABASE_URL")
 
 	// Initialize Postgres pool
 	pg, err := adapter.NewPostgres(adapter.PostgresConfig{

@@ -33,7 +33,7 @@ var migrateResetCmd = &cobra.Command{
 			}
 		}
 
-		databaseURL := os.Getenv("DB_POSTGRES_URL")
+		databaseURL := os.Getenv("DATABASE_URL")
 
 		migratorReset := database.NewMigrator(databaseURL)
 		err := migratorReset.MigrateReset(cmd.Context())

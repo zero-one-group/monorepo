@@ -31,7 +31,7 @@ var migrateSeedCmd = &cobra.Command{
 			}
 		}
 
-		databaseURL := os.Getenv("DB_POSTGRES_URL")
+		databaseURL := os.Getenv("DATABASE_URL")
 		migrator := database.NewMigrator(databaseURL)
 
 		// Call SeedInitialData to seed initial data

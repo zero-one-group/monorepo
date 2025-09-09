@@ -139,16 +139,16 @@ func (te *TestEnv) SetupRedis() (*redis.Client, string, error) {
 // SetupConfig sets the environment variables for the test configuration.
 func (te *TestEnv) SetupConfig() {
 	if te.PGURL != "" {
-		if err := os.Setenv("DB_POSTGRES_URL", te.PGURL); err != nil {
-			te.T.Logf("Failed to set DB_POSTGRES_URL: %v", err)
+		if err := os.Setenv("DATABASE_URL", te.PGURL); err != nil {
+			te.T.Logf("Failed to set DATABASE_URL: %v", err)
 		}
 	}
 	if te.RedisAddr != "" {
-		if err := os.Setenv("DB_REDIS_URL", fmt.Sprintf("redis://%s", te.RedisAddr)); err != nil {
-			te.T.Logf("Failed to set DB_REDIS_URL: %v", err)
+		if err := os.Setenv("REDIS_URL", fmt.Sprintf("redis://%s", te.RedisAddr)); err != nil {
+			te.T.Logf("Failed to set REDIS_URL: %v", err)
 		}
-		if err := os.Setenv("DB_REDIS_ENABLED", "true"); err != nil {
-			te.T.Logf("Failed to set DB_REDIS_ENABLED: %v", err)
+		if err := os.Setenv("REDIS_ENABLED", "true"); err != nil {
+			te.T.Logf("Failed to set REDIS_ENABLED: %v", err)
 		}
 	}
 	if err := os.Setenv("LOG_LEVEL", "debug"); err != nil {

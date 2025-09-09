@@ -17,7 +17,7 @@ var migrateCreateCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		migrationName := args[0]
-		databaseURL := os.Getenv("DB_POSTGRES_URL")
+		databaseURL := os.Getenv("DATABASE_URL")
 		migrator := database.NewMigrator(databaseURL)
 		if err := migrator.MigrateCreate(cmd.Context(), migrationName); err != nil {
 			log.Fatalf("Failed to create new migration: %v", err)

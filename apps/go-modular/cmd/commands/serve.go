@@ -20,7 +20,7 @@ func init() {
 
 			if argAutoMigrate {
 				slog.Info("Running database migrations before starting server")
-				databaseURL := os.Getenv("DB_POSTGRES_URL")
+				databaseURL := os.Getenv("DATABASE_URL")
 				migrator := database.NewMigrator(databaseURL)
 				if err := migrator.MigrateUp(ctx); err != nil {
 					slog.Error("Failed to apply database migration", "err", err)

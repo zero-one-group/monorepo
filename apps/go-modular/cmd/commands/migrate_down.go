@@ -16,7 +16,7 @@ var migrateDownCmd = &cobra.Command{
 	Short: "Rollback the last or N database migrations",
 	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		databaseURL := os.Getenv("DB_POSTGRES_URL")
+		databaseURL := os.Getenv("DATABASE_URL")
 		migrator := database.NewMigrator(databaseURL)
 		steps := ""
 		if len(args) > 0 {
