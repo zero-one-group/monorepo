@@ -1,38 +1,38 @@
 #!/bin/bash
 
 TEMPLATES=(
-  template-ansible
-  template-astro
-  template-fastapi-ai
-  template-gitlab-cicd
-  template-golang
-  template-load-balancer
-  template-monitoring
-  template-nextjs
-  template-phoenix
-  template-postgresql
-  template-react-app
-  template-react-ssr
-  template-shared-ui
-  template-squidproxy
-  template-strapi
-  template-swarm
-  template-terragrunt
+  ansible
+  astro
+  fastapi-ai
+  gitlab-cicd
+  golang
+  load-balancer
+  monitoring
+  nextjs
+  phoenix
+  postgresql
+  react-app
+  react-ssr
+  shared-ui
+  squidproxy
+  strapi
+  swarm
+  terragrunt
 )
 
+TEMPLATE_DIR="./templates"
 OUTPUT_DIR="./docs/templates"
 
 # Create output directory if it doesn't exist
 mkdir -p "$OUTPUT_DIR"
 
 for template in "${TEMPLATES[@]}"; do
-  # Remove "template-" prefix for zip filename
-  zipname="${template#template-}"
+  template_path="$TEMPLATE_DIR/$template"
   # Skip if directory does not exist
-  if [ -d "$template" ]; then
-    zip -r "$OUTPUT_DIR/$zipname.zip" "$template"
-    echo "Zipped $template -> $OUTPUT_DIR/$zipname.zip"
+  if [ -d "$template_path" ]; then
+    zip -r "$OUTPUT_DIR/$template.zip" "$template_path"
+    echo "Zipped $template_path -> $OUTPUT_DIR/$template.zip"
   else
-    echo "Directory $template not found, skipping."
+    echo "Directory $template_path not found, skipping."
   fi
 done
