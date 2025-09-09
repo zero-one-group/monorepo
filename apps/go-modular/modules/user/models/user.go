@@ -9,7 +9,7 @@ import (
 	"github.com/gofrs/uuid/v5"
 )
 
-// Define table name for user model
+// Define table name for User model
 const UserTable = "public.users"
 
 // User represents user model in the database
@@ -41,7 +41,7 @@ type FilterUser struct {
 
 type UserWithCredential struct {
 	User
-	PasswordHash []byte `json:"password_hash" db:"password_hash"`
+	PasswordHash []byte `json:"password_hash" db:"-"`
 }
 
 // ParseUserID parses a string to uuid.UUID, returns error if invalid.

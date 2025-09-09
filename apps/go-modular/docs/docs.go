@@ -15,6 +15,105 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/v1/auth/password": {
+            "post": {
+                "description": "Sets a new password for a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth - Password"
+                ],
+                "summary": "Set user password",
+                "parameters": [
+                    {
+                        "description": "Password payload",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SetPasswordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/password/{userId}": {
+            "put": {
+                "description": "Updates an existing user's password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth - Password"
+                ],
+                "summary": "Update user password",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Password payload",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UpdatePasswordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/users": {
             "get": {
                 "description": "Retrieves a list of users",
@@ -216,6 +315,52 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "models.SetPasswordRequest": {
+            "type": "object",
+            "required": [
+                "password",
+                "password_confirmation",
+                "user_id"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "minLength": 8,
+                    "example": "secure.password"
+                },
+                "password_confirmation": {
+                    "type": "string",
+                    "example": "secret.password"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UpdatePasswordRequest": {
+            "type": "object",
+            "required": [
+                "current_password",
+                "new_password",
+                "password_confirmation"
+            ],
+            "properties": {
+                "current_password": {
+                    "type": "string",
+                    "minLength": 8,
+                    "example": "current.password"
+                },
+                "new_password": {
+                    "type": "string",
+                    "minLength": 8,
+                    "example": "secure.password"
+                },
+                "password_confirmation": {
+                    "type": "string",
+                    "example": "secret.password"
+                }
+            }
+        },
         "models.User": {
             "type": "object",
             "properties": {
@@ -261,8 +406,7 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "email",
-                "name",
-                "password"
+                "name"
             ],
             "properties": {
                 "email": {
@@ -272,11 +416,6 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "example": "John Doe"
-                },
-                "password": {
-                    "type": "string",
-                    "minLength": 8,
-                    "example": "secure.password"
                 }
             }
         },

@@ -9,6 +9,7 @@ import (
 	"go-modular/internal/adapter"
 	"go-modular/internal/middleware/logger"
 
+	auth_module "go-modular/modules/auth"
 	user_module "go-modular/modules/user"
 )
 
@@ -64,11 +65,12 @@ func (s *HTTPServer) Start() error {
 	}))
 
 	// Load and register user module
-	userModule := user_module.NewModule(&user_module.Options{
-		PgPool: pg.Pool,
-		Logger: s.logger,
-	})
+	userModule := user_module.NewModule(&user_module.Options{PgPool: pg.Pool, Logger: s.logger})
 	userModule.RegisterRoutes(apiV1Route)
+
+	// Load and register auth module
+	authModule := auth_module.NewModule(&auth_module.Options{PgPool: pg.Pool, Logger: s.logger})
+	authModule.RegisterRoutes(apiV1Route)
 
 	s.logger.Info("Starting HTTP server", "addr", s.httpAddr)
 

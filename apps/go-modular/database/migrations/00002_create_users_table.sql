@@ -45,10 +45,8 @@ CREATE TRIGGER trg_users_updated_at BEFORE UPDATE ON public.users FOR EACH ROW E
 -- +goose Down
 -- +goose StatementBegin
 
--- Drop updated_at triggers
+-- Drop triggers, indexes, and table(s) (reverse order of creation)
 DROP TRIGGER IF EXISTS trg_users_updated_at ON public.users;
-
--- Drop users indexes
 DROP INDEX IF EXISTS idx_users_last_login_at;
 DROP INDEX IF EXISTS idx_users_normalized_email;
 DROP INDEX IF EXISTS idx_users_normalized_username;
@@ -61,8 +59,6 @@ DROP INDEX IF EXISTS idx_users_ban_expires;
 DROP INDEX IF EXISTS idx_users_banned_expires;
 DROP INDEX IF EXISTS idx_users_username;
 DROP INDEX IF EXISTS idx_users_display_name;
-
--- Drop tables (reverse order of creation)
 DROP TABLE IF EXISTS public.users;
 
 -- +goose StatementEnd
