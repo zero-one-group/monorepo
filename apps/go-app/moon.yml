@@ -53,7 +53,7 @@ tasks:
       cache: false
 
   tidy:
-    command: "go mod tidy && go mod vendor"
+    command: "go mod tidy"
 
   kill-port:
     # This is a hack for killing the listen port before starting the app

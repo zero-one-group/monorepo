@@ -24,8 +24,8 @@
             "template-strapi",
             "pnpm-lock.yaml",
             "CONTRIBUTING.md",
+            "MONOREPO.md",
             "README.md",
-            "TASKS.md",
             ".github"
         ]
     }

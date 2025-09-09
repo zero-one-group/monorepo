@@ -52,5 +52,6 @@ telemetry: false
 generator:
   templates:
     - 'git://github.com/zero-one-group/monorepo#main'
+    # - 'https://domain.com/some/path/to/archive.zip'
     # - 'file://../../Repository/ZeroOne/monorepo'
     # - './'

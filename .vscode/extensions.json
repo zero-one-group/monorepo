@@ -4,8 +4,11 @@
         "biomejs.biome",
         "bradlc.vscode-tailwindcss",
         "darkriszty.markdown-table-prettify",
+        "docker.docker",
         "EditorConfig.EditorConfig",
+        "fill-labs.dependi",
         "foxundermoon.shell-format",
+        "golang.go",
         "ms-playwright.playwright",
         "tamasfe.even-better-toml"
     ],

@@ -12,15 +12,15 @@
         "check": "biome check . --write",
         "astro": "astro"
     },
-    "dependencies": {
-        "astro": "^5.10.2",
-        "lucide-astro": "^0.525.0"
-    },
-    "devDependencies": {
-        "@biomejs/biome": "catalog:",
-        "@tailwindcss/vite": "^4.1.11",
-        "npm-check-updates": "catalog:",
-        "tailwindcss-motion": "^1.1.1",
-        "tailwindcss": "^4.1.11"
-    }
+	"dependencies": {
+		"astro": "^5.13.6",
+		"lucide-astro": "^0.542.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "catalog:",
+		"@tailwindcss/vite": "^4.1.13",
+		"npm-check-updates": "catalog:",
+		"tailwindcss-motion": "^1.1.1",
+		"tailwindcss": "^4.1.13"
+	}
 }

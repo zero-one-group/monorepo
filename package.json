@@ -26,16 +26,22 @@
     "devDependencies": {
         "@biomejs/biome": "catalog:",
         "@clack/prompts": "^0.11.0",
-        "@noble/hashes": "^1.8.0",
-        "@types/node": "^24.0.10",
+        "@noble/hashes": "^2.0.0",
+        "@types/node": "^24.3.1",
         "citty": "^0.1.6",
         "consola": "^3.4.2",
-        "dotenv": "^17.0.1",
+        "dotenv": "^17.2.2",
         "npm-check-updates": "catalog:",
-        "tsx": "^4.20.3"
+        "tsx": "^4.20.5"
     },
     "pnpm": {
-        "onlyBuiltDependencies": ["@biomejs/biome", "@swc/core", "core-js-pure", "esbuild", "sharp"]
+        "onlyBuiltDependencies": [
+            "@biomejs/biome",
+            "@swc/core",
+            "core-js-pure",
+            "esbuild",
+            "sharp"
+        ]
     },
-    "packageManager": "pnpm@10.12.4"
+    "packageManager": "pnpm@10.15.1"
 }
