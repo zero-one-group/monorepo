@@ -6,7 +6,7 @@
 
 /* Debug element */
 @utility debug {
-  border-width: 1px;
-  border-style: dashed;
-  border-color: #f87171;
+	border-width: 1px;
+	border-style: dashed;
+	border-color: #f87171;
 }

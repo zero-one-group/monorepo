@@ -1,28 +1,28 @@
 {
-    "name": "@repo/shared-ui",
-    "private": true,
-    "type": "module",
-    "files": [
-        "dist"
-    ],
-    "exports": {
-        "./components": "./src/components/index.ts",
-        "./hooks": "./src/hooks/index.ts",
-        "./theme": "./src/theme.tsx",
-        "./utils": "./src/utils.ts"
-    },
-    "scripts": {
-        "dev": "vite build --watch",
-        "build": "NODE_ENV=production vite build",
-        "storybook": "VITE_CJS_IGNORE_WARNING=true storybook dev -p 6006 --no-open",
-        "storybook-build": "VITE_CJS_IGNORE_WARNING=true storybook build -o storybook-static",
-        "cleanup": "pnpm dlx rimraf dist node_modules pnpm-lock.yaml storybook-static",
-        "start": "pnpm dlx serve storybook-static -l 6006 -n -C",
-        "prepublishOnly": "pnpm run build:vite",
-        "lint": "biome lint . --write",
-        "check": "biome check . --write",
-        "typecheck": "tsc --noEmit"
-    },
+	"name": "@repo/shared-ui",
+	"private": true,
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"exports": {
+		"./components": "./src/components/index.ts",
+		"./hooks": "./src/hooks/index.ts",
+		"./theme": "./src/theme.tsx",
+		"./utils": "./src/utils.ts"
+	},
+	"scripts": {
+		"dev": "vite build --watch",
+		"build": "NODE_ENV=production vite build",
+		"storybook": "VITE_CJS_IGNORE_WARNING=true storybook dev -p 6006 --no-open",
+		"storybook-build": "VITE_CJS_IGNORE_WARNING=true storybook build -o storybook-static",
+		"cleanup": "pnpm dlx rimraf dist node_modules pnpm-lock.yaml storybook-static",
+		"start": "pnpm dlx serve storybook-static -l 6006 -n -C",
+		"prepublishOnly": "pnpm run build:vite",
+		"lint": "biome lint . --write",
+		"check": "biome check . --write",
+		"typecheck": "tsc --noEmit"
+	},
 	"dependencies": {
 		"@nanostores/persistent": "^1.1.0",
 		"@nanostores/react": "^1.0.0",

@@ -21,6 +21,7 @@
         "**/.next": true,
         "**/build": true,
         "**/dist": true,
+        "**/docs": true,
         "**/templates": true,
         "**/template-*": true
     },

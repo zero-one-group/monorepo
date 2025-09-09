@@ -1,17 +1,17 @@
 {
-    "name": "{{ package_name | kebab_case }}",
-    "private": true,
-    "scripts": {
-        "dev": "strapi develop",
-        "build": "strapi build",
-        "cleanup": "pnpm dlx rimraf node_modules build dist .{cache,data,strapi,tmp} _data",
-        "start-node": "NODE_ENV=production node --no-warnings -r dotenv/config server.cjs",
-        "start": "NODE_ENV=production strapi start",
-        "lint": "biome lint . --write",
-        "check": "biome check . --write",
-        "typecheck": "tsc --noEmit",
-        "strapi": "strapi"
-    },
+	"name": "{{ package_name | kebab_case }}",
+	"private": true,
+	"scripts": {
+		"dev": "strapi develop",
+		"build": "strapi build",
+		"cleanup": "pnpm dlx rimraf node_modules build dist .{cache,data,strapi,tmp} _data",
+		"start-node": "NODE_ENV=production node --no-warnings -r dotenv/config server.cjs",
+		"start": "NODE_ENV=production strapi start",
+		"lint": "biome lint . --write",
+		"check": "biome check . --write",
+		"typecheck": "tsc --noEmit",
+		"strapi": "strapi"
+	},
 	"dependencies": {
 		"@strapi/plugin-documentation": "5.23.3",
 		"@strapi/plugin-users-permissions": "5.23.3",

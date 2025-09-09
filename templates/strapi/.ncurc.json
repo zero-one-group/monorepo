@@ -1,12 +1,19 @@
 {
-    "$schema": "https://raw.githubusercontent.com/raineorshine/npm-check-updates/main/src/types/RunOptions.json",
-    "interactive": true,
-    "upgrade": true,
-    "color": true,
-    "root": true,
-    "deep": false,
-    "install": "never",
-    "packageManager": "pnpm",
-    "silent": false,
-    "reject": ["@types/react-dom", "@types/react", "react-dom", "react-router-dom", "react", "vite"]
+	"$schema": "https://raw.githubusercontent.com/raineorshine/npm-check-updates/main/src/types/RunOptions.json",
+	"interactive": true,
+	"upgrade": true,
+	"color": true,
+	"root": true,
+	"deep": false,
+	"install": "never",
+	"packageManager": "pnpm",
+	"silent": false,
+	"reject": [
+		"@types/react-dom",
+		"@types/react",
+		"react-dom",
+		"react-router-dom",
+		"react",
+		"vite"
+	]
 }
