@@ -14,7 +14,6 @@ import (
 // @securityDefinitions.http bearerAuth
 // @scheme bearer
 // @bearerFormat JWT
-// @description JWT Bearer token authentication. Format: Bearer {token}
 
 // @BasePath /api
 func main() {

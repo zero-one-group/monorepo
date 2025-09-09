@@ -18,7 +18,8 @@ project:
 
 tasks:
   dev:
-    command: "air -c air.toml"
+    command: "watchexec -r -e go,toml -w . --no-vcs-ignore -- go run -tags debug ./cmd/"
+    args: ["serve"]
     deps: [kill-port, generate-swagger]
     options:
       cache: false
@@ -44,7 +45,7 @@ tasks:
       go build -tags prod -trimpath -buildmode=pie -buildvcs=false \
         --ldflags="$LDFLAGS_STATIC $LDFLAGS_BUILD_DATE $LDFLAGS_BUILD_HASH \
         -X $project/internal.Version=$(jq -r .version <$workspaceRoot'/package.json')" \
-        -o $projectRoot/build/$project $projectRoot/cmd/
+        -o $projectRoot/build/release/$project $projectRoot/cmd/
     outputs: ["build/$project"]
     deps: [tidy, generate-swagger]
     options:

@@ -52,7 +52,7 @@
         "editor.formatOnSave": true
     },
     "[toml]": {
-        "editor.defaultFormatter": null,
+        "editor.defaultFormatter": "tamasfe.even-better-toml",
         "editor.formatOnSave": false
     },
     "[tailwindcss]": {

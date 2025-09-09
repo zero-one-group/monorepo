@@ -1,12 +1,12 @@
 package commands
 
 import (
-	"fmt"
-	"go-modular/database"
 	"log/slog"
 	"os"
 
 	"github.com/spf13/cobra"
+	"go-modular/database"
+	"go-modular/internal/server"
 )
 
 func init() {
@@ -32,8 +32,13 @@ func init() {
 				}
 			}
 
-			// Log server start
-			fmt.Printf("Starting HTTP server...")
+			// Initialize HTTP server
+			httpAddr := "0.0.0.0:8000"
+			srv := server.NewHTTPServer(httpAddr)
+			if err := srv.Start(); err != nil {
+				slog.Error("HTTP server exited with error", "err", err)
+				os.Exit(1)
+			}
 		},
 	}
 

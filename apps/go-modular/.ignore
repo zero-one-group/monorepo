@@ -1,0 +1,50 @@
+# This file used by watchexec
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Build outputs
+node_modules/
+vendor/
+build/
+dist/
+dist-ssr/
+*.local
+*.tsbuildinfo
+.vitest
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+.idea/
+.DS_Store
+.DS_Store?
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment files
+.env.*
+!.env.example
+
+# Local data
+temp/
+tmp/
+
+# Go specific
+coverage.out
+coverage.html
+*_test.go
+
+# Generated files
+docs/
