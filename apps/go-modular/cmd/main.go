@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log/slog"
 	"os"
 
 	"go-modular/cmd/commands"
@@ -31,13 +30,12 @@ func main() {
 }
 
 func setupConfig() error {
-	wd, err := os.Getwd()
+	_, err := os.Getwd()
 	if err != nil {
 		return fmt.Errorf("failed to get working directory: %w", err)
 	}
 
 	// TODO: Do something!
-	slog.Info("Current working directory", "path", wd)
 
 	return nil
 }

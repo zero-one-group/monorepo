@@ -4,7 +4,9 @@
 package commands
 
 import (
-	"fmt"
+	"go-modular/database"
+	"log"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -13,7 +15,14 @@ var migrateUpCmd = &cobra.Command{
 	Use:   "migrate:up",
 	Short: "Apply the latest database migration",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Applying latest database migration...")
+		databaseURL := os.Getenv("DB_POSTGRES_URL")
+		migrator := database.NewMigrator(databaseURL)
+		if err := migrator.MigrateUp(cmd.Context()); err != nil {
+			log.Fatalf("Failed to apply database migration: %v", err)
+		}
+		if err := migrator.Close(); err != nil {
+			log.Fatalf("Failed to close database connection: %v", err)
+		}
 	},
 }
 
@@ -21,7 +30,14 @@ var migrateStatusCmd = &cobra.Command{
 	Use:   "migrate:status",
 	Short: "Show the status of database migrations",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Showing status of database migrations...")
+		databaseURL := os.Getenv("DB_POSTGRES_URL")
+		migrator := database.NewMigrator(databaseURL)
+		if err := migrator.MigrateStatus(cmd.Context()); err != nil {
+			log.Fatalf("Failed to get migration status: %v", err)
+		}
+		if err := migrator.Close(); err != nil {
+			log.Fatalf("Failed to close database connection: %v", err)
+		}
 	},
 }
 
@@ -29,7 +45,14 @@ var migrateVersionCmd = &cobra.Command{
 	Use:   "migrate:version",
 	Short: "Show the current database migration version",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Showing current database migration version...")
+		databaseURL := os.Getenv("DB_POSTGRES_URL")
+		migrator := database.NewMigrator(databaseURL)
+		if err := migrator.MigrateVersion(cmd.Context()); err != nil {
+			log.Fatalf("Failed to get migration version: %v", err)
+		}
+		if err := migrator.Close(); err != nil {
+			log.Fatalf("Failed to close database connection: %v", err)
+		}
 	},
 }
 

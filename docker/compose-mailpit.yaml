@@ -5,7 +5,6 @@
 services:
   mailpit:
     image: axllent/mailpit:latest
-    container_name: myorg_mailpit
     # restart: unless-stopped
     volumes:
       - mailpit_data:/data

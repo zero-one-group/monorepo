@@ -9,6 +9,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var forceSeed bool
+
 var migrateSeedCmd = &cobra.Command{
 	Use:   "migrate:seed",
 	Short: "Seed the database with initial data",
@@ -18,5 +20,6 @@ var migrateSeedCmd = &cobra.Command{
 }
 
 func init() {
+	migrateSeedCmd.Flags().BoolVar(&forceSeed, "force", false, "Force seed without confirmation")
 	RootCmd.AddCommand(migrateSeedCmd)
 }

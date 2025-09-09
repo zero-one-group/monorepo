@@ -29,6 +29,7 @@ tasks:
     deps: [kill-port, generate-swagger]
     options:
       cache: false
+      interactive: true
       mergeOutputs: replace
       outputStyle: buffer
       mergeArgs: replace
@@ -113,9 +114,9 @@ tasks:
         --name $DOCKER_IMAGE $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION
     options:
       mergeEnv: replace
+      outputStyle: buffer-only-failure
       runFromWorkspaceRoot: true
       interactive: false
-      outputStyle: buffer-only-failure
       runInCI: false
       cache: false
       shell: true
@@ -129,8 +130,8 @@ tasks:
     options:
       mergeEnv: replace
       runFromWorkspaceRoot: true
-      interactive: false
       outputStyle: buffer-only-failure
+      interactive: false
       runInCI: false
       cache: false
       shell: true
@@ -139,6 +140,7 @@ tasks:
     command: "$workspaceRoot/.moon/scripts/install_mockery.sh v3.5.1"
     options:
       shell: true
+      outputStyle: buffer-only-failure
       interactive: true
       runInCI: false
       cache: false
@@ -150,8 +152,8 @@ tasks:
     options:
       cache: false
       runFromWorkspaceRoot: false
+      outputStyle: buffer-only-failure
       mergeOutputs: replace
-      outputStyle: buffer
       mergeArgs: replace
       envFile: ".env"
 
@@ -161,7 +163,7 @@ tasks:
     options:
       cache: false
       runFromWorkspaceRoot: false
+      outputStyle: buffer-only-failure
       mergeOutputs: replace
-      outputStyle: buffer
       mergeArgs: replace
       envFile: ".env"
