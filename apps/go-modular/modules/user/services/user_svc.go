@@ -44,6 +44,12 @@ func (s *UserService) CreateUser(ctx context.Context, user *models.User) error {
 		user.ID = uuid.Must(uuid.NewV7())
 	}
 
+	if user.Metadata == nil {
+		user.Metadata = &models.UserMetadata{
+			Timezone: "UTC", // Set default timezone if not provided
+		}
+	}
+
 	// Generate username from email if not provided
 	if user.Email != "" && (user.Username == nil || *user.Username == "") {
 		base := strings.SplitN(user.Email, "@", 2)[0]
