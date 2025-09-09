@@ -62,10 +62,25 @@ tasks:
       envFile: ".env"
 
   test:
-    command: "go test"
-    args: ["-count=1", "./..."]
-    deps: ["tidy", "generate-mock"]
+    command: "gotestsum --format short-verbose --"
+    args: ["-count=1", "-v", "./..."]
+    deps: ["tidy"]
     options:
+      cache: false
+      runFromWorkspaceRoot: false
+      mergeOutputs: replace
+      outputStyle: buffer
+      mergeArgs: replace
+      envFile: ".env"
+
+  coverage:
+    script: |
+      gotestsum --format testname -- -coverprofile=build/coverage.out ./cmd/... ./internal/... ./modules/... ./pkg/...
+      go tool cover -html=$projectRoot/build/coverage.out -o $projectRoot/build/coverage.html
+      go tool cover -func=$projectRoot/build/coverage.out | tail -1
+    deps: ["tidy"]
+    options:
+      shell: true
       cache: false
       runFromWorkspaceRoot: false
       mergeOutputs: replace
