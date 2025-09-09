@@ -183,7 +183,7 @@ tasks:
 
   generate-swagger:
     command: >
-      swag init -o $projectRoot/docs -d cmd,internal --parseDependency
+      swag init -o $projectRoot/docs -d cmd,internal,modules --parseDependency
       && swag fmt --dir $projectRoot/docs
     options:
       cache: false

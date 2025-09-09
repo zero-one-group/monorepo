@@ -5,7 +5,11 @@ import (
 	"os"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"go-modular/internal/adapter"
+	"go-modular/internal/middleware/logger"
+
+	user_module "go-modular/modules/user"
 )
 
 // HTTPServer is the main HTTP server struct.
@@ -41,8 +45,30 @@ func (s *HTTPServer) Start() error {
 	e.HideBanner = true
 	e.HidePort = true
 
-	h := NewServerHandler(pg.Pool, s.logger)
-	h.RegisterRoutes(e)
+	// Register global middlewares
+	e.Use(middleware.RequestID())
+	e.Use(middleware.Recover())
+	e.Use(logger.LoggerMiddleware(s.logger))
+
+	// Register primary HTTP server routes
+	serverHandler := NewServerHandler(pg.Pool, s.logger)
+	serverHandler.RegisterRoutes(e)
+
+	// Create API v1 route group
+	apiV1Route := e.Group("/api/v1")
+
+	// Register middlewares for API routes
+	apiV1Route.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
+
+	// Load and register user module
+	userModule := user_module.NewModule(&user_module.Options{
+		PgPool: pg.Pool,
+		Logger: s.logger,
+	})
+	userModule.RegisterRoutes(apiV1Route)
 
 	s.logger.Info("Starting HTTP server", "addr", s.httpAddr)
 
