@@ -30,7 +30,7 @@ for template in "${TEMPLATES[@]}"; do
   template_path="$TEMPLATE_DIR/$template"
   # Skip if directory does not exist
   if [ -d "$template_path" ]; then
-    zip -r "$OUTPUT_DIR/$template.zip" "$template_path"
+    (cd "$TEMPLATE_DIR" && zip -r "../$OUTPUT_DIR/$template.zip" "$template")
     echo "Zipped $template_path -> $OUTPUT_DIR/$template.zip"
   else
     echo "Directory $template_path not found, skipping."
