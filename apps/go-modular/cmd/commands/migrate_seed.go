@@ -4,7 +4,12 @@
 package commands
 
 import (
+	"bufio"
 	"fmt"
+	"go-modular/database"
+	"log"
+	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -15,7 +20,30 @@ var migrateSeedCmd = &cobra.Command{
 	Use:   "migrate:seed",
 	Short: "Seed the database with initial data",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Seeding the database with initial data...")
+		if !forceSeed {
+			fmt.Print("Are you sure you want to seed the database? (y/N): ")
+			reader := bufio.NewReader(os.Stdin)
+			input, _ := reader.ReadString('\n')
+			input = strings.TrimSpace(strings.ToLower(input))
+			if input != "y" && input != "yes" {
+				fmt.Println("Aborted.")
+				return
+			}
+		}
+
+		databaseURL := os.Getenv("DB_POSTGRES_URL")
+		migrator := database.NewMigrator(databaseURL)
+
+		// Call SeedInitialData to seed initial data
+		if err := migrator.SeedInitialData(cmd.Context()); err != nil {
+			log.Fatalf("Failed to seed initial data: %v", err)
+		}
+
+		// Close database connection after seeding
+		if err := migrator.Close(); err != nil {
+			log.Fatalf("Failed to close database connection: %v", err)
+		}
+
 	},
 }
 
