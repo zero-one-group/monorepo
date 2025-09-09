@@ -136,6 +136,27 @@ tasks:
       cache: false
       shell: true
 
+  dump:
+    script: |
+      mkdir -p $workspaceRoot/tmp/db_dump
+      DUMP_FILENAME="$project-$(date -u +%y%m%d_%H%M%S)"
+
+      docker-compose -f $workspaceRoot/docker/compose.yaml exec pgsql pg_dump -Fp --no-acl \
+        --no-owner --no-privileges -U postgres --schema=public --schema-only \
+        postgres > $workspaceRoot/tmp/db_dump/$DUMP_FILENAME-schema_only.sql
+
+      docker-compose -f $workspaceRoot/docker/compose.yaml exec pgsql pg_dump -Fp --no-acl \
+        --no-owner --no-privileges -U postgres --schema=public \
+        postgres > $workspaceRoot/tmp/db_dump/$DUMP_FILENAME-with_data.sql
+    options:
+      mergeEnv: replace
+      runFromWorkspaceRoot: true
+      outputStyle: buffer-only-failure
+      interactive: false
+      runInCI: false
+      cache: false
+      shell: true
+
   install-mockery:
     command: "$workspaceRoot/.moon/scripts/install_mockery.sh v3.5.1"
     options:
