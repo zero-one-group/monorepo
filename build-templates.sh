@@ -20,16 +20,18 @@ TEMPLATES=(
   template-terragrunt
 )
 
-OUTPUT_DIR="./public/templates"
+OUTPUT_DIR="./docs/templates"
 
 # Create output directory if it doesn't exist
 mkdir -p "$OUTPUT_DIR"
 
 for template in "${TEMPLATES[@]}"; do
+  # Remove "template-" prefix for zip filename
+  zipname="${template#template-}"
   # Skip if directory does not exist
   if [ -d "$template" ]; then
-    zip -r "$OUTPUT_DIR/$template.zip" "$template"
-    echo "Zipped $template -> $OUTPUT_DIR/$template.zip"
+    zip -r "$OUTPUT_DIR/$zipname.zip" "$template"
+    echo "Zipped $template -> $OUTPUT_DIR/$zipname.zip"
   else
     echo "Directory $template not found, skipping."
   fi

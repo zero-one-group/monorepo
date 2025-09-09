@@ -3,6 +3,7 @@
         "action": "remove",
         "files": [
             "apps",
+            "docs",
             "packages",
             "template-ansible",
             "template-gitlab-cicd",
