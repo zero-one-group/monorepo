@@ -13,14 +13,14 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/lestrrat-go/jwx/jwa"
 
-	auth_service "go-modular/modules/auth/services"
-	user_service "go-modular/modules/user/services"
+	svcUser "go-modular/modules/auth/services"
+	svcAuth "go-modular/modules/user/services"
 )
 
 type Options struct {
 	PgPool             *pgxpool.Pool // PostgreSQL connection pool (required)
 	Logger             *slog.Logger  // Slog logger instance (optional)
-	UserService        user_service.UserServiceInterface
+	UserService        svcAuth.UserServiceInterface
 	SecretKey          []byte                 // Secret key for signing JWTs
 	AccessTokenExpiry  time.Duration          // Access token expiration duration
 	RefreshTokenExpiry time.Duration          // Refresh token expiration duration
@@ -74,7 +74,7 @@ func NewModule(opts *Options) *AuthModule {
 	}
 
 	authRepo := repository.NewAuthRepository(opts.PgPool, logger)
-	authService := auth_service.NewAuthService(auth_service.AuthServiceOpts{
+	authService := svcUser.NewAuthService(svcUser.AuthServiceOpts{
 		AuthRepo:           authRepo,
 		UserService:        opts.UserService,
 		SecretKey:          opts.SecretKey,
