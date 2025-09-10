@@ -34,7 +34,7 @@ func LoggerMiddleware(logger *slog.Logger) echo.MiddlewareFunc {
 				slog.Int("status", status),
 				slog.String("method", req.Method),
 				slog.String("request_id", requestID),
-				slog.String("uri", req.RequestURI),
+				slog.String("path", req.RequestURI),
 				slog.String("client_ip", clientIP),
 				slog.String("user_agent", userAgent),
 				slog.String("duration", formatLatency(latency)),

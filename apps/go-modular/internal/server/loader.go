@@ -19,15 +19,15 @@ func (s *HTTPServer) registerModules(cfg *config.Config, pg *adapter.PostgresDB,
 	serverHandler := NewServerHandler(pg.Pool, s.logger)
 	serverHandler.RegisterRoutes(e)
 
-	// Create API v1 route group
-	apiV1Route := e.Group("/api/v1")
-
-	// Register middlewares for API routes
-	apiV1Route.Use(middleware.CORSMiddleware(cfg))
-	apiV1Route.Use(middleware.RateLimitMiddleware(
+	// Register global middleware for API
+	e.Use(middleware.CORSMiddleware(cfg))
+	e.Use(middleware.RateLimitMiddleware(
 		cfg.App.RateLimitRequests, cfg.App.RateLimitBurstSize,
 	))
-	apiV1Route.Use(middleware.CompressionMiddleware())
+	e.Use(middleware.CompressionMiddleware())
+
+	// Create API v1 route group
+	apiV1Route := e.Group("/api/v1")
 
 	// Load user module (no auth middleware yet)
 	userModule := modUser.NewModule(&modUser.Options{PgPool: pg.Pool, Logger: s.logger})
