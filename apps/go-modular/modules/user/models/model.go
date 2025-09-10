@@ -14,18 +14,19 @@ const UserTable = "public.users"
 
 // User represents user model in the database
 type User struct {
-	ID          uuid.UUID     `json:"id" db:"id"`
-	DisplayName string        `json:"display_name" db:"display_name"`
-	Email       string        `json:"email" db:"email"`
-	Username    *string       `json:"username" db:"username"`
-	AvatarURL   *string       `json:"avatar_url" db:"avatar_url"`
-	Metadata    *UserMetadata `json:"metadata" db:"metadata"`
-	CreatedAt   time.Time     `json:"created_at" db:"created_at"`
-	UpdatedAt   *time.Time    `json:"updated_at" db:"updated_at"`
-	LastLoginAt *time.Time    `json:"last_login_at" db:"last_login_at"`
-	BannedAt    *time.Time    `json:"banned_at" db:"banned_at"`
-	BanExpires  *time.Time    `json:"ban_expires" db:"ban_expires"`
-	BanReason   *string       `json:"ban_reason" db:"ban_reason"`
+	ID              uuid.UUID     `json:"id" db:"id"`
+	DisplayName     string        `json:"display_name" db:"display_name"`
+	Email           string        `json:"email" db:"email"`
+	Username        *string       `json:"username" db:"username"`
+	AvatarURL       *string       `json:"avatar_url" db:"avatar_url"`
+	Metadata        *UserMetadata `json:"metadata" db:"metadata"`
+	CreatedAt       time.Time     `json:"created_at" db:"created_at"`
+	UpdatedAt       *time.Time    `json:"updated_at" db:"updated_at"`
+	EmailVerifiedAt *time.Time    `json:"email_verified_at" db:"email_verified_at"`
+	LastLoginAt     *time.Time    `json:"last_login_at" db:"last_login_at"`
+	BannedAt        *time.Time    `json:"banned_at" db:"banned_at"`
+	BanExpires      *time.Time    `json:"ban_expires" db:"ban_expires"`
+	BanReason       *string       `json:"ban_reason" db:"ban_reason"`
 }
 
 type UserMetadata struct {
@@ -57,4 +58,8 @@ func (u *User) GetEmail() string {
 }
 func (u *User) AsUserModel() User {
 	return *u
+}
+
+func (u *User) GetEmailVerifiedAt() *time.Time {
+	return u.EmailVerifiedAt
 }

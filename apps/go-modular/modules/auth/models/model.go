@@ -55,6 +55,21 @@ type RefreshToken struct {
 	RevokedBy *uuid.UUID `json:"revoked_by" db:"revoked_by"`
 }
 
+// Define table name for OneTimeToken model
+const OneTimeTokenTable = "public.one_time_tokens"
+
+// OneTimeToken represents one time token model in the database
+type OneTimeToken struct {
+	ID         uuid.UUID  `json:"id" db:"id"`
+	UserID     *uuid.UUID `json:"user_id" db:"user_id"`
+	Subject    string     `json:"subject" db:"subject"`
+	TokenHash  string     `json:"token_hash" db:"token_hash"`
+	RelatesTo  string     `json:"relates_to" db:"relates_to"`
+	CreatedAt  time.Time  `json:"created_at" db:"created_at"`
+	ExpiresAt  time.Time  `json:"expires_at" db:"expires_at"`
+	LastSentAt *time.Time `json:"last_sent_at" db:"last_sent_at"`
+}
+
 type UserWithCredentials struct {
 	User         user_models.User `json:"user"`
 	AccessToken  string           `json:"access_token"`

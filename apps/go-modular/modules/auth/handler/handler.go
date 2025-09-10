@@ -50,31 +50,3 @@ func NewHandler(opts *HandlerOpts) *Handler {
 		validator:   validator.New(),
 	}
 }
-
-// Helper to convert validator.ValidationErrors to a readable map
-func validationErrorsToMap(err error) map[string]string {
-	errs := map[string]string{}
-	if ve, ok := err.(validator.ValidationErrors); ok {
-		for _, fe := range ve {
-			field := fe.Field()
-			tag := fe.Tag()
-			var msg string
-			switch tag {
-			case "required":
-				msg = "This field is required"
-			case "uuid":
-				msg = "Must be a valid UUID"
-			case "min":
-				msg = "Minimum length is " + fe.Param()
-			case "eqfield":
-				msg = "Must match " + fe.Param()
-			default:
-				msg = "Invalid value"
-			}
-			errs[field] = msg
-		}
-	} else {
-		errs["error"] = err.Error()
-	}
-	return errs
-}

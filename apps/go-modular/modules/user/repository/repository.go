@@ -62,9 +62,10 @@ func (r *UserRepository) CreateUser(ctx context.Context, user *models.User) erro
 
 	query := `
 		INSERT INTO ` + models.UserTable + ` (
-			id, display_name, email, username, avatar_url, metadata, created_at, updated_at, last_login_at, banned_at, ban_expires, ban_reason
+			id, display_name, email, username, avatar_url, metadata, created_at, updated_at, email_verified_at,
+            last_login_at, banned_at, ban_expires, ban_reason
 		) VALUES (
-			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
+			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
 		)
 	`
 	_, err = tx.Exec(ctx, query,
@@ -76,6 +77,7 @@ func (r *UserRepository) CreateUser(ctx context.Context, user *models.User) erro
 		user.Metadata,
 		user.CreatedAt,
 		user.UpdatedAt,
+		user.EmailVerifiedAt,
 		user.LastLoginAt,
 		user.BannedAt,
 		user.BanExpires,
@@ -96,7 +98,8 @@ func (r *UserRepository) CreateUser(ctx context.Context, user *models.User) erro
 
 func (r *UserRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*models.User, error) {
 	query := `
-		SELECT id, display_name, email, username, avatar_url, metadata, created_at, updated_at, last_login_at, banned_at, ban_expires, ban_reason
+		SELECT id, display_name, email, username, avatar_url, metadata, created_at, updated_at, email_verified_at,
+        last_login_at, banned_at, ban_expires, ban_reason
 		FROM ` + models.UserTable + `
 		WHERE id = $1
 	`
@@ -111,6 +114,7 @@ func (r *UserRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*models
 		&user.Metadata,
 		&user.CreatedAt,
 		&user.UpdatedAt,
+		&user.EmailVerifiedAt,
 		&user.LastLoginAt,
 		&user.BannedAt,
 		&user.BanExpires,
@@ -126,7 +130,8 @@ func (r *UserRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*models
 
 func (r *UserRepository) ListUsers(ctx context.Context, filter *models.FilterUser) ([]*models.User, error) {
 	query := `
-		SELECT id, display_name, email, username, avatar_url, metadata, created_at, updated_at, last_login_at, banned_at, ban_expires, ban_reason
+		SELECT id, display_name, email, username, avatar_url, metadata, created_at, updated_at, email_verified_at,
+        last_login_at, banned_at, ban_expires, ban_reason
 		FROM ` + models.UserTable
 	args := []any{}
 	whereClauses := []string{}
@@ -170,6 +175,7 @@ func (r *UserRepository) ListUsers(ctx context.Context, filter *models.FilterUse
 			&user.Metadata,
 			&user.CreatedAt,
 			&user.UpdatedAt,
+			&user.EmailVerifiedAt,
 			&user.LastLoginAt,
 			&user.BannedAt,
 			&user.BanExpires,
@@ -201,8 +207,9 @@ func (r *UserRepository) UpdateUser(ctx context.Context, user *models.User) erro
 
 	query := `
 		UPDATE ` + models.UserTable + `
-		SET display_name = $1, email = $2, username = $3, avatar_url = $4, metadata = $5, updated_at = $6, last_login_at = $7, banned_at = $8, ban_expires = $9, ban_reason = $10
-		WHERE id = $11
+		SET display_name = $1, email = $2, username = $3, avatar_url = $4, metadata = $5, updated_at = $6,
+        email_verified_at = $7, last_login_at = $8, banned_at = $9, ban_expires = $10, ban_reason = $11
+		WHERE id = $12
 	`
 	cmd, err := tx.Exec(ctx, query,
 		user.DisplayName,
@@ -211,6 +218,7 @@ func (r *UserRepository) UpdateUser(ctx context.Context, user *models.User) erro
 		user.AvatarURL,
 		user.Metadata,
 		user.UpdatedAt,
+		user.EmailVerifiedAt,
 		user.LastLoginAt,
 		user.BannedAt,
 		user.BanExpires,
@@ -281,7 +289,7 @@ func (r *UserRepository) EmailExists(ctx context.Context, email string) (bool, e
 
 func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
 	query := `
-        SELECT id, display_name, email, username, avatar_url, metadata, created_at, updated_at, last_login_at, banned_at, ban_expires, ban_reason
+        SELECT id, display_name, email, username, avatar_url, metadata, created_at, updated_at, email_verified_at, last_login_at, banned_at, ban_expires, ban_reason
         FROM ` + models.UserTable + `
         WHERE LOWER(email) = LOWER($1)
         LIMIT 1
@@ -297,6 +305,7 @@ func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*mod
 		&user.Metadata,
 		&user.CreatedAt,
 		&user.UpdatedAt,
+		&user.EmailVerifiedAt,
 		&user.LastLoginAt,
 		&user.BannedAt,
 		&user.BanExpires,
@@ -315,7 +324,7 @@ func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*mod
 
 func (r *UserRepository) GetUserByUsername(ctx context.Context, username string) (*models.User, error) {
 	query := `
-        SELECT id, display_name, email, username, avatar_url, metadata, created_at, updated_at, last_login_at, banned_at, ban_expires, ban_reason
+        SELECT id, display_name, email, username, avatar_url, metadata, created_at, updated_at, email_verified_at, last_login_at, banned_at, ban_expires, ban_reason
         FROM ` + models.UserTable + `
         WHERE LOWER(username) = LOWER($1)
         LIMIT 1
@@ -331,6 +340,7 @@ func (r *UserRepository) GetUserByUsername(ctx context.Context, username string)
 		&user.Metadata,
 		&user.CreatedAt,
 		&user.UpdatedAt,
+		&user.EmailVerifiedAt,
 		&user.LastLoginAt,
 		&user.BannedAt,
 		&user.BanExpires,

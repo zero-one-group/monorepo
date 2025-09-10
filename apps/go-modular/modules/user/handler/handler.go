@@ -3,10 +3,10 @@ package handler
 import (
 	"log/slog"
 	"net/http"
-	"strings"
 
 	"go-modular/modules/user/models"
 	"go-modular/modules/user/services"
+	"go-modular/pkg/apputils"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
@@ -62,13 +62,14 @@ func (h *Handler) CreateUser(c echo.Context) error {
 	if err := h.validator.Struct(req); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]any{
 			"error":   "Validation failed",
-			"details": validationErrorsToMap(err),
+			"details": apputils.ValidationErrorsToMap(err, req),
 		})
 	}
 
 	user := &models.User{
-		DisplayName: req.Name,
-		Email:       req.Email,
+		DisplayName:     req.Name,
+		Email:           req.Email,
+		EmailVerifiedAt: nil,
 	}
 
 	if err := h.userService.CreateUser(c.Request().Context(), user); err != nil {
@@ -148,15 +149,16 @@ func (h *Handler) UpdateUser(c echo.Context) error {
 	if err := h.validator.Struct(req); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]any{
 			"error":   "Validation failed",
-			"details": validationErrorsToMap(err),
+			"details": apputils.ValidationErrorsToMap(err, req),
 		})
 	}
 
 	// Map request fields to user model
 	user := &models.User{
-		ID:          id,
-		DisplayName: req.Name,
-		Email:       req.Email,
+		ID:              id,
+		DisplayName:     req.Name,
+		Email:           req.Email,
+		EmailVerifiedAt: nil,
 	}
 
 	if err := h.userService.UpdateUser(c.Request().Context(), user); err != nil {
@@ -187,30 +189,4 @@ func (h *Handler) DeleteUser(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{"message": "User deleted successfully"})
-}
-
-// Helper to convert validator.ValidationErrors to a readable map
-func validationErrorsToMap(err error) map[string]string {
-	errs := map[string]string{}
-	if ve, ok := err.(validator.ValidationErrors); ok {
-		for _, fe := range ve {
-			field := fe.Field()
-			tag := fe.Tag()
-			var msg string
-			switch tag {
-			case "required":
-				msg = "This field is required"
-			case "email":
-				msg = "Please provide a valid email address"
-			case "min":
-				msg = "Minimum length is " + fe.Param()
-			default:
-				msg = "Invalid value"
-			}
-			errs[strings.ToLower(field)] = msg
-		}
-	} else {
-		errs["error"] = err.Error()
-	}
-	return errs
 }

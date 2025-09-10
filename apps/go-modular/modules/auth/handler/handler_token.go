@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"go-modular/modules/auth/models"
+	"go-modular/pkg/apputils"
 
 	"github.com/gofrs/uuid/v5"
 	"github.com/labstack/echo/v4"
@@ -29,7 +30,7 @@ func (h *Handler) CreateRefreshToken(c echo.Context) error {
 	if err := h.validator.Struct(req); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"error":   "Validation failed",
-			"details": validationErrorsToMap(err),
+			"details": apputils.ValidationErrorsToMap(err, req),
 		})
 	}
 
@@ -95,7 +96,7 @@ func (h *Handler) UpdateRefreshToken(c echo.Context) error {
 	if err := h.validator.Struct(req); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"error":   "Validation failed",
-			"details": validationErrorsToMap(err),
+			"details": apputils.ValidationErrorsToMap(err, req),
 		})
 	}
 

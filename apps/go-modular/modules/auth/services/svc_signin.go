@@ -15,6 +15,9 @@ import (
 // ErrInvalidCredentials is returned when authentication fails.
 var ErrInvalidCredentials = errors.New("invalid credentials")
 
+// ErrEmailNotVerified is returned when the user's email is not verified.
+var ErrEmailNotVerified = errors.New("email not verified")
+
 // UserIdentity interface for user abstraction in sign-in
 type UserIdentity interface {
 	GetID() uuid.UUID
@@ -23,6 +26,7 @@ type UserIdentity interface {
 }
 
 // signinWithCredentials is a reusable function for both email and username sign-in.
+// It validates user credentials, checks if the email is verified, and issues JWT tokens.
 func (s *AuthService) signinWithCredentials(
 	ctx context.Context,
 	identifier string,
@@ -39,6 +43,8 @@ func (s *AuthService) signinWithCredentials(
 	if user == nil {
 		return nil, ErrInvalidCredentials
 	}
+
+	// Validate the user's password FIRST
 	ok, err := s.ValidateUserPassword(ctx, user.GetID(), password)
 	if err != nil {
 		return nil, err
@@ -47,6 +53,14 @@ func (s *AuthService) signinWithCredentials(
 		return nil, ErrInvalidCredentials
 	}
 
+	// Then check if the user's email is verified
+	if u, ok := any(user).(interface{ GetEmailVerifiedAt() *time.Time }); ok {
+		if u.GetEmailVerifiedAt() == nil {
+			return nil, ErrEmailNotVerified
+		}
+	}
+
+	// Prepare JWT generator with configuration from environment
 	issuer := os.Getenv("APP_BASE_URL")
 	if issuer == "" {
 		return nil, errors.New("missing APP_BASE_URL env")
@@ -58,7 +72,7 @@ func (s *AuthService) signinWithCredentials(
 		Issuer:             issuer,
 	})
 
-	// Get audience from request headers (example: "X-App-Audience")
+	// Determine audience for the token, default to "client-app"
 	audience := "client-app"
 	if md, ok := ctx.Value("headers").(map[string]string); ok {
 		if aud, exists := md["X-App-Audience"]; exists && aud != "" {
@@ -66,21 +80,21 @@ func (s *AuthService) signinWithCredentials(
 		}
 	}
 
-	// Generate refresh token ID (UUID v7)
+	// Generate a new UUID for the refresh token
 	refreshTokenUUID, err := uuid.NewV7()
 	if err != nil {
 		return nil, err
 	}
 	refreshTokenID := refreshTokenUUID.String()
 
-	// Generate refresh token JWT with jti and dynamic audience
+	// Generate the refresh token JWT and its hash
 	refreshToken, err := jwtGen.GenerateRefreshTokenJWT(ctx, user.GetID().String(), audience, refreshTokenID)
 	if err != nil {
 		return nil, err
 	}
 	refreshTokenHash := jwtGen.GetHash(refreshToken)
 
-	// Create session
+	// Create a new session for the user
 	session := &models.Session{
 		UserID:    user.GetID(),
 		TokenHash: refreshTokenHash,
@@ -90,7 +104,7 @@ func (s *AuthService) signinWithCredentials(
 		return nil, err
 	}
 
-	// Access token payload with sid
+	// Prepare the access token payload, including the session ID
 	accessPayload := models.AccessTokenPayload{
 		UserID: user.GetID().String(),
 		Email:  user.GetEmail(),
@@ -101,7 +115,7 @@ func (s *AuthService) signinWithCredentials(
 		return nil, err
 	}
 
-	// Create refresh token model, store refreshTokenID
+	// Store the refresh token in the database
 	refreshTokenModel := &models.RefreshToken{
 		ID:        refreshTokenUUID,
 		UserID:    user.GetID(),
@@ -113,9 +127,10 @@ func (s *AuthService) signinWithCredentials(
 		return nil, err
 	}
 
+	// Return the authenticated user with tokens and session info
 	authUser := &models.AuthenticatedUser{
 		UserWithCredentials: models.UserWithCredentials{
-			User:         user.AsUserModel(), // langsung ambil user_models.User
+			User:         user.AsUserModel(), // Cast to user_models.User
 			AccessToken:  accessToken,
 			RefreshToken: refreshToken,
 		},

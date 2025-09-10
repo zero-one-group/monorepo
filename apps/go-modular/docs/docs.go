@@ -458,7 +458,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Auth"
+                    "Auth - Authentication"
                 ],
                 "summary": "Sign in with email",
                 "parameters": [
@@ -483,18 +483,14 @@ const docTemplate = `{
                         "description": "Bad Request",
                         "schema": {
                             "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "additionalProperties": true
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
                             "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "additionalProperties": true
                         }
                     }
                 }
@@ -510,7 +506,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Auth"
+                    "Auth - Authentication"
                 ],
                 "summary": "Sign in with username",
                 "parameters": [
@@ -535,18 +531,14 @@ const docTemplate = `{
                         "description": "Bad Request",
                         "schema": {
                             "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "additionalProperties": true
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
                             "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "additionalProperties": true
                         }
                     }
                 }
@@ -1083,6 +1075,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "email": {
+                    "type": "string"
+                },
+                "email_verified_at": {
                     "type": "string"
                 },
                 "id": {

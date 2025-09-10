@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS public.users (
     metadata JSONB DEFAULT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT NULL,
+    email_verified_at TIMESTAMPTZ DEFAULT NULL,
     last_login_at TIMESTAMPTZ DEFAULT NULL,
     banned_at TIMESTAMPTZ DEFAULT NULL,
     ban_expires TIMESTAMPTZ DEFAULT NULL,
@@ -38,6 +39,7 @@ CREATE INDEX IF NOT EXISTS idx_users_created_at ON public.users (created_at);
 CREATE INDEX IF NOT EXISTS idx_users_updated_at ON public.users (updated_at) WHERE updated_at IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_users_metadata_gin ON public.users USING GIN (metadata);
 CREATE INDEX IF NOT EXISTS idx_users_last_login_at ON public.users (last_login_at) WHERE last_login_at IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_users_email_verified_at ON public.users (email_verified_at) WHERE email_verified_at IS NOT NULL;
 CREATE TRIGGER trg_users_updated_at BEFORE UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION fn_updated_at_value();
 
 -- +goose StatementEnd
