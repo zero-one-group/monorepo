@@ -75,18 +75,18 @@ type AccessTokenPayload struct {
 
 // InitiateEmailVerificationRequest represents the request payload for initiating email verification.
 type InitiateEmailVerificationRequest struct {
-	Email string `json:"email" validate:"required,email" example:"user@example.com"`
+	Email      string `json:"email" validate:"required,email" example:"user@example.com"`
+	RedirectTo string `json:"redirect_to,omitempty" validate:"omitempty,url" example:"https://example.com/verified"`
 }
 
 // ValidateEmailVerificationRequest represents the request payload for validating email verification.
 type ValidateEmailVerificationRequest struct {
-	Email string `json:"email" validate:"required,email" example:"user@example.com"`
-	Token string `json:"token" validate:"required"`
+	Token string `json:"token" validate:"required" example:"01FZ..."`
 }
 
 // RevokeEmailVerificationRequest represents the request payload for revoking email verification.
 type RevokeEmailVerificationRequest struct {
-	Token string `json:"token" validate:"required"`
+	Token string `json:"token" validate:"required" example:"01FZ..."`
 }
 
 // ResendEmailVerificationRequest represents the request payload for resending email verification.

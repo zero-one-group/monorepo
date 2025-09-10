@@ -13,7 +13,7 @@ func ValidationErrorsToMap(err error, obj any) map[string]string {
 	errs := map[string]string{}
 	if ve, ok := err.(validator.ValidationErrors); ok {
 		t := reflect.TypeOf(obj)
-		if t.Kind() == reflect.Ptr {
+		if t.Kind() == reflect.Pointer {
 			t = t.Elem()
 		}
 		for _, fe := range ve {

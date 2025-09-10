@@ -11,6 +11,7 @@ import (
 
 // HandlerInterface defines the contract for auth handlers.
 type HandlerInterface interface {
+	// Password handlers
 	SetUserPassword(c echo.Context) error
 	UpdateUserPassword(c echo.Context) error
 
@@ -25,6 +26,13 @@ type HandlerInterface interface {
 	UpdateRefreshToken(c echo.Context) error
 	GetRefreshToken(c echo.Context) error
 	DeleteRefreshToken(c echo.Context) error
+
+	// Email verification handlers
+	InitiateEmailVerification(c echo.Context) error
+	ValidateEmailVerification(c echo.Context) error
+	ValidateEmailVerificationByLink(c echo.Context) error
+	RevokeEmailVerification(c echo.Context) error
+	ResendEmailVerification(c echo.Context) error
 }
 
 // Ensure Handler implements HandlerInterface

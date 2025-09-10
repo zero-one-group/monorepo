@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"go-modular/internal/notification"
 	"go-modular/modules/auth/models"
 	"go-modular/modules/auth/repository"
 
@@ -39,10 +40,11 @@ type AuthServiceInterface interface {
 	SignInWithUsername(ctx context.Context, username, password string) (*models.AuthenticatedUser, error)
 
 	// Account verification (email-based, userID resolved internally)
-	InitiateEmailVerification(ctx context.Context, email string) error
-	ValidateEmailVerification(ctx context.Context, email, token string) (bool, error)
+	// Initiate/Resend now accept an optional redirectTo which will be stored in token metadata.
+	InitiateEmailVerification(ctx context.Context, email, redirectTo string) error
+	ValidateEmailVerification(ctx context.Context, token string) (bool, error)
 	RevokeEmailVerification(ctx context.Context, token string) error
-	ResendEmailVerification(ctx context.Context, email string) error
+	ResendEmailVerification(ctx context.Context, email, redirectTo string) error
 }
 
 // Ensure AuthService implements AuthServiceInterface
@@ -56,15 +58,19 @@ type AuthService struct {
 	accessTokenExpiry  time.Duration          // Access token expiration duration
 	refreshTokenExpiry time.Duration          // Refresh token expiration duration
 	signingAlg         jwa.SignatureAlgorithm // Signing algorithm (default: HS256)
+	mailer             *notification.Mailer
+	baseURL            string // Base URL used when constructing verification links
 }
 
 type AuthServiceOpts struct {
 	AuthRepo           repository.AuthRepositoryInterface
 	UserService        svcUser.UserServiceInterface
-	SecretKey          []byte                 // Secret key for signing JWTs
+	JWTSecretKey       []byte                 // Secret key for signing JWTs
 	AccessTokenExpiry  time.Duration          // Access token expiration duration
 	RefreshTokenExpiry time.Duration          // Refresh token expiration duration
 	SigningAlg         jwa.SignatureAlgorithm // Signing algorithm (default: HS256)
+	Mailer             *notification.Mailer   // Mailer service for sending emails
+	BaseURL            string                 // BaseURL used when constructing verification links (MANDATORY).
 }
 
 // NewAuthService creates a new AuthService.
@@ -75,8 +81,8 @@ func NewAuthService(opts AuthServiceOpts) *AuthService {
 	if opts.UserService == nil {
 		panic("UserService is required")
 	}
-	if len(opts.SecretKey) == 0 {
-		panic("SecretKey is required")
+	if len(opts.JWTSecretKey) == 0 {
+		panic("JWTSecretKey is required")
 	}
 	if opts.SigningAlg == "" {
 		opts.SigningAlg = jwa.HS256
@@ -88,12 +94,20 @@ func NewAuthService(opts AuthServiceOpts) *AuthService {
 		opts.RefreshTokenExpiry = 7 * 24 * time.Hour
 	}
 
+	// BaseURL is mandatory
+	if opts.BaseURL == "" {
+		// keep behavior consistent with other validations: panic on missing required option
+		panic("BaseURL is required")
+	}
+
 	return &AuthService{
 		authRepo:           opts.AuthRepo,
 		userService:        opts.UserService,
-		secretKey:          opts.SecretKey,
+		secretKey:          opts.JWTSecretKey,
 		accessTokenExpiry:  opts.AccessTokenExpiry,
 		refreshTokenExpiry: opts.RefreshTokenExpiry,
 		signingAlg:         opts.SigningAlg,
+		mailer:             opts.Mailer,
+		baseURL:            opts.BaseURL,
 	}
 }

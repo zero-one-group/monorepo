@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"encoding/json"
 	"time"
 
 	"github.com/gofrs/uuid/v5"
@@ -11,7 +12,7 @@ import (
 
 // FindAllOneTimeTokens returns all one time tokens in the database.
 func (r *AuthRepository) FindAllOneTimeTokens(ctx context.Context) ([]*models.OneTimeToken, error) {
-	query := `SELECT id, user_id, subject, token_hash, relates_to, created_at, expires_at, last_sent_at FROM ` + models.OneTimeTokenTable
+	query := `SELECT id, user_id, subject, token_hash, relates_to, metadata, created_at, expires_at, last_sent_at FROM ` + models.OneTimeTokenTable
 	rows, err := r.pgPool.Query(ctx, query)
 	if err != nil {
 		r.logger.Error("failed to query all one time tokens", "op", "FindAllOneTimeTokens", "error", err.Error())
@@ -22,12 +23,14 @@ func (r *AuthRepository) FindAllOneTimeTokens(ctx context.Context) ([]*models.On
 	var tokens []*models.OneTimeToken
 	for rows.Next() {
 		var t models.OneTimeToken
+		var metaBytes []byte
 		err := rows.Scan(
 			&t.ID,
 			&t.UserID,
 			&t.Subject,
 			&t.TokenHash,
 			&t.RelatesTo,
+			&metaBytes,
 			&t.CreatedAt,
 			&t.ExpiresAt,
 			&t.LastSentAt,
@@ -35,6 +38,14 @@ func (r *AuthRepository) FindAllOneTimeTokens(ctx context.Context) ([]*models.On
 		if err != nil {
 			r.logger.Error("failed to scan one time token", "op", "FindAllOneTimeTokens", "error", err.Error())
 			return nil, err
+		}
+		if len(metaBytes) > 0 {
+			var m map[string]any
+			if err := json.Unmarshal(metaBytes, &m); err != nil {
+				r.logger.Warn("failed to unmarshal metadata for one time token", "token_id", t.ID.String(), "err", err.Error())
+			} else {
+				t.Metadata = m
+			}
 		}
 		tokens = append(tokens, &t)
 	}
@@ -49,15 +60,29 @@ func (r *AuthRepository) CreateOneTimeToken(ctx context.Context, token *models.O
 	if token.CreatedAt.IsZero() {
 		token.CreatedAt = time.Now()
 	}
+
+	var metaArg interface{}
+	if token.Metadata != nil {
+		b, err := json.Marshal(token.Metadata)
+		if err != nil {
+			r.logger.Error("failed to marshal metadata for one time token", "op", "CreateOneTimeToken", "token_id", token.ID.String(), "error", err.Error())
+			return err
+		}
+		metaArg = b
+	} else {
+		metaArg = nil
+	}
+
 	query := `INSERT INTO ` + models.OneTimeTokenTable + `
-        (id, user_id, subject, token_hash, relates_to, created_at, expires_at, last_sent_at)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
+        (id, user_id, subject, token_hash, relates_to, metadata, created_at, expires_at, last_sent_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`
 	_, err := r.pgPool.Exec(ctx, query,
 		token.ID,
 		token.UserID,
 		token.Subject,
 		token.TokenHash,
 		token.RelatesTo,
+		metaArg,
 		token.CreatedAt,
 		token.ExpiresAt,
 		token.LastSentAt,
@@ -72,14 +97,16 @@ func (r *AuthRepository) CreateOneTimeToken(ctx context.Context, token *models.O
 
 // GetOneTimeTokenByID retrieves a one time token by its ID.
 func (r *AuthRepository) GetOneTimeTokenByID(ctx context.Context, tokenID uuid.UUID) (*models.OneTimeToken, error) {
-	query := `SELECT id, user_id, subject, token_hash, relates_to, created_at, expires_at, last_sent_at FROM ` + models.OneTimeTokenTable + ` WHERE id = $1`
+	query := `SELECT id, user_id, subject, token_hash, relates_to, metadata, created_at, expires_at, last_sent_at FROM ` + models.OneTimeTokenTable + ` WHERE id = $1`
 	var t models.OneTimeToken
+	var metaBytes []byte
 	err := r.pgPool.QueryRow(ctx, query, tokenID).Scan(
 		&t.ID,
 		&t.UserID,
 		&t.Subject,
 		&t.TokenHash,
 		&t.RelatesTo,
+		&metaBytes,
 		&t.CreatedAt,
 		&t.ExpiresAt,
 		&t.LastSentAt,
@@ -92,19 +119,29 @@ func (r *AuthRepository) GetOneTimeTokenByID(ctx context.Context, tokenID uuid.U
 		r.logger.Error("failed to get one time token", "op", "GetOneTimeTokenByID", "token_id", tokenID.String(), "error", err.Error())
 		return nil, err
 	}
+	if len(metaBytes) > 0 {
+		var m map[string]any
+		if err := json.Unmarshal(metaBytes, &m); err != nil {
+			r.logger.Warn("failed to unmarshal metadata for one time token", "token_id", t.ID.String(), "err", err.Error())
+		} else {
+			t.Metadata = m
+		}
+	}
 	return &t, nil
 }
 
 // GetOneTimeTokenByTokenHash retrieves a one time token by its token_hash.
 func (r *AuthRepository) GetOneTimeTokenByTokenHash(ctx context.Context, tokenHash string) (*models.OneTimeToken, error) {
-	query := `SELECT id, user_id, subject, token_hash, relates_to, created_at, expires_at, last_sent_at FROM ` + models.OneTimeTokenTable + ` WHERE token_hash = $1`
+	query := `SELECT id, user_id, subject, token_hash, relates_to, metadata, created_at, expires_at, last_sent_at FROM ` + models.OneTimeTokenTable + ` WHERE token_hash = $1`
 	var t models.OneTimeToken
+	var metaBytes []byte
 	err := r.pgPool.QueryRow(ctx, query, tokenHash).Scan(
 		&t.ID,
 		&t.UserID,
 		&t.Subject,
 		&t.TokenHash,
 		&t.RelatesTo,
+		&metaBytes,
 		&t.CreatedAt,
 		&t.ExpiresAt,
 		&t.LastSentAt,
@@ -116,6 +153,14 @@ func (r *AuthRepository) GetOneTimeTokenByTokenHash(ctx context.Context, tokenHa
 		}
 		r.logger.Error("failed to get one time token", "op", "GetOneTimeTokenByTokenHash", "token_hash", tokenHash, "error", err.Error())
 		return nil, err
+	}
+	if len(metaBytes) > 0 {
+		var m map[string]any
+		if err := json.Unmarshal(metaBytes, &m); err != nil {
+			r.logger.Warn("failed to unmarshal metadata for one time token", "token_id", t.ID.String(), "err", err.Error())
+		} else {
+			t.Metadata = m
+		}
 	}
 	return &t, nil
 }

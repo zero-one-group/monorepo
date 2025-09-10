@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"go-modular/internal/notification"
 	"go-modular/modules/auth/handler"
 	"go-modular/modules/auth/repository"
 
@@ -21,10 +22,18 @@ type Options struct {
 	PgPool             *pgxpool.Pool // PostgreSQL connection pool (required)
 	Logger             *slog.Logger  // Slog logger instance (optional)
 	UserService        svcAuth.UserServiceInterface
-	SecretKey          []byte                 // Secret key for signing JWTs
+	JWTSecretKey       []byte                 // Secret key for signing JWTs
 	AccessTokenExpiry  time.Duration          // Access token expiration duration
 	RefreshTokenExpiry time.Duration          // Refresh token expiration duration
 	SigningAlg         jwa.SignatureAlgorithm // Signing algorithm (default: HS256)
+
+	// Mailer dependency (optional). Provided mailer will be available to handlers.
+	Mailer *notification.Mailer
+
+	// BaseURL used when constructing verification links (MANDATORY).
+	// Caller MUST provide a fully qualified base URL (e.g. https://example.com)
+	// via Options.BaseURL before creating the module. We no longer read APP_BASE_URL here.
+	BaseURL string
 }
 
 // AuthModule holds dependencies for auth-related handlers.
@@ -32,6 +41,9 @@ type AuthModule struct {
 	logger      *slog.Logger
 	middlewares []echo.MiddlewareFunc
 	handler     *handler.Handler
+
+	// mailer available to the module/handlers
+	mailer *notification.Mailer
 }
 
 // validateAndSetDefaults validates Options and sets defaults if needed.
@@ -42,8 +54,8 @@ func (opts *Options) validateAndSetDefaults() error {
 	if opts.UserService == nil {
 		return fmt.Errorf("UserService is required")
 	}
-	if len(opts.SecretKey) == 0 {
-		return fmt.Errorf("SecretKey is required")
+	if len(opts.JWTSecretKey) == 0 {
+		return fmt.Errorf("JWTSecretKey is required")
 	}
 	if opts.SigningAlg == "" {
 		opts.SigningAlg = jwa.HS256
@@ -54,6 +66,12 @@ func (opts *Options) validateAndSetDefaults() error {
 	if opts.RefreshTokenExpiry == 0 {
 		opts.RefreshTokenExpiry = 7 * 24 * time.Hour
 	}
+
+	// BaseURL is mandatory and must be provided via Options.BaseURL
+	if opts.BaseURL == "" {
+		return fmt.Errorf("BaseURL is required (set Options.BaseURL)")
+	}
+
 	return nil
 }
 
@@ -80,10 +98,12 @@ func NewModule(opts *Options) *AuthModule {
 	authService := svcUser.NewAuthService(svcUser.AuthServiceOpts{
 		AuthRepo:           authRepo,
 		UserService:        opts.UserService,
-		SecretKey:          opts.SecretKey,
+		JWTSecretKey:       opts.JWTSecretKey,
 		AccessTokenExpiry:  opts.AccessTokenExpiry,
 		RefreshTokenExpiry: opts.RefreshTokenExpiry,
 		SigningAlg:         opts.SigningAlg,
+		Mailer:             opts.Mailer,
+		BaseURL:            opts.BaseURL,
 	})
 
 	h := handler.NewHandler(&handler.HandlerOpts{
@@ -91,7 +111,11 @@ func NewModule(opts *Options) *AuthModule {
 		AuthService: authService,
 	})
 
-	return &AuthModule{logger: logger, handler: h}
+	return &AuthModule{
+		logger:  logger,
+		handler: h,
+		mailer:  opts.Mailer,
+	}
 }
 
 // Use adds middleware(s) to the AuthModule (grouped).
@@ -105,6 +129,10 @@ func (m *AuthModule) RegisterRoutes(e *echo.Group) {
 
 	g.POST("/signin/email", m.handler.SignInWithEmail)
 	g.POST("/signin/username", m.handler.SignInWithUsername)
+
+	// Verification GET endpoint for email links (token-only)
+	// maps to handler that returns JSON or redirects to redirect_to
+	g.GET("/verify-email", m.handler.ValidateEmailVerificationByLink)
 
 	g.POST("/password", m.handler.SetUserPassword)
 	g.PUT("/password/:userId", m.handler.UpdateUserPassword)
@@ -121,7 +149,7 @@ func (m *AuthModule) RegisterRoutes(e *echo.Group) {
 	g.GET("/refresh-token/:tokenId", m.handler.GetRefreshToken)
 	g.DELETE("/refresh-token/:tokenId", m.handler.DeleteRefreshToken)
 
-	// Email verification routes
+	// Email verification API routes (JSON)
 	g.POST("/verification/email/initiate", m.handler.InitiateEmailVerification)
 	g.POST("/verification/email/validate", m.handler.ValidateEmailVerification)
 	g.POST("/verification/email/revoke", m.handler.RevokeEmailVerification)
