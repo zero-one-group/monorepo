@@ -305,12 +305,12 @@ func (s *AuthService) ResendEmailVerification(ctx context.Context, email string,
 func (s *AuthService) sendVerificationEmail(ctx context.Context, toEmail, rawToken, redirectTo string) error {
 	// Determine base URL:
 	// 1) prefer configured s.baseURL
-	// 2) fallback to environment HOST/PORT
+	// 2) fallback to environment SERVER_HOST/SERVER_PORT
 	// 3) final fallback to localhost:8000
 	base := s.baseURL
 	if base == "" {
-		host := os.Getenv("HOST")
-		port := os.Getenv("PORT")
+		host := os.Getenv("SERVER_HOST")
+		port := os.Getenv("SERVER_PORT")
 		if host == "" {
 			host = "localhost"
 		}
@@ -322,9 +322,9 @@ func (s *AuthService) sendVerificationEmail(ctx context.Context, toEmail, rawTok
 
 	u, err := url.Parse(base)
 	if err != nil || u.Scheme == "" || u.Host == "" {
-		// fallback to HOST/PORT env vars explicitly
-		host := os.Getenv("HOST")
-		port := os.Getenv("PORT")
+		// fallback to SERVER_HOST/SERVER_PORT env vars explicitly
+		host := os.Getenv("SERVER_HOST")
+		port := os.Getenv("SERVER_PORT")
 		if host == "" {
 			host = "localhost"
 		}

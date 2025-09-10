@@ -7,11 +7,11 @@ import (
 	"io/fs"
 	"log/slog"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 
 	"go-modular/docs"
+	"go-modular/internal/config"
 	"go-modular/web"
 
 	"github.com/alexliesenfeld/health"
@@ -107,8 +107,9 @@ func (h *ServerHandler) HealthCheckHandler(c echo.Context) error {
 
 // OpenAPISpecHandler serves the embedded swagger.json as application/json.
 func (h *ServerHandler) OpenAPISpecHandler(c echo.Context) error {
-	enableOpenAPI := os.Getenv("APP_ENABLE_API_DOCS")
-	if enableOpenAPI != "true" {
+	cfg := config.Get()
+
+	if !cfg.IsAPIDocsEnabled() {
 		return echo.NewHTTPError(http.StatusNotFound, "API docs are disabled")
 	}
 
@@ -122,8 +123,9 @@ func (h *ServerHandler) OpenAPISpecHandler(c echo.Context) error {
 
 // APIDocsHandler serves the Scalar API docs UI using the embedded OpenAPI spec.
 func (h *ServerHandler) APIDocsHandler(c echo.Context) error {
-	enableOpenAPI := os.Getenv("APP_ENABLE_API_DOCS")
-	if enableOpenAPI != "true" {
+	cfg := config.Get()
+
+	if !cfg.IsAPIDocsEnabled() {
 		return echo.NewHTTPError(http.StatusNotFound, "API docs are disabled")
 	}
 

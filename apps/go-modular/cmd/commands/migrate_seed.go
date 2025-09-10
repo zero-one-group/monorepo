@@ -6,12 +6,13 @@ package commands
 import (
 	"bufio"
 	"fmt"
-	"go-modular/database"
 	"log"
 	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
+	"go-modular/database"
+	"go-modular/internal/config"
 )
 
 var forceSeed bool
@@ -20,6 +21,8 @@ var migrateSeedCmd = &cobra.Command{
 	Use:   "migrate:seed",
 	Short: "Seed the database with initial data",
 	Run: func(cmd *cobra.Command, args []string) {
+		cfg := config.Get()
+
 		if !forceSeed {
 			fmt.Print("Are you sure you want to seed the database? (y/N): ")
 			reader := bufio.NewReader(os.Stdin)
@@ -31,10 +34,8 @@ var migrateSeedCmd = &cobra.Command{
 			}
 		}
 
-		databaseURL := os.Getenv("DATABASE_URL")
-		migrator := database.NewMigrator(databaseURL)
-
 		// Call SeedInitialData to seed initial data
+		migrator := database.NewMigrator(cfg.GetDatabaseURL())
 		if err := migrator.SeedInitialData(cmd.Context()); err != nil {
 			log.Fatalf("Failed to seed initial data: %v", err)
 		}

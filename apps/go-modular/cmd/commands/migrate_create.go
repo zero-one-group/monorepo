@@ -5,10 +5,10 @@ package commands
 
 import (
 	"log"
-	"os"
 
 	"github.com/spf13/cobra"
 	"go-modular/database"
+	"go-modular/internal/config"
 )
 
 var migrateCreateCmd = &cobra.Command{
@@ -16,9 +16,9 @@ var migrateCreateCmd = &cobra.Command{
 	Short: "Create new database migration file",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
+		cfg := config.Get()
 		migrationName := args[0]
-		databaseURL := os.Getenv("DATABASE_URL")
-		migrator := database.NewMigrator(databaseURL)
+		migrator := database.NewMigrator(cfg.GetDatabaseURL())
 		if err := migrator.MigrateCreate(cmd.Context(), migrationName); err != nil {
 			log.Fatalf("Failed to create new migration: %v", err)
 		}

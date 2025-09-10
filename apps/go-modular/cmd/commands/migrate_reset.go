@@ -6,12 +6,13 @@ package commands
 import (
 	"bufio"
 	"fmt"
-	"go-modular/database"
 	"log"
 	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
+	"go-modular/database"
+	"go-modular/internal/config"
 )
 
 var forceReset bool
@@ -22,6 +23,8 @@ var migrateResetCmd = &cobra.Command{
 	Use:   "migrate:reset",
 	Short: "Rollback all database migrations",
 	Run: func(cmd *cobra.Command, args []string) {
+		cfg := config.Get()
+
 		if !forceReset {
 			fmt.Print("Are you sure you want to rollback all database migrations? (y/N): ")
 			reader := bufio.NewReader(os.Stdin)
@@ -33,9 +36,7 @@ var migrateResetCmd = &cobra.Command{
 			}
 		}
 
-		databaseURL := os.Getenv("DATABASE_URL")
-
-		migratorReset := database.NewMigrator(databaseURL)
+		migratorReset := database.NewMigrator(cfg.GetDatabaseURL())
 		err := migratorReset.MigrateReset(cmd.Context())
 		if err != nil {
 			log.Fatalf("Failed to reset database migration: %v", err)
@@ -51,7 +52,7 @@ var migrateResetCmd = &cobra.Command{
 		}
 
 		if argUp {
-			migratorUp := database.NewMigrator(databaseURL)
+			migratorUp := database.NewMigrator(cfg.GetDatabaseURL())
 			if err := migratorUp.MigrateUp(cmd.Context()); err != nil {
 				log.Fatalf("Failed to apply database migration: %v", err)
 			}

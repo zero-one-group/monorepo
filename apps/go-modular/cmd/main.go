@@ -17,24 +17,8 @@ import (
 
 // @BasePath /api
 func main() {
-	if err := setupConfig(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
 	if err := commands.RootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-}
-
-func setupConfig() error {
-	_, err := os.Getwd()
-	if err != nil {
-		return fmt.Errorf("failed to get working directory: %w", err)
-	}
-
-	// TODO: Do something!
-
-	return nil
 }

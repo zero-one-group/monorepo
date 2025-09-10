@@ -4,9 +4,11 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/spf13/cobra"
 	"go-modular/database"
+	"go-modular/internal/config"
 	"go-modular/internal/server"
+
+	"github.com/spf13/cobra"
 )
 
 func init() {
@@ -17,11 +19,11 @@ func init() {
 		Short: "Start the application HTTP server",
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := cmd.Context() // Set context for the command
+			cfg := config.Get()
 
 			if argAutoMigrate {
 				slog.Info("Running database migrations before starting server")
-				databaseURL := os.Getenv("DATABASE_URL")
-				migrator := database.NewMigrator(databaseURL)
+				migrator := database.NewMigrator(cfg.GetDatabaseURL())
 				if err := migrator.MigrateUp(ctx); err != nil {
 					slog.Error("Failed to apply database migration", "err", err)
 					os.Exit(1)

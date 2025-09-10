@@ -2,11 +2,15 @@ package commands
 
 import (
 	"fmt"
+	"log"
+
+	"go-modular/internal"
+	"go-modular/internal/config"
 
 	"github.com/spf13/cobra"
-	"go-modular/internal"
 )
 
+var cfgFile string
 var argVersionShort bool
 var argVersionSemantic bool
 
@@ -36,7 +40,11 @@ var versionCmd = &cobra.Command{
 }
 
 func init() {
-	// TODO: Initialize the configuration
+	// Initialize the configuration
+	_, err := config.Load(cfgFile)
+	if err != nil {
+		log.Fatalf("Failed to load config: %v", err)
+	}
 
 	// Disable the default help subcommand
 	RootCmd.SetHelpCommand(&cobra.Command{Hidden: true})

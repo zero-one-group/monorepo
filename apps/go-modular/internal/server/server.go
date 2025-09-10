@@ -3,14 +3,14 @@ package server
 import (
 	"log/slog"
 	"os"
-	"strconv"
-	"strings"
+
+	"go-modular/internal/adapter"
+	"go-modular/internal/config"
+	"go-modular/internal/middleware/logger"
+	"go-modular/internal/notification"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"go-modular/internal/adapter"
-	"go-modular/internal/middleware/logger"
-	"go-modular/internal/notification"
 
 	auth_module "go-modular/modules/auth"
 	user_module "go-modular/modules/user"
@@ -33,11 +33,11 @@ func NewHTTPServer(httpAddr string) *HTTPServer {
 }
 
 func (s *HTTPServer) Start() error {
-	databaseURL := os.Getenv("DATABASE_URL")
+	cfg := config.Get()
 
 	// Initialize Postgres pool
 	pg, err := adapter.NewPostgres(adapter.PostgresConfig{
-		URL:        databaseURL,
+		URL:        cfg.GetDatabaseURL(),
 		SearchPath: "public",
 	})
 	if err != nil {
@@ -46,36 +46,22 @@ func (s *HTTPServer) Start() error {
 	}
 	defer pg.Close()
 
-	// Read SMTP configuration from environment
-	smtpHost := os.Getenv("SMTP_HOST")
-	smtpPort := 587
-	if p := os.Getenv("SMTP_PORT"); p != "" {
-		if v, err := strconv.Atoi(p); err == nil {
-			smtpPort = v
-		}
-	}
-	smtpUser := os.Getenv("SMTP_USERNAME")
-	smtpPass := os.Getenv("SMTP_PASSWORD")
-	smtpSenderEmail := strings.Trim(os.Getenv("SMTP_SENDER_EMAIL"), "\"")
-	smtpSenderName := strings.Trim(os.Getenv("SMTP_SENDER_NAME"), "\"")
-	appBaseURL := os.Getenv("APP_BASE_URL")
-
 	var mailer *notification.Mailer
 	m, err := notification.NewMailer(notification.MailerOptions{
-		SMTPHost:     smtpHost,
-		SMTPPort:     smtpPort,
-		SMTPUsername: smtpUser,
-		SMTPPassword: smtpPass,
-		FromName:     smtpSenderName,
-		FromAddress:  smtpSenderEmail,
+		SMTPHost:     cfg.Mailer.SMTPHost,
+		SMTPPort:     cfg.Mailer.SMTPPort,
+		SMTPUsername: cfg.Mailer.SMTPUsername,
+		SMTPPassword: cfg.Mailer.SMTPPassword,
+		FromName:     cfg.Mailer.SenderName,
+		FromAddress:  cfg.Mailer.SenderEmail,
 		TemplateFS:   templateFS.TemplateDir,
 		Logger:       s.logger,
 	})
 	if err != nil {
-		s.logger.Info("mailer not configured or failed to initialize, continuing without mailer", "err", err)
+		s.logger.Info("mailer service not configured or failed to initialize, continuing without mailer", "err", err)
 	} else {
 		mailer = m
-		s.logger.Info("mailer initialized", "host", smtpHost, "port", smtpPort, "from", smtpSenderEmail)
+		s.logger.Info("mailer service initialized", "host", cfg.Mailer.SMTPHost, "port", cfg.Mailer.SMTPPort)
 	}
 
 	e := echo.New()
@@ -108,8 +94,8 @@ func (s *HTTPServer) Start() error {
 		PgPool:       pg.Pool,
 		Logger:       s.logger,
 		UserService:  userModule.GetUserService(),
-		JWTSecretKey: []byte(os.Getenv("APP_JWT_SECRET_KEY")),
-		BaseURL:      appBaseURL,
+		JWTSecretKey: []byte(cfg.App.JWTSecretKey),
+		BaseURL:      cfg.GetAppBaseURL(),
 		Mailer:       mailer,
 	})
 

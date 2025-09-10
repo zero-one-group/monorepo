@@ -3,7 +3,6 @@ package services
 import (
 	"context"
 	"errors"
-	"os"
 	"time"
 
 	"github.com/gofrs/uuid/v5"
@@ -61,14 +60,12 @@ func (s *AuthService) signinWithCredentials(
 	}
 
 	// Prepare JWT generator with configuration from environment or service fields.
-	// Issuer is optional; we no longer abort if APP_BASE_URL is not set.
-	issuer := os.Getenv("APP_BASE_URL")
 	jwtGen := apputils.NewJWTGenerator(apputils.JWTConfig{
 		SecretKey:          s.secretKey,
 		AccessTokenExpiry:  s.accessTokenExpiry,
 		RefreshTokenExpiry: s.refreshTokenExpiry,
 		SigningAlg:         s.signingAlg,
-		Issuer:             issuer,
+		Issuer:             s.baseURL,
 	})
 
 	// Determine audience for the token, default to "client-app"
