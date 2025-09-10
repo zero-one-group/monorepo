@@ -149,6 +149,11 @@ func (c *Config) MaskJWTSecret() string {
 	return secret[:4] + strings.Repeat("*", len(secret)-8) + secret[len(secret)-4:]
 }
 
+// GetSlogLevel returns the configured log level as slog.Level
+func (c *Config) GetSlogLevel() slog.Level {
+	return c.GetLogLevel().Level()
+}
+
 // GetLogLevel convert to slog.Level
 func (c *Config) GetLogLevel() slog.Leveler {
 	if c == nil {

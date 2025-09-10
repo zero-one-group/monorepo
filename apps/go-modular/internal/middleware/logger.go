@@ -20,11 +20,9 @@ func LoggerMiddleware(logger *slog.Logger) echo.MiddlewareFunc {
 			err := next(c)
 			stop := time.Now()
 
-			latency := stop.Sub(start)
 			status := res.Status
-			method := req.Method
-			uri := req.RequestURI
-			ip := c.RealIP()
+			latency := stop.Sub(start)
+			clientIP := c.RealIP()
 			realUserAgent := req.UserAgent()
 			userAgent := apputils.SummarizeUserAgent(realUserAgent)
 			requestID := req.Header.Get(echo.HeaderXRequestID)
@@ -33,20 +31,32 @@ func LoggerMiddleware(logger *slog.Logger) echo.MiddlewareFunc {
 			}
 
 			logAttrs := []slog.Attr{
-				slog.String("request_id", requestID),
-				slog.String("method", method),
-				slog.String("uri", uri),
 				slog.Int("status", status),
-				slog.String("ip", ip),
+				slog.String("method", req.Method),
+				slog.String("request_id", requestID),
+				slog.String("uri", req.RequestURI),
+				slog.String("client_ip", clientIP),
 				slog.String("user_agent", userAgent),
-				slog.String("latency", formatLatency(latency)),
+				slog.String("duration", formatLatency(latency)),
+				slog.Int64("bytes_in", req.ContentLength),
+				slog.Int64("bytes_out", res.Size),
 			}
-			if err != nil {
-				logAttrs = append(logAttrs, slog.String("error", err.Error()))
-				logger.Error("HTTP request", attrsToArgs(logAttrs)...)
-			} else {
-				logger.Info("HTTP request", attrsToArgs(logAttrs)...)
+
+			// Add query parameters if present
+			if req.URL.RawQuery != "" {
+				logAttrs = append(logAttrs, slog.String("query", req.URL.RawQuery))
 			}
+
+			// Log with appropriate level based on status code
+			switch {
+			case status >= 500:
+				slog.Error("HTTP Request", attrsToArgs(logAttrs)...)
+			case status >= 400:
+				slog.Warn("HTTP Request", attrsToArgs(logAttrs)...)
+			default:
+				slog.Info("HTTP Request", attrsToArgs(logAttrs)...)
+			}
+
 			return err
 		}
 	}

@@ -1,11 +1,11 @@
 package commands
 
 import (
-	"log/slog"
 	"os"
 
 	"go-modular/database"
 	"go-modular/internal/config"
+	"go-modular/internal/observer/logger"
 	"go-modular/internal/server"
 
 	"github.com/spf13/cobra"
@@ -21,24 +21,32 @@ func init() {
 			ctx := cmd.Context() // Set context for the command
 			cfg := config.Get()
 
+			// Initialize application logger
+			logger := logger.SetupLogging(logger.LoggerOpts{
+				Level:       cfg.GetSlogLevel(),
+				Format:      cfg.Logging.Format,
+				NoColor:     cfg.Logging.NoColor,
+				Environment: cfg.App.Mode,
+			})
+
 			if argAutoMigrate {
-				slog.Info("Running database migrations before starting server")
+				logger.Info("Running database migrations before starting server")
 				migrator := database.NewMigrator(cfg.GetDatabaseURL())
 				if err := migrator.MigrateUp(ctx); err != nil {
-					slog.Error("Failed to apply database migration", "err", err)
+					logger.Error("Failed to apply database migration", "err", err)
 					os.Exit(1)
 				}
 				if err := migrator.Close(); err != nil {
-					slog.Error("Failed to close database connection", "err", err)
+					logger.Error("Failed to close database connection", "err", err)
 					os.Exit(1)
 				}
 			}
 
 			// Initialize HTTP server
 			httpAddr := "0.0.0.0:8000"
-			srv := server.NewHTTPServer(httpAddr)
+			srv := server.NewHTTPServer(httpAddr, logger)
 			if err := srv.Start(); err != nil {
-				slog.Error("HTTP server exited with error", "err", err)
+				logger.Error("HTTP server exited with error", "err", err)
 				os.Exit(1)
 			}
 		},

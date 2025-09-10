@@ -106,8 +106,8 @@ func validateConfig(config *Config) error {
 		if config.App.RateLimitRequests <= 0 {
 			errs = append(errs, "rate limit requests must be > 0 when rate limiting is enabled")
 		}
-		if config.App.RateLimitDuration <= 0 {
-			errs = append(errs, "rate limit duration must be > 0 when rate limiting is enabled")
+		if config.App.RateLimitBurstSize <= 0 {
+			errs = append(errs, "rate limit burst size must be > 0 when rate limiting is enabled")
 		}
 	}
 

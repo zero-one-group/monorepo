@@ -176,14 +176,6 @@ func (h *ServerHandler) APIDocsHandler(c echo.Context) error {
 			"request",       // Unknown
 			"http1",         // Unknown
 			"http2",         // Unknown
-			// "fetch",         // JavaScript & Node.js
-			// "axios",         // JavaScript & Node.js
-			// "ofetch",        // JavaScript & Node.js
-			// "undici",        // Node.js
-			// "reqwest",       // Rust
-			// "curl",          // Shell & PHP
-			// "wget",          // Shell
-			// "httpie",        // Shell
 		),
 		scalar.WithLayout(scalar.LayoutModern),
 		scalar.WithHideDarkModeToggle(),

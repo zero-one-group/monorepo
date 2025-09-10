@@ -19,19 +19,19 @@ type Config struct {
 }
 
 type AppConfig struct {
-	Mode              string       `env:"APP_MODE"` // development|production
-	BaseURL           string       `env:"APP_BASE_URL"`
-	JWTSecretKey      string       `env:"JWT_SECRET_KEY"`
-	JWTAlgorithm      JWTAlgorithm `env:"JWT_ALGORITHM"`
-	ServerHost        string       `env:"SERVER_HOST"`
-	ServerPort        int          `env:"SERVER_PORT"`
-	CORSOrigins       []string     `env:"CORS_ORIGINS"`
-	CORSMaxAge        int          `env:"CORS_MAX_AGE"`
-	CORSCredentials   bool         `env:"CORS_CREDENTIALS"`
-	RateLimitEnabled  bool         `env:"RATE_LIMIT_ENABLED"`
-	RateLimitRequests int          `env:"RATE_LIMIT_REQUESTS"`
-	RateLimitDuration int          `env:"RATE_LIMIT_DURATION"`
-	EnableAPIDocs     bool         `env:"ENABLE_API_DOCS"`
+	Mode               string       `env:"APP_MODE"` // development|production
+	BaseURL            string       `env:"APP_BASE_URL"`
+	JWTSecretKey       string       `env:"JWT_SECRET_KEY"`
+	JWTAlgorithm       JWTAlgorithm `env:"JWT_ALGORITHM"`
+	ServerHost         string       `env:"SERVER_HOST"`
+	ServerPort         int          `env:"SERVER_PORT"`
+	CORSOrigins        []string     `env:"CORS_ORIGINS"`
+	CORSMaxAge         int          `env:"CORS_MAX_AGE"`
+	CORSCredentials    bool         `env:"CORS_CREDENTIALS"`
+	RateLimitEnabled   bool         `env:"RATE_LIMIT_ENABLED"`
+	RateLimitRequests  int          `env:"RATE_LIMIT_REQUESTS"`
+	RateLimitBurstSize int          `env:"RATE_LIMIT_BURST_SIZE"`
+	EnableAPIDocs      bool         `env:"ENABLE_API_DOCS"`
 }
 
 type DatabaseConfig struct {
