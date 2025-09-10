@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
+
+	"github.com/labstack/gommon/log"
 )
 
 var (
@@ -164,6 +166,28 @@ func (c *Config) GetLogLevel() slog.Leveler {
 		return slog.LevelError
 	default:
 		return slog.LevelInfo
+	}
+}
+
+// GetEchoLogLevel converts configured log level to github.com/labstack/gommon/log.Lvl
+// Aligned with GetLogLevel: no single-letter shortcuts, map trace->debug, default to INFO.
+func (c *Config) GetEchoLogLevel() log.Lvl {
+	if c == nil {
+		return log.INFO
+	}
+	level := strings.ToLower(strings.TrimSpace(c.Logging.Level))
+
+	switch level {
+	case "debug", "trace":
+		return log.DEBUG
+	case "info", "":
+		return log.INFO
+	case "warn", "warning":
+		return log.WARN
+	case "error":
+		return log.ERROR
+	default:
+		return log.INFO
 	}
 }
 

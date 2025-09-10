@@ -4,7 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"go-modular/internal/adapter"
@@ -44,6 +47,7 @@ func (s *HTTPServer) Start() error {
 		s.logger.Error("Failed to connect to Postgres database", "err", err)
 		os.Exit(1)
 	}
+	// ensure DB pool closed on return (also closed during graceful shutdown below)
 	defer pg.Close()
 
 	var mailer *notification.Mailer
@@ -64,7 +68,8 @@ func (s *HTTPServer) Start() error {
 		s.logger.Info("mailer service initialized", "host", cfg.Mailer.SMTPHost, "port", cfg.Mailer.SMTPPort)
 	}
 
-	e := echo.New()
+	e := echo.New() // Create Echo instance
+	e.Logger.SetLevel(cfg.GetEchoLogLevel())
 	e.HideBanner = true
 	e.HidePort = true
 
@@ -125,8 +130,63 @@ func (s *HTTPServer) Start() error {
 
 	s.logger.Info("Starting HTTP server", "addr", s.httpAddr)
 
-	// Start the server
-	return e.Start(s.httpAddr)
+	// Graceful shutdown handling
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	// Start server in background
+	serverErrCh := make(chan error, 1)
+	go func() {
+		if err := e.Start(s.httpAddr); err != nil && err != http.ErrServerClosed {
+			serverErrCh <- fmt.Errorf("server start failed: %w", err)
+		}
+		// If server ended without error, notify
+		close(serverErrCh)
+	}()
+
+	// Wait for signal or server start error
+	select {
+	case <-ctx.Done():
+		// received shutdown signal
+		s.logger.Info("Shutdown signal received, shutting down HTTP server")
+	case err := <-serverErrCh:
+		if err != nil {
+			// server failed to start or crashed
+			s.logger.Error("HTTP server error", "err", err)
+			// proceed to shutdown resources anyway
+		}
+	}
+
+	// Shutdown timeout set to 10s
+	shutdownTimeout := 10 * time.Second
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
+	defer cancel()
+
+	// Shutdown HTTP server gracefully
+	if err := e.Shutdown(shutdownCtx); err != nil {
+		s.logger.Error("failed to shutdown HTTP server gracefully", "err", err)
+	}
+
+	// Close DB pool
+	s.logger.Info("Closing database connections")
+	pg.Close()
+
+	// Terminate mailer if initialized. Try Shutdown(ctx) first, then Close()
+	if mailer != nil {
+		s.logger.Info("Shutting down mailer")
+		if shutdowner, ok := any(mailer).(interface{ Shutdown(context.Context) error }); ok {
+			if err := shutdowner.Shutdown(shutdownCtx); err != nil {
+				s.logger.Error("mailer shutdown error", "err", err)
+			}
+		} else if closer, ok := any(mailer).(interface{ Close() error }); ok {
+			if err := closer.Close(); err != nil {
+				s.logger.Error("mailer close error", "err", err)
+			}
+		}
+	}
+
+	s.logger.Info("Shutdown complete")
+	return nil
 }
 
 // Initialize PostgreSQL database connection with retry mechanism
@@ -183,4 +243,12 @@ func (s *HTTPServer) initializeDatabase(cfg *config.Config) (*adapter.PostgresDB
 	}
 
 	return nil, fmt.Errorf("failed to establish database connection after %d attempts: %w", attempt, lastErr)
+}
+
+// helper min function
+func min(x, y time.Duration) time.Duration {
+	if x < y {
+		return x
+	}
+	return y
 }
