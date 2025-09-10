@@ -7,14 +7,16 @@ import (
 	"io/fs"
 	"log/slog"
 	"net/http"
+	"os"
 	"strings"
 	"time"
+
+	"go-modular/docs"
+	"go-modular/web"
 
 	"github.com/alexliesenfeld/health"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/labstack/echo/v4"
-	"go-modular/docs"
-	"go-modular/web"
 
 	scalar "github.com/bdpiprava/scalar-go"
 )
@@ -105,6 +107,11 @@ func (h *ServerHandler) HealthCheckHandler(c echo.Context) error {
 
 // OpenAPISpecHandler serves the embedded swagger.json as application/json.
 func (h *ServerHandler) OpenAPISpecHandler(c echo.Context) error {
+	enableOpenAPI := os.Getenv("APP_ENABLE_API_DOCS")
+	if enableOpenAPI != "true" {
+		return echo.NewHTTPError(http.StatusNotFound, "API docs are disabled")
+	}
+
 	specBytes, err := docs.SwaggerFS.ReadFile("swagger.json")
 	if err != nil {
 		h.Logger.Error("failed to read swagger.json", "err", err)
@@ -115,6 +122,11 @@ func (h *ServerHandler) OpenAPISpecHandler(c echo.Context) error {
 
 // APIDocsHandler serves the Scalar API docs UI using the embedded OpenAPI spec.
 func (h *ServerHandler) APIDocsHandler(c echo.Context) error {
+	enableOpenAPI := os.Getenv("APP_ENABLE_API_DOCS")
+	if enableOpenAPI != "true" {
+		return echo.NewHTTPError(http.StatusNotFound, "API docs are disabled")
+	}
+
 	// Construct the OpenAPI spec URL based on the current request
 	req := c.Request()
 	scheme := "http"

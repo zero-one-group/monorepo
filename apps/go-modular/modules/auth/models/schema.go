@@ -14,3 +14,61 @@ type UpdatePasswordRequest struct {
 	NewPassword          string `json:"new_password" validate:"required,min=8" example:"secure.password"`
 	PasswordConfirmation string `json:"password_confirmation" validate:"required,eqfield=NewPassword" example:"secret.password"`
 }
+
+type CreateSessionRequest struct {
+	UserID            string  `json:"user_id" validate:"required,uuid"`
+	TokenHash         string  `json:"token_hash" validate:"required"`
+	UserAgent         *string `json:"user_agent,omitempty"`
+	DeviceName        *string `json:"device_name,omitempty"`
+	DeviceFingerprint *string `json:"device_fingerprint,omitempty"`
+	IPAddress         *string `json:"ip_address,omitempty" example:"192.168.1.1"`
+	ExpiresAt         string  `json:"expires_at" validate:"required,datetime" example:"2025-12-31T23:59:59Z"`
+}
+
+type UpdateSessionRequest struct {
+	SessionID         string  `json:"session_id" validate:"required,uuid"`
+	UserAgent         *string `json:"user_agent,omitempty"`
+	DeviceName        *string `json:"device_name,omitempty"`
+	DeviceFingerprint *string `json:"device_fingerprint,omitempty"`
+	IPAddress         *string `json:"ip_address,omitempty" example:"192.168.1.1"`
+	RefreshedAt       *string `json:"refreshed_at,omitempty" example:"2025-12-31T23:59:59Z"`
+	RevokedAt         *string `json:"revoked_at,omitempty" example:"2025-12-31T23:59:59Z"`
+	RevokedBy         *string `json:"revoked_by,omitempty" validate:"omitempty,uuid"`
+}
+
+type CreateRefreshTokenRequest struct {
+	UserID    string  `json:"user_id" validate:"required,uuid"`
+	SessionID *string `json:"session_id,omitempty" validate:"omitempty,uuid"`
+	TokenHash string  `json:"token_hash" validate:"required"`
+	IPAddress *string `json:"ip_address,omitempty" example:"192.168.1.1"`
+	UserAgent *string `json:"user_agent,omitempty"`
+	ExpiresAt string  `json:"expires_at" validate:"required,datetime" example:"2025-12-31T23:59:59Z"`
+}
+
+type UpdateRefreshTokenRequest struct {
+	TokenID   string  `json:"token_id" validate:"required,uuid"`
+	IPAddress *string `json:"ip_address,omitempty" example:"192.168.1.1"`
+	UserAgent *string `json:"user_agent,omitempty"`
+	RevokedAt *string `json:"revoked_at,omitempty" example:"2025-12-31T23:59:59Z"`
+	RevokedBy *string `json:"revoked_by,omitempty" validate:"omitempty,uuid"`
+}
+
+type SignInWithEmailRequest struct {
+	Email    string `json:"email" validate:"required,email" example:"user@example.com"`
+	Password string `json:"password" validate:"required" example:"secure.password"`
+}
+
+type SignInWithUsernameRequest struct {
+	Username string `json:"username" validate:"required" example:"user123"`
+	Password string `json:"password" validate:"required" example:"secure.password"`
+}
+
+type SignInResponse struct {
+	AuthenticatedUser
+}
+
+type AccessTokenPayload struct {
+	UserID string `json:"user_id"` // User ID
+	Email  string `json:"email"`   // User Email
+	SID    string `json:"sid"`     // Session ID
+}

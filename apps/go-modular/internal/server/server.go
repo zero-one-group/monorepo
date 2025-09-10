@@ -69,7 +69,12 @@ func (s *HTTPServer) Start() error {
 	userModule.RegisterRoutes(apiV1Route)
 
 	// Load and register auth module
-	authModule := auth_module.NewModule(&auth_module.Options{PgPool: pg.Pool, Logger: s.logger})
+	authModule := auth_module.NewModule(&auth_module.Options{
+		PgPool:      pg.Pool,
+		Logger:      s.logger,
+		UserService: userModule.Service(),
+		SecretKey:   []byte(os.Getenv("APP_JWT_SECRET_KEY")),
+	})
 	authModule.RegisterRoutes(apiV1Route)
 
 	s.logger.Info("Starting HTTP server", "addr", s.httpAddr)

@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS public.user_passwords (
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT NULL,
     CONSTRAINT user_passwords_one_per_user UNIQUE (user_id) -- Ensure only one password per user
-) USING heap;
+);
 
 -- Users passwords table indexes and updated_at trigger
 CREATE INDEX IF NOT EXISTS idx_user_passwords_created_at ON public.user_passwords (created_at);

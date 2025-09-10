@@ -18,6 +18,8 @@ type UserServiceInterface interface {
 	ListUsers(ctx context.Context, filter *models.FilterUser) ([]*models.User, error)
 	UpdateUser(ctx context.Context, user *models.User) error
 	DeleteUser(ctx context.Context, id uuid.UUID) error
+	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
+	GetUserByUsername(ctx context.Context, username string) (*models.User, error)
 }
 
 // Ensure UserService implements UserServiceInterface
@@ -93,4 +95,12 @@ func (s *UserService) UpdateUser(ctx context.Context, user *models.User) error {
 
 func (s *UserService) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	return s.userRepo.DeleteUser(ctx, id)
+}
+
+func (s *UserService) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
+	return s.userRepo.GetUserByEmail(ctx, email)
+}
+
+func (s *UserService) GetUserByUsername(ctx context.Context, username string) (*models.User, error) {
+	return s.userRepo.GetUserByUsername(ctx, username)
 }

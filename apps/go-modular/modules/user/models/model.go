@@ -48,3 +48,13 @@ type UserWithCredential struct {
 func ParseUserID(s string) (uuid.UUID, error) {
 	return uuid.FromString(s)
 }
+
+func (u *User) GetID() uuid.UUID {
+	return u.ID
+}
+func (u *User) GetEmail() string {
+	return u.Email
+}
+func (u *User) AsUserModel() User {
+	return *u
+}

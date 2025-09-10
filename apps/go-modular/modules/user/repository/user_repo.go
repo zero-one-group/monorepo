@@ -22,6 +22,8 @@ type UserRepositoryInterface interface {
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 	UsernameExists(ctx context.Context, username string) (bool, error)
 	EmailExists(ctx context.Context, email string) (bool, error)
+	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
+	GetUserByUsername(ctx context.Context, username string) (*models.User, error)
 }
 
 // Ensure UserRepository implements UserRepositoryInterface
@@ -275,6 +277,74 @@ func (r *UserRepository) EmailExists(ctx context.Context, email string) (bool, e
 		return false, err
 	}
 	return true, nil
+}
+
+func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
+	query := `
+        SELECT id, display_name, email, username, avatar_url, metadata, created_at, updated_at, last_login_at, banned_at, ban_expires, ban_reason
+        FROM ` + models.UserTable + `
+        WHERE LOWER(email) = LOWER($1)
+        LIMIT 1
+    `
+	row := r.pgPool.QueryRow(ctx, query, email)
+	var user models.User
+	err := row.Scan(
+		&user.ID,
+		&user.DisplayName,
+		&user.Email,
+		&user.Username,
+		&user.AvatarURL,
+		&user.Metadata,
+		&user.CreatedAt,
+		&user.UpdatedAt,
+		&user.LastLoginAt,
+		&user.BannedAt,
+		&user.BanExpires,
+		&user.BanReason,
+	)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, nil
+		}
+		r.logger.Error("failed to get user by email", slog.String("op", "GetUserByEmail"), slog.String("email", email), slog.String("error", err.Error()))
+		return nil, err
+	}
+	r.logger.Info("user fetched", slog.String("op", "GetUserByEmail"), slog.String("user_id", user.ID.String()))
+	return &user, nil
+}
+
+func (r *UserRepository) GetUserByUsername(ctx context.Context, username string) (*models.User, error) {
+	query := `
+        SELECT id, display_name, email, username, avatar_url, metadata, created_at, updated_at, last_login_at, banned_at, ban_expires, ban_reason
+        FROM ` + models.UserTable + `
+        WHERE LOWER(username) = LOWER($1)
+        LIMIT 1
+    `
+	row := r.pgPool.QueryRow(ctx, query, username)
+	var user models.User
+	err := row.Scan(
+		&user.ID,
+		&user.DisplayName,
+		&user.Email,
+		&user.Username,
+		&user.AvatarURL,
+		&user.Metadata,
+		&user.CreatedAt,
+		&user.UpdatedAt,
+		&user.LastLoginAt,
+		&user.BannedAt,
+		&user.BanExpires,
+		&user.BanReason,
+	)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, nil
+		}
+		r.logger.Error("failed to get user by username", slog.String("op", "GetUserByUsername"), slog.String("username", username), slog.String("error", err.Error()))
+		return nil, err
+	}
+	r.logger.Info("user fetched", slog.String("op", "GetUserByUsername"), slog.String("user_id", user.ID.String()))
+	return &user, nil
 }
 
 func ptrTime(t time.Time) *time.Time {
