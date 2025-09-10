@@ -8,7 +8,7 @@
 CREATE TABLE IF NOT EXISTS public.one_time_tokens (
     id UUID NOT NULL PRIMARY KEY DEFAULT uuidv7(),
     user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
-    subject TEXT NOT NULL, -- email_otp, mfa_otp, email_verification, reauthentication
+    subject TEXT NOT NULL, -- email_otp, mfa_otp, email_verification, reauthentication, etc.
     token_hash TEXT NOT NULL, -- hashed token (SHA256)
     relates_to TEXT NOT NULL, -- value can be email, phone, etc.
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,

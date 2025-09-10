@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -12,6 +13,9 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"go-modular/modules/user/models"
 )
+
+// Sentinel error for not found
+var ErrNotFound = errors.New("not found")
 
 // UserRepositoryInterface defines the contract for user data access.
 type UserRepositoryInterface interface {
@@ -105,13 +109,14 @@ func (r *UserRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*models
 	`
 	row := r.pgPool.QueryRow(ctx, query, id)
 	var user models.User
+	var metadataBytes []byte
 	err := row.Scan(
 		&user.ID,
 		&user.DisplayName,
 		&user.Email,
 		&user.Username,
 		&user.AvatarURL,
-		&user.Metadata,
+		&metadataBytes,
 		&user.CreatedAt,
 		&user.UpdatedAt,
 		&user.EmailVerifiedAt,
@@ -121,8 +126,17 @@ func (r *UserRepository) GetUserByID(ctx context.Context, id uuid.UUID) (*models
 		&user.BanReason,
 	)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, ErrNotFound
+		}
 		r.logger.Error("failed to get user by id", slog.String("op", "GetUserByID"), slog.String("user_id", id.String()), slog.String("error", err.Error()))
 		return nil, err
+	}
+	if len(metadataBytes) > 0 {
+		var meta models.UserMetadata
+		if err := json.Unmarshal(metadataBytes, &meta); err == nil {
+			user.Metadata = &meta
+		}
 	}
 	r.logger.Info("user fetched", slog.String("op", "GetUserByID"), slog.String("user_id", id.String()))
 	return &user, nil
@@ -166,13 +180,14 @@ func (r *UserRepository) ListUsers(ctx context.Context, filter *models.FilterUse
 	var users []*models.User
 	for rows.Next() {
 		var user models.User
+		var metadataBytes []byte
 		err := rows.Scan(
 			&user.ID,
 			&user.DisplayName,
 			&user.Email,
 			&user.Username,
 			&user.AvatarURL,
-			&user.Metadata,
+			&metadataBytes,
 			&user.CreatedAt,
 			&user.UpdatedAt,
 			&user.EmailVerifiedAt,
@@ -184,6 +199,12 @@ func (r *UserRepository) ListUsers(ctx context.Context, filter *models.FilterUse
 		if err != nil {
 			r.logger.Error("failed to scan user row", slog.String("op", "ListUsers"), slog.String("error", err.Error()))
 			return nil, err
+		}
+		if len(metadataBytes) > 0 {
+			var meta models.UserMetadata
+			if err := json.Unmarshal(metadataBytes, &meta); err == nil {
+				user.Metadata = &meta
+			}
 		}
 		users = append(users, &user)
 	}
@@ -231,7 +252,7 @@ func (r *UserRepository) UpdateUser(ctx context.Context, user *models.User) erro
 	}
 	if cmd.RowsAffected() == 0 {
 		r.logger.Warn("user not found for update", slog.String("op", "UpdateUser"), slog.String("user_id", user.ID.String()))
-		return errors.New("user not found")
+		return ErrNotFound
 	}
 
 	if err := tx.Commit(ctx); err != nil {
@@ -251,7 +272,7 @@ func (r *UserRepository) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	}
 	if cmd.RowsAffected() == 0 {
 		r.logger.Warn("user not found for delete", slog.String("op", "DeleteUser"), slog.String("user_id", id.String()))
-		return errors.New("user not found")
+		return ErrNotFound
 	}
 	r.logger.Info("user deleted", slog.String("op", "DeleteUser"), slog.String("user_id", id.String()))
 	return nil
@@ -289,20 +310,22 @@ func (r *UserRepository) EmailExists(ctx context.Context, email string) (bool, e
 
 func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
 	query := `
-        SELECT id, display_name, email, username, avatar_url, metadata, created_at, updated_at, email_verified_at, last_login_at, banned_at, ban_expires, ban_reason
+        SELECT id, display_name, email, username, avatar_url, metadata, created_at, updated_at,
+        email_verified_at, last_login_at, banned_at, ban_expires, ban_reason
         FROM ` + models.UserTable + `
         WHERE LOWER(email) = LOWER($1)
         LIMIT 1
     `
 	row := r.pgPool.QueryRow(ctx, query, email)
 	var user models.User
+	var metadataBytes []byte
 	err := row.Scan(
 		&user.ID,
 		&user.DisplayName,
 		&user.Email,
 		&user.Username,
 		&user.AvatarURL,
-		&user.Metadata,
+		&metadataBytes,
 		&user.CreatedAt,
 		&user.UpdatedAt,
 		&user.EmailVerifiedAt,
@@ -313,10 +336,16 @@ func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*mod
 	)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, nil
+			return nil, ErrNotFound
 		}
 		r.logger.Error("failed to get user by email", slog.String("op", "GetUserByEmail"), slog.String("email", email), slog.String("error", err.Error()))
 		return nil, err
+	}
+	if len(metadataBytes) > 0 {
+		var meta models.UserMetadata
+		if err := json.Unmarshal(metadataBytes, &meta); err == nil {
+			user.Metadata = &meta
+		}
 	}
 	r.logger.Info("user fetched", slog.String("op", "GetUserByEmail"), slog.String("user_id", user.ID.String()))
 	return &user, nil
@@ -324,20 +353,22 @@ func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*mod
 
 func (r *UserRepository) GetUserByUsername(ctx context.Context, username string) (*models.User, error) {
 	query := `
-        SELECT id, display_name, email, username, avatar_url, metadata, created_at, updated_at, email_verified_at, last_login_at, banned_at, ban_expires, ban_reason
+        SELECT id, display_name, email, username, avatar_url, metadata, created_at, updated_at,
+        email_verified_at, last_login_at, banned_at, ban_expires, ban_reason
         FROM ` + models.UserTable + `
         WHERE LOWER(username) = LOWER($1)
         LIMIT 1
     `
 	row := r.pgPool.QueryRow(ctx, query, username)
 	var user models.User
+	var metadataBytes []byte
 	err := row.Scan(
 		&user.ID,
 		&user.DisplayName,
 		&user.Email,
 		&user.Username,
 		&user.AvatarURL,
-		&user.Metadata,
+		&metadataBytes,
 		&user.CreatedAt,
 		&user.UpdatedAt,
 		&user.EmailVerifiedAt,
@@ -348,10 +379,16 @@ func (r *UserRepository) GetUserByUsername(ctx context.Context, username string)
 	)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, nil
+			return nil, ErrNotFound
 		}
 		r.logger.Error("failed to get user by username", slog.String("op", "GetUserByUsername"), slog.String("username", username), slog.String("error", err.Error()))
 		return nil, err
+	}
+	if len(metadataBytes) > 0 {
+		var meta models.UserMetadata
+		if err := json.Unmarshal(metadataBytes, &meta); err == nil {
+			user.Metadata = &meta
+		}
 	}
 	r.logger.Info("user fetched", slog.String("op", "GetUserByUsername"), slog.String("user_id", user.ID.String()))
 	return &user, nil

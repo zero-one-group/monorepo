@@ -44,7 +44,7 @@ func (r *AuthRepository) UpdateUserPassword(ctx context.Context, userID uuid.UUI
 
 	if cmd.RowsAffected() == 0 {
 		r.logger.Warn("user password not found for update", "op", "UpdateUserPassword", "user_id", userID.String())
-		return pgx.ErrNoRows
+		return ErrNotFound
 	}
 	r.logger.Info("user password updated", "op", "UpdateUserPassword", "user_id", userID.String())
 
@@ -58,7 +58,7 @@ func (r *AuthRepository) ValidateUserPassword(ctx context.Context, userID uuid.U
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			r.logger.Warn("user password not found", "op", "ValidateUserPassword", "user_id", userID.String())
-			return false, nil
+			return false, ErrNotFound
 		}
 		r.logger.Error("failed to query user password", "op", "ValidateUserPassword", "user_id", userID.String(), "error", err.Error())
 		return false, err

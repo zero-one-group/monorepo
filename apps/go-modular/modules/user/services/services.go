@@ -2,13 +2,16 @@ package services
 
 import (
 	"context"
+	"errors"
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
-	"github.com/gofrs/uuid/v5"
 	"go-modular/modules/user/models"
 	"go-modular/modules/user/repository"
+
+	"github.com/gofrs/uuid/v5"
 )
 
 // UserServiceInterface defines the contract for user business logic.
@@ -20,6 +23,7 @@ type UserServiceInterface interface {
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
 	GetUserByUsername(ctx context.Context, username string) (*models.User, error)
+	MarkEmailVerified(ctx context.Context, userID uuid.UUID) error
 }
 
 // Ensure UserService implements UserServiceInterface
@@ -103,4 +107,17 @@ func (s *UserService) GetUserByEmail(ctx context.Context, email string) (*models
 
 func (s *UserService) GetUserByUsername(ctx context.Context, username string) (*models.User, error) {
 	return s.userRepo.GetUserByUsername(ctx, username)
+}
+
+func (s *UserService) MarkEmailVerified(ctx context.Context, userID uuid.UUID) error {
+	user, err := s.userRepo.GetUserByID(ctx, userID)
+	if err != nil {
+		return err
+	}
+	if user == nil {
+		return errors.New("user not found")
+	}
+	now := time.Now()
+	user.EmailVerifiedAt = &now
+	return s.userRepo.UpdateUser(ctx, user)
 }

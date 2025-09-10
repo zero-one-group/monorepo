@@ -11,7 +11,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// SignInWithEmail godoc
 // @Summary      Sign in with email
 // @Description  Authenticates user using email and password
 // @Tags         Auth - Authentication
@@ -63,7 +62,6 @@ func (h *Handler) SignInWithEmail(c echo.Context) error {
 	return c.JSON(http.StatusOK, authedUser)
 }
 
-// SignInWithUsername godoc
 // @Summary      Sign in with username
 // @Description  Authenticates user using username and password
 // @Tags         Auth - Authentication

@@ -22,8 +22,7 @@ type UserModule struct {
 	logger      *slog.Logger
 	middlewares []echo.MiddlewareFunc
 	handler     *handler.Handler
-	// Expose UserService, so it can be used by other modules
-	UserService services.UserServiceInterface
+	userService services.UserServiceInterface
 }
 
 // NewModule creates a new UserModule.
@@ -46,8 +45,13 @@ func NewModule(opts *Options) *UserModule {
 	return &UserModule{
 		logger:      logger,
 		handler:     h,
-		UserService: userService,
+		userService: userService,
 	}
+}
+
+// Expose UserService, so it can be used by other modules
+func (m *UserModule) GetUserService() services.UserServiceInterface {
+	return m.userService
 }
 
 // Use adds middleware(s) to the UserModule (grouped).

@@ -62,7 +62,7 @@ func (r *AuthRepository) GetRefreshToken(ctx context.Context, tokenID uuid.UUID)
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			r.logger.Warn("refresh token not found", "op", "GetRefreshToken", "refresh_token_id", tokenID.String())
-			return nil, nil
+			return nil, ErrNotFound
 		}
 		r.logger.Error("failed to get refresh token", "op", "GetRefreshToken", "refresh_token_id", tokenID.String(), "error", err.Error())
 		return nil, err
@@ -96,7 +96,7 @@ func (r *AuthRepository) UpdateRefreshToken(ctx context.Context, refreshToken *m
 	}
 	if cmd.RowsAffected() == 0 {
 		r.logger.Warn("refresh token not found for update", "op", "UpdateRefreshToken", "refresh_token_id", refreshToken.ID.String())
-		return pgx.ErrNoRows
+		return ErrNotFound
 	}
 	r.logger.Info("refresh token updated", "op", "UpdateRefreshToken", "refresh_token_id", refreshToken.ID.String())
 	return nil
@@ -112,7 +112,7 @@ func (r *AuthRepository) DeleteRefreshToken(ctx context.Context, tokenID uuid.UU
 	}
 	if cmd.RowsAffected() == 0 {
 		r.logger.Warn("refresh token not found for delete", "op", "DeleteRefreshToken", "refresh_token_id", tokenID.String())
-		return pgx.ErrNoRows
+		return ErrNotFound
 	}
 	r.logger.Info("refresh token deleted", "op", "DeleteRefreshToken", "refresh_token_id", tokenID.String())
 	return nil
@@ -127,7 +127,7 @@ func (r *AuthRepository) ValidateRefreshToken(ctx context.Context, tokenID uuid.
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			r.logger.Warn("refresh token not found", "op", "ValidateRefreshToken", "refresh_token_id", tokenID.String())
-			return false, nil
+			return false, ErrNotFound
 		}
 		r.logger.Error("failed to validate refresh token", "op", "ValidateRefreshToken", "refresh_token_id", tokenID.String(), "error", err.Error())
 		return false, err

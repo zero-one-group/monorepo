@@ -66,7 +66,7 @@ func (r *AuthRepository) GetSession(ctx context.Context, sessionID uuid.UUID) (*
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			r.logger.Warn("session not found", "op", "GetSession", "session_id", sessionID.String())
-			return nil, nil
+			return nil, ErrNotFound
 		}
 		r.logger.Error("failed to get session", "op", "GetSession", "session_id", sessionID.String(), "error", err.Error())
 		return nil, err
@@ -102,7 +102,7 @@ func (r *AuthRepository) UpdateSession(ctx context.Context, session *models.Sess
 	}
 	if cmd.RowsAffected() == 0 {
 		r.logger.Warn("session not found for update", "op", "UpdateSession", "session_id", session.ID.String())
-		return pgx.ErrNoRows
+		return ErrNotFound
 	}
 	r.logger.Info("session updated", "op", "UpdateSession", "session_id", session.ID.String())
 	return nil
@@ -118,7 +118,7 @@ func (r *AuthRepository) DeleteSession(ctx context.Context, sessionID uuid.UUID)
 	}
 	if cmd.RowsAffected() == 0 {
 		r.logger.Warn("session not found for delete", "op", "DeleteSession", "session_id", sessionID.String())
-		return pgx.ErrNoRows
+		return ErrNotFound
 	}
 	r.logger.Info("session deleted", "op", "DeleteSession", "session_id", sessionID.String())
 	return nil
@@ -133,7 +133,7 @@ func (r *AuthRepository) ValidateSession(ctx context.Context, sessionID uuid.UUI
 	if err != nil {
 		if err == pgx.ErrNoRows {
 			r.logger.Warn("session not found", "op", "ValidateSession", "session_id", sessionID.String())
-			return false, nil
+			return false, ErrNotFound
 		}
 		r.logger.Error("failed to validate session", "op", "ValidateSession", "session_id", sessionID.String(), "error", err.Error())
 		return false, err

@@ -185,6 +185,7 @@ tasks:
     command: >
       swag init -o $projectRoot/docs -d cmd,internal,modules --parseDependency
       && swag fmt --dir $projectRoot/docs
+      && go mod tidy
     options:
       cache: false
       runFromWorkspaceRoot: false

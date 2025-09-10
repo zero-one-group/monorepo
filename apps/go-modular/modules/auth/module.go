@@ -39,6 +39,9 @@ func (opts *Options) validateAndSetDefaults() error {
 	if opts.PgPool == nil {
 		return fmt.Errorf("PgPool is required")
 	}
+	if opts.UserService == nil {
+		return fmt.Errorf("UserService is required")
+	}
 	if len(opts.SecretKey) == 0 {
 		return fmt.Errorf("SecretKey is required")
 	}
@@ -117,4 +120,10 @@ func (m *AuthModule) RegisterRoutes(e *echo.Group) {
 	g.PUT("/refresh-token", m.handler.UpdateRefreshToken)
 	g.GET("/refresh-token/:tokenId", m.handler.GetRefreshToken)
 	g.DELETE("/refresh-token/:tokenId", m.handler.DeleteRefreshToken)
+
+	// Email verification routes
+	g.POST("/verification/email/initiate", m.handler.InitiateEmailVerification)
+	g.POST("/verification/email/validate", m.handler.ValidateEmailVerification)
+	g.POST("/verification/email/revoke", m.handler.RevokeEmailVerification)
+	g.POST("/verification/email/resend", m.handler.ResendEmailVerification)
 }

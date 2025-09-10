@@ -8,6 +8,8 @@ import (
 	user_models "go-modular/modules/user/models"
 )
 
+// -- MARK: UserPassword section
+
 // Define table name for UserPassword model
 const UserPasswordTable = "public.user_passwords"
 
@@ -18,6 +20,8 @@ type UserPassword struct {
 	CreatedAt    time.Time  `json:"created_at" db:"created_at"`
 	UpdatedAt    *time.Time `json:"updated_at" db:"updated_at"`
 }
+
+// -- MARK: Session section
 
 // Define table name for Session model
 const SessionTable = "public.sessions"
@@ -38,6 +42,8 @@ type Session struct {
 	RevokedBy         *uuid.UUID `json:"revoked_by" db:"revoked_by"`
 }
 
+// -- MARK: RefreshToken section
+
 // Define table name for RefreshToken model
 const RefreshTokenTable = "public.refresh_tokens"
 
@@ -55,20 +61,37 @@ type RefreshToken struct {
 	RevokedBy *uuid.UUID `json:"revoked_by" db:"revoked_by"`
 }
 
+// -- MARK: OneTimeToken section
+
 // Define table name for OneTimeToken model
 const OneTimeTokenTable = "public.one_time_tokens"
 
-// OneTimeToken represents one time token model in the database
+// OneTimeTokenSubject is an enum for the subject field in OneTimeToken
+type OneTimeTokenSubject string
+
+const (
+	OneTimeTokenSubjectEmailOTP          OneTimeTokenSubject = "email_otp"
+	OneTimeTokenSubjectEmailVerification OneTimeTokenSubject = "email_verification"
+)
+
+// OneTimeToken represents a one-time-use token for sensitive authentication flows.
+// This table is used for various flows such as email verification, password reset,
+// multi-factor authentication (MFA), and reauthentication. Each token is associated
+// with a user (optional), a subject (purpose of the token), a hashed token value,
+// and a "relates_to" field (such as email or phone number). The token has a creation
+// and expiration time, and optionally tracks the last time it was sent (for rate limiting).
 type OneTimeToken struct {
-	ID         uuid.UUID  `json:"id" db:"id"`
-	UserID     *uuid.UUID `json:"user_id" db:"user_id"`
-	Subject    string     `json:"subject" db:"subject"`
-	TokenHash  string     `json:"token_hash" db:"token_hash"`
-	RelatesTo  string     `json:"relates_to" db:"relates_to"`
-	CreatedAt  time.Time  `json:"created_at" db:"created_at"`
-	ExpiresAt  time.Time  `json:"expires_at" db:"expires_at"`
-	LastSentAt *time.Time `json:"last_sent_at" db:"last_sent_at"`
+	ID         uuid.UUID           `json:"id" db:"id"`                     // Unique identifier for the token
+	UserID     *uuid.UUID          `json:"user_id" db:"user_id"`           // Optional user ID the token is associated with
+	Subject    OneTimeTokenSubject `json:"subject" db:"subject"`           // Purpose/type of the token (e.g., email_otp, email_verification)
+	TokenHash  string              `json:"token_hash" db:"token_hash"`     // Hashed token value (SHA256), don't store plain text or plain JWT
+	RelatesTo  string              `json:"relates_to" db:"relates_to"`     // Context for the token (e.g., email, phone)
+	CreatedAt  time.Time           `json:"created_at" db:"created_at"`     // When the token was created
+	ExpiresAt  time.Time           `json:"expires_at" db:"expires_at"`     // When the token expires
+	LastSentAt *time.Time          `json:"last_sent_at" db:"last_sent_at"` // Last time the token was sent (for throttling)
 }
+
+// -- MARK: User credentials section
 
 type UserWithCredentials struct {
 	User         user_models.User `json:"user"`
