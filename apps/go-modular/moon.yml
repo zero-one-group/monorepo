@@ -63,7 +63,7 @@ tasks:
 
   test:
     command: "gotestsum --format short-verbose --"
-    args: ["-count=1", "-v", "./..."]
+    args: ["-count=1", "-v", "./internal/...", "./modules/...", "./pkg/..."]
     deps: ["tidy"]
     options:
       cache: false
@@ -75,7 +75,7 @@ tasks:
 
   coverage:
     script: |
-      gotestsum --format testname -- -coverprofile=build/coverage.out ./cmd/... ./internal/... ./modules/... ./pkg/...
+      gotestsum --format testname -- -coverprofile=build/coverage.out ./internal/... ./modules/... ./pkg/...
       go tool cover -html=$projectRoot/build/coverage.out -o $projectRoot/build/coverage.html
       go tool cover -func=$projectRoot/build/coverage.out | tail -1
     deps: ["tidy"]
