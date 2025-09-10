@@ -15,7 +15,7 @@ import (
 
 // @Summary      Create session
 // @Description  Creates a new session
-// @Tags         Auth - Session Management
+// @Tags         Auth - User Session
 // @Accept       json
 // @Produce      json
 // @Param        body  body      models.CreateSessionRequest  true  "Session payload"
@@ -73,7 +73,7 @@ func (h *Handler) CreateSession(c echo.Context) error {
 
 // @Summary      Update session
 // @Description  Updates an existing session
-// @Tags         Auth - Session Management
+// @Tags         Auth - User Session
 // @Accept       json
 // @Produce      json
 // @Param        body  body      models.UpdateSessionRequest  true  "Session payload"
@@ -152,12 +152,12 @@ func (h *Handler) UpdateSession(c echo.Context) error {
 
 // @Summary      Get session
 // @Description  Retrieves a session by its ID
-// @Tags         Auth - Session Management
+// @Tags         Auth - User Session
 // @Produce      json
 // @Param        sessionId  path      string  true  "Session ID"
 // @Success      200        {object}  models.Session
 // @Failure      400        {object}  map[string]string
-// @Router       /api/v1/auth/session/{sessionId} [get]
+// @Router       /api/v1/auth/session/:sessionId [get]
 func (h *Handler) GetSession(c echo.Context) error {
 	sessionIDStr := c.Param("sessionId")
 	sessionID, err := uuid.FromString(sessionIDStr)
@@ -179,12 +179,12 @@ func (h *Handler) GetSession(c echo.Context) error {
 
 // @Summary      Delete session
 // @Description  Deletes a session by its ID
-// @Tags         Auth - Session Management
+// @Tags         Auth - User Session
 // @Produce      json
 // @Param        sessionId  path      string  true  "Session ID"
 // @Success      200        {object}  map[string]string
 // @Failure      400        {object}  map[string]string
-// @Router       /api/v1/auth/session/{sessionId} [delete]
+// @Router       /api/v1/auth/session/:sessionId [delete]
 func (h *Handler) DeleteSession(c echo.Context) error {
 	sessionIDStr := c.Param("sessionId")
 	sessionID, err := uuid.FromString(sessionIDStr)

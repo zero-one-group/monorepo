@@ -59,7 +59,7 @@ func (h *Handler) SetUserPassword(c echo.Context) error {
 // @Param        body    body      models.UpdatePasswordRequest true  "Password payload"
 // @Success      200     {object}  map[string]string
 // @Failure      400     {object}  map[string]string
-// @Router       /api/v1/auth/password/{userId} [put]
+// @Router       /api/v1/auth/password/:userId [put]
 func (h *Handler) UpdateUserPassword(c echo.Context) error {
 	userIDStr := c.Param("userId")
 	userID, err := uuid.FromString(userIDStr)

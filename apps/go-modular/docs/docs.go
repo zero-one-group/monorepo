@@ -61,7 +61,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/auth/password/{userId}": {
+        "/api/v1/auth/password/:userId": {
             "put": {
                 "description": "Updates an existing user's password",
                 "consumes": [
@@ -124,7 +124,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Auth - Session Management"
+                    "Auth - User Session"
                 ],
                 "summary": "Update refresh token",
                 "parameters": [
@@ -168,7 +168,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Auth - Session Management"
+                    "Auth - User Session"
                 ],
                 "summary": "Create refresh token",
                 "parameters": [
@@ -204,14 +204,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/auth/refresh-token/{tokenId}": {
+        "/api/v1/auth/refresh-token/:tokenId": {
             "get": {
                 "description": "Retrieves a refresh token by its ID",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Auth - Session Management"
+                    "Auth - User Session"
                 ],
                 "summary": "Get refresh token",
                 "parameters": [
@@ -247,7 +247,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Auth - Session Management"
+                    "Auth - User Session"
                 ],
                 "summary": "Delete refresh token",
                 "parameters": [
@@ -291,7 +291,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Auth - Session Management"
+                    "Auth - User Session"
                 ],
                 "summary": "Update session",
                 "parameters": [
@@ -335,7 +335,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Auth - Session Management"
+                    "Auth - User Session"
                 ],
                 "summary": "Create session",
                 "parameters": [
@@ -371,14 +371,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/auth/session/{sessionId}": {
+        "/api/v1/auth/session/:sessionId": {
             "get": {
                 "description": "Retrieves a session by its ID",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Auth - Session Management"
+                    "Auth - User Session"
                 ],
                 "summary": "Get session",
                 "parameters": [
@@ -414,7 +414,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Auth - Session Management"
+                    "Auth - User Session"
                 ],
                 "summary": "Delete session",
                 "parameters": [

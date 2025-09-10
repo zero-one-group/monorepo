@@ -15,7 +15,7 @@ import (
 
 // @Summary      Create refresh token
 // @Description  Creates a new refresh token
-// @Tags         Auth - Session Management
+// @Tags         Auth - User Session
 // @Accept       json
 // @Produce      json
 // @Param        body  body      models.CreateRefreshTokenRequest  true  "Refresh token payload"
@@ -81,7 +81,7 @@ func (h *Handler) CreateRefreshToken(c echo.Context) error {
 
 // @Summary      Update refresh token
 // @Description  Updates an existing refresh token
-// @Tags         Auth - Session Management
+// @Tags         Auth - User Session
 // @Accept       json
 // @Produce      json
 // @Param        body  body      models.UpdateRefreshTokenRequest  true  "Refresh token payload"
@@ -150,12 +150,12 @@ func (h *Handler) UpdateRefreshToken(c echo.Context) error {
 
 // @Summary      Get refresh token
 // @Description  Retrieves a refresh token by its ID
-// @Tags         Auth - Session Management
+// @Tags         Auth - User Session
 // @Produce      json
 // @Param        tokenId  path      string  true  "Token ID"
 // @Success      200      {object}  models.RefreshToken
 // @Failure      400      {object}  map[string]string
-// @Router       /api/v1/auth/refresh-token/{tokenId} [get]
+// @Router       /api/v1/auth/refresh-token/:tokenId [get]
 func (h *Handler) GetRefreshToken(c echo.Context) error {
 	tokenIDStr := c.Param("tokenId")
 	tokenID, err := uuid.FromString(tokenIDStr)
@@ -177,12 +177,12 @@ func (h *Handler) GetRefreshToken(c echo.Context) error {
 
 // @Summary      Delete refresh token
 // @Description  Deletes a refresh token by its ID
-// @Tags         Auth - Session Management
+// @Tags         Auth - User Session
 // @Produce      json
 // @Param        tokenId  path      string  true  "Token ID"
 // @Success      200      {object}  map[string]string
 // @Failure      400      {object}  map[string]string
-// @Router       /api/v1/auth/refresh-token/{tokenId} [delete]
+// @Router       /api/v1/auth/refresh-token/:tokenId [delete]
 func (h *Handler) DeleteRefreshToken(c echo.Context) error {
 	tokenIDStr := c.Param("tokenId")
 	tokenID, err := uuid.FromString(tokenIDStr)
