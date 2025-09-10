@@ -13,6 +13,17 @@ import (
 	"github.com/lestrrat-go/jwx/jwt"
 )
 
+// ContextKey is a typed key for context values to avoid collisions and staticcheck SA1029.
+type ContextKey string
+
+const (
+	// HeadersContextKey is used to store request headers map in context (map[string]string).
+	HeadersContextKey ContextKey = "go-modular.headers"
+
+	// JWTClaimsContextKey is used to store parsed JWT claims in context (map[string]any).
+	JWTClaimsContextKey ContextKey = "go-modular.jwt_claims"
+)
+
 // JWTConfig holds configuration for JWT generation and validation.
 type JWTConfig struct {
 	SecretKey          []byte                 // Secret key for signing JWTs

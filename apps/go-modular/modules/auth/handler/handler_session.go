@@ -16,6 +16,8 @@ import (
 // @Summary      Create session
 // @Description  Creates a new session
 // @Tags         Auth - User Session
+// @Security     BearerAuth
+// @Param        Authorization  header    string                      true  "Bearer {token}"
 // @Accept       json
 // @Produce      json
 // @Param        body  body      models.CreateSessionRequest  true  "Session payload"
@@ -74,6 +76,8 @@ func (h *Handler) CreateSession(c echo.Context) error {
 // @Summary      Update session
 // @Description  Updates an existing session
 // @Tags         Auth - User Session
+// @Security     BearerAuth
+// @Param        Authorization  header    string                      true  "Bearer {token}"
 // @Accept       json
 // @Produce      json
 // @Param        body  body      models.UpdateSessionRequest  true  "Session payload"
@@ -153,6 +157,8 @@ func (h *Handler) UpdateSession(c echo.Context) error {
 // @Summary      Get session
 // @Description  Retrieves a session by its ID
 // @Tags         Auth - User Session
+// @Security     BearerAuth
+// @Param        Authorization  header    string                      true  "Bearer {token}"
 // @Produce      json
 // @Param        sessionId  path      string  true  "Session ID"
 // @Success      200        {object}  models.Session
@@ -180,6 +186,8 @@ func (h *Handler) GetSession(c echo.Context) error {
 // @Summary      Delete session
 // @Description  Deletes a session by its ID
 // @Tags         Auth - User Session
+// @Security     BearerAuth
+// @Param        Authorization  header    string                      true  "Bearer {token}"
 // @Produce      json
 // @Param        sessionId  path      string  true  "Session ID"
 // @Success      200        {object}  map[string]string

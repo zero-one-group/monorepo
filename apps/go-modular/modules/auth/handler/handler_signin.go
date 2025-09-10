@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"context"
 	"errors"
 	"net/http"
 
@@ -23,6 +24,12 @@ import (
 // @Router       /api/v1/auth/signin/email [post]
 func (h *Handler) SignInWithEmail(c echo.Context) error {
 	ctx := c.Request().Context()
+
+	// Propagate a minimal headers map into ctx so services can read audience etc.
+	headers := map[string]string{
+		"X-App-Audience": c.Request().Header.Get("X-App-Audience"),
+	}
+	ctx = context.WithValue(ctx, apputils.HeadersContextKey, headers)
 
 	var req models.SignInWithEmailRequest
 	if err := c.Bind(&req); err != nil {
@@ -74,6 +81,12 @@ func (h *Handler) SignInWithEmail(c echo.Context) error {
 // @Router       /api/v1/auth/signin/username [post]
 func (h *Handler) SignInWithUsername(c echo.Context) error {
 	ctx := c.Request().Context()
+
+	// Propagate headers into ctx for services
+	headers := map[string]string{
+		"X-App-Audience": c.Request().Header.Get("X-App-Audience"),
+	}
+	ctx = context.WithValue(ctx, apputils.HeadersContextKey, headers)
 
 	var req models.SignInWithUsernameRequest
 	if err := c.Bind(&req); err != nil {

@@ -14,6 +14,8 @@ import (
 // @Summary      Set user password
 // @Description  Sets a new password for a user
 // @Tags         Auth - User Password
+// @Security     BearerAuth
+// @Param        Authorization  header    string                      true  "Bearer {token}"
 // @Accept       json
 // @Produce      json
 // @Param        body  body      models.SetPasswordRequest  true  "Password payload"
@@ -53,6 +55,8 @@ func (h *Handler) SetUserPassword(c echo.Context) error {
 // @Summary      Update user password
 // @Description  Updates an existing user's password
 // @Tags         Auth - User Password
+// @Security     BearerAuth
+// @Param        Authorization  header    string                      true  "Bearer {token}"
 // @Accept       json
 // @Produce      json
 // @Param        userId  path      string                      true  "User ID"

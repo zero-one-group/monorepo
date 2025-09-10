@@ -46,32 +46,6 @@ func (s *HTTPServer) Start() error {
 	}
 	defer pg.Close()
 
-	e := echo.New()
-	e.HideBanner = true
-	e.HidePort = true
-
-	// Register global middlewares
-	e.Use(middleware.RequestID())
-	e.Use(middleware.Recover())
-	e.Use(logger.LoggerMiddleware(s.logger))
-
-	// Register primary HTTP server routes
-	serverHandler := NewServerHandler(pg.Pool, s.logger)
-	serverHandler.RegisterRoutes(e)
-
-	// Create API v1 route group
-	apiV1Route := e.Group("/api/v1")
-
-	// Register middlewares for API routes
-	apiV1Route.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
-	}))
-
-	// Load and register user module
-	userModule := user_module.NewModule(&user_module.Options{PgPool: pg.Pool, Logger: s.logger})
-	userModule.RegisterRoutes(apiV1Route)
-
 	// Read SMTP configuration from environment
 	smtpHost := os.Getenv("SMTP_HOST")
 	smtpPort := 587
@@ -104,7 +78,32 @@ func (s *HTTPServer) Start() error {
 		s.logger.Info("mailer initialized", "host", smtpHost, "port", smtpPort, "from", smtpSenderEmail)
 	}
 
-	// Load and register auth module (pass mailer if available)
+	e := echo.New()
+	e.HideBanner = true
+	e.HidePort = true
+
+	// Register global middlewares
+	e.Use(middleware.RequestID())
+	e.Use(middleware.Recover())
+	e.Use(logger.LoggerMiddleware(s.logger))
+
+	// Register primary HTTP server routes
+	serverHandler := NewServerHandler(pg.Pool, s.logger)
+	serverHandler.RegisterRoutes(e)
+
+	// Create API v1 route group
+	apiV1Route := e.Group("/api/v1")
+
+	// Register middlewares for API routes
+	apiV1Route.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
+
+	// Load user module (no auth middleware yet)
+	userModule := user_module.NewModule(&user_module.Options{PgPool: pg.Pool, Logger: s.logger})
+
+	// Load auth module (requires user service)
 	authModule := auth_module.NewModule(&auth_module.Options{
 		PgPool:       pg.Pool,
 		Logger:       s.logger,
@@ -113,6 +112,12 @@ func (s *HTTPServer) Start() error {
 		BaseURL:      appBaseURL,
 		Mailer:       mailer,
 	})
+
+	// Inject auth middleware into user module so protected user routes use same JWT config
+	userModule.Use(authModule.JWTMiddleware())
+
+	// Register the module routes after injecting middleware
+	userModule.RegisterRoutes(apiV1Route)
 	authModule.RegisterRoutes(apiV1Route)
 
 	s.logger.Info("Starting HTTP server", "addr", s.httpAddr)

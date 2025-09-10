@@ -48,6 +48,8 @@ func NewHandler(opts *HandlerOpts) *Handler {
 // @Summary      Create a new user
 // @Description  Creates a new user in the system
 // @Tags         User Management
+// @Security     BearerAuth
+// @Param        Authorization  header    string                      true  "Bearer {token}"
 // @Accept       json
 // @Produce      json
 // @Param        user  body      models.UserCreateRequest  true  "User payload"
@@ -83,6 +85,8 @@ func (h *Handler) CreateUser(c echo.Context) error {
 // @Summary      List users
 // @Description  Retrieves a list of users
 // @Tags         User Management
+// @Security     BearerAuth
+// @Param        Authorization  header    string                      true  "Bearer {token}"
 // @Produce      json
 // @Success      200  {array}   models.User
 // @Router       /api/v1/users [get]
@@ -104,6 +108,8 @@ func (h *Handler) ListUsers(c echo.Context) error {
 // @Summary      Get user details
 // @Description  Retrieves a user by their ID
 // @Tags         User Management
+// @Security     BearerAuth
+// @Param        Authorization  header    string                      true  "Bearer {token}"
 // @Produce      json
 // @Param        id   path      string  true  "User ID"
 // @Success      200  {object}  models.User
@@ -128,6 +134,8 @@ func (h *Handler) GetUser(c echo.Context) error {
 // @Summary      Update user
 // @Description  Updates an existing user by ID
 // @Tags         User Management
+// @Security     BearerAuth
+// @Param        Authorization  header    string                      true  "Bearer {token}"
 // @Accept       json
 // @Produce      json
 // @Param        id    path      string  true  "User ID"
@@ -172,6 +180,8 @@ func (h *Handler) UpdateUser(c echo.Context) error {
 // @Summary      Delete user
 // @Description  Deletes a user by ID
 // @Tags         User Management
+// @Security     BearerAuth
+// @Param        Authorization  header    string                      true  "Bearer {token}"
 // @Param        id   path  string  true  "User ID"
 // @Success      200  {object}  map[string]string
 // @Failure      404  {object}  map[string]string

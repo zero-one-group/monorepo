@@ -116,6 +116,8 @@ func (h *Handler) ValidateEmailVerification(c echo.Context) error {
 // @Summary      Revoke email verification
 // @Description  Revokes (deletes) the email verification token for the user
 // @Tags         Auth - Verification
+// @Security     BearerAuth
+// @Param        Authorization  header    string                      true  "Bearer {token}"
 // @Accept       json
 // @Produce      json
 // @Param        body  body      models.RevokeEmailVerificationRequest  true  "Revoke verification payload"
@@ -159,6 +161,8 @@ func (h *Handler) RevokeEmailVerification(c echo.Context) error {
 // @Summary      Resend email verification
 // @Description  Generates and sends a new verification token to the user's email, or resends if still valid
 // @Tags         Auth - Verification
+// @Security     BearerAuth
+// @Param        Authorization  header    string                      true  "Bearer {token}"
 // @Accept       json
 // @Produce      json
 // @Param        body  body      models.ResendEmailVerificationRequest  true  "Resend verification payload"

@@ -60,15 +60,14 @@ func (s *AuthService) signinWithCredentials(
 		}
 	}
 
-	// Prepare JWT generator with configuration from environment
+	// Prepare JWT generator with configuration from environment or service fields.
+	// Issuer is optional; we no longer abort if APP_BASE_URL is not set.
 	issuer := os.Getenv("APP_BASE_URL")
-	if issuer == "" {
-		return nil, errors.New("missing APP_BASE_URL env")
-	}
 	jwtGen := apputils.NewJWTGenerator(apputils.JWTConfig{
 		SecretKey:          s.secretKey,
 		AccessTokenExpiry:  s.accessTokenExpiry,
 		RefreshTokenExpiry: s.refreshTokenExpiry,
+		SigningAlg:         s.signingAlg,
 		Issuer:             issuer,
 	})
 
