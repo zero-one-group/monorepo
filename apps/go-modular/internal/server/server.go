@@ -1,14 +1,18 @@
 package server
 
 import (
+	"context"
+	"fmt"
 	"log/slog"
 	"os"
+	"time"
 
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"go-modular/internal/adapter"
 	"go-modular/internal/config"
 	"go-modular/internal/notification"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 
 	appMiddleware "go-modular/internal/middleware"
 	modAuth "go-modular/modules/auth"
@@ -34,13 +38,10 @@ func NewHTTPServer(httpAddr string) *HTTPServer {
 func (s *HTTPServer) Start() error {
 	cfg := config.Get()
 
-	// Initialize Postgres pool
-	pg, err := adapter.NewPostgres(adapter.PostgresConfig{
-		URL:        cfg.GetDatabaseURL(),
-		SearchPath: "public",
-	})
+	// Initialize Postgres database connection with retry mechanism
+	pg, err := s.initializeDatabase(cfg)
 	if err != nil {
-		slog.Error("Failed to connect to Postgres database", "err", err)
+		s.logger.Error("Failed to connect to Postgres database", "err", err)
 		os.Exit(1)
 	}
 	defer pg.Close()
@@ -126,4 +127,60 @@ func (s *HTTPServer) Start() error {
 
 	// Start the server
 	return e.Start(s.httpAddr)
+}
+
+// Initialize PostgreSQL database connection with retry mechanism
+func (s *HTTPServer) initializeDatabase(cfg *config.Config) (*adapter.PostgresDB, error) {
+	const baseDelay = 2 * time.Second
+	const maxDelay = 30 * time.Second
+	const defaultMaxRetries = 5
+
+	maxRetries := defaultMaxRetries
+	if cfg.Database.PgMaxRetries == -1 {
+		maxRetries = -1
+	} else if cfg.Database.PgMaxRetries > 0 {
+		maxRetries = cfg.Database.PgMaxRetries
+	}
+
+	s.logger.Info("Initializing database connection", "max_retries", maxRetries)
+
+	var lastErr error
+	attempt := 1
+
+	for {
+		pgCfg := adapter.PostgresConfig{URL: cfg.GetDatabaseURL()}
+		pg, err := adapter.NewPostgres(pgCfg)
+		if err == nil {
+			// verify connection with Ping and timeout
+			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			pingErr := pg.Ping(ctx)
+			cancel()
+
+			if pingErr == nil {
+				s.logger.Info("Database connection established", "attempt", attempt)
+				return pg, nil
+			}
+
+			// ping failed, close pool and treat as error
+			pg.Close()
+			err = fmt.Errorf("ping failed: %w", pingErr)
+		}
+
+		lastErr = err
+		s.logger.Warn("Database connection attempt failed", "attempt", attempt, "err", lastErr)
+
+		// If not infinite and we've reached max, stop retrying
+		if maxRetries != -1 && attempt >= maxRetries {
+			break
+		}
+
+		// Exponential-ish backoff bounded by maxDelay
+		delay := min(baseDelay*time.Duration(attempt), maxDelay)
+
+		s.logger.Info("Retrying database connection", "next_try_in", delay, "attempt", attempt+1)
+		time.Sleep(delay)
+		attempt++
+	}
+
+	return nil, fmt.Errorf("failed to establish database connection after %d attempts: %w", attempt, lastErr)
 }
