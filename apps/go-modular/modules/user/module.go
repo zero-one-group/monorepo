@@ -59,7 +59,7 @@ func (m *UserModule) Use(mw ...echo.MiddlewareFunc) {
 	m.middlewares = append(m.middlewares, mw...)
 }
 
-// RegisterRoutes registers user CRUD endpoints to the given Echo group.
+// RegisterRoutes registers user endpoints to the given Echo group.
 func (m *UserModule) RegisterRoutes(e *echo.Group) {
 	g := e.Group("/users", m.middlewares...)
 	g.POST("", m.handler.CreateUser)

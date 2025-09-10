@@ -1,0 +1,50 @@
+package services
+
+import (
+	"context"
+
+	"go-modular/modules/dummy/models"
+	"go-modular/modules/dummy/repository"
+)
+
+// DummyServiceInterface defines the contract for dummy business logic.
+type DummyServiceInterface interface {
+	SayHello(ctx context.Context, message *models.Message) (*models.HelloResponse, error)
+}
+
+// Ensure DummyService implements DummyServiceInterface
+var _ DummyServiceInterface = (*DummyService)(nil)
+
+// DummyService implements dummy business logic using a DummyRepositoryInterface.
+type DummyService struct {
+	dummyRepo repository.DummyRepositoryInterface
+}
+
+type DummyServiceOpts struct {
+	DummyRepo repository.DummyRepositoryInterface
+}
+
+// NewDummyService creates a new DummyService.
+func NewDummyService(opts DummyServiceOpts) *DummyService {
+	if opts.DummyRepo == nil {
+		// fail fast to avoid later panics when service is used
+		panic("NewDummyService: DummyRepo is nil")
+	}
+	return &DummyService{
+		dummyRepo: opts.DummyRepo,
+	}
+}
+
+func (s *DummyService) SayHello(ctx context.Context, message *models.Message) (*models.HelloResponse, error) {
+	if message == nil {
+		return nil, repository.ErrNotFound
+	}
+	result, err := s.dummyRepo.Hello(ctx, message)
+	if err != nil {
+		return nil, err
+	}
+	if result == nil {
+		return nil, repository.ErrNotFound
+	}
+	return &models.HelloResponse{Content: string(*result)}, nil
+}

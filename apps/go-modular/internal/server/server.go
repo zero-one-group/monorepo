@@ -11,8 +11,8 @@ import (
 	"go-modular/internal/notification"
 
 	appMiddleware "go-modular/internal/middleware"
-	auth_module "go-modular/modules/auth"
-	user_module "go-modular/modules/user"
+	modAuth "go-modular/modules/auth"
+	modUser "go-modular/modules/user"
 	templateFS "go-modular/templates"
 )
 
@@ -69,7 +69,16 @@ func (s *HTTPServer) Start() error {
 
 	// Register global middlewares
 	e.Use(middleware.RequestID())
-	e.Use(middleware.Recover())
+	e.Use(middleware.RecoverWithConfig(middleware.RecoverConfig{
+		// Use the RecoverConfig.LogErrorFunc signature: func(c echo.Context, err error, stack []byte) error
+		// Integrate with slog logger and return the error so the centralized HTTPErrorHandler still runs.
+		LogErrorFunc: func(c echo.Context, err error, stack []byte) error {
+			req := c.Request()
+			s.logger.Error("Recovered from panic", "method", req.Method, "path", req.URL.Path, "error", err)
+			// return the error to allow downstream error handler to process it
+			return err
+		},
+	}))
 	e.Use(appMiddleware.LoggerMiddleware(s.logger))
 
 	// Register primary HTTP server routes
@@ -81,15 +90,23 @@ func (s *HTTPServer) Start() error {
 
 	// Register middlewares for API routes
 	apiV1Route.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
+		AllowOrigins: cfg.App.CORSOrigins,
+		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.PATCH, echo.DELETE, echo.OPTIONS},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+		ExposeHeaders: []string{
+			echo.HeaderAccept, echo.HeaderAcceptEncoding, echo.HeaderAuthorization, echo.HeaderCacheControl,
+			echo.HeaderConnection, echo.HeaderContentType, echo.HeaderContentLength, echo.HeaderOrigin,
+			echo.HeaderXCSRFToken, echo.HeaderXRequestID, "Pragma", "User-Agent", "X-App-Audience",
+		},
+		AllowCredentials: cfg.App.CORSCredentials, // The request can include user credentials like cookies
+		MaxAge:           cfg.App.CORSMaxAge,      // Maximum value not ignored by any of major browsers
 	}))
 
 	// Load user module (no auth middleware yet)
-	userModule := user_module.NewModule(&user_module.Options{PgPool: pg.Pool, Logger: s.logger})
+	userModule := modUser.NewModule(&modUser.Options{PgPool: pg.Pool, Logger: s.logger})
 
 	// Load auth module (requires user service)
-	authModule := auth_module.NewModule(&auth_module.Options{
+	authModule := modAuth.NewModule(&modAuth.Options{
 		PgPool:       pg.Pool,
 		Logger:       s.logger,
 		UserService:  userModule.GetUserService(),
