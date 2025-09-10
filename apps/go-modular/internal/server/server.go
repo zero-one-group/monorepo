@@ -4,14 +4,13 @@ import (
 	"log/slog"
 	"os"
 
-	"go-modular/internal/adapter"
-	"go-modular/internal/config"
-	"go-modular/internal/middleware/logger"
-	"go-modular/internal/notification"
-
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"go-modular/internal/adapter"
+	"go-modular/internal/config"
+	"go-modular/internal/notification"
 
+	appMiddleware "go-modular/internal/middleware"
 	auth_module "go-modular/modules/auth"
 	user_module "go-modular/modules/user"
 	templateFS "go-modular/templates"
@@ -71,7 +70,7 @@ func (s *HTTPServer) Start() error {
 	// Register global middlewares
 	e.Use(middleware.RequestID())
 	e.Use(middleware.Recover())
-	e.Use(logger.LoggerMiddleware(s.logger))
+	e.Use(appMiddleware.LoggerMiddleware(s.logger))
 
 	// Register primary HTTP server routes
 	serverHandler := NewServerHandler(pg.Pool, s.logger)
