@@ -1,3 +1,0 @@
-include:
-- /infra/app/build.yml
-- /infra/app/deploy.yml
