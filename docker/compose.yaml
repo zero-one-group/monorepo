@@ -1,5 +1,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json
 
+name: myorg
+
 # @see: https://docs.docker.com/compose/how-tos/multiple-compose-files/include/
 include:
   - ./compose-mailpit.yaml
@@ -8,38 +10,36 @@ include:
 
 services:
   pgsql:
-    image: postgres:${PGSQL_VERSION:-17-alpine}
-    container_name: myorg_pgsql
+    image: postgres:${PGSQL_VERSION:-18rc1-alpine}
     hostname: postgres
     restart: unless-stopped
-    ports:
-      - 5432:5432
+    ports: ['5432:5432']
     volumes:
       - pgsql_data:/var/lib/postgresql/data
       - ./pgsql-multidb.sh:/docker-entrypoint-initdb.d/multidb.sh
     environment:
-      POSTGRES_DB: myorg
+      POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: securedb
-      POSTGRES_EXTRA_DB: strapi,extradb
-      POSTGRES_SCHEMAS: myorg:internal,extradb:analytics
+      # Uncomment to enable additional databases and schemas
+      # POSTGRES_EXTRA_DB: strapi,plausible
+      # POSTGRES_SCHEMAS: postgres:reference,plausible:analytics
     command: ["postgres", "-c", "wal_level=logical"]
     # set shared memory limit when using docker-compose
     shm_size: 128mb
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d myorg"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
       interval: 30s
       timeout: 20s
       retries: 3
 
   pgweb:
     image: sosedoff/pgweb:latest
-    container_name: myorg_pgweb
     restart: always
     ports:
       - 54321:8081
     environment:
-      PGWEB_DATABASE_URL: "postgres://postgres:securedb@pgsql:5432/myorg?sslmode=disable"
+      PGWEB_DATABASE_URL: "postgres://postgres:securedb@pgsql:5432/postgres?sslmode=disable"
     depends_on:
       pgsql:
         condition: service_started

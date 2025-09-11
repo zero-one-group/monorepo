@@ -1,12 +1,21 @@
 import { execSync } from 'node:child_process'
 import { existsSync, mkdirSync, unlinkSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { intro, outro, spinner, tasks } from '@clack/prompts'
-import { cancel, confirm, isCancel, select, text } from '@clack/prompts'
+import {
+  cancel,
+  confirm,
+  intro,
+  isCancel,
+  outro,
+  select,
+  spinner,
+  tasks,
+  text,
+} from '@clack/prompts'
 import { defineCommand } from 'citty'
 import { createConsola } from 'consola'
-import { generatePhoenixApp, promptPhoenixOptions } from '../generator/phoenix'
 import type { PhoenixAssetsOption, PhoenixDatabaseOption } from '../generator/phoenix'
+import { generatePhoenixApp, promptPhoenixOptions } from '../generator/phoenix'
 
 const _console = createConsola({ defaults: { tag: 'monorepo-cli' } })
 
@@ -89,17 +98,18 @@ export default defineCommand({
       })
 
       if (appType === 'flutter') {
-       
-
         const appName = await text({
-          message: 'What is the app\'s name?',
+          message: "What is the app's name?",
           placeholder: 'default : ZOG Mobile Starter',
           defaultValue: 'ZOG Mobile Starter',
         })
-        if (isCancel(appName)) { cancel('Operation cancelled.'); process.exit(0) }
+        if (isCancel(appName)) {
+          cancel('Operation cancelled.')
+          process.exit(0)
+        }
 
-        const appDirName = appName.toLowerCase().replace(/ /g, '-');
-        const appDir = join(process.cwd(), 'apps', `flutter-${appDirName}`);
+        const appDirName = appName.toLowerCase().replace(/ /g, '-')
+        const appDir = join(process.cwd(), 'apps', `flutter-${appDirName}`)
         if (!existsSync(appDir)) {
           mkdirSync(appDir, { recursive: true })
           _console.info(`Created folder: ${appDir}`)
@@ -117,46 +127,64 @@ export default defineCommand({
         }
 
         const packageName = await text({
-          message: 'What is the app\'s package name?',
+          message: "What is the app's package name?",
           placeholder: 'default : zog_starter',
           defaultValue: 'zog_starter',
         })
-        if (isCancel(packageName)) { cancel('Operation cancelled.'); process.exit(0) }
+        if (isCancel(packageName)) {
+          cancel('Operation cancelled.')
+          process.exit(0)
+        }
 
         const devFirebaseProjectId = await text({
-          message: 'What is the development app\'s Firebase project ID?',
+          message: "What is the development app's Firebase project ID?",
           placeholder: 'default : zog-starter-dev',
           defaultValue: 'zog-starter-dev',
         })
-        if (isCancel(devFirebaseProjectId)) { cancel('Operation cancelled.'); process.exit(0) }
+        if (isCancel(devFirebaseProjectId)) {
+          cancel('Operation cancelled.')
+          process.exit(0)
+        }
 
         const stgFirebaseProjectId = await text({
-          message: 'What is the staging app\'s Firebase project ID?',
+          message: "What is the staging app's Firebase project ID?",
           placeholder: 'default : zog-starter-stg',
           defaultValue: 'zog-starter-stg',
         })
-        if (isCancel(stgFirebaseProjectId)) { cancel('Operation cancelled.'); process.exit(0) }
+        if (isCancel(stgFirebaseProjectId)) {
+          cancel('Operation cancelled.')
+          process.exit(0)
+        }
 
         const prodFirebaseProjectId = await text({
-          message: 'What is the production app\'s Firebase project ID?',
+          message: "What is the production app's Firebase project ID?",
           placeholder: 'default : zog-starter-prod',
           defaultValue: 'zog-starter-prod',
         })
-        if (isCancel(prodFirebaseProjectId)) { cancel('Operation cancelled.'); process.exit(0) }
+        if (isCancel(prodFirebaseProjectId)) {
+          cancel('Operation cancelled.')
+          process.exit(0)
+        }
 
         const androidAppId = await text({
           message: 'What is the Android App ID?',
           placeholder: 'default : com.zog.mobile',
           defaultValue: 'com.zog.mobile',
         })
-        if (isCancel(androidAppId)) { cancel('Operation cancelled.'); process.exit(0) }
+        if (isCancel(androidAppId)) {
+          cancel('Operation cancelled.')
+          process.exit(0)
+        }
 
         const iosBundleId = await text({
           message: 'What is the iOS Bundle ID?',
           placeholder: 'default : com.zog.mobile',
           defaultValue: 'com.zog.mobile',
         })
-        if (isCancel(iosBundleId)) { cancel('Operation cancelled.'); process.exit(0) }
+        if (isCancel(iosBundleId)) {
+          cancel('Operation cancelled.')
+          process.exit(0)
+        }
 
         const s = spinner()
         s.start('Running mason commands...')

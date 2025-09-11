@@ -2,15 +2,26 @@
     "editor.defaultFormatter": "biomejs.biome",
     "typescript.enablePromptUseWorkspaceTsdk": false,
     "files.associations": {
-        "*.yml.example": "yaml",
-        "*.css": "css"
+        "*.css": "css",
+        "*.toml.example": "toml",
+        "*.yml.example": "yaml"
     },
+    "go.toolsEnvVars": {
+        "GOFLAGS": "-tags=prod,debug"
+    },
+    "gopls": {
+        "buildFlags": ["-tags=prod,debug"]
+    },
+    "go.formatTool": "gofmt",
+    "go.lintTool": "golangci-lint",
+    "go.lintOnSave": "package",
     "search.exclude": {
         "**/.husky": true,
         "**/.output": true,
         "**/.next": true,
         "**/build": true,
         "**/dist": true,
+        "**/docs": true,
         "**/templates": true,
         "**/template-*": true
     },
@@ -25,7 +36,7 @@
         "editor.defaultFormatter": "biomejs.biome"
     },
     "[dockerfile]": {
-        "editor.defaultFormatter": "ms-azuretools.vscode-containers"
+        "editor.defaultFormatter": "docker.docker"
     },
     "[json]": {
         "editor.defaultFormatter": "biomejs.biome"

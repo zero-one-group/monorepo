@@ -20,18 +20,18 @@ tasks:
       outputStyle: stream
       envFile: '.env'
 
-  docker-build:
-    command: >
-      docker build -f $projectRoot/Dockerfile . -t $IMAGE_NAME:$APP_VERSION
-      && docker image list --filter reference=$APP_PREFIX-\\*
-    options:
-      mergeEnv: replace
-      runFromWorkspaceRoot: true
-      interactive: false
-      outputStyle: buffer-only-failure
-      runInCI: false
-      cache: false
-      shell: true
+  # docker-build:
+  #   command: >
+  #     docker build -f $projectRoot/Dockerfile . -t $IMAGE_NAME:$APP_VERSION
+  #     && docker image list --filter reference=$APP_PREFIX-\\*
+  #   options:
+  #     mergeEnv: replace
+  #     runFromWorkspaceRoot: true
+  #     interactive: false
+  #     outputStyle: buffer-only-failure
+  #     runInCI: false
+  #     cache: false
+  #     shell: true
 
   docker-images:
     command: 'docker image list --filter reference=$APP_PREFIX-\\*'

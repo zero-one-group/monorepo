@@ -1,0 +1,58 @@
+package handler
+
+import (
+	"log/slog"
+	"net/http"
+
+	"go-modular/modules/dummy/models"
+	"go-modular/modules/dummy/services"
+
+	"github.com/go-playground/validator/v10"
+	"github.com/labstack/echo/v4"
+)
+
+// HandlerInterface defines the contract for dummy handlers.
+type HandlerInterface interface {
+	HelloWorld(c echo.Context) error
+}
+
+// Ensure Handler implements HandlerInterface
+var _ HandlerInterface = (*Handler)(nil)
+
+// Handler holds dependencies for dummy handlers.
+type Handler struct {
+	logger       *slog.Logger
+	dummyService services.DummyServiceInterface
+	validator    *validator.Validate
+}
+
+type HandlerOpts struct {
+	Logger       *slog.Logger
+	DummyService services.DummyServiceInterface
+}
+
+// NewHandler creates a new Handler instance.
+func NewHandler(opts *HandlerOpts) *Handler {
+	return &Handler{
+		logger:       opts.Logger,
+		dummyService: opts.DummyService,
+		validator:    validator.New(),
+	}
+}
+
+// @Summary      Hello World
+// @Description  Put a description here
+// @Tags         Untagged
+// @Router       /api/v1/dummy [get]
+func (h *Handler) HelloWorld(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	message := models.Message("Hello world!")
+	result, err := h.dummyService.SayHello(ctx, &message)
+	if err != nil {
+		h.logger.Error("failed to say hello", "error", err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to say hello")
+	}
+
+	return c.JSON(http.StatusOK, result)
+}

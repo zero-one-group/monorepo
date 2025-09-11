@@ -2,4 +2,4 @@
 // @ref: https://www.machinet.net/tutorial-eng/vitest-coverage-comprehensive-guide
 // @ref: https://nextjs.org/docs/app/building-your-application/testing/vitest
 
-import '@testing-library/jest-dom/vitest'
+import "@testing-library/jest-dom/vitest";

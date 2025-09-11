@@ -8,7 +8,6 @@
 services:
   valkey:
     image: valkey/valkey:${VALKEY_VERSION:-8-alpine}
-    container_name: myorg_valkey
     hostname: valkey
     # restart: always
     environment:

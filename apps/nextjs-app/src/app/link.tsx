@@ -14,33 +14,33 @@
  * ```
  */
 
-import { default as RouterLink } from 'next/link'
-import type { LinkProps as RouterLinkProps } from 'next/link'
-import * as React from 'react'
-import { clx } from '#/libs/utils'
+import type { LinkProps as RouterLinkProps } from "next/link";
+import { default as RouterLink } from "next/link";
+import * as React from "react";
+import { clx } from "#/libs/utils";
 
-interface LinkProps extends Omit<RouterLinkProps, 'to'> {
-  newTab?: boolean
+interface LinkProps extends Omit<RouterLinkProps, "to"> {
+	newTab?: boolean;
 }
 
 const Link = React.forwardRef(function Component(
-  props: LinkProps & React.ComponentPropsWithoutRef<'a'>,
-  ref: React.ForwardedRef<HTMLAnchorElement>
+	props: LinkProps & React.ComponentPropsWithoutRef<"a">,
+	ref: React.ForwardedRef<HTMLAnchorElement>,
 ) {
-  const { className, newTab, ...rest } = props
-  const NEW_TAB_REL = 'noopener noreferrer'
-  const NEW_TAB_TARGET = '_blank'
-  const DEFAULT_TARGET = '_self'
+	const { className, newTab, ...rest } = props;
+	const NEW_TAB_REL = "noopener noreferrer";
+	const NEW_TAB_TARGET = "_blank";
+	const DEFAULT_TARGET = "_self";
 
-  return (
-    <RouterLink
-      className={clx('text-inherit dark:text-inherit', className)}
-      target={newTab ? NEW_TAB_TARGET : DEFAULT_TARGET}
-      rel={newTab ? NEW_TAB_REL : undefined}
-      ref={ref}
-      {...rest}
-    />
-  )
-})
+	return (
+		<RouterLink
+			className={clx("text-inherit dark:text-inherit", className)}
+			target={newTab ? NEW_TAB_TARGET : DEFAULT_TARGET}
+			rel={newTab ? NEW_TAB_REL : undefined}
+			ref={ref}
+			{...rest}
+		/>
+	);
+});
 
-export default Link
+export default Link;

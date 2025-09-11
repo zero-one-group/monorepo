@@ -2,8 +2,8 @@ package rest
 
 import (
 	"context"
-	"net/http"
 	"go-app/domain"
+	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
@@ -24,19 +24,17 @@ func NewAuthHandler(e *echo.Group, svc AuthService) {
 	e.POST("/login", handler.Login)
 }
 
-// Login godoc
-//
-//	@Summary        Login In
-//	@Description    Authenticate user
-//	@Tags           Users Authentication
-//	@Accept         json
-//	@Produce        json
-//	@Param          json    body        domain.LoginRequest                     true         "User signin credentials"
-//	@Success        200     {object}    domain.ResponseSingleData[domain.LoginResponse]      "Successfully logged in"
-//	@Failure        400     {object}    domain.ResponseSingleData[domain.Empty]              "Bad request"
-//	@Failure        401     {object}    domain.ResponseSingleData[domain.Empty]              "Unauthorized"
-//	@Failure        500     {object}    domain.ResponseSingleData[domain.Empty]              "Internal server error"
-//	@Router         /api/v1/auth/login [post]
+// @Summary        Login In
+// @Description    Authenticate user
+// @Tags           Users Authentication
+// @Accept         json
+// @Produce        json
+// @Param          json    body        domain.LoginRequest                     true         "User signin credentials"
+// @Success        200     {object}    domain.ResponseSingleData[domain.LoginResponse]      "Successfully logged in"
+// @Failure        400     {object}    domain.ResponseSingleData[domain.Empty]              "Bad request"
+// @Failure        401     {object}    domain.ResponseSingleData[domain.Empty]              "Unauthorized"
+// @Failure        500     {object}    domain.ResponseSingleData[domain.Empty]              "Internal server error"
+// @Router         /api/v1/auth/login [post]
 func (h *AuthHandler) Login(c echo.Context) error {
 	var req domain.LoginRequest
 

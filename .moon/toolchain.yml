@@ -2,14 +2,14 @@
 # yaml-language-server: $schema=https://moonrepo.dev/schemas/toolchain.json
 $schema: 'https://moonrepo.dev/schemas/toolchain.json'
 
-# Extend and inherit an external configuration file. Must be a valid HTTPS URL or file system path.
-# extends: './shared/toolchain.yml'
+proto:
+  version: '0.52.5'
 
 # Configures Node.js within the toolchain. moon manages its own version of Node.js
 # instead of relying on a version found on the host machine. This ensures deterministic
 # and reproducible builds across any machine.
 node:
-  version: '22.16'
+  version: '22.19'
   packageManager: 'pnpm'                  # Defines which package manager to utilize.
   inferTasksFromScripts: true             # Automatically infer moon tasks from `package.json` scripts.
   addEnginesConstraint: false             # Add `node.version` as a constraint in the root `package.json` `engines`.
@@ -21,7 +21,7 @@ node:
   # dependencyVersionFormat: link         # Uses link:../relative/path and symlinks package contents.
   dependencyVersionFormat: workspace      # Uses workspace:*, which resolves to "1.2.3". Requires package workspaces.
   pnpm:
-    version: '10.12.4'                     # The version of the package manager to use.
+    version: '10.15.1'                     # The version of the package manager to use.
 
 # Configures Python within the toolchain.
 # python:
@@ -32,7 +32,7 @@ node:
 
 # Configures Rust within the toolchain.
 # rust:
-#   version: '1.80'
+#   version: '1.89'
 #   syncToolchainConfig: true
 #   targets:
 #     - 'aarch64-apple-darwin'

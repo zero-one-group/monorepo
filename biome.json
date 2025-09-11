@@ -1,5 +1,5 @@
 {
-    "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
+    "$schema": "https://biomejs.dev/schemas/2.2.3/schema.json",
     "vcs": {
         "enabled": true,
         "clientKind": "git",
@@ -10,17 +10,21 @@
         "ignoreUnknown": true,
         "includes": [
             "**",
+            "!**/build/*",
+            "!**/dist/*",
+            "!**/out/*",
+            "!**/infra/*",
+            "!**/vendor/*",
+            "!**/temp/*",
+            "!**/tmp/*",
             "!**/.astro",
             "!**/.next",
             "!**/.react-router",
-            "!**/build",
-            "!**/dist",
-            "!**/out",
-            "!**/logs",
-            "!**/tmp",
-            "!**/temp",
-            "!infrastructure/**",
-            "!template*"
+            "!infrastructure/*",
+            "!templates/*",
+            "!docs/*",
+            "!.moon/*",
+            "!.temp/*"
         ]
     },
     "formatter": {
@@ -48,7 +52,8 @@
             "correctness": {
                 "noUnusedImports": {
                     "level": "error",
-                    "fix": "none"
+                    "fix": "none",
+                    "options": {}
                 },
                 "noUnusedVariables": {
                     "level": "warn",

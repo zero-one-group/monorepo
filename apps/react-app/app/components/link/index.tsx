@@ -14,33 +14,36 @@
  * ```
  */
 
-import * as React from 'react'
-import { Link as RouterLink, type LinkProps as RouterLinkProps } from 'react-router'
+import * as React from "react";
+import {
+	Link as RouterLink,
+	type LinkProps as RouterLinkProps,
+} from "react-router";
 
-interface LinkProps extends Omit<RouterLinkProps, 'to'> {
-  href: string
-  newTab?: boolean
+interface LinkProps extends Omit<RouterLinkProps, "to"> {
+	href: string;
+	newTab?: boolean;
 }
 
 const Link = React.forwardRef(function Component(
-  props: LinkProps & React.ComponentPropsWithoutRef<'a'>,
-  ref: React.ForwardedRef<HTMLAnchorElement>
+	props: LinkProps & React.ComponentPropsWithoutRef<"a">,
+	ref: React.ForwardedRef<HTMLAnchorElement>,
 ) {
-  const { className, newTab, ...rest } = props
-  const NEW_TAB_REL = 'noopener noreferrer'
-  const NEW_TAB_TARGET = '_blank'
-  const DEFAULT_TARGET = '_self'
+	const { className, newTab, ...rest } = props;
+	const NEW_TAB_REL = "noopener noreferrer";
+	const NEW_TAB_TARGET = "_blank";
+	const DEFAULT_TARGET = "_self";
 
-  return (
-    <RouterLink
-      to={props.href}
-      className={className}
-      rel={newTab ? NEW_TAB_REL : undefined}
-      target={newTab ? NEW_TAB_TARGET : DEFAULT_TARGET}
-      ref={ref}
-      {...rest}
-    />
-  )
-})
+	return (
+		<RouterLink
+			to={props.href}
+			className={className}
+			rel={newTab ? NEW_TAB_REL : undefined}
+			target={newTab ? NEW_TAB_TARGET : DEFAULT_TARGET}
+			ref={ref}
+			{...rest}
+		/>
+	);
+});
 
-export { Link }
+export { Link };
