@@ -99,6 +99,11 @@ mockery --version
 # ⇒ mockery version 3.5.1
 ```
 
+Run the mock generation:
+```bash
+moon run {{ package_name | kebab_case }}:generate-mock
+```
+
 ##### 2. Run the test suite
 
 ```bash
