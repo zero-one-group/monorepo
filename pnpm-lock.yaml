@@ -86,7 +86,7 @@ importers:
         version: 0.543.0(react@19.1.1)
       next:
         specifier: 15.5.2
-        version: 15.5.2(@babel/core@7.28.0)(@playwright/test@1.55.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+        version: 15.5.2(@playwright/test@1.55.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       react:
         specifier: ^19.1.1
         version: 19.1.1
@@ -535,6 +535,9 @@ importers:
       react-day-picker:
         specifier: ^9.9.0
         version: 9.9.0(react@19.1.1)
+      react-hook-form:
+        specifier: ^7.62.0
+        version: 7.62.0(react@19.1.1)
       react-resizable-panels:
         specifier: ^2.1.9
         version: 2.1.9(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -620,9 +623,6 @@ importers:
       react-dom:
         specifier: ^19.1.1
         version: 19.1.1(react@19.1.1)
-      react-hook-form:
-        specifier: ^7.62.0
-        version: 7.62.0(react@19.1.1)
       std-env:
         specifier: ^3.9.0
         version: 3.9.0
@@ -12081,8 +12081,8 @@ snapshots:
       '@aws-crypto/sha1-browser': 5.2.0
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/client-sso-oidc': 3.600.0
-      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/client-sso-oidc': 3.600.0(@aws-sdk/client-sts@3.600.0)
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/middleware-bucket-endpoint': 3.598.0
@@ -12139,11 +12139,11 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@aws-sdk/client-sso-oidc@3.600.0':
+  '@aws-sdk/client-sso-oidc@3.600.0(@aws-sdk/client-sts@3.600.0)':
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/middleware-host-header': 3.598.0
@@ -12182,6 +12182,7 @@ snapshots:
       '@smithy/util-utf8': 3.0.0
       tslib: 2.8.1
     transitivePeerDependencies:
+      - '@aws-sdk/client-sts'
       - aws-crt
 
   '@aws-sdk/client-sso@3.598.0':
@@ -12227,11 +12228,11 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@aws-sdk/client-sts@3.600.0(@aws-sdk/client-sso-oidc@3.600.0)':
+  '@aws-sdk/client-sts@3.600.0':
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
-      '@aws-sdk/client-sso-oidc': 3.600.0
+      '@aws-sdk/client-sso-oidc': 3.600.0(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/core': 3.598.0
       '@aws-sdk/credential-provider-node': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/middleware-host-header': 3.598.0
@@ -12270,7 +12271,6 @@ snapshots:
       '@smithy/util-utf8': 3.0.0
       tslib: 2.8.1
     transitivePeerDependencies:
-      - '@aws-sdk/client-sso-oidc'
       - aws-crt
 
   '@aws-sdk/core@3.598.0':
@@ -12304,7 +12304,7 @@ snapshots:
 
   '@aws-sdk/credential-provider-ini@3.598.0(@aws-sdk/client-sso-oidc@3.600.0)(@aws-sdk/client-sts@3.600.0)':
     dependencies:
-      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/credential-provider-env': 3.598.0
       '@aws-sdk/credential-provider-http': 3.598.0
       '@aws-sdk/credential-provider-process': 3.598.0
@@ -12362,7 +12362,7 @@ snapshots:
 
   '@aws-sdk/credential-provider-web-identity@3.598.0(@aws-sdk/client-sts@3.600.0)':
     dependencies:
-      '@aws-sdk/client-sts': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
+      '@aws-sdk/client-sts': 3.600.0
       '@aws-sdk/types': 3.598.0
       '@smithy/property-provider': 3.1.11
       '@smithy/types': 3.7.2
@@ -12508,7 +12508,7 @@ snapshots:
 
   '@aws-sdk/token-providers@3.598.0(@aws-sdk/client-sso-oidc@3.600.0)':
     dependencies:
-      '@aws-sdk/client-sso-oidc': 3.600.0
+      '@aws-sdk/client-sso-oidc': 3.600.0(@aws-sdk/client-sts@3.600.0)
       '@aws-sdk/types': 3.598.0
       '@smithy/property-provider': 3.1.11
       '@smithy/shared-ini-file-loader': 3.1.12
@@ -13474,18 +13474,6 @@ snapshots:
   '@formatjs/intl-localematcher@0.5.4':
     dependencies:
       tslib: 2.8.1
-
-  '@formatjs/intl@2.10.0(typescript@5.4.4)':
-    dependencies:
-      '@formatjs/ecma402-abstract': 1.18.2
-      '@formatjs/fast-memoize': 2.2.0
-      '@formatjs/icu-messageformat-parser': 2.7.6
-      '@formatjs/intl-displaynames': 6.6.6
-      '@formatjs/intl-listformat': 7.5.5
-      intl-messageformat: 10.5.11
-      tslib: 2.8.1
-    optionalDependencies:
-      typescript: 5.4.4
 
   '@formatjs/intl@2.10.0(typescript@5.8.3)':
     dependencies:
@@ -16543,7 +16531,7 @@ snapshots:
       '@strapi/design-system': 2.0.0-rc.29(@babel/runtime@7.26.9)(@codemirror/autocomplete@6.18.6)(@codemirror/language@6.10.8)(@codemirror/lint@6.8.4)(@codemirror/search@6.5.9)(@codemirror/state@6.5.2)(@codemirror/theme-one-dark@6.1.2)(@codemirror/view@6.36.2)(@strapi/icons@2.0.0-rc.29(react-dom@18.0.0(react@18.0.0))(react@18.0.0)(styled-components@6.1.19(react-dom@18.0.0(react@18.0.0))(react@18.0.0)))(@types/react-dom@18.0.11)(@types/react@18.0.38)(codemirror@5.65.18)(react-dom@18.0.0(react@18.0.0))(react@18.0.0)(styled-components@6.1.19(react-dom@18.0.0(react@18.0.0))(react@18.0.0))
       '@strapi/icons': 2.0.0-rc.29(react-dom@18.0.0(react@18.0.0))(react@18.0.0)(styled-components@6.1.19(react-dom@18.0.0(react@18.0.0))(react@18.0.0))
       '@strapi/permissions': 5.23.3
-      '@strapi/types': 5.23.3(@types/node@24.3.1)(pg@8.16.3)(typescript@5.4.4)
+      '@strapi/types': 5.23.3(@types/node@24.3.1)(pg@8.16.3)(typescript@5.8.3)
       '@strapi/typescript-utils': 5.23.3
       '@strapi/utils': 5.23.3
       '@testing-library/dom': 10.1.0
@@ -16738,7 +16726,7 @@ snapshots:
       '@strapi/database': 5.23.3(@types/node@24.3.1)(pg@8.16.3)
       '@strapi/design-system': 2.0.0-rc.29(@babel/runtime@7.26.9)(@codemirror/autocomplete@6.18.6)(@codemirror/language@6.10.8)(@codemirror/lint@6.8.4)(@codemirror/search@6.5.9)(@codemirror/state@6.5.2)(@codemirror/theme-one-dark@6.1.2)(@codemirror/view@6.36.2)(@strapi/icons@2.0.0-rc.29(react-dom@18.0.0(react@18.0.0))(react@18.0.0)(styled-components@6.1.19(react-dom@18.0.0(react@18.0.0))(react@18.0.0)))(@types/react-dom@18.0.11)(@types/react@18.0.38)(codemirror@5.65.18)(react-dom@18.0.0(react@18.0.0))(react@18.0.0)(styled-components@6.1.19(react-dom@18.0.0(react@18.0.0))(react@18.0.0))
       '@strapi/icons': 2.0.0-rc.29(react-dom@18.0.0(react@18.0.0))(react@18.0.0)(styled-components@6.1.19(react-dom@18.0.0(react@18.0.0))(react@18.0.0))
-      '@strapi/types': 5.23.3(@types/node@24.3.1)(pg@8.16.3)(typescript@5.4.4)
+      '@strapi/types': 5.23.3(@types/node@24.3.1)(pg@8.16.3)(typescript@5.8.3)
       '@strapi/utils': 5.23.3
       date-fns: 2.30.0
       date-fns-tz: 2.0.1(date-fns@2.30.0)
@@ -16830,7 +16818,7 @@ snapshots:
       '@strapi/generators': 5.23.3
       '@strapi/logger': 5.23.3
       '@strapi/permissions': 5.23.3
-      '@strapi/types': 5.23.3(@types/node@24.3.1)(pg@8.16.3)(typescript@5.4.4)
+      '@strapi/types': 5.23.3(@types/node@24.3.1)(pg@8.16.3)(typescript@5.8.3)
       '@strapi/typescript-utils': 5.23.3
       '@strapi/utils': 5.23.3
       '@vercel/stega': 0.1.2
@@ -16909,39 +16897,6 @@ snapshots:
       - styled-components
       - supports-color
       - tedious
-
-  '@strapi/data-transfer@5.23.3(@types/node@24.3.1)(pg@8.16.3)(typescript@5.4.4)':
-    dependencies:
-      '@strapi/logger': 5.23.3
-      '@strapi/types': 5.23.3(@types/node@24.3.1)(pg@8.16.3)(typescript@5.4.4)
-      '@strapi/utils': 5.23.3
-      chalk: 4.1.2
-      cli-table3: 0.6.5
-      commander: 8.3.0
-      fs-extra: 11.2.0
-      inquirer: 8.2.5
-      lodash: 4.17.21
-      ora: 5.4.1
-      resolve-cwd: 3.0.0
-      semver: 7.5.4
-      stream-chain: 2.2.5
-      stream-json: 1.8.0
-      tar: 6.2.1
-      tar-stream: 2.2.0
-      ws: 8.17.1
-    transitivePeerDependencies:
-      - '@types/node'
-      - better-sqlite3
-      - bufferutil
-      - mysql
-      - mysql2
-      - pg
-      - pg-native
-      - sqlite3
-      - supports-color
-      - tedious
-      - typescript
-      - utf-8-validate
 
   '@strapi/data-transfer@5.23.3(@types/node@24.3.1)(pg@8.16.3)(typescript@5.8.3)':
     dependencies:
@@ -17326,7 +17281,7 @@ snapshots:
       '@strapi/content-releases': 5.23.3(80c3d954beb94a65d44342b4e7a75245)
       '@strapi/content-type-builder': 5.23.3(677a88064d561091c2994134127b7c56)
       '@strapi/core': 5.23.3(@babel/runtime@7.26.9)(@codemirror/autocomplete@6.18.6)(@codemirror/language@6.10.8)(@codemirror/lint@6.8.4)(@codemirror/search@6.5.9)(@codemirror/state@6.5.2)(@codemirror/theme-one-dark@6.1.2)(@codemirror/view@6.36.2)(@strapi/data-transfer@5.23.3(@types/node@24.3.1)(pg@8.16.3)(typescript@5.8.3))(@types/hoist-non-react-statics@3.3.6)(@types/node@24.3.1)(@types/react-dom@18.0.11)(@types/react@18.0.38)(codemirror@5.65.18)(pg@8.16.3)(react-dom@18.0.0(react@18.0.0))(react-router-dom@6.29.0(react-dom@18.0.0(react@18.0.0))(react@18.0.0))(react@18.0.0)(redux@4.2.1)(styled-components@6.1.19(react-dom@18.0.0(react@18.0.0))(react@18.0.0))
-      '@strapi/data-transfer': 5.23.3(@types/node@24.3.1)(pg@8.16.3)(typescript@5.4.4)
+      '@strapi/data-transfer': 5.23.3(@types/node@24.3.1)(pg@8.16.3)(typescript@5.8.3)
       '@strapi/database': 5.23.3(@types/node@24.3.1)(pg@8.16.3)
       '@strapi/email': 5.23.3(0bd64f951ae7e4d1531f8c9699559f16)
       '@strapi/generators': 5.23.3
@@ -17335,7 +17290,7 @@ snapshots:
       '@strapi/openapi': 5.23.3
       '@strapi/permissions': 5.23.3
       '@strapi/review-workflows': 5.23.3(49387056e91cf446a394b418c2bf7558)
-      '@strapi/types': 5.23.3(@types/node@24.3.1)(pg@8.16.3)(typescript@5.4.4)
+      '@strapi/types': 5.23.3(@types/node@24.3.1)(pg@8.16.3)(typescript@5.8.3)
       '@strapi/typescript-utils': 5.23.3
       '@strapi/upload': 5.23.3(7ef225ced0a60ea766b5c8aab3e8d735)
       '@strapi/utils': 5.23.3
@@ -17436,36 +17391,6 @@ snapshots:
       - webpack-cli
       - webpack-dev-server
       - webpack-plugin-serve
-
-  '@strapi/types@5.23.3(@types/node@24.3.1)(pg@8.16.3)(typescript@5.4.4)':
-    dependencies:
-      '@casl/ability': 6.5.0
-      '@koa/cors': 5.0.0
-      '@koa/router': 12.0.2
-      '@strapi/database': 5.23.3(@types/node@24.3.1)(pg@8.16.3)
-      '@strapi/logger': 5.23.3
-      '@strapi/permissions': 5.23.3
-      '@strapi/utils': 5.23.3
-      commander: 8.3.0
-      json-logic-js: 2.0.5
-      koa: 2.16.1
-      koa-body: 6.0.1
-      node-schedule: 2.1.1
-      typedoc: 0.25.10(typescript@5.4.4)
-      typedoc-github-wiki-theme: 1.1.0(typedoc-plugin-markdown@3.17.1(typedoc@0.25.10(typescript@5.8.3)))(typedoc@0.25.10(typescript@5.8.3))
-      typedoc-plugin-markdown: 3.17.1(typedoc@0.25.10(typescript@5.8.3))
-      zod: 3.25.67
-    transitivePeerDependencies:
-      - '@types/node'
-      - better-sqlite3
-      - mysql
-      - mysql2
-      - pg
-      - pg-native
-      - sqlite3
-      - supports-color
-      - tedious
-      - typescript
 
   '@strapi/types@5.23.3(@types/node@24.3.1)(pg@8.16.3)(typescript@5.8.3)':
     dependencies:
@@ -22760,7 +22685,7 @@ snapshots:
 
   neotraverse@0.6.18: {}
 
-  next@15.5.2(@babel/core@7.28.0)(@playwright/test@1.55.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
+  next@15.5.2(@playwright/test@1.55.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
     dependencies:
       '@next/env': 15.5.2
       '@swc/helpers': 0.5.15
@@ -22768,7 +22693,7 @@ snapshots:
       postcss: 8.4.31
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
-      styled-jsx: 5.1.6(@babel/core@7.28.0)(react@19.1.1)
+      styled-jsx: 5.1.6(react@19.1.1)
     optionalDependencies:
       '@next/swc-darwin-arm64': 15.5.2
       '@next/swc-darwin-x64': 15.5.2
@@ -23725,7 +23650,7 @@ snapshots:
     dependencies:
       '@formatjs/ecma402-abstract': 1.18.2
       '@formatjs/icu-messageformat-parser': 2.7.6
-      '@formatjs/intl': 2.10.0(typescript@5.4.4)
+      '@formatjs/intl': 2.10.0(typescript@5.8.3)
       '@formatjs/intl-displaynames': 6.6.6
       '@formatjs/intl-listformat': 7.5.5
       '@types/hoist-non-react-statics': 3.3.6
@@ -24938,12 +24863,10 @@ snapshots:
       stylis: 4.3.2
       tslib: 2.6.2
 
-  styled-jsx@5.1.6(@babel/core@7.28.0)(react@19.1.1):
+  styled-jsx@5.1.6(react@19.1.1):
     dependencies:
       client-only: 0.0.1
       react: 19.1.1
-    optionalDependencies:
-      '@babel/core': 7.28.0
 
   stylis@4.2.0: {}
 
@@ -25241,14 +25164,6 @@ snapshots:
     dependencies:
       handlebars: 4.7.8
       typedoc: 0.25.10(typescript@5.8.3)
-
-  typedoc@0.25.10(typescript@5.4.4):
-    dependencies:
-      lunr: 2.3.9
-      marked: 4.3.0
-      minimatch: 9.0.5
-      shiki: 0.14.7
-      typescript: 5.4.4
 
   typedoc@0.25.10(typescript@5.8.3):
     dependencies:
