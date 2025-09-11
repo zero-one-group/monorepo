@@ -29,24 +29,13 @@ type PostgresConfig struct {
 
 // NewPostgres creates a new database connection pool.
 // Only URL is mandatory, other fields are optional and will use defaults if zero.
-// PgSearchPath and PgTimezone are now configurable, default: "public" and "UTC"
 func NewPostgres(cfg PostgresConfig) (*PostgresDB, error) {
-	if cfg.URL == "" {
-		return nil, fmt.Errorf("database URL is required")
-	}
-
-	// Set defaults if zero
+	// apply sensible defaults
 	if cfg.MaxConnections == 0 {
-		cfg.MaxConnections = 25
+		cfg.MaxConnections = 5
 	}
 	if cfg.MinConnections == 0 {
-		cfg.MinConnections = 5
-	}
-	if cfg.MaxConnLifetime == 0 {
-		cfg.MaxConnLifetime = time.Hour
-	}
-	if cfg.MaxConnIdleTime == 0 {
-		cfg.MaxConnIdleTime = 30 * time.Minute
+		cfg.MinConnections = 1
 	}
 	if cfg.SearchPath == "" {
 		cfg.SearchPath = "public"
@@ -55,9 +44,34 @@ func NewPostgres(cfg PostgresConfig) (*PostgresDB, error) {
 		cfg.Timezone = "UTC"
 	}
 
-	pool, err := createPgPool(&cfg)
+	poolConfig, err := pgxpool.ParseConfig(cfg.URL)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create database pool: %w", err)
+		return nil, fmt.Errorf("failed to parse pg pool config: %w", err)
+	}
+
+	// apply pool settings
+	poolConfig.MaxConns = cfg.MaxConnections
+	poolConfig.MinConns = cfg.MinConnections
+	if cfg.MaxConnLifetime > 0 {
+		poolConfig.MaxConnLifetime = cfg.MaxConnLifetime
+	}
+	if cfg.MaxConnIdleTime > 0 {
+		poolConfig.MaxConnIdleTime = cfg.MaxConnIdleTime
+	}
+
+	// ensure runtime params exist and set search_path/timezone
+	if poolConfig.ConnConfig.RuntimeParams == nil {
+		poolConfig.ConnConfig.RuntimeParams = map[string]string{}
+	}
+	// prefer provided values; ensure keys set in a form Postgres accepts
+	poolConfig.ConnConfig.RuntimeParams["search_path"] = cfg.SearchPath
+	// Postgres accepts "TimeZone" param name; set both variants for safety
+	poolConfig.ConnConfig.RuntimeParams["TimeZone"] = cfg.Timezone
+	poolConfig.ConnConfig.RuntimeParams["timezone"] = cfg.Timezone
+
+	pool, err := pgxpool.NewWithConfig(context.Background(), poolConfig)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create pgxpool: %w", err)
 	}
 
 	return &PostgresDB{Pool: pool}, nil
@@ -65,41 +79,23 @@ func NewPostgres(cfg PostgresConfig) (*PostgresDB, error) {
 
 // NewPostgresWithSingleConn creates a new PostgresDB with both pool and single connection exported.
 func NewPostgresWithSingleConn(cfg PostgresConfig) (*PostgresDB, error) {
-	db, err := NewPostgres(cfg)
+	// create pool first (will apply defaults and runtime params)
+	pg, err := NewPostgres(cfg)
 	if err != nil {
 		return nil, err
 	}
+
+	// create a single connection using centralized helper
 	conn, err := NewSingleConnection(cfg)
 	if err != nil {
-		return nil, err
-	}
-	db.Conn = conn
-	return db, nil
-}
-
-// Create a single database connection, useful for one-off tasks or migrations
-func NewSingleConnection(cfg PostgresConfig) (*pgx.Conn, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	poolConfig, err := pgxpool.ParseConfig(cfg.URL)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse database URL: %w", err)
-	}
-
-	// Configure connection settings similar to pool
-	poolConfig.ConnConfig.ConnectTimeout = time.Second * 10
-	poolConfig.ConnConfig.RuntimeParams = map[string]string{
-		"search_path": cfg.SearchPath,
-		"timezone":    cfg.Timezone,
-	}
-
-	conn, err := pgx.ConnectConfig(ctx, poolConfig.ConnConfig)
-	if err != nil {
+		pg.Close()
 		return nil, fmt.Errorf("failed to create single connection: %w", err)
 	}
 
-	return conn, nil
+	return &PostgresDB{
+		Pool: pg.Pool,
+		Conn: conn,
+	}, nil
 }
 
 // Ping checks if the database connection is alive
@@ -196,31 +192,38 @@ func TestConnection(cfg PostgresConfig) error {
 	return nil
 }
 
-// createPgPool creates a new pgxpool with configuration
-func createPgPool(config *PostgresConfig) (*pgxpool.Pool, error) {
-	poolConfig, err := pgxpool.ParseConfig(config.URL)
+// NewSingleConnection creates and returns a single pgx.Conn using the provided PostgresConfig.
+// This is used by TestConnection and other helpers that need a standalone connection.
+func NewSingleConnection(cfg PostgresConfig) (*pgx.Conn, error) {
+	// apply sensible defaults used elsewhere
+	if cfg.SearchPath == "" {
+		cfg.SearchPath = "public"
+	}
+	if cfg.Timezone == "" {
+		cfg.Timezone = "UTC"
+	}
+
+	connCfg, err := pgx.ParseConfig(cfg.URL)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse database URL: %w", err)
+		return nil, fmt.Errorf("failed to parse single connection config: %w", err)
 	}
 
-	// Configure connection pool
-	poolConfig.MaxConns = config.MaxConnections
-	poolConfig.MinConns = config.MinConnections
-	poolConfig.MaxConnLifetime = config.MaxConnLifetime
-	poolConfig.MaxConnIdleTime = config.MaxConnIdleTime
+	if connCfg.RuntimeParams == nil {
+		connCfg.RuntimeParams = map[string]string{}
+	}
+	connCfg.RuntimeParams["search_path"] = cfg.SearchPath
+	// set both variants for compatibility
+	connCfg.RuntimeParams["TimeZone"] = cfg.Timezone
+	connCfg.RuntimeParams["timezone"] = cfg.Timezone
 
-	// Configure connection settings
-	poolConfig.ConnConfig.ConnectTimeout = time.Second * 10
-	poolConfig.ConnConfig.RuntimeParams = map[string]string{
-		"search_path": config.SearchPath,
-		"timezone":    config.Timezone,
+	// set a reasonable connect timeout
+	if connCfg.ConnectTimeout == 0 {
+		connCfg.ConnectTimeout = 10 * time.Second
 	}
 
-	// Create the pool
-	pool, err := pgxpool.NewWithConfig(context.Background(), poolConfig)
+	conn, err := pgx.ConnectConfig(context.Background(), connCfg)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create connection pool: %w", err)
+		return nil, fmt.Errorf("failed to create single connection: %w", err)
 	}
-
-	return pool, nil
+	return conn, nil
 }

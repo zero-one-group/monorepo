@@ -3,10 +3,10 @@ package notification
 import (
 	"bytes"
 	"context"
-	"embed"
 	"errors"
 	"fmt"
 	"html/template"
+	"io/fs"
 	"log/slog"
 	"net/mail"
 	"net/smtp"
@@ -21,7 +21,7 @@ type Mailer struct {
 	password   string
 	fromName   string
 	fromAddr   string
-	templateFS embed.FS
+	templateFS fs.FS
 	auth       smtp.Auth
 
 	// logger for mailer internal logging (optional, default provided)
@@ -38,11 +38,14 @@ type MailerOptions struct {
 	FromName    string
 	FromAddress string
 
-	TemplateFS embed.FS
+	TemplateFS fs.FS
 
 	// optional logger; if nil a default slog.Logger will be created
 	Logger *slog.Logger
 }
+
+// package-level send function (can be overridden in tests)
+var sendMail = smtp.SendMail
 
 // sanitizeHeader trims whitespace/quotes and strips CR/LF to prevent header injection.
 func sanitizeHeader(s string) string {
@@ -97,7 +100,7 @@ func NewMailer(opts MailerOptions) (*Mailer, error) {
 	m.fromName = strings.ReplaceAll(m.fromName, ">", "")
 
 	// check templateFS was provided
-	if m.templateFS == (embed.FS{}) {
+	if m.templateFS == nil {
 		return nil, errors.New("template FS is required")
 	}
 
@@ -150,8 +153,8 @@ func (m *Mailer) SendEmail(ctx context.Context, to []string, subject, templateNa
 		auth = nil
 	}
 
-	// net/smtp.SendMail will use STARTTLS if the server supports it.
-	if err := smtp.SendMail(addr, auth, m.fromAddr, to, msg.Bytes()); err != nil {
+	// use package-level sendMail (overridable in tests)
+	if err := sendMail(addr, auth, m.fromAddr, to, msg.Bytes()); err != nil {
 		m.logger.Error("failed to send email", "err", err, "to", to, "subject", subject)
 		return err
 	}
@@ -166,7 +169,7 @@ func (m *Mailer) formatEmailHTML(templateName string, data any) (string, error) 
 		return "", errors.New("template name required")
 	}
 
-	// Load the specific template file from the embedded FS (e.g. "emails/welcome.html").
+	// Load the specific template file from the FS (e.g. "emails/welcome.html").
 	tplPath := "emails/" + templateName
 	t, err := template.ParseFS(m.templateFS, tplPath)
 	if err != nil {

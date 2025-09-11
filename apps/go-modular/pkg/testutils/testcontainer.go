@@ -6,6 +6,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -158,12 +159,39 @@ func (te *TestEnv) SetupConfig() {
 
 // RunAppMigrations runs the database migrations for the application.
 func (te *TestEnv) RunAppMigrations() {
-	cmd := exec.Command("go", "run", "-tags", "debug", "./cmd/", "migrate:up")
+	cmd := exec.Command("go", "run", "-tags", "debug", "./cmd/", "migrate:reset", "--force", "--up", "--seed")
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Env = os.Environ()
 
+	// ensure command runs from module root (where go.mod lives)
+	if root := findModuleRoot(); root != "" {
+		cmd.Dir = root
+		te.T.Logf("running migrations from module root: %s", root)
+	} else {
+		te.T.Log("module root not found, running migrations from current working directory")
+	}
+
 	te.T.Log("Running test database migrations")
 	err := cmd.Run()
 	require.NoError(te.T, err, "failed to run test database migrations")
+}
+
+// findModuleRoot walks up from the current working directory to find the directory containing go.mod.
+func findModuleRoot() string {
+	dir, err := os.Getwd()
+	if err != nil {
+		return ""
+	}
+	for {
+		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
+			return dir
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			// reached filesystem root
+			return ""
+		}
+		dir = parent
+	}
 }
