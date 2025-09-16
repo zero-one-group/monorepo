@@ -90,7 +90,8 @@ jobs:
             --gc \
             --minify \
             --baseURL "${{ steps.pages.outputs.base_url }}/" \
-            --cacheDir "${{ runner.temp }}/hugo_cache"
+            --cacheDir "${{ runner.temp }}/hugo_cache" \
+            --source docsite
       - name: Cache save
         id: cache-save
         uses: actions/cache/save@v4
