@@ -4,9 +4,9 @@
 languageCode: en-us
 title: Monorepo Docs
 
-publishDir: ./public
 cleanDestinationDir: false
 enableRobotsTXT: true
+contentDir: ../content
 
 module:
   imports:
