@@ -114,6 +114,8 @@ terraform.tfvars*
 __pycache__/
 
 # Specific directories for individual projects
+/docs/*
+!/docs/templates
 
 # Personal Note
 AUDIT.md
