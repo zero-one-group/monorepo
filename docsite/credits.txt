@@ -1,0 +1,2 @@
+Based on Hugo theme E25DX by Dumindu Madunuwan (https://github.com/dumindu).
+The Hugo E25DX theme (https://github.com/dumindu/E25DX) is licensed under the MIT license.

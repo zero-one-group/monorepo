@@ -124,6 +124,7 @@ __pycache__/
 /resources/_gen/
 /assets/jsconfig.json
 /docsite/public/
+__generated__/
 hugo_stats.json
 hugo.exe
 hugo.darwin

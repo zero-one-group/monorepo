@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode | default `en-US` }}">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{{ .Page.Params.description | default .Site.Params.description | .RenderString }}">
+  <meta name="author" content="{{ .Site.Params.author.name }}">
+  <meta name="theme-color" content="{{ .Site.Params.project.themeColor.light }}" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="{{ .Site.Params.project.themeColor.dark }}" media="(prefers-color-scheme: dark)">
+  {{ with .Params.robots -}}
+  <meta name="robots" content="{{ . }}">
+  {{ end -}}
+
+  <title>{{ .Title | .RenderString }} · {{ .Site.Title | .RenderString }}</title>
+  <link rel="canonical" href="{{ .Permalink }}">
+
+  {{- $css := slice (resources.Get "css/reset.css") (resources.Get "css/theme.css") (resources.Get "css/_btn.css") (resources.Get "css/docs.css") (resources.Get "css/docs-article.css") (resources.Get "css/docs-chroma.css") (resources.Get "css/docs-shortcodes.css") | resources.Concat "assets/css/docs.css" | minify | fingerprint }}
+  <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.integrity }}">
+
+  {{ partial "favicons.html" . }}
+  {{ partial "analytics.html" . }}
+</head>
+
+<body>
+
+<div id="outer-wrapper">
+
+  <div id="aside-wrapper">
+    <aside>
+      <div>
+        <button class="btn"><i>❌</i>{{ i18n "close" }}</button>
+      </div>
+
+      <a href="{{ .Site.Home.Permalink }}" class="site-logo">{{ .Site.Title }}</a>
+
+      <nav role="navigation">
+        {{ $data := index .Site.Data .Site.Language.Lang .Section "sidebar" }}
+
+        {{- $url := split .Permalink "/" -}}
+        {{- $urlPageSlug := index $url (sub (len $url) 2) -}}
+
+        {{ range $group := $data -}}
+        <details open>
+          <summary>{{ $group.title }}</summary>
+          <ul>
+            {{ range $index, $page := $group.pages -}}
+              {{ $pageSlug := $page.title | urlize -}}
+              {{ $isActivePage := eq $urlPageSlug $pageSlug -}}
+              {{ $href := printf "%s%s/%s/" $.Site.Home.Permalink $.Section $pageSlug -}}
+              {{ $hrefPageTitle := $page.title -}}
+              {{ if and (eq $index 0) $group.replaceFirstPageTitle -}}
+                {{ $hrefPageTitle := $group.replaceFirstPageTitle -}}
+              {{ end -}}
+            <li>
+              <a class="{{ if $isActivePage }}active{{ end }}" href="{{ $href }}">{{ $hrefPageTitle }}</a>
+            </li>
+            {{ end -}}
+          </ul>
+        </details>
+        {{ end }}
+      </nav>
+    </aside>
+  </div>
+
+  <div id="content-wrapper">
+    <header>
+      <a href="{{ .Site.Home.Permalink }}" class="site-logo">{{ .Site.Title }}</a>
+    </header>
+
+    <main>
+      <article>
+        <nav>
+          <button class="btn"><i>⬅️</i> {{ i18n "onThisSection" }}</button>
+          <button class="btn">{{ i18n "onThisPage" }} <i>➡️</i></button>
+        </nav>
+        <header>
+          <h1>{{ .Title | .RenderString }}</h1>
+          {{ with .Params.summary }}
+          <p>{{ . | $.RenderString }}</p>
+          {{ end }}
+        </header>
+        <div id="article-body">
+          {{ .Content | safeHTML }}
+        </div>
+
+        <footer>
+          {{ $lastMod := .Lastmod.Format "2006-01-02" -}}
+          {{ $prevPageTitle := "" -}}
+          {{ $nextPageTitle := "" -}}
+          {{ $prevPageHref := "" -}}
+          {{ $nextPageHref := "" -}}
+          {{ $dataLocale := index .Site.Data .Site.Language.Lang -}}
+          {{ if isset $dataLocale .Section -}}
+            {{ $data := index .Site.Data .Site.Language.Lang .Section "sidebar" -}}
+            {{ $url := split .Permalink "/" -}}
+            {{ $urlPageSlug := index $url (sub (len $url) 2) -}}
+            {{ $isSectionIndex := eq $urlPageSlug .Section -}}
+            {{ $isActivePagePassed := false -}}
+            {{ $isNextPagePassed := false -}}
+            {{ range $group := $data -}}
+                {{ if $isNextPagePassed -}}
+                    {{ break -}}
+                {{ end -}}
+                {{ range $page := $group.pages -}}
+                    {{ $pageSlug := $page.title | urlize -}}
+                    {{ $isActivePage := or $isSectionIndex (eq $urlPageSlug $pageSlug) -}}
+                    {{ if $isActivePagePassed -}}
+                        {{ $nextPageTitle = $page.title -}}
+                        {{ $nextPageHref = printf "%s%s/%s/" $.Site.Home.Permalink $.Section $pageSlug -}}
+                        {{ $isNextPagePassed = true -}}
+                        {{ break -}}
+                    {{ else if $isActivePage -}}
+                        {{ $isActivePagePassed = true -}}
+                    {{ else -}}
+                        {{ $prevPageTitle = $page.title -}}
+                        {{ $prevPageHref = printf "%s%s/%s/" $.Site.Home.Permalink $.Section $pageSlug -}}
+                    {{ end -}}
+                {{ end -}}
+            {{ end -}}
+          {{ end -}}
+
+          <time datetime="{{ $lastMod }}"><i>🕒</i> {{ i18n "updated" }}: {{ $lastMod }}</time>
+          {{ if ne $prevPageHref "" -}}
+          <a href="{{ $prevPageHref }}"><i>&lsaquo;</i> {{ i18n "previous" }}</a>
+          {{ else -}}
+          <a class="hidden"><i>&lsaquo;</i> {{ i18n "previous" }}</a>
+          {{ end -}}
+
+          {{ if ne $nextPageHref "" -}}
+          <a href="{{ $nextPageHref }}">{{ i18n "next" }} <i>&rsaquo;</i></a>
+          {{ else -}}
+          <a class="hidden">{{ i18n "next" }} <i>&rsaquo;</i></a>
+          {{ end -}}
+
+        </footer>
+      </article>
+
+      <aside>
+        <div>
+          <button class="btn"><i>❌</i>{{ i18n "close" }}</button>
+        </div>
+        <strong>{{ i18n "onThisPage" }}</strong>
+        {{ .TableOfContents }}
+      </aside>
+    </main>
+
+    <footer>
+      <div><i>🧑‍💻</i>{{ i18n "builtByAndCopyright" }}<a href="{{ .Site.Params.author.url }}" target="_blank">{{ .Site.Params.author.name }}</a><i>📅</i> {{ with .Site.Params.project.startYear }}{{.}}-{{ end }}{{ .Site.Params.project.presentYear }}<i>🚀</i> <a href="https://github.com/{{ .Site.Params.project.github.repo }}" target="_blank">GitHub</a></div>
+      <div>
+        <button class="btn"><i>☀️</i><i>⁄</i><i>🌑</i></button>
+      </div>
+    </footer>
+  </div>
+
+</div>
+
+<div id="body-model-outer"></div>
+
+{{- $js := slice (resources.Get "js/color-preference.js") (resources.Get "js/off-canvas.js") (resources.Get "js/table-of-contents.js") | resources.Concat "assets/js/docs.js" | minify | fingerprint }}
+<script type="text/javascript" src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.integrity }}"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+#article-body blockquote.info {
+    border: none;
+    background: var(--callout-info-backgound);
+    color: var(--callout-info-color);
+}
+
+#article-body blockquote.info > p {
+    display: flex;
+    gap: var(--padding_d2);
+}
+
+#article-body blockquote.info > p:first-child > strong:first-child {
+    font-size: 2.5em;
+}
+
+#article-body blockquote.info li {
+    margin: 0 var(--padding_d2);
+}
+
+#article-body blockquote.info code {
+    background: var(--callout-info-foreground);
+}
+
+#article-body blockquote.info a {
+    color: var(--callout-info-anchor);
+    text-shadow: var(--callout-info-anchor-text-shadow);
+}

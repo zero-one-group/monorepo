@@ -1,0 +1,174 @@
+html {
+    scroll-behavior: smooth;
+    scroll-padding: 2em;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    color: var(--color);
+    background: var(--background);
+    font-family: var(--font-sans);
+}
+
+#content-wrapper {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 100svh;
+}
+
+#content-wrapper > header {
+    border-bottom: 1px solid var(--border);
+}
+
+#content-wrapper > header > a {
+    display: inline-block;
+    padding: var(--padding);
+}
+
+#content-wrapper > footer {
+    display: flex;
+    flex-direction: column;
+    padding: var(--padding);
+}
+
+#content-wrapper > footer > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--padding);
+    gap: var(--padding_d2);
+    text-align: center;
+    flex-wrap: wrap;
+}
+
+#content-wrapper > footer > div:first-child {
+    white-space: initial;
+}
+
+#content-wrapper > footer > div:first-child a {
+    background: var(--foreground-highlight);
+    color: var(--color-highlight);
+    border-radius: var(--radius);
+    cursor: pointer;
+    padding: 0 var(--padding_d2);
+}
+
+#content-wrapper > footer > div:nth-child(2) {
+    justify-content: flex-end;
+}
+
+main {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+main > section {
+    display: flex;
+}
+
+main > section > div {
+    display: flex;
+    flex-direction: column;
+}
+
+main > section > div > header {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: var(--padding_x2) var(--padding);
+    cursor:
+        url("data:image/svg+xml;utf8, <svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' style='font-size: 24px'><text y='20'>🦄</text></svg>"),
+        auto;
+}
+
+main > section > div > header > h1 {
+    display: flex;
+    font-size: 2.5em;
+    font-weight: 800;
+    padding-bottom: calc(var(--padding) * 1.2);
+    gap: var(--padding);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+main > section > div > header > h1 > span {
+    color: #866ee7;
+}
+
+main > section > div > header > p {
+    color: var(--color-fade);
+    font-size: 1.2em;
+}
+
+main > section > div > div {
+    display: flex;
+    justify-content: center;
+    gap: var(--padding_x2);
+}
+
+main > section > div > div > .btn {
+    font-size: 1.1em;
+    padding: 0.4em 1em;
+}
+
+main > section > div > div > .btn:first-child,
+main > section > div > div > .btn:first-child:hover {
+    background: var(--foreground-highlight);
+    color: var(--color-highlight);
+}
+
+main > section > div > div > .btn:last-child,
+main > section > div > div > .btn:last-child:hover {
+    background: var(--foreground-hover);
+}
+
+@media (min-width: 1024px) {
+    main > section > div > header {
+        padding: var(--padding_x2) var(--padding_x2) calc(var(--padding) * 3);
+    }
+
+    main > section > div > header > h1 {
+        font-size: 3em;
+    }
+
+    main > section > div > header > p {
+        font-size: 1.4em;
+    }
+
+    main > section > div > div {
+        gap: calc(var(--padding) * 2.5);
+    }
+
+    main > section > div > div > .btn {
+        font-size: 1.27em;
+    }
+}
+
+@media (min-width: 1280px) {
+    main > section > div > header {
+        padding: var(--padding_x2) calc(var(--padding) * 3) calc(var(--padding) * 6);
+    }
+
+    main > section > div > header > h1 {
+        font-size: 4em;
+    }
+
+    main > section > div > header > p {
+        font-size: 1.6em;
+    }
+
+    main > section > div > div {
+        gap: calc(var(--padding) * 2.6);
+    }
+
+    main > section > div > div > .btn {
+        font-size: 1.5em;
+    }
+}

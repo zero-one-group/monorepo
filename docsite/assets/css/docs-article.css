@@ -1,0 +1,250 @@
+#article-body h1,
+#article-body h2,
+#article-body h3,
+#article-body h4,
+#article-body h5,
+#article-body h6 {
+    line-height: 1em;
+    font-weight: 400;
+    margin: 2.6em 0 0.1em;
+    color: var(--color);
+}
+
+#article-body h1 {
+    font-size: 1.8em;
+}
+
+#article-body h2 {
+    font-size: 1.5em;
+}
+
+#article-body h3 {
+    font-size: 1.3em;
+}
+
+#article-body h4 {
+    font-size: 1.1em;
+}
+
+#article-body h2:first-child {
+    margin-top: 0.6em;
+}
+
+#article-body .highlight,
+#article-body blockquote,
+#article-body dl,
+#article-body iframe,
+#article-body ol,
+#article-body p,
+#article-body table,
+#article-body ul {
+    margin-top: 1em;
+    line-height: 1.8rem;
+    letter-spacing: -0.1px;
+}
+
+#article-body blockquote p {
+    margin: 1em 0;
+}
+
+#article-body blockquote dl,
+#article-body blockquote ol,
+#article-body blockquote ul {
+    margin: 0 1em 1em 1em;
+}
+
+#article-body a {
+    color: var(--anchor);
+    text-decoration: none;
+}
+
+#article-body a:hover {
+    color: var(--hover);
+    text-decoration: underline;
+}
+
+#article-body strong,
+#article-body b,
+#article-body table th {
+    font-weight: 600;
+}
+
+#article-body em {
+    font-style: italic;
+}
+
+#article-body dl,
+#article-body ol,
+#article-body ul {
+    margin-left: 20px;
+}
+
+#article-body dl dl,
+#article-body dl ol,
+#article-body dl ul,
+#article-body ol dl,
+#article-body ol ol,
+#article-body ol ul,
+#article-body ul dl,
+#article-body ul ol,
+#article-body ul ul {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#article-body ul {
+    list-style: disc;
+}
+
+#article-body ol {
+    list-style: decimal;
+}
+
+#article-body dl {
+    list-style: square;
+}
+
+#article-body li > ul {
+    list-style: circle;
+}
+
+#article-body li > ol {
+    list-style: lower-alpha;
+}
+
+#article-body li p {
+    margin: 0;
+}
+
+#article-body li .highlight,
+#article-body li blockquote,
+#article-body li iframe,
+#article-body li table {
+    margin: 1em 0;
+}
+
+#article-body img,
+#article-body video {
+    max-width: 100%;
+    border-radius: 4px;
+}
+
+#article-body hr:before {
+    display: block;
+    text-align: center;
+    content: "∙ ∙ ∙";
+    color: var(--color-fade);
+    letter-spacing: 0.6em;
+    top: calc(var(--padding) / 3.7);
+    margin: 2.6em 0 1em;
+}
+
+#article-body blockquote {
+    padding: 8px 12px;
+    position: relative;
+    background: var(--background-grey);
+    border-left-width: 5px;
+    border-radius: 6px;
+}
+
+#article-body blockquote footer {
+    margin: 1em 0;
+    font-style: italic;
+}
+
+#article-body blockquote footer cite:before {
+    content: "—";
+    padding: 0 0.3em;
+}
+
+#article-body blockquote footer cite a {
+    color: var(--border);
+}
+
+#article-body code,
+#article-body pre {
+    font-family: var(--font-mono);
+}
+
+#article-body h1 code,
+#article-body h2 code,
+#article-body h3 code,
+#article-body h4 code,
+#article-body h5 code,
+#article-body h6 code,
+#article-body p code,
+#article-body blockquote code,
+#article-body ul code,
+#article-body ol code,
+#article-body dl code,
+#article-body table code {
+    background: var(--background-grey);
+    padding: calc(var(--padding) / 3.7);
+    border-radius: var(--radius);
+    font-size: 0.9em;
+}
+
+#article-body blockquote code {
+    background: var(--background-grey-embed);
+}
+
+#article-body pre:not(.chroma) {
+    color: var(--chroma-base05);
+    font-size: 0.9em;
+    line-height: 1.8;
+    letter-spacing: -0.1px;
+    background-color: var(--chroma-base00);
+    border-radius: 6px;
+    padding: 16px 24px;
+    overflow-x: auto;
+    margin-top: 1em;
+}
+
+#article-body blockquote .chroma,
+#article-body blockquote pre:not(.chroma) {
+    background: var(--foreground-hover);
+    margin-bottom: 1em;
+}
+
+#article-body blockquote .chroma code,
+#article-body blockquote pre:not(.chroma) code {
+    padding: 0;
+}
+
+#article-body table {
+    max-width: 100%;
+    border-radius: var(--radius);
+    box-shadow: 0 0 0 1px var(--border);
+}
+
+#article-body table thead th:first-child {
+    border-top-left-radius: var(--radius);
+}
+#article-body table thead th:last-child {
+    border-top-right-radius: var(--radius);
+}
+
+#article-body table tbody tr:last-child {
+    border-bottom-left-radius: var(--radius);
+    border-bottom-right-radius: var(--radius);
+}
+
+#article-body table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: var(--radius);
+}
+#article-body table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: var(--radius);
+}
+
+#article-body table td,
+#article-body table th {
+    padding: 5px 15px;
+}
+
+#article-body table tr:nth-child(2n) {
+    background: var(--background-grey);
+}
+
+#article-body table thead tr {
+    background: var(--background-grey-embed);
+}
