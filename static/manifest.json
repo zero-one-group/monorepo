@@ -1,17 +1,17 @@
 {
-    "name": "todo",
-    "short_name": "todo",
-    "description": "todo",
-    "start_url": "/?source=pwa",
+    "name": "Monorepo",
+    "short_name": "monorepo",
+    "description": "Zero One Group Monorepo Documentation",
+    "start_url": "/monorepo?source=pwa",
     "display": "standalone",
     "icons": [
         {
-            "src": "/favicon/android-chrome-192x192.png",
+            "src": "/monorepo/favicon/android-chrome-192x192.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "/favicon/android-chrome-512x512.png",
+            "src": "/monorepo/favicon/android-chrome-512x512.png",
             "sizes": "512x512",
             "type": "image/png"
         }
