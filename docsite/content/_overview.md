@@ -1,6 +1,6 @@
 ---
 title: Overview
-url: "overview"
+slug: "overview"
 aliases:
 - "/overview"
 ---

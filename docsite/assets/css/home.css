@@ -39,22 +39,22 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--padding);
     gap: var(--padding_d2);
     text-align: center;
     flex-wrap: wrap;
 }
 
-#content-wrapper > footer > div:first-child {
-    white-space: initial;
+#content-wrapper > footer > div:first-child a {
+    font-weight: 500;
+    color: var(--anchor);
+    cursor: pointer;
 }
 
-#content-wrapper > footer > div:first-child a {
-    background: var(--foreground-highlight);
-    color: var(--color-highlight);
-    border-radius: var(--radius);
+#content-wrapper > footer > div:first-child a:hover {
+    font-weight: 500;
+    color: var(--hover);
     cursor: pointer;
-    padding: 0 var(--padding_d2);
+    text-decoration: underline;
 }
 
 #content-wrapper > footer > div:nth-child(2) {

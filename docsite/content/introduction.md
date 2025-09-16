@@ -1,6 +1,6 @@
 ---
 title: Introduction
-url: "introduction"
+slug: "introduction"
 ---
 
 TODO

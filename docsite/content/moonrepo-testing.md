@@ -1,4 +1,7 @@
-# Moon Tasks for QA
+---
+title: Moonrepo Testing
+slug: "moonrepo-testing"
+---
 
 ## Template Golang
 

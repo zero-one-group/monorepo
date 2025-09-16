@@ -57,7 +57,7 @@
           {{ range $page := $data.pages }}
             {{ $pageSlug := $page.title | urlize -}}
             {{ $isActivePage := eq $urlPageSlug $pageSlug -}}
-            {{ $href := printf "%s%s/%s/" $.Site.Home.Permalink $.Section $pageSlug -}}
+            {{ $href := printf "%s%s%s/" $.Site.Home.Permalink $.Section $pageSlug -}}
             <li>
               <a class="{{ if $isActivePage }}active{{ end }}" href="{{ $href }}">{{ $page.title }}</a>
             </li>
@@ -71,7 +71,7 @@
               {{ range $page := $group.pages }}
                 {{ $pageSlug := $page.title | urlize -}}
                 {{ $isActivePage := eq $urlPageSlug $pageSlug -}}
-                {{ $href := printf "%s%s/%s/" $.Site.Home.Permalink $.Section $pageSlug -}}
+                {{ $href := printf "%s%s%s/" $.Site.Home.Permalink $.Section $pageSlug -}}
                 <li>
                   <a class="{{ if $isActivePage }}active{{ end }}" href="{{ $href }}">{{ $page.title }}</a>
                 </li>
@@ -96,8 +96,14 @@
         </nav>
         <header>
           <h1>{{ .Title | .RenderString }}</h1>
+          <span>
+            {{ $lastMod := .Lastmod.Format "2006-01-02" -}}
+            <time datetime="{{ $lastMod }}">{{ i18n "updated" }}: {{ $lastMod }}</time>
+          </span>
           {{ with .Params.summary }}
-          <p>{{ . | $.RenderString }}</p>
+          <p>
+            {{ . | $.RenderString }}
+          </p>
           {{ end }}
         </header>
         <div id="article-body">
@@ -105,7 +111,6 @@
         </div>
 
         <footer>
-          {{ $lastMod := .Lastmod.Format "2006-01-02" -}}
           {{ $prevPageTitle := "" -}}
           {{ $nextPageTitle := "" -}}
           {{ $prevPageHref := "" -}}
@@ -140,7 +145,6 @@
             {{ end -}}
           {{ end -}}
 
-          <time datetime="{{ $lastMod }}"><i>🕒</i> {{ i18n "updated" }}: {{ $lastMod }}</time>
           {{ if ne $prevPageHref "" -}}
           <a href="{{ $prevPageHref }}"><i>&lsaquo;</i> {{ i18n "previous" }}</a>
           {{ else -}}

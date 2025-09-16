@@ -1,6 +1,10 @@
-# Contributing to the Zero One Group Monorepo
+---
+title: Contribution Guidelines
+slug: "contribution-guidelines"
+---
 
-We welcome contributions to the Zero One Group Monorepo! This document outlines the guidelines for contributing to ensure a smooth and collaborative development process.
+We welcome contributions to the Zero One Group Monorepo! This document outlines the guidelines for
+contributing to ensure a smooth and collaborative development process.
 
 ## Table of Contents
 

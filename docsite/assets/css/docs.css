@@ -57,7 +57,6 @@ main {
     z-index: 10;
     transition: 0.3s;
     animation: slide-in-left 0.3s forwards;
-
     background: var(--model-background);
     box-shadow: var(--model-box-shadow);
 }
@@ -101,11 +100,16 @@ main {
 }
 
 #content-wrapper > footer > div:first-child a {
-    background: var(--foreground-highlight);
-    color: var(--color-highlight);
-    border-radius: var(--radius);
+    font-weight: 500;
+    color: var(--anchor);
     cursor: pointer;
-    padding: 0 var(--padding_d2);
+}
+
+#content-wrapper > footer > div:first-child a:hover {
+    font-weight: 500;
+    color: var(--hover);
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 #content-wrapper > footer > div:nth-child(2) {
@@ -229,7 +233,7 @@ main > aside.open {
 
 #aside-wrapper > aside > nav .sidebar-pages > li > a,
 #aside-wrapper > aside > nav details > ul > li > a {
-    font-size: 0.98em;
+    font-size: 1em;
     color: var(--color-nav);
     display: flex;
     align-items: center;
@@ -285,9 +289,8 @@ main > aside.open {
     background: none;
     border: none;
     outline: none;
-    font-size: 1em;
-    font-weight: 600;
-    font-size: 1em;
+    font-weight: 500;
+    font-size: 1.05em;
 }
 
 /* Non-grouped pages wrapper */
@@ -529,6 +532,12 @@ main > aside > div > .btn {
 
     main > article > header {
         padding: var(--padding_x2) var(--padding_x2) var(--padding);
+    }
+
+    main > article > header > span {
+        display: block;
+        color: var(--color-fade);
+        padding: 1.2em 0;
     }
 
     #content-wrapper > footer > div:first-child {
