@@ -6,6 +6,7 @@ title: Monorepo Docs
 
 publishDir: ../docs
 cleanDestinationDir: false
+enableRobotsTXT: true
 
 module:
   imports:
