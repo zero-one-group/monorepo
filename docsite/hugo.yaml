@@ -1,10 +1,10 @@
 # yaml-language-server: $schema=https://json.schemastore.org/hugo.json
 
-baseURL: https://oss.zero-one-group.com
+# baseURL: https://oss.zero-one-group.com
 languageCode: en-us
 title: Monorepo Docs
 
-publishDir: ../docs
+publishDir: ../public
 cleanDestinationDir: false
 enableRobotsTXT: true
 

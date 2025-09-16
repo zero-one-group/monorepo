@@ -116,6 +116,8 @@ __pycache__/
 # Specific directories for individual projects
 /docs/*
 !/docs/templates
+/public/*
+!/public/templates
 
 # Personal Note
 AUDIT.md

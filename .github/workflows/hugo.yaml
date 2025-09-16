@@ -86,7 +86,9 @@ jobs:
             hugo-
       - name: Build the site
         run: |
-          hugo --source docsite --gc --minify --cacheDir "${{ runner.temp }}/hugo_cache"
+          hugo --source docsite --gc --minify \
+            --baseURL "${{ steps.pages.outputs.base_url }}/" \
+            --cacheDir "${{ runner.temp }}/hugo_cache"
       - name: Cache save
         id: cache-save
         uses: actions/cache/save@v4
@@ -96,7 +98,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./docs
+          path: ../public
 
   deploy:
     environment:
