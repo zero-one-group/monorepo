@@ -212,38 +212,39 @@ main > aside.open {
     padding: 0 var(--padding);
 }
 
-#aside-wrapper > aside > nav > details {
-    padding-bottom: 0;
+/* Sidebar: uniform list for all items */
+#aside-wrapper > aside > nav ul,
+#aside-wrapper > aside > nav .sidebar-pages {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0.95em;
 }
 
-#aside-wrapper > aside > nav > details[open] {
-    padding-bottom: calc(var(--padding) * 1.5);
-}
-
-#aside-wrapper > aside > nav > details > summary {
-    display: flex;
-    padding: var(--padding) 0;
-    color: var(--color);
-    font-weight: bold;
-}
-
-#aside-wrapper > aside > nav > details[open] > summary {
-    color: var(--color-fade);
-}
-
-#aside-wrapper > aside > nav > details > ul > li {
+#aside-wrapper > aside > nav .sidebar-pages > li,
+#aside-wrapper > aside > nav details > ul > li {
     margin: 0 var(--padding_d2);
     border-left: 1px solid var(--border-nav);
 }
 
-#aside-wrapper > aside > nav > details > ul > li > a {
+#aside-wrapper > aside > nav .sidebar-pages > li > a,
+#aside-wrapper > aside > nav details > ul > li > a {
+    font-size: 0.98em;
     color: var(--color-nav);
     display: flex;
+    align-items: center;
     cursor: pointer;
     padding: var(--padding_d2);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    transition:
+        background 0.15s,
+        color 0.15s;
+    position: relative;
+    font-weight: 400;
 }
 
-#aside-wrapper > aside > nav > details > ul > li > a::before {
+#aside-wrapper > aside > nav .sidebar-pages > li > a::before,
+#aside-wrapper > aside > nav details > ul > li > a::before {
     content: "";
     display: inline-block;
     background: var(--background);
@@ -251,28 +252,47 @@ main > aside.open {
     height: var(--padding_d2);
     transform: rotate(45deg);
     border: 1px solid var(--border-nav);
-    position: relative;
-    left: calc((var(--padding) * -0.78));
-    top: 3px;
+    margin-right: var(--padding_d2);
+    border-radius: 3px;
 }
 
-#aside-wrapper > aside > nav > details > ul > li > a.active {
+#aside-wrapper > aside > nav .sidebar-pages > li > a.active,
+#aside-wrapper > aside > nav details > ul > li > a.active {
+    font-weight: 500;
+    font-size: 1em;
     background: var(--foreground-highlight);
     color: var(--color-highlight);
-    border-top-right-radius: var(--radius);
-    border-bottom-right-radius: var(--radius);
 }
 
-#aside-wrapper > aside > nav > details > ul > li > a.active::before {
+#aside-wrapper > aside > nav .sidebar-pages > li > a.active::before,
+#aside-wrapper > aside > nav details > ul > li > a.active::before {
     background: var(--foreground-highlight);
-    border: var(--foreground-highlight);
-    left: calc((var(--padding) * -0.76));
+    border-color: var(--foreground-highlight);
 }
 
-#aside-wrapper > aside > nav > details > ul > li > a:hover:not(.active) {
+#aside-wrapper > aside > nav .sidebar-pages > li > a:hover:not(.active),
+#aside-wrapper > aside > nav details > ul > li > a:hover:not(.active) {
     background: var(--foreground-hover);
-    border-top-right-radius: var(--radius);
-    border-bottom-right-radius: var(--radius);
+    color: var(--color-highlight);
+}
+
+/* Group summary style */
+#aside-wrapper > aside > nav > details > summary {
+    display: flex;
+    padding: var(--padding) 0 var(--padding_d2) 0;
+    color: var(--color-fade);
+    cursor: pointer;
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 1em;
+    font-weight: 600;
+    font-size: 1em;
+}
+
+/* Non-grouped pages wrapper */
+#aside-wrapper > aside > nav .sidebar-pages {
+    margin-bottom: var(--padding);
 }
 
 /* --- toc --- */
@@ -523,6 +543,7 @@ main > aside > div > .btn {
 /* --- article --- */
 main > article > header > h1 {
     font-size: 3em;
+    font-weight: 600;
 }
 
 main > article > header > p {

@@ -15,8 +15,21 @@
   <title>{{ .Title | .RenderString }} · {{ .Site.Title | .RenderString }}</title>
   <link rel="canonical" href="{{ .Permalink }}">
 
-  {{- $css := slice (resources.Get "css/reset.css") (resources.Get "css/theme.css") (resources.Get "css/_btn.css") (resources.Get "css/docs.css") (resources.Get "css/docs-article.css") (resources.Get "css/docs-chroma.css") (resources.Get "css/docs-shortcodes.css") | resources.Concat "assets/css/docs.css" | minify | fingerprint }}
+  {{-
+    $css := slice
+      (resources.Get "css/reset.css")
+      (resources.Get "css/theme.css")
+      (resources.Get "css/_btn.css")
+      (resources.Get "css/docs.css")
+      (resources.Get "css/docs-article.css")
+      (resources.Get "css/docs-chroma.css")
+      (resources.Get "css/docs-shortcodes.css")
+      | resources.Concat "assets/css/docs.css"
+      | minify | fingerprint
+  }}
   <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.integrity }}">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 
   {{ partial "favicons.html" . }}
   {{ partial "analytics.html" . }}
@@ -34,30 +47,37 @@
 
       <a href="{{ .Site.Home.Permalink }}" class="site-logo">{{ .Site.Title }}</a>
 
+      {{ $url := split .Permalink "/" -}}
+      {{ $urlPageSlug := index $url (sub (len $url) 2) -}}
+
       <nav role="navigation">
         {{ $data := index .Site.Data.sidebar }}
 
-        {{- $url := split .Permalink "/" -}}
-        {{- $urlPageSlug := index $url (sub (len $url) 2) -}}
-
-        {{ range $group := $data -}}
-        <details open>
-          <summary>{{ $group.title }}</summary>
-          <ul>
-            {{ range $index, $page := $group.pages -}}
-              {{ $pageSlug := $page.title | urlize -}}
-              {{ $isActivePage := eq $urlPageSlug $pageSlug -}}
-              {{ $href := printf "%s%s/%s/" $.Site.Home.Permalink $.Section $pageSlug -}}
-              {{ $hrefPageTitle := $page.title -}}
-              {{ if and (eq $index 0) $group.replaceFirstPageTitle -}}
-                {{ $hrefPageTitle := $group.replaceFirstPageTitle -}}
-              {{ end -}}
+        <ul class="sidebar-pages">
+          {{ range $page := $data.pages }}
+            {{ $pageSlug := $page.title | urlize -}}
+            {{ $isActivePage := eq $urlPageSlug $pageSlug -}}
+            {{ $href := printf "%s%s/%s/" $.Site.Home.Permalink $.Section $pageSlug -}}
             <li>
-              <a class="{{ if $isActivePage }}active{{ end }}" href="{{ $href }}">{{ $hrefPageTitle }}</a>
+              <a class="{{ if $isActivePage }}active{{ end }}" href="{{ $href }}">{{ $page.title }}</a>
             </li>
-            {{ end -}}
-          </ul>
-        </details>
+          {{ end }}
+        </ul>
+
+        {{ range $group := $data.groups }}
+          <details open>
+            <summary>{{ $group.title }}</summary>
+            <ul>
+              {{ range $page := $group.pages }}
+                {{ $pageSlug := $page.title | urlize -}}
+                {{ $isActivePage := eq $urlPageSlug $pageSlug -}}
+                {{ $href := printf "%s%s/%s/" $.Site.Home.Permalink $.Section $pageSlug -}}
+                <li>
+                  <a class="{{ if $isActivePage }}active{{ end }}" href="{{ $href }}">{{ $page.title }}</a>
+                </li>
+              {{ end }}
+            </ul>
+          </details>
         {{ end }}
       </nav>
     </aside>

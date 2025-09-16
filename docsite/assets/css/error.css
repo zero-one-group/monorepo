@@ -1,0 +1,106 @@
+body {
+    min-height: 100vh;
+    background: var(--background);
+    color: var(--color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: var(--font-sans);
+    transition:
+        background 0.3s,
+        color 0.3s;
+}
+
+.error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    width: 100vw;
+    padding: 2rem 1rem;
+    box-sizing: border-box;
+}
+
+.error-code {
+    font-size: 6rem;
+    font-weight: 900;
+    letter-spacing: 4px;
+    background: linear-gradient(90deg, var(--foreground-highlight), var(--color-highlight));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    margin-bottom: 0.2em;
+    line-height: 1;
+    text-shadow: 0 4px 32px rgba(0, 150, 136, 0.1);
+    user-select: none;
+}
+
+.error-message {
+    font-size: 1.35em;
+    color: var(--color-fade);
+    text-align: center;
+    margin-bottom: 2em;
+    max-width: 420px;
+    line-height: 1.5;
+}
+
+.error-actions {
+    display: flex;
+    gap: 1em;
+    margin-bottom: 2em;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn {
+    background: var(--foreground-highlight);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    padding: 0.75em 1.5em;
+    font-size: 1em;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 2px 12px 0 rgba(0, 150, 136, 0.07);
+    transition:
+        background 0.2s,
+        color 0.2s,
+        box-shadow 0.2s;
+    text-decoration: none;
+    outline: none;
+    display: inline-block;
+}
+
+.btn:hover,
+.btn:focus {
+    background: var(--color-highlight);
+    color: #fff;
+    box-shadow: 0 4px 24px 0 rgba(0, 150, 136, 0.13);
+    text-decoration: none;
+}
+
+footer {
+    margin-top: 2em;
+    color: var(--color-fade);
+    font-size: 0.95em;
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    .error-code {
+        font-size: 3.5rem;
+    }
+
+    .error-message {
+        font-size: 1em;
+    }
+
+    .btn {
+        font-size: 0.98em;
+        padding: 0.6em 1.2em;
+    }
+}

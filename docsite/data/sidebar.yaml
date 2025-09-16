@@ -1,12 +1,12 @@
-- title: Documentation
-  pages:
-    - title: Overview
-    - title: Getting Started
+pages:
+  - title: Overview
+  - title: Introduction
 
-# - title: Basics
-#   pages:
-#     - title: Hello World
-
-# - title: Beyond The Basics
-#   pages:
-#     - title: Modules
+groups:
+  - title: Introduction
+    pages:
+      - title: Getting Started
+      - title: Hello Again
+  - title: Beyond The Basics
+    pages:
+      - title: Modules

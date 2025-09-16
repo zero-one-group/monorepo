@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode | default `en-US` }}">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="{{ .Site.Params.project.themeColor.light }}" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="{{ .Site.Params.project.themeColor.dark }}" media="(prefers-color-scheme: dark)">
+  <title>404 Not Found | {{ .Site.Title | .RenderString }}</title>
+  {{-
+    $css := slice
+      (resources.Get "css/reset.css")
+      (resources.Get "css/theme.css")
+      (resources.Get "css/_btn.css")
+      (resources.Get "css/error.css")
+      | resources.Concat "assets/css/error.css"
+      | minify | fingerprint
+  }}
+  <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.integrity }}">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+</head>
+
+<body>
+  <div class="error-container">
+    <header>
+      <a href="{{ .Site.Home.Permalink }}" class="site-logo" style="margin-bottom:2em;">{{ .Site.Title }}</a>
+    </header>
+    <div class="error-code">404</div>
+    <div class="error-message">
+      Sorry, we couldn't find that page.<br>
+      It may have moved, or never existed.
+    </div>
+    <div class="error-actions">
+      <a href="{{ .Site.Home.Permalink }}" class="btn">Go Home</a>
+      <a href="https://github.com/{{ .Site.Params.project.github.repo }}" target="_blank" rel="noopener noreferrer"
+        class="btn">GitHub</a>
+    </div>
+    <footer>
+      &copy; {{ with .Site.Params.project.startYear }}{{.}}-{{ end }}{{ .Site.Params.project.presentYear }}
+      &middot;
+      <a href="{{ .Site.Params.author.url }}" target="_blank" rel="noopener noreferrer"
+        style="color:inherit;">{{ .Site.Params.author.name }}</a>
+    </footer>
+  </div>
+</body>
+
+</html>
