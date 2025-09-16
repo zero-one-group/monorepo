@@ -88,8 +88,7 @@ jobs:
         run: |
           hugo --source docsite --gc --minify \
             --cacheDir "${{ runner.temp }}/hugo_cache" \
-            --baseURL "${{ steps.pages.outputs.base_url }}/" \
-            --publishDir "./public"
+            --baseURL "${{ steps.pages.outputs.base_url }}/"
       - name: Cache save
         id: cache-save
         uses: actions/cache/save@v4
