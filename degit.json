@@ -4,7 +4,7 @@
         "files": [
             "apps",
             "docs",
-            "docs-src",
+            "docsite",
             "packages",
             "templates",
             "pnpm-lock.yaml",
