@@ -4,7 +4,7 @@
 languageCode: en-us
 title: Monorepo Docs
 
-cleanDestinationDir: false
+cleanDestinationDir: true
 enableRobotsTXT: true
 contentDir: ../content
 
