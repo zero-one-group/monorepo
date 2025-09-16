@@ -119,6 +119,18 @@ __pycache__/
 /public/*
 !/public/templates
 
+# Generated files by hugo
+/public/
+/resources/_gen/
+/assets/jsconfig.json
+/docsite/public/
+hugo_stats.json
+hugo.exe
+hugo.darwin
+hugo.linux
+.hugo_build.lock
+.hugo_cache/
+
 # Personal Note
 AUDIT.md
 TODO.md

@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=https://json.schemastore.org/hugo.json
+
+# baseURL: https://oss.zero-one-group.com
+languageCode: en-us
+title: Monorepo Docs
+
+enableRobotsTXT: true
+cleanDestinationDir: true
+archetypeDir: docsite/archetypes
+assetDir: docsite/assets
+dataDir: docsite/data
+i18nDir: docsite/i18n
+layoutDir: docsite/layouts
+resourceDir: docsite/resources
+themesDir: docsite/themes
+contentDir: docsite/content
+publishDir: public
+staticDir: static
+
+module:
+  imports:
+    - path: github.com/imfing/hextra

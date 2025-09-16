@@ -2,17 +2,21 @@
     {
         "action": "remove",
         "files": [
+            ".github",
             "apps",
-            "docs",
-            "docsite",
-            "packages",
-            "templates",
-            "pnpm-lock.yaml",
             "build-templates.sh",
             "CONTRIBUTING.md",
+            "docsite",
+            "go.mod",
+            "go.sum",
+            "hugo.yaml",
             "MONOREPO.md",
+            "packages",
+            "pnpm-lock.yaml",
+            "public",
             "README.md",
-            ".github"
+            "static",
+            "templates"
         ]
     }
 ]
