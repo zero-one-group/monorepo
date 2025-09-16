@@ -86,9 +86,10 @@ jobs:
             hugo-
       - name: Build the site
         run: |
-          hugo --source docsite --gc --minify \
+          hugo --source docsite --contentDir "content" \
             --cacheDir "${{ runner.temp }}/hugo_cache" \
-            --baseURL "${{ steps.pages.outputs.base_url }}/"
+            --baseURL "${{ steps.pages.outputs.base_url }}/" \
+            --gc --minify
       - name: Cache save
         id: cache-save
         uses: actions/cache/save@v4
