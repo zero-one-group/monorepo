@@ -1,8 +1,8 @@
 ---
 title: Overview
-url: "docs/overview"
+url: "overview"
 aliases:
-- "/docs"
+- "/overview"
 ---
 
 This repository contains framework projects utilizing [moonrepo][moonrepo] and the technology

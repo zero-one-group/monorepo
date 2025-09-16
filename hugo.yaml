@@ -3,7 +3,11 @@
 enableGitInfo: true
 enableRobotsTXT: true
 cleanDestinationDir: true
+disableHugoGeneratorInject: true
 defaultContentLanguage: en
+timeZone: Asia/Jakarta
+
+# Path configurations
 archetypeDir: docsite/archetypes
 assetDir: docsite/assets
 dataDir: docsite/data
@@ -18,13 +22,13 @@ staticDir: static
 languages:
   en:
     weight: 1
-    languageName: English
     languageCode: en-US
+    languageName: English
     # contentDir: docsite/content/en
     contentDir: docsite/content
     title: Monorepo
     params:
-      description: Zero One Group Open Source Documentation
+      description: Zero One Group Open Source
 
 # To omit the Google Analytics script, put a ~ in place of the G-XXXXXXXXXX below.
 # Replace with your Google Analytics ID to enable Google Analytics.
@@ -35,7 +39,7 @@ services:
 params:
   project:
     # To omit the startYear, put a ~ in its place.
-    startYear: 2024
+    startYear: ~
     presentYear: 2025
     github:
       repo: zero-one-group/monorepo
@@ -51,7 +55,7 @@ params:
     heading: Zero One
     headingSegment2: Group
     description: Monorepo Documentation
-    getStartedPath: docs/
+    getStartedPath: overview/
 
 markup:
   highlight:

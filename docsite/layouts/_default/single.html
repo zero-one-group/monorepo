@@ -35,7 +35,7 @@
       <a href="{{ .Site.Home.Permalink }}" class="site-logo">{{ .Site.Title }}</a>
 
       <nav role="navigation">
-        {{ $data := index .Site.Data .Site.Language.Lang .Section "sidebar" }}
+        {{ $data := index .Site.Data.sidebar }}
 
         {{- $url := split .Permalink "/" -}}
         {{- $urlPageSlug := index $url (sub (len $url) 2) -}}
@@ -146,9 +146,16 @@
     </main>
 
     <footer>
-      <div><i>🧑‍💻</i>{{ i18n "builtByAndCopyright" }}<a href="{{ .Site.Params.author.url }}" target="_blank">{{ .Site.Params.author.name }}</a><i>📅</i> {{ with .Site.Params.project.startYear }}{{.}}-{{ end }}{{ .Site.Params.project.presentYear }}<i>🚀</i> <a href="https://github.com/{{ .Site.Params.project.github.repo }}" target="_blank">GitHub</a></div>
       <div>
-        <button class="btn"><i>☀️</i><i>⁄</i><i>🌑</i></button>
+        &copy; {{ with .Site.Params.project.startYear }}{{.}}-{{ end }}{{ .Site.Params.project.presentYear }}
+        <a href="{{ .Site.Params.author.url }}" target="_blank" rel="noreferrer noopenner">{{ .Site.Params.author.name }}</a>
+        &middot;
+        <a href="https://github.com/{{ .Site.Params.project.github.repo }}" target="_blank" rel="noreferrer noopenner">GitHub</a>
+      </div>
+      <div>
+        <button class="btn" aria-label="Toggle theme">
+          <span>Toggle Theme</span>
+        </button>
       </div>
     </footer>
   </div>
