@@ -115,7 +115,7 @@ __pycache__/
 
 # Hugo files
 /public/
-!/public/templates
+/static/templates/
 **/resources/_gen/
 __generated__/
 hugo_stats.json
