@@ -4,12 +4,12 @@
 SOURCE_DIR="templates"
 DEST_DIR="docsite/static/templates"
 BASE_URL="https://oss.zero-one-group.com/monorepo/templates"
-METADATA_FILE="$DEST_DIR/metadata.json"
+METADATA_FILE="docsite/static/templates.json"
 
 # Create destination directory if it doesn't exist
 mkdir -p "$DEST_DIR"
 
-# Initialize the metadata.json file
+# Initialize the templates.json file
 echo "{" > "$METADATA_FILE"
 echo "  \"last_updated\": \"$(date -u +"%Y-%m-%dT%H:%M:%SZ")\"," >> "$METADATA_FILE"
 echo "  \"templates\": [" >> "$METADATA_FILE"
@@ -31,7 +31,7 @@ for SUBFOLDER in "$SOURCE_DIR"/*; do
     # Go back to the original directory
     cd - > /dev/null
 
-    # Append the ZIP file metadata to metadata.json
+    # Append the ZIP file metadata to templates.json
     if [ "$FIRST" = true ]; then
       FIRST=false
     else
@@ -47,6 +47,6 @@ for SUBFOLDER in "$SOURCE_DIR"/*; do
   fi
 done
 
-# Close the metadata.json file
+# Close the templates.json file
 echo "  ]" >> "$METADATA_FILE"
 echo "}" >> "$METADATA_FILE"
