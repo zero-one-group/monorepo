@@ -2,7 +2,7 @@
 
 # Define source and destination paths
 SOURCE_DIR="templates"
-DEST_DIR="static/templates"
+DEST_DIR="docsite/static/templates"
 BASE_URL="https://oss.zero-one-group.com/monorepo/templates"
 INFO_FILE="$DEST_DIR/info.txt"
 

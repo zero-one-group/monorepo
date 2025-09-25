@@ -16,8 +16,8 @@ layoutDir: docsite/layouts
 resourceDir: docsite/resources
 themesDir: docsite/themes
 contentDir: docsite/content
-publishDir: public
-staticDir: static
+publishDir: docsite/public
+staticDir: docsite/static
 
 languages:
   en:

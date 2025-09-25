@@ -114,8 +114,8 @@ terraform.tfvars*
 __pycache__/
 
 # Hugo files
-/public/
-/static/templates/
+/docsite/public/
+/docsite/static/templates/
 **/resources/_gen/
 __generated__/
 hugo_stats.json
