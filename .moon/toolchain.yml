@@ -3,7 +3,7 @@
 $schema: 'https://moonrepo.dev/schemas/toolchain.json'
 
 proto:
-  version: '0.52.5'
+  version: '0.53.0'
 
 # Configures Node.js within the toolchain. moon manages its own version of Node.js
 # instead of relying on a version found on the host machine. This ensures deterministic
@@ -21,18 +21,24 @@ node:
   # dependencyVersionFormat: link         # Uses link:../relative/path and symlinks package contents.
   dependencyVersionFormat: workspace      # Uses workspace:*, which resolves to "1.2.3". Requires package workspaces.
   pnpm:
-    version: '10.16.1'                     # The version of the package manager to use.
+    version: '10.17.1'                     # The version of the package manager to use.
+
+# Configures Go within the toolchain.
+# unstable_go:
+#   version: ^1.25.1
+#   workspaces: true
+#   tidyOnChange: true
 
 # Configures Python within the toolchain.
-# python:
-#   version: '3.13'
-#   packageManager: uv
-#   uv:
-#     version: '0.5.29'
+python:
+  version: '3.13'
+  packageManager: uv
+  uv:
+    version: '0.8.17'
 
 # Configures Rust within the toolchain.
 # rust:
-#   version: '1.89'
+#   version: '1.90'
 #   syncToolchainConfig: true
 #   targets:
 #     - 'aarch64-apple-darwin'

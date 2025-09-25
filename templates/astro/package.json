@@ -13,8 +13,8 @@
 		"astro": "astro"
 	},
 	"dependencies": {
-		"astro": "^5.13.6",
-		"lucide-astro": "^0.542.0"
+		"astro": "^5.14.0",
+		"lucide-astro": "^0.544.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "catalog:",
