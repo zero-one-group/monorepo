@@ -4,17 +4,18 @@
 SOURCE_DIR="templates"
 DEST_DIR="docsite/static/templates"
 BASE_URL="https://oss.zero-one-group.com/monorepo/templates"
-INFO_FILE="$DEST_DIR/info.txt"
+METADATA_FILE="$DEST_DIR/metadata.json"
 
 # Create destination directory if it doesn't exist
 mkdir -p "$DEST_DIR"
 
-# Initialize the info.txt file
-echo "Last updated: $(date -u +"%Y-%m-%dT%H:%M:%SZ")" > "$INFO_FILE"
-echo "" >> "$INFO_FILE"
-echo "Available templates:" >> "$INFO_FILE"
+# Initialize the metadata.json file
+echo "{" > "$METADATA_FILE"
+echo "  \"last_updated\": \"$(date -u +"%Y-%m-%dT%H:%M:%SZ")\"," >> "$METADATA_FILE"
+echo "  \"templates\": [" >> "$METADATA_FILE"
 
 # Loop through each subfolder in the source directory
+FIRST=true
 for SUBFOLDER in "$SOURCE_DIR"/*; do
   if [ -d "$SUBFOLDER" ]; then
     # Get the name of the subfolder
@@ -30,10 +31,22 @@ for SUBFOLDER in "$SOURCE_DIR"/*; do
     # Go back to the original directory
     cd - > /dev/null
 
-    # Append the ZIP file URL to info.txt
-    echo "- $BASE_URL/$ZIP_FILE" >> "$INFO_FILE"
+    # Append the ZIP file metadata to metadata.json
+    if [ "$FIRST" = true ]; then
+      FIRST=false
+    else
+      echo "    ," >> "$METADATA_FILE"
+    fi
+    echo "    {" >> "$METADATA_FILE"
+    echo "      \"name\": \"$SUBFOLDER_NAME\"," >> "$METADATA_FILE"
+    echo "      \"url\": \"$BASE_URL/$ZIP_FILE\"" >> "$METADATA_FILE"
+    echo "    }" >> "$METADATA_FILE"
 
     # Print success message
     echo "ZIP file created at $DEST_DIR/$ZIP_FILE"
   fi
 done
+
+# Close the metadata.json file
+echo "  ]" >> "$METADATA_FILE"
+echo "}" >> "$METADATA_FILE"
