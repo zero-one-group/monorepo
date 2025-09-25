@@ -22,8 +22,7 @@
         "**/build": true,
         "**/dist": true,
         "**/docs": true,
-        "**/templates": true,
-        "**/template-*": true
+        "/templates/": true
     },
     "tailwindCSS.experimental.classRegex": [
         // @ref: https://www.tailwind-variants.org/docs/getting-started

@@ -1,0 +1,10 @@
+# Strapi
+license.txt
+exports
+dist
+build
+.strapi
+.strapi-updater.json
+.strapi-cloud.json
+.data/
+/types/

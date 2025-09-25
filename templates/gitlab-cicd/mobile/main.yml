@@ -1,0 +1,3 @@
+include:
+  - /deploy/mobile/build.yml
+  - /deploy/mobile/deploy.yml

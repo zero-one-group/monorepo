@@ -1,0 +1,25 @@
+# https://moonrepo.dev/docs/config/project
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+type: library
+language: typescript
+tags: ['libs', 'ui']
+
+# Overrides the name (identifier) of the project
+id: '{{ package_name | kebab_case }}'
+
+project:
+  name: '{{ package_name | kebab_case }}'
+  description: 'Shared UI Components for the frontend application'
+
+# Since this project can infer task from script (package.json), then you can run any script as moon task.
+# @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
+# Example: `moon shared-ui:storybook`
+
+tasks:
+  update-deps:
+    command: 'pnpm -s exec npm-check-updates --configFileName .ncurc.json'
+    options:
+      interactive: true
+      cache: false

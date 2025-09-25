@@ -1,0 +1,24 @@
+services:
+  promtail:
+    image: grafana/promtail:3.5.2
+    configs:
+      - source: promtail_config
+        target: /etc/promtail/promtail-config.yml
+    volumes:
+      - /var/log:/var/log
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -config.file=/etc/promtail/promtail-config.yml
+    networks:
+      - overlay-network
+    deploy:
+      mode: global
+    user: "0"
+
+networks:
+  overlay-network:
+    external: true
+
+configs:
+  promtail_config:
+    file: ./services/promtail/promtail-config-manager.yml

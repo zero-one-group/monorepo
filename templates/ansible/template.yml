@@ -1,0 +1,51 @@
+# https://moonrepo.dev/docs/config/template
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/template.json
+$schema: 'https://moonrepo.dev/schemas/template.json'
+
+# REQUIRED: Name of the template in a human readable format.
+title: 'Ansible'
+
+# REQUIRED: Description of what the template is for and other relevant information.
+description: 'Ansible for automation and hardening server'
+
+# Destination path for the package.
+destination: 'infra/[package_name]'
+
+# Mapping of variables that will be interpolated and rendered within template files.
+# Users will be prompted to provide a value when running the generator.
+variables:
+  package_name:
+    type: 'string'
+    default: 'ansible'
+    prompt: 'Package name (identifier)?'
+    required: true
+
+  os_user:
+    type: 'string'
+    default: 'CHANGEME_OS_USER'
+    prompt: 'Linux OS user (you can change it later)?'
+    required: false
+
+  ssh_idle_timeout:
+    type: 'number'
+    default: 300
+    prompt: 'SSH idle timeout (you can change it later)?'
+    required: false
+
+  bastion_public_ip:
+    type: 'string'
+    default: 'CHANGEME_BASTION_IP_PUBLIC'
+    prompt: 'Bastion public IP (you can change it later)?'
+    required: false
+
+  swarm_private_ip:
+    type: 'string'
+    default: 'CHANGEME_SWARM_IP_PRIVATE'
+    prompt: 'Swarm private IP (you can change it later)?'
+    required: false
+
+  package_description:
+    type: 'string'
+    default: 'Ansible for automation and hardening server'
+    prompt: 'Package description?'
+    required: true

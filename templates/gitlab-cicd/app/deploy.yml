@@ -1,0 +1,224 @@
+.deploy:{{ app_name }}:
+  interruptible: true
+  image:
+    name: buildpack-deps:24.04-curl
+  before_script:
+    - /bin/bash -c "$(curl -sL https://git.io/vokNn)"
+    - apt-fast update -qy
+    - DEBIAN_FRONTEND=noninteractive apt-fast install -y rsync openssh-client gettext-base
+  script:
+    - touch $CI_PROJECT_DIR/infra/swarm/.env && cp $ENV $CI_PROJECT_DIR/infra/swarm/.env
+    - echo "export ENVIRONMENT=\"$ENVIRONMENT\"" > $CI_PROJECT_DIR/infra/swarm/variable.txt
+    - source $CI_PROJECT_DIR/infra/swarm/variable.txt
+    - echo "$SSH_PRIVATE_KEY_SWARM" > private_key.pem
+    - chmod 600 private_key.pem
+    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-apps-prod-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-apps-prod.yml
+    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-apps-staging-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-apps-staging.yml
+    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-apps-development-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-apps-development.yml
+    - rsync -avz -e 'ssh -o StrictHostKeyChecking=no -i private_key.pem -o ProxyCommand="ssh -W %h:%p -i private_key.pem -o StrictHostKeyChecking=no $USERNAME_BASTION@$BASTION_HOST"' $CI_PROJECT_DIR/infra/swarm/ $USERNAME@$SERVER_ADDRESS:./{{ app_name }}
+
+    - |
+      ssh -o StrictHostKeyChecking=no -i private_key.pem -o ProxyCommand="ssh -W %h:%p -i private_key.pem -o StrictHostKeyChecking=no $USERNAME_BASTION@$BASTION_HOST" $USERNAME@$SERVER_ADDRESS <<EOF
+      source ~/{{ app_name }}/variable.txt
+      cd ~/{{ app_name }}
+
+      if [ "$ENVIRONMENT" = "production" ]; then
+          echo "Inside production block"
+          docker stack deploy -c "docker-swarm-api-production.yml" {{ app_name }}
+      fi
+
+      if [ "$ENVIRONMENT" = "staging" ]; then
+          echo "Inside staging block"
+          docker stack deploy -c "docker-swarm-api-staging.yml" {{ app_name }}
+      fi
+
+      if [ "$ENVIRONMENT" = "development" ]; then
+          echo "Inside development block"
+          docker stack deploy -c "docker-swarm-api-development.yml" {{ app_name }}
+      fi
+      EOF
+
+    # Migration Script with snap-installed Go and Node.js
+    - |
+      ssh -o StrictHostKeyChecking=no -i private_key.pem -o ProxyCommand="ssh -W %h:%p -i private_key.pem -o StrictHostKeyChecking=no $USERNAME_BASTION@$BASTION_HOST" $USERNAME@$SERVER_ADDRESS <<EOF
+      # Install Go and Node.js via snap if not already installed
+      if ! command -v go >/dev/null 2>&1; then
+          sudo snap install go --classic
+      fi
+
+      if ! command -v node >/dev/null 2>&1; then
+          sudo snap install node --classic
+      fi
+
+      # Install pnpm globally if not already installed
+      if ! command -v pnpm >/dev/null 2>&1; then
+          sudo npm install -g pnpm
+      fi
+
+      cd ~/{{ app_name }}
+      cp .env ~/{{ app_name }}-repo/apps/api
+      source ~/{{ app_name }}/variable.txt
+
+      if [ "$ENVIRONMENT" = "development" ]; then
+          echo "Inside development block"
+          cd ~/{{ app_name }}-repo
+          git fetch origin
+          git stash
+          git checkout -q main
+          git pull origin main
+          pnpm install
+          echo "Running database migrations..."
+          moon api:migration-up || { echo "Migration failed. Check for missing migrations."; exit 1; }
+      fi
+
+      if [ "$ENVIRONMENT" = "staging" ]; then
+          echo "Inside staging block"
+          cd ~/{{ app_name }}-repo
+          git fetch origin
+          git stash
+          git checkout -q "$CI_COMMIT_REF_NAME"
+          pnpm install
+          echo "Running database migrations..."
+          moon api:migration-up || { echo "Migration failed. Check for missing migrations."; exit 1; }
+      fi
+
+      if [ "$ENVIRONMENT" = "production" ]; then
+          echo "Inside production block"
+          cd ~/{{ app_name }}-repo
+          git fetch origin
+          git stash
+          git checkout -q "$CI_COMMIT_REF_NAME"
+          pnpm install
+          echo "Running database migrations..."
+          moon api:migration-up || { echo "Migration failed. Check for missing migrations."; exit 1; }
+      fi
+      EOF
+
+.deploy:api-seed:
+  interruptible: true
+  image:
+    name: buildpack-deps:24.04-curl
+  before_script:
+    - /bin/bash -c "$(curl -sL https://git.io/vokNn)"
+    - apt-fast update -qy
+    - DEBIAN_FRONTEND=noninteractive apt-fast install -y rsync openssh-client gettext-base
+  script:
+    - touch $CI_PROJECT_DIR/infra/swarm/.env && cp $ENV $CI_PROJECT_DIR/infra/swarm/.env
+    - echo "export ENVIRONMENT=\"$ENVIRONMENT\"" > $CI_PROJECT_DIR/infra/swarm/variable.txt
+    - source $CI_PROJECT_DIR/infra/swarm/variable.txt
+    - echo "$SSH_PRIVATE_KEY_SWARM" > private_key.pem
+    - chmod 600 private_key.pem
+    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-staging-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-staging.yml
+    - envsubst < $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-development-updated.yml > $CI_PROJECT_DIR/infra/swarm/docker-swarm-api-development.yml
+    - rsync -avz -e 'ssh -o StrictHostKeyChecking=no -i private_key.pem -o ProxyCommand="ssh -W %h:%p -i private_key.pem -o StrictHostKeyChecking=no $USERNAME_BASTION@$BASTION_HOST"' $CI_PROJECT_DIR/infra/swarm/ $USERNAME@$SERVER_ADDRESS:./{{ app_name }}
+
+    # Seeder script with snap-installed Go and Node.js
+    - |
+      ssh -o StrictHostKeyChecking=no -i private_key.pem -o ProxyCommand="ssh -W %h:%p -i private_key.pem -o StrictHostKeyChecking=no $USERNAME_BASTION@$BASTION_HOST" $USERNAME@$SERVER_ADDRESS <<EOF
+      # Install Go and Node.js via snap if not already installed
+      if ! command -v go >/dev/null 2>&1; then
+          sudo snap install go --classic
+      fi
+
+      if ! command -v node >/dev/null 2>&1; then
+          sudo snap install node --classic
+      fi
+
+      # Install pnpm globally if not already installed
+      if ! command -v pnpm >/dev/null 2>&1; then
+          sudo npm install -g pnpm
+      fi
+
+      cd ~/{{ app_name }}
+      cp .env ~/{{ app_name }}-repo/apps/api
+      source ~/{{ app_name }}/variable.txt
+
+      if [ "$ENVIRONMENT" = "development" ]; then
+          echo "Inside development block"
+          cd ~/{{ app_name }}-repo
+          git fetch origin
+          git stash
+          git checkout -q main
+          git pull origin main
+          pnpm install
+          echo "Running database seeders..."
+          moon api:seed || { echo "Seeder failed. Check for missing seeders."; exit 1; }
+      fi
+
+      if [ "$ENVIRONMENT" = "staging" ]; then
+          echo "Inside staging block"
+          cd ~/{{ app_name }}-repo
+          git fetch origin
+          git stash
+          git checkout -q "$CI_COMMIT_REF_NAME"
+          pnpm install
+          echo "Running database seeders..."
+          moon api:seed || { echo "Seeder failed. Check for missing seeders."; exit 1; }
+      fi
+
+      if [ "$ENVIRONMENT" = "production" ]; then
+          echo "Inside production block"
+          cd ~/{{ app_name }}-repo
+          git fetch origin
+          git stash
+          git checkout -q "$CI_COMMIT_REF_NAME"
+          pnpm install
+          echo "Running database seeders..."
+          moon api:seed || { echo "Seeder failed. Check for missing seeders."; exit 1; }
+      fi
+      EOF
+
+.deploy:development-swarm:
+  stage: deploy:development
+  interruptible: true
+  extends:
+    - .deploy:{{ app_name }}
+    - .rules:development
+  variables:
+    VERSION: $CI_COMMIT_SHORT_SHA
+    ENVIRONMENT: development
+  environment:
+    name: 'development'
+    action: 'prepare'
+  needs: ['build:development-docker']
+
+deploy:development-api-seed:
+  stage: deploy:development
+  extends:
+    - .deploy:api-seed
+    - .rules:development-api-seed
+  variables:
+    VERSION: $CI_COMMIT_SHORT_SHA
+    SERVER_ADDRESS: $SERVER
+    ENVIRONMENT: development
+  environment:
+    name: 'development'
+    action: 'prepare'
+
+.deploy:staging-swarm:
+  stage: deploy:staging
+  interruptible: true
+  extends:
+    - .deploy:{{ app_name }}
+    - .rules:staging
+  variables:
+    VERSION: $CI_COMMIT_REF_NAME
+    ENVIRONMENT: staging
+  environment:
+    name: 'staging'
+    action: 'prepare'
+  needs: ['build:staging-docker']
+
+.deploy:production-swarm:
+  stage: deploy:production
+  interruptible: true
+  extends:
+    - .deploy:{{ app_name }}
+    - .rules:production
+  variables:
+    VERSION: $CI_COMMIT_REF_NAME
+    ENVIRONMENT: production
+  environment:
+    name: 'production'
+    action: 'prepare'
+  needs: ['build:production-docker']

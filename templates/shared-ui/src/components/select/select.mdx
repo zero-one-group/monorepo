@@ -1,0 +1,39 @@
+import { Canvas, Meta, Primary } from '@storybook/blocks';
+import * as Stories from './select.stories';
+
+<Meta of={Stories} />
+
+# Select
+
+Displays a list of options for the user to pick from.
+
+## Example
+
+```tsx
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@repo/shared-ui/components'
+
+<Select>
+  <SelectTrigger>
+    <SelectValue placeholder="Select a fruit" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectGroup>
+      <SelectLabel>Fruits</SelectLabel>
+      <SelectItem value="apple">Apple</SelectItem>
+      <SelectItem value="banana">Banana</SelectItem>
+    </SelectGroup>
+  </SelectContent>
+</Select>
+```
+
+## Preview
+
+<Primary />

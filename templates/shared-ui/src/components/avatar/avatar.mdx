@@ -1,0 +1,29 @@
+import { Canvas, Meta, Primary } from '@storybook/blocks';
+import * as Stories from './avatar.stories';
+
+<Meta of={Stories} />
+
+# Avatar
+
+An image element with a fallback for representing the user.
+
+## Example
+
+```tsx
+import { Avatar, AvatarImage, AvatarFallback } from '@repo/shared-ui/components'
+
+// Basic usage
+<Avatar>
+  <AvatarImage src="https://avatars.githubusercontent.com/u/921834?v=4" alt="@riipandi" />
+  <AvatarFallback>AR</AvatarFallback>
+</Avatar>
+
+// With fallback only
+<Avatar>
+  <AvatarFallback>JD</AvatarFallback>
+</Avatar>
+```
+
+## Preview
+
+<Primary />

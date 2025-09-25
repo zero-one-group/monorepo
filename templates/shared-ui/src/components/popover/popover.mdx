@@ -1,0 +1,30 @@
+import { Canvas, Meta, Primary } from '@storybook/blocks';
+import * as Stories from './popover.stories';
+
+<Meta of={Stories} />
+
+# Popover
+
+Displays rich content in a portal, triggered by a button.
+
+## Example
+
+```tsx
+import { Popover, PopoverContent, PopoverTrigger } from '@repo/shared-ui/components'
+
+<Popover>
+  <PopoverTrigger>Open</PopoverTrigger>
+  <PopoverContent>
+    <div className="grid gap-4">
+      <div className="space-y-2">
+        <h4 className="font-medium leading-none">Title</h4>
+        <p className="text-sm text-muted-foreground">Description</p>
+      </div>
+    </div>
+  </PopoverContent>
+</Popover>
+```
+
+## Preview
+
+<Primary />

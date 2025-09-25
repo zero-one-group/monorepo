@@ -10,6 +10,7 @@
             "go.mod",
             "go.sum",
             "hugo.yaml",
+            "makezip.sh",
             "packages",
             "pnpm-lock.yaml",
             "public",

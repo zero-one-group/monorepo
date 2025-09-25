@@ -1,0 +1,66 @@
+# https://moonrepo.dev/docs/config/project
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+type: library
+language: typescript
+toolchain:
+  node:
+    # Strapi doesn't support Node.js 22 yet
+    version: '20.19'
+tags: ['app']
+
+# Overrides the name (identifier) of the project
+id: '{{ package_name | kebab_case }}'
+
+project:
+  name: '{{ package_name | kebab_case }}'
+  description: '{{ package_description }}'
+
+env:
+  APP_PREFIX: "$(jq -r .name <$workspaceRoot'/package.json')"
+  APP_VERSION: '$(jq -r .version <$workspaceRoot''/package.json'')'
+  IMAGE_NAME: '$APP_PREFIX-$project'
+  VITE_CJS_IGNORE_WARNING: 'true'
+
+# Since this project can infer task from script (package.json), then you can run any script as moon task.
+# @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
+# Example: `moon {{ package_name | kebab_case }}:start`
+tasks:
+  dev:
+    command: 'pnpm run dev'
+    options:
+      envFile: '.env'
+
+  build:
+    command: 'pnpm run build'
+    options:
+      cache: true
+
+  update-deps:
+    command: 'pnpm -s exec npm-check-updates --configFileName .ncurc.json'
+    options:
+      interactive: true
+      cache: false
+
+  docker-run:
+    command: 'docker run --network=host --rm -it --env-file .env -v $projectRoot/_data:/srv/_data --name $IMAGE_NAME $IMAGE_NAME:$APP_VERSION'
+    options:
+      mergeEnv: replace
+      runFromWorkspaceRoot: false
+      interactive: false
+      outputStyle: buffer-only-failure
+      runInCI: false
+      cache: false
+      shell: true
+
+  docker-shell:
+    command: 'docker run --network=host --rm -it --env-file .env -v $projectRoot/_data:/srv/_data --entrypoint /bin/sh $IMAGE_NAME:$APP_VERSION'
+    options:
+      mergeEnv: replace
+      runFromWorkspaceRoot: false
+      interactive: false
+      outputStyle: buffer-only-failure
+      runInCI: false
+      cache: false
+      shell: true

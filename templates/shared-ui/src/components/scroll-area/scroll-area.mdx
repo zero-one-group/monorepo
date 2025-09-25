@@ -1,0 +1,29 @@
+import { Canvas, Meta, Primary } from '@storybook/blocks';
+import * as Stories from './scroll-area.stories';
+
+<Meta of={Stories} />
+
+# Scroll Area
+
+Augments native scroll functionality for custom, cross-browser styling.
+
+## Example
+
+```tsx
+import { ScrollArea } from '@repo/shared-ui/components'
+
+<ScrollArea className="h-72 w-48 rounded-md border">
+  <div className="p-4">
+    <h4 className="mb-4 text-sm font-medium leading-none">Tags</h4>
+    {items.map((item) => (
+      <div key={item} className="text-sm">
+        {item}
+      </div>
+    ))}
+  </div>
+</ScrollArea>
+```
+
+## Preview
+
+<Primary />

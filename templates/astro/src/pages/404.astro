@@ -1,0 +1,59 @@
+---
+force: true;
+---
+
+---
+import BaseLayout from "#/layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Not Found">
+  <div class="relative min-h-screen overflow-hidden bg-gray-50 dark:bg-gray-950">
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="-inset-[10px] absolute opacity-50">
+        <div
+          class="absolute top-0 h-[40rem] w-full bg-gradient-to-b from-gray-200 via-transparent to-transparent dark:from-gray-800 before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] before:from-gray-200/10 before:via-transparent before:to-transparent after:absolute after:inset-0 after:bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] after:from-blue-500/10 after:via-transparent after:to-transparent dark:before:from-gray-800/10"
+        >
+        </div>
+      </div>
+    </div>
+    <div
+      class="pointer-events-none fixed inset-0 z-10 flex select-none items-center justify-center"
+    >
+      <h2
+        class="font-black text-[12rem] text-red-500/10 mix-blend-overlay sm:text-[16rem] md:text-[20rem]"
+      >
+        404
+      </h2>
+    </div>
+    <div
+      class="relative flex min-h-screen flex-col items-center justify-center px-4 py-16 sm:px-6 lg:px-8"
+    >
+      <div class="relative z-20 text-center">
+        <p class="font-bold text-2xl text-red-500">404</p>
+        <h1
+          class="mt-4 font-bold text-3xl text-gray-900 dark:text-gray-100 tracking-tight sm:text-5xl"
+        >
+          Page not found
+        </h1>
+        <p class="mt-6 text-base text-gray-500 dark:text-gray-400 leading-7">
+          Sorry, we couldn't find the page you're looking for.
+        </p>
+        <div class="mt-10 flex items-center justify-center gap-x-4">
+          <button
+            onclick="history.back()"
+            type="button"
+            class="min-w-[140px] cursor-pointer rounded-md bg-blue-500 px-4 py-2.5 font-semibold text-sm text-white transition-all duration-200 hover:bg-blue-600 hover:shadow-blue-500/20 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-400/50 focus:ring-offset-2 focus:ring-offset-gray-50 dark:focus:ring-offset-gray-950 border border-gray-200 dark:border-gray-800"
+          >
+            Go back
+          </button>
+          <a
+            href="#"
+            class="min-w-[140px] rounded-md border border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 px-4 py-2.5 cursor-pointer font-semibold text-gray-900 dark:text-gray-100 text-sm transition-all duration-200 hover:border-gray-300 dark:hover:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 hover:shadow-gray-400/10 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-400/50 focus:ring-offset-2 focus:ring-offset-gray-50 dark:focus:ring-offset-gray-950"
+          >
+            Docs
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

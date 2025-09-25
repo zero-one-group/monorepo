@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@plugin "tailwindcss-motion";
+
+@variant dark (&:where([data-theme="dark"] *));
+
+/* Debug element */
+@utility debug {
+	border-width: 1px;
+	border-style: dashed;
+	border-color: #f87171;
+}
