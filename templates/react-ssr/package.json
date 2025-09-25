@@ -27,7 +27,6 @@
 	"dependencies": {
 		"@react-router/express": "^7.9.2",
 		"@react-router/node": "^7.9.2",
-		"@repo/shared-ui": "workspace:*",
 		"compression": "^1.8.1",
 		"consola": "^3.4.2",
 		"express-rate-limit": "^8.1.0",
