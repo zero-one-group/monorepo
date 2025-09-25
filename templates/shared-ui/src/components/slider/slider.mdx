@@ -1,0 +1,30 @@
+import { Canvas, Meta, Primary } from '@storybook/blocks';
+import * as Stories from './slider.stories';
+
+<Meta of={Stories} />
+
+# Slider
+
+An input where the user selects a value from within a given range.
+
+## Example
+
+```tsx
+import { Slider } from '@repo/shared-ui/components'
+
+// Basic usage
+<Slider defaultValue={[50]} max={100} step={1} />
+
+// Range slider
+<Slider defaultValue={[25, 75]} max={100} step={1} />
+
+// Disabled state
+<Slider defaultValue={[40]} disabled />
+
+// Custom step
+<Slider defaultValue={[20]} max={100} step={20} />
+```
+
+## Preview
+
+<Primary />

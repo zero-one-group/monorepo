@@ -1,0 +1,10 @@
+test:
+  stage: test
+  interruptible: true
+  extends:
+    - .rules:merge-request
+  script:
+    - echo "Running test..."
+  variables:
+    GIT_DEPTH: 1
+    AUTH_TIMEOUT: 10

@@ -1,0 +1,298 @@
+services:
+  grafana:
+    image: grafana/grafana:12.1.1
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+      placement:
+        constraints:
+          - node.labels.node_type==monitoring
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    configs:
+     - source: grafana_datasources
+       target: /etc/grafana/provisioning/datasources/datasources.yml
+     - source: grafana_dashboard
+       target: /etc/grafana/provisioning/dashboards/dashboard.yml
+     - source: grafana_dashboard_vm
+       target: /etc/grafana/provisioning/dashboards/instance-dashboard.json
+     - source: grafana_dashboard_nginx
+       target: /etc/grafana/provisioning/dashboards/nginx-dashboard.json
+     - source: grafana_alert_contact
+       target: /etc/grafana/provisioning/alerting/contact.yml
+     - source: grafana_alert_rules
+       target: /etc/grafana/provisioning/alerting/rules.yml
+     - source: grafana_alert_templates
+       target: /etc/grafana/provisioning/alerting/templates.yml
+    environment:
+      - GF_SERVER_HTTP_ADDR=0.0.0.0
+      - GF_SERVER_HTTP_PORT=3000
+    env_file:
+      - ./.env
+    networks:
+      - overlay-network
+
+  victoriametrics:
+    image: victoriametrics/victoria-metrics:v1.124.0
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.node_type==monitoring
+    ports:
+      - "8428:8428"
+    command:
+      - "--storageDataPath=/victoria-metrics-data"
+      - "--retentionPeriod=7d"
+      - "--httpListenAddr=:8428"
+      - "--loggerLevel=INFO"
+    volumes:
+      - victoriametrics_data:/victoria-metrics-data
+    networks:
+      - overlay-network
+
+  vmbackup:
+    image: victoriametrics/vmbackup:v1.124.0
+    deploy:
+      mode: replicated
+      replicas: 0
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.node_type==monitoring
+    command:
+      - "-storageDataPath=/victoria-metrics-data"
+      - "-snapshot.createURL=http://victoriametrics:8428/snapshot/create"
+      - "-dst=s3://lgtm-buckets-monitoring/vm-backups"
+    volumes:
+      - victoriametrics_data:/victoria-metrics-data:ro
+    networks:
+      - overlay-network
+    depends_on:
+      - victoriametrics
+
+  tempo:
+    image: grafana/tempo:2.8.2
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.node_type==monitoring
+    command: [ "-config.file=/etc/tempo.yml" ]
+    ports:
+      - "3200:3200"
+      - "14268:14268"
+    configs:
+      - source: tempo_config
+        target: /etc/tempo.yml
+    networks:
+      - overlay-network
+    user: "0"
+    volumes:
+      - tempo_data:/var/tempo
+    depends_on:
+      - memcached-tempo
+
+  pyroscope:
+    image: grafana/pyroscope:1.14.1
+    deploy:
+      mode: replicated
+      replicas: 0
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.node_type==monitoring
+    command: [ "-config.file=/etc/pyroscope.yml" ]
+    ports:
+      - "4040:4040"
+    environment:
+      JAEGER_SAMPLER_TYPE: const
+      JAEGER_SAMPLER_PARAM: 1
+      JAEGER_ENDPOINT: tempo
+    configs:
+      - source: pyroscope_config
+        target: /etc/pyroscope.yml
+    volumes:
+      - pyroscope_data:/data
+    networks:
+      - overlay-network
+    depends_on:
+      - tempo
+
+  memcached-tempo:
+    image: memcached:1.6.39-trixie
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.node_type==monitoring
+    ports:
+      - "11212:11211"
+    networks:
+      - overlay-network
+
+  otelcol:
+    image: otel/opentelemetry-collector:0.133.0
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.node_type==monitoring
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    command: --config=/etc/otelcol/config.yml
+    configs:
+      - source: otelcol_config
+        target: /etc/otelcol/config.yml
+    networks:
+      - overlay-network
+    depends_on:
+      - tempo
+      - victoriametrics
+
+  promtail:
+    image: grafana/promtail:3.5.2
+    configs:
+      - source: promtail_config
+        target: /etc/promtail/promtail-config.yml
+    volumes:
+      - /var/log:/var/log
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: -config.file=/etc/promtail/promtail-config.yml
+    networks:
+      - overlay-network
+    deploy:
+      mode: global
+    user: "0"
+
+  loki:
+    image: grafana/loki:3.5.2
+    command:
+      - -config.file=/etc/loki/loki-config.yaml
+    ports:
+      - "3100:3100"
+    configs:
+      - source: loki_config
+        target: /etc/loki/loki-config.yaml
+    volumes:
+      - loki_data:/loki
+    networks:
+      - overlay-network
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.labels.node_type==monitoring
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "3"
+    depends_on:
+      - memcached-loki
+
+  memcached-loki:
+    image: memcached:1.6.39-trixie
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.node_type==monitoring
+    ports:
+      - "11213:11211"
+    networks:
+      - overlay-network
+
+  portainer:
+    image: portainer/portainer-ce:2.33.1
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+      placement:
+        constraints:
+          - node.labels.node_type==monitoring
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - overlay-network
+
+networks:
+  overlay-network:
+    external: true
+
+configs:
+  tempo_config:
+    file: ./services/tempo/tempo.yml
+  grafana_datasources:
+    file: ./services/grafana/datasources/datasources.yml
+  grafana_dashboard:
+    file: ./services/grafana/dashboards/dashboard.yml
+  grafana_dashboard_vm:
+    file: ./services/grafana/dashboards/instance-dashboard.json
+  grafana_dashboard_nginx:
+    file: ./services/grafana/dashboards/nginx-dashboard.json
+  grafana_alert_contact:
+    file: ./services/grafana/alerting/contact.yml
+  grafana_alert_rules:
+    file: ./services/grafana/alerting/rules.yml
+  grafana_alert_templates:
+    file: ./services/grafana/alerting/templates.yml
+  loki_config:
+    file: ./services/loki/loki-config.yml
+  otelcol_config:
+    file: ./services/otelcol/config.yml
+  promtail_config:
+    file: ./services/promtail/promtail-config.yml
+  pyroscope_config:
+    file: ./services/pyroscope/pyroscope.yml
+
+volumes:
+  grafana_data:
+    name: grafana_data
+  victoriametrics_data:
+    name: victoriametrics_data
+  victorialogs_data:
+    name: victorialogs_data
+  loki_data:
+    name: loki_data
+  tempo_data:
+    name: tempo_data
+  portainer_data:
+    name: portainer_data
+  pyroscope_data:
+    name: pyroscope_data

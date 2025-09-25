@@ -1,0 +1,20 @@
+build:development:generate_dart_models:
+  extends:
+    - .setup
+    - .rules:development
+    - .generate_dart_models_scripts
+  stage: build:development
+
+build:staging:generate_dart_models:
+  extends:
+    - .setup
+    - .rules:mobile-staging
+    - .generate_dart_models_scripts
+  stage: build:staging
+
+build:production:generate_dart_models:
+  extends:
+    - .setup
+    - .rules:mobile-production
+    - .generate_dart_models_scripts
+  stage: build:production

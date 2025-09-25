@@ -1,0 +1,19 @@
+services:
+  apps-development:
+    image: {{ aws_account_number }}.dkr.ecr.{{ region }}.amazonaws.com/{{ repository_name }}:$VERSION
+    ports:
+      - '8080:8080'
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname==worker-dev
+    env_file:
+      - ./.env
+    networks:
+      - overlay-network
+
+networks:
+  overlay-network:
+    external: true

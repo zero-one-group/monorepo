@@ -1,0 +1,40 @@
+import { Canvas, Meta, Primary } from '@storybook/blocks';
+import * as Stories from './context-menu.stories';
+
+<Meta of={Stories} />
+
+# Context Menu
+
+Displays a menu to the user — such as a set of actions or functions — triggered by a right-click.
+
+## Example
+
+```tsx
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+} from '@repo/shared-ui/components'
+
+<ContextMenu>
+  <ContextMenuTrigger>Right click here</ContextMenuTrigger>
+  <ContextMenuContent>
+    <ContextMenuItem>
+      Back
+      <ContextMenuShortcut>⌘[</ContextMenuShortcut>
+    </ContextMenuItem>
+    <ContextMenuSeparator />
+    <ContextMenuItem>
+      Reload
+      <ContextMenuShortcut>⌘R</ContextMenuShortcut>
+    </ContextMenuItem>
+  </ContextMenuContent>
+</ContextMenu>
+```
+
+## Preview
+
+<Primary />

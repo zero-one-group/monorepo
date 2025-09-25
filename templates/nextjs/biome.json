@@ -1,0 +1,8 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.2.3/schema.json",
+	"extends": ["./biome.json"],
+	"root": false,
+	"linter": {
+		"enabled": false
+	}
+}

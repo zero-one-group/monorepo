@@ -1,0 +1,51 @@
+import { Canvas, Meta, Primary } from '@storybook/blocks';
+import * as Stories from './tooltip.stories';
+
+<Meta of={Stories} />
+
+# Tooltip
+
+A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.
+
+## Example
+
+```tsx
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@repo/shared-ui/components'
+
+// Basic usage
+<TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger>Hover me</TooltipTrigger>
+    <TooltipContent>
+      <p>Tooltip content</p>
+    </TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+
+// With button
+<TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <Button>Hover me</Button>
+    </TooltipTrigger>
+    <TooltipContent>
+      <p>Tooltip content</p>
+    </TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+
+// Position variations
+<Tooltip>
+  <TooltipTrigger>Hover me</TooltipTrigger>
+  <TooltipContent side="top">Top tooltip</TooltipContent>
+</Tooltip>
+
+<Tooltip>
+  <TooltipTrigger>Hover me</TooltipTrigger>
+  <TooltipContent side="right">Right tooltip</TooltipContent>
+</Tooltip>
+```
+
+## Preview
+
+<Primary />

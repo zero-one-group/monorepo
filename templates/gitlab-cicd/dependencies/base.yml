@@ -1,0 +1,22 @@
+.setup:
+  image: node:24-trixie-slim
+  before_script:
+    - apt-get update && apt-get install curl git -y
+    - bash <(curl -fsSL https://moonrepo.dev/install/moon.sh)
+    - export PATH="$HOME/.moon/bin:$PATH"
+    - corepack enable
+    - corepack prepare pnpm@latest-10 --activate
+    - pnpm install --frozen-lockfile
+
+.base_mobile:
+  before_script:
+    - /bin/bash -c "$(curl -sL https://git.io/vokNn)"
+    - sudo apt-fast update -qy
+    - DEBIAN_FRONTEND=noninteractive sudo apt-fast install -y jq
+    - cp $KEY_PROPERTIES $CI_PROJECT_DIR/apps/mobile/android/key.properties
+    - echo $KEYSTORE_FILE | base64 -d > $CI_PROJECT_DIR/apps/mobile/android/app/keystore.jks
+    - git config --global --add safe.directory $CI_PROJECT_DIR
+
+.generate_dart_models_scripts:
+  script:
+    - CHANGE_ME_COMMAND_DART
