@@ -3,6 +3,7 @@ import { reactRouter } from "@react-router/dev/vite";
 import tailwindcss from "@tailwindcss/vite";
 import { env, isProduction } from "std-env";
 import { defineConfig } from "vite";
+import devtoolsJson from "vite-plugin-devtools-json";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 // Check if the current environment is CI or test environment
@@ -14,6 +15,7 @@ export default defineConfig({
 		tailwindcss(),
 		!isTestOrStorybook && reactRouter(),
 		tsconfigPaths(),
+		devtoolsJson(),
 	],
 	server: { port: 3000, host: false },
 	publicDir: resolve("public"),
