@@ -156,11 +156,11 @@ tasks:
       mkdir -p $workspaceRoot/tmp/db_dump
       DUMP_FILENAME="$project-$(date -u +%y%m%d_%H%M%S)"
 
-      docker-compose -f $workspaceRoot/docker/compose.yaml exec pgsql pg_dump -Fp --no-acl \
+      docker-compose -f $workspaceRoot/compose.yaml exec pgsql pg_dump -Fp --no-acl \
         --no-owner --no-privileges -U postgres --schema=public --schema-only \
         postgres > $workspaceRoot/tmp/db_dump/$DUMP_FILENAME-schema_only.sql
 
-      docker-compose -f $workspaceRoot/docker/compose.yaml exec pgsql pg_dump -Fp --no-acl \
+      docker-compose -f $workspaceRoot/compose.yaml exec pgsql pg_dump -Fp --no-acl \
         --no-owner --no-privileges -U postgres --schema=public \
         postgres > $workspaceRoot/tmp/db_dump/$DUMP_FILENAME-with_data.sql
     options:

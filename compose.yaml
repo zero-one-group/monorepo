@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json
+
+# This compose.yaml defines services for your development environment.
+# By default, only Postgres and Mailpit are enabled. Uncomment other services as needed.
+
+# Enabled by default:
+# - Postgres (5432): Relational database.
+# - Mailpit (1025, 8025): Local email testing tool.
+
+# Optional services (uncomment to enable):
+# - MinIO (9100, 9101, 8010): S3-compatible object storage.
+# - ClickHouse (8123, 9000): Columnar database for analytics.
+# - Redis (6379): In-memory cache and message broker.
+
+# See the `docker/_stacks_` directory for individual service configurations.
+
+# Usage:
+# 1. Uncomment desired services in the `include` section.
+# 2. Start services: `docker compose up -d --remove-orphans`
+# 3. Stop services: `docker compose down --remove-orphans`
+
+name: myorg
+
+networks:
+  myorg_network:
+    name: myorg_network
+    driver: bridge
+
+# @see: https://docs.docker.com/compose/how-tos/multiple-compose-files/include/
+
+include:
+  - ./docker/_stacks_/postgres.yaml           # 5432
+  - ./docker/_stacks_/mailpit.yaml            # 1025,8025
+  - ./docker/_stacks_/instrumentation.yaml    # 6831,6832,5778,16686,14268,14250,4317
+  # - ./docker/_stacks_/minio.yaml              # 9100,9101,8010
+  # - ./docker/_stacks_/clickhouse.yaml         # 8123,9000
+  # - ./docker/_stacks_/redis.yaml              # 6379

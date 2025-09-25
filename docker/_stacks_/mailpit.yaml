@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json
+
+services:
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    hostname: mailpit
+    volumes: ['mailpit_data:/data']
+    ports: ['1025:1025', '8025:8025']
+    environment:
+      TZ: Asia/Jakarta
+      MP_TAGS_USERNAME: true
+      MP_DISABLE_VERSION_CHECK: true
+      MP_UI_BIND_ADDR: 0.0.0.0:8025
+      MP_SMTP_BIND_ADDR: 0.0.0.0:1025
+      # MP_SMTP_AUTH: 'user1:password1 user2:password'
+      # MP_UI_AUTH: 'user1:password1 user2:password2'
+      # https://github.com/axllent/mailpit/wiki/Runtime-options
+    extra_hosts: ['host.docker.internal:host-gateway']
+    networks: ['myorg_network']
+
+volumes:
+  mailpit_data:
+    driver: local

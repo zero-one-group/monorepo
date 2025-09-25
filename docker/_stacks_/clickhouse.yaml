@@ -1,0 +1,46 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json
+
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:${CH_VERSION:-25.8-alpine}
+    hostname: ch-server
+    restart: unless-stopped
+    ports: ['8123:8123', '9000:9000', '9181:9181']
+    environment:
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+      CLICKHOUSE_PASSWORD: securedb
+      CLICKHOUSE_USER: chadmin
+      CLICKHOUSE_DB: default
+      # Uncomment to enable additional databases
+      # CLICKHOUSE_DATABASES: myapp_dev,testdb
+    volumes:
+      - ../clickhouse/user_scripts/ch-multidb.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
+      - ../clickhouse/config.xml:/etc/clickhouse-server/config.xml:ro
+      - ../clickhouse/users.xml:/etc/clickhouse-server/users.xml:ro
+      - clickhouse_logs:/var/log/clickhouse-server:rw
+      - clickhouse_data:/var/lib/clickhouse:rw
+    cap_add: [SYS_PTRACE, SYS_NICE, NET_ADMIN, IPC_LOCK]
+    tty: true
+    ulimits:
+      memlock: -1
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+    logging:
+      options:
+        max-size: 50m
+        max-file: "3"
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -nv --tries=1 --spider http://127.0.0.1:8123/ping || exit 1']
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    extra_hosts: ['host.docker.internal:host-gateway']
+    networks: ['myorg_network']
+
+volumes:
+  clickhouse_data:
+    driver: local
+  clickhouse_logs:
+    driver: local

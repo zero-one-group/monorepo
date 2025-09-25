@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json
+
+services:
+  pgsql:
+    # image: pgduckdb/pgduckdb:${PGSQL_VERSION:-17-main}
+    image: postgres:${PGSQL_VERSION:-18beta3-alpine}
+    hostname: postgres
+    restart: unless-stopped
+    ports: ['5432:5432']
+    volumes:
+      - ../postgres/pg-multidb.sh:/docker-entrypoint-initdb.d/multidb.sh:ro
+      - ../postgres/postgresql.conf:/etc/postgresql/postgresql.conf:rw
+      - ../postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf:rw
+      - pgsql_data:/var/lib/postgresql/data:rw
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: securedb
+      # Uncomment to enable additional databases and schemas
+      # POSTGRES_EXTRA_DB: myapp,testdb
+      # POSTGRES_SCHEMAS: postgres:reference,myapp:reference
+    command: ['postgres', '-c', 'config_file=/etc/postgresql/postgresql.conf', '-c', 'hba_file=/etc/postgresql/pg_hba.conf']
+    shm_size: 128m # set shared memory limit
+    mem_limit: 256m # set memory limit
+    cpus: 1.0 # set CPUs limit
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
+      interval: 3s
+      timeout: 5s
+      retries: 3
+    extra_hosts: ['host.docker.internal:host-gateway']
+    networks: ['myorg_network']
+
+  pgweb:
+    image: sosedoff/pgweb:latest
+    restart: always
+    ports: ['54321:8081']
+    environment:
+      PGWEB_DATABASE_URL: "postgres://postgres:securedb@pgsql:5432/postgres?sslmode=disable"
+    extra_hosts: ['host.docker.internal:host-gateway']
+    networks: ['myorg_network']
+    depends_on:
+      pgsql: { condition: service_started }
+
+volumes:
+  pgsql_data:
+    driver: local
