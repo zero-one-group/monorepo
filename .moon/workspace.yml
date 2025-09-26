@@ -55,6 +55,7 @@ generator:
     - 'https://oss.zero-one-group.com/monorepo/templates/astro.zip'
     - 'https://oss.zero-one-group.com/monorepo/templates/fastapi-ai.zip'
     - 'https://oss.zero-one-group.com/monorepo/templates/gitlab-cicd.zip'
+    - 'https://oss.zero-one-group.com/monorepo/templates/go-modular.zip'
     - 'https://oss.zero-one-group.com/monorepo/templates/golang.zip'
     - 'https://oss.zero-one-group.com/monorepo/templates/load-balancer.zip'
     - 'https://oss.zero-one-group.com/monorepo/templates/monitoring.zip'
