@@ -431,6 +431,38 @@ export default defineCommand({
       ])
 
       s.stop('New application generated!')
+
+      // Add .mockery.yml for Go apps
+      if (appType === 'golang') {
+        const mockeryConfigPath = join(appDir, '.mockery.yml')
+        const mockeryConfig = {
+          all: false,
+          dir: "{{.InterfaceDir}}",
+          filename: "{{.InterfaceName}}.go",
+          "force-file-write": true,
+          formatter: "goimports",
+          "include-auto-generated": false,
+          "log-level": "info",
+          structname: "{{.InterfaceName}}",
+          pkgname: "{{.SrcPackageName}}",
+          recursive: false,
+          "require-template-schema-exists": true,
+          template: "testify",
+          "template-schema": "{{.Template}}.schema.json",
+          packages: {
+            [`${appName}/service`]: {
+              config: {
+                all: true,
+                dir: "{{.InterfaceDir}}/mocks",
+                pkgname: "mocks"
+              }
+            }
+          }
+        }
+        writeFileSync(mockeryConfigPath, JSON.stringify(mockeryConfig, null, 2))
+        _console.info(`Added .mockery.yml configuration file at ${mockeryConfigPath}`)
+      }
+
       outro(`You're all set! Your new ${appType} application "${appName}" is ready.`)
     } catch (error) {
       _console.error(error instanceof Error ? error.message : 'Unknown error occurred')
