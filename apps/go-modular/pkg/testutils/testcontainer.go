@@ -47,7 +47,7 @@ func (te *TestEnv) SetupPostgres() (*pgxpool.Pool, string, error) {
 	var err error
 	te.postgresC, err = testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
 		ContainerRequest: testcontainers.ContainerRequest{
-			Image:        "postgres:18rc1-alpine",
+			Image:        "postgres:18-alpine",
 			ExposedPorts: []string{"5432/tcp"},
 			Env: map[string]string{
 				"POSTGRES_PASSWORD": "testpass",

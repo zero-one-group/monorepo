@@ -2,8 +2,7 @@
 
 services:
   pgsql:
-    # image: pgduckdb/pgduckdb:${PGSQL_VERSION:-17-main}
-    image: postgres:${PGSQL_VERSION:-18beta3-alpine}
+    image: postgres:${PGSQL_VERSION:-18-alpine}
     hostname: postgres
     restart: unless-stopped
     ports: ['5432:5432']
