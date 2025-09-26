@@ -7,7 +7,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
 	"go-modular/pkg/testutils"
 )
 
@@ -25,6 +24,7 @@ func TestPostgres_WithTestEnv(t *testing.T) {
 			URL:            pgURL,
 			MaxConnections: 5,
 			MinConnections: 1,
+			EnableOTel:     false,
 		}
 
 		db, err := NewPostgres(cfg)
@@ -50,6 +50,40 @@ func TestPostgres_WithTestEnv(t *testing.T) {
 		assert.Equal(t, 1, cnt)
 	})
 
+	t.Run("NewPostgres_pool_exec_query_with_otel", func(t *testing.T) {
+		te := testutils.NewTestEnv(t)
+		pgPool, pgURL, err := te.SetupPostgres()
+		require.NoError(t, err)
+		require.NotNil(t, pgPool)
+		require.NotEmpty(t, pgURL)
+
+		cfg := PostgresConfig{
+			URL:            pgURL,
+			MaxConnections: 5,
+			MinConnections: 1,
+			EnableOTel:     true,
+		}
+
+		db, err := NewPostgres(cfg)
+		require.NoError(t, err)
+		require.NotNil(t, db)
+		defer db.Close()
+
+		require.NoError(t, db.Ping(ctx))
+
+		_, err = db.Pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS items_otel (id serial PRIMARY KEY, name text)`)
+		require.NoError(t, err)
+
+		_, err = db.Pool.Exec(ctx, `INSERT INTO items_otel (name) VALUES ($1)`, "bar")
+		require.NoError(t, err)
+
+		row := db.Pool.QueryRow(ctx, `SELECT count(*) FROM items_otel`)
+		var cnt int
+		err = row.Scan(&cnt)
+		require.NoError(t, err)
+		assert.Equal(t, 1, cnt)
+	})
+
 	t.Run("NewPostgresWithSingleConn_pool_and_conn", func(t *testing.T) {
 		te := testutils.NewTestEnv(t)
 		_, pgURL, err := te.SetupPostgres()
@@ -57,7 +91,8 @@ func TestPostgres_WithTestEnv(t *testing.T) {
 		require.NotEmpty(t, pgURL)
 
 		cfg := PostgresConfig{
-			URL: pgURL,
+			URL:        pgURL,
+			EnableOTel: false,
 		}
 
 		db, err := NewPostgresWithSingleConn(cfg)
@@ -75,6 +110,33 @@ func TestPostgres_WithTestEnv(t *testing.T) {
 		require.NoError(t, db.Ping(ctx))
 
 		_, err = db.Pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS t_single (id serial PRIMARY KEY)`)
+		require.NoError(t, err)
+	})
+
+	t.Run("NewPostgresWithSingleConn_pool_and_conn_with_otel", func(t *testing.T) {
+		te := testutils.NewTestEnv(t)
+		_, pgURL, err := te.SetupPostgres()
+		require.NoError(t, err)
+		require.NotEmpty(t, pgURL)
+
+		cfg := PostgresConfig{
+			URL:        pgURL,
+			EnableOTel: true,
+		}
+
+		db, err := NewPostgresWithSingleConn(cfg)
+		require.NoError(t, err)
+		require.NotNil(t, db)
+		defer func() {
+			if db.Conn != nil {
+				_ = db.Conn.Close(ctx)
+			}
+			db.Close()
+		}()
+
+		require.NoError(t, db.Ping(ctx))
+
+		_, err = db.Pool.Exec(ctx, `CREATE TABLE IF NOT EXISTS t_single_otel (id serial PRIMARY KEY)`)
 		require.NoError(t, err)
 	})
 

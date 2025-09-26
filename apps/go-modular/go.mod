@@ -7,6 +7,7 @@ toolchain go1.25.1
 require (
 	github.com/alexliesenfeld/health v0.8.1
 	github.com/bdpiprava/scalar-go v0.12.1
+	github.com/exaring/otelpgx v0.9.3
 	github.com/go-playground/validator/v10 v10.27.0
 	github.com/gofrs/uuid/v5 v5.3.2
 	github.com/jackc/pgx/v5 v5.7.6

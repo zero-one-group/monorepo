@@ -33,9 +33,15 @@ services:
   pgweb:
     image: sosedoff/pgweb:latest
     restart: always
-    ports: ['54321:8081']
+    ports: ['54321:54321']
     environment:
       PGWEB_DATABASE_URL: "postgres://postgres:securedb@pgsql:5432/postgres?sslmode=disable"
+    command: ['/usr/bin/pgweb', '--bind=0.0.0.0', '--listen=54321']
+    healthcheck:
+      test: ['CMD', 'nc', '-vz', '127.0.0.1', '54321']
+      interval: 3s
+      timeout: 5s
+      retries: 3
     extra_hosts: ['host.docker.internal:host-gateway']
     networks: ['myorg_network']
     depends_on:
