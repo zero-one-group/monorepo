@@ -1,4 +1,4 @@
-import { type VariantProps, tv } from "tailwind-variants";
+import { type VariantProps, tv } from "tailwind-variants/lite";
 
 export const separatorStyles = tv({
 	base: "shrink-0 bg-border",

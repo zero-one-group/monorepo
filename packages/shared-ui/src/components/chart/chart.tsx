@@ -1,5 +1,7 @@
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
+import type { LegendPayload } from "recharts/types/component/DefaultLegendContent";
+import type { TooltipContentProps } from "recharts/types/component/Tooltip.d.ts";
 import { clx } from "../../utils";
 
 // Format: { THEME_NAME: CSS_SELECTOR }
@@ -101,7 +103,7 @@ const ChartTooltip = RechartsPrimitive.Tooltip;
 
 const ChartTooltipContent = React.forwardRef<
 	HTMLDivElement,
-	React.ComponentProps<typeof RechartsPrimitive.Tooltip> &
+	TooltipContentProps<any, any> & // Use correct type for custom tooltip content
 		React.ComponentProps<"div"> & {
 			hideLabel?: boolean;
 			hideIndicator?: boolean;
@@ -125,6 +127,7 @@ const ChartTooltipContent = React.forwardRef<
 			color,
 			nameKey,
 			labelKey,
+			...rest
 		},
 		ref,
 	) => {
@@ -179,6 +182,7 @@ const ChartTooltipContent = React.forwardRef<
 					"grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl",
 					className,
 				)}
+				{...rest}
 			>
 				{!nestLabel ? tooltipLabel : null}
 				<div className="grid gap-1.5">
@@ -257,11 +261,12 @@ const ChartLegend = RechartsPrimitive.Legend;
 
 const ChartLegendContent = React.forwardRef<
 	HTMLDivElement,
-	React.ComponentProps<"div"> &
-		Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
-			hideIcon?: boolean;
-			nameKey?: string;
-		}
+	React.ComponentProps<"div"> & {
+		payload?: LegendPayload[];
+		verticalAlign?: "top" | "bottom" | "middle";
+		hideIcon?: boolean;
+		nameKey?: string;
+	}
 >(
 	(
 		{ className, hideIcon = false, payload, verticalAlign = "bottom", nameKey },

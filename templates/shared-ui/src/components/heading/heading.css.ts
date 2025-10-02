@@ -1,4 +1,4 @@
-import { type VariantProps, tv } from "tailwind-variants";
+import { type VariantProps, tv } from "tailwind-variants/lite";
 
 export const headingStyles = tv({
 	base: "font-heading text-foreground tracking-tight transition-colors duration-200",

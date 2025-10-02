@@ -1,4 +1,4 @@
-import { type VariantProps, tv } from "tailwind-variants";
+import { type VariantProps, tv } from "tailwind-variants/lite";
 
 export const textStyles = tv({
 	base: "transition-colors duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",

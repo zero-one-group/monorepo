@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { consola } from "consola";
 import { addDays, format } from "date-fns";
 import * as Lucide from "lucide-react";

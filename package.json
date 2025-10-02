@@ -24,12 +24,12 @@
         "@biomejs/biome": "catalog:",
         "@clack/prompts": "^0.11.0",
         "@noble/hashes": "^2.0.1",
-        "@types/node": "^24.5.2",
+        "@types/node": "^24.6.2",
         "citty": "^0.1.6",
         "consola": "^3.4.2",
-        "dotenv": "^17.2.2",
+        "dotenv": "^17.2.3",
         "npm-check-updates": "catalog:",
-        "tsx": "^4.20.5"
+        "tsx": "^4.20.6"
     },
     "pnpm": {
         "onlyBuiltDependencies": [

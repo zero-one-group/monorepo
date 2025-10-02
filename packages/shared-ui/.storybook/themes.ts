@@ -1,5 +1,5 @@
-import { GLOBALS_UPDATED } from "@storybook/core-events";
-import { create } from "@storybook/theming";
+import { GLOBALS_UPDATED } from "storybook/internal/core-events";
+import { create } from "storybook/theming";
 
 const brand = {
 	brandTitle: "UI Components",
@@ -90,7 +90,11 @@ export function listenToColorScheme(
 		callback(event.matches ? "dark" : "light");
 	};
 
-	const handleGlobalsChange = ({ globals }) => {
+	const handleGlobalsChange = ({
+		globals,
+	}: {
+		globals: Record<string, unknown>;
+	}) => {
 		const theme = globals.theme as Theme;
 
 		if (theme === "system") {

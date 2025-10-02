@@ -5,7 +5,7 @@ $schema: 'https://moonrepo.dev/schemas/project.json'
 type: application
 language: typescript
 stack: frontend
-tags: ['app']
+tags: ['app', 'website']
 
 # Overrides the name (identifier) of the project
 id: '{{ package_name | kebab_case }}'
@@ -13,11 +13,6 @@ id: '{{ package_name | kebab_case }}'
 project:
   name: {{ package_name | kebab_case }}
   description: '{{ package_description }}'
-
-env:
-  APP_PREFIX: "$(jq -r .name <$workspaceRoot'/package.json')"
-  APP_VERSION: '$(jq -r .version <$workspaceRoot''/package.json'')'
-  IMAGE_NAME: '$APP_PREFIX-$project'
 
 # Uncomment to use shared UI library
 # dependsOn:
@@ -40,14 +35,12 @@ tasks:
       envFile: '.env'
       cache: true
 
-  update-deps:
-    command: 'pnpm -s exec npm-check-updates --configFileName .ncurc.json'
-    options:
-      interactive: true
-      cache: false
-
-  docker-run:
-    command: 'docker run --network=host --rm -it --env-file .env --name $IMAGE_NAME $IMAGE_NAME:$APP_VERSION'
+  docker-build:
+    script: |
+      DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
+      DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')"
+      docker build -f $projectRoot/Dockerfile . -t $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION \
+      && docker image list --filter reference=$DOCKER_IMAGE\\*
     options:
       mergeEnv: replace
       runFromWorkspaceRoot: true
@@ -57,13 +50,32 @@ tasks:
       cache: false
       shell: true
 
+  docker-run:
+    script: |
+      DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
+      DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
+      docker run --network=host --rm -it --env-file $projectRoot/.env \
+        --name $DOCKER_IMAGE $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION
+    options:
+      mergeEnv: replace
+      outputStyle: buffer-only-failure
+      runFromWorkspaceRoot: true
+      interactive: false
+      runInCI: false
+      cache: false
+      shell: true
+
   docker-shell:
-    command: 'docker run --network=host --rm -it --env-file .env --entrypoint /bin/sh $IMAGE_NAME:$APP_VERSION'
+    script: |
+      DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
+      DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
+      docker run --network=host --rm -it --env-file $projectRoot/.env \
+        --entrypoint /bin/sh $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION
     options:
       mergeEnv: replace
       runFromWorkspaceRoot: true
-      interactive: false
       outputStyle: buffer-only-failure
+      interactive: false
       runInCI: false
       cache: false
       shell: true

@@ -1,4 +1,4 @@
-import type { Preview } from "@storybook/react";
+import type { Preview } from "@storybook/react-vite";
 import { withThemeProvider } from "./components/decorators";
 import { DocsContainer } from "./components/docs-container";
 import { Link } from "./components/link";
@@ -29,7 +29,7 @@ const preview: Preview = {
 			exclude: ["asChild", "onClick"],
 		},
 		viewport: {
-			viewports: {
+			options: {
 				smallMobile: {
 					name: "Small mobile",
 					styles: { width: "320px", height: "568px" },
@@ -64,7 +64,7 @@ const preview: Preview = {
 				],
 			},
 		},
-		backgrounds: { disable: true },
+		backgrounds: { disabled: true },
 		layout: "padded",
 		chromatic: {
 			modes: {

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Progress } from "./progress";
 import type { ProgressVariants } from "./progress.css";
 

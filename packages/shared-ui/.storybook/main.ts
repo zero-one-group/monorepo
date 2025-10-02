@@ -8,20 +8,24 @@ const config: StorybookConfig = {
 		"../src/**/*.mdx",
 		"../src/**/*.stories.@(ts|tsx)",
 	],
+
 	addons: [
-		{ name: "@storybook/addon-essentials", options: { backgrounds: false } },
 		"@storybook/addon-links",
 		"@storybook/addon-a11y",
+		"@storybook/addon-docs",
 	],
+
 	framework: {
 		name: "@storybook/react-vite",
 		options: {},
 	},
+
 	core: {
 		disableTelemetry: true, // 👈 Disables telemetry
 		enableCrashReports: false, // 👈 Appends the crash reports to the telemetry events
 		disableWhatsNewNotifications: true, // 👈 Disables the whats new notification
 	},
+
 	async viteFinal(config) {
 		return mergeConfig(config, {
 			plugins: [tsconfigPaths()],
@@ -29,6 +33,10 @@ const config: StorybookConfig = {
 				chunkSizeWarningLimit: 1024 * 4,
 			},
 		});
+	},
+
+	features: {
+		backgrounds: false,
 	},
 };
 

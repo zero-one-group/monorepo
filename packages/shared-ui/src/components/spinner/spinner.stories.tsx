@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { LazyLoadingSpinner, LoadingSpinner } from "./spinner";
 
 const meta: Meta<typeof LoadingSpinner> = {

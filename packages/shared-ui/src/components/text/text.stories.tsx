@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Text, type TextProps } from "./text";
 import type { TextVariants } from "./text.css";
 

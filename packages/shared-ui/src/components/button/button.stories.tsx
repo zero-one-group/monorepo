@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { fn } from "@storybook/test";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as Lucide from "lucide-react";
+import { fn } from "storybook/test";
 import { Button, type ButtonProps } from "./button";
 import type { ButtonVariants } from "./button.css";
 

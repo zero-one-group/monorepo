@@ -1,4 +1,4 @@
-import { tv, type VariantProps } from "tailwind-variants";
+import { tv, type VariantProps } from "tailwind-variants/lite";
 
 export const skeletonStyles = tv({
 	base: "animate-pulse rounded-md bg-foreground/10",

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Heading, type HeadingProps } from "./heading";
 import type { HeadingVariants } from "./heading.css";
 
