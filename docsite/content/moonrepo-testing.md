@@ -6,11 +6,11 @@ slug: "moonrepo-testing"
 ## Template Golang
 
 ```sh
-moon go-app:build
-moon go-app:start
-moon go-app:docker-build
-moon go-app:docker-shell
-moon go-app:docker-run
+moon go-standard:build
+moon go-standard:start
+moon go-standard:docker-build
+moon go-standard:docker-shell
+moon go-standard:docker-run
 ```
 
 ## Template Next.js

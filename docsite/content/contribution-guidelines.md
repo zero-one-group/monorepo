@@ -61,9 +61,9 @@ Before you begin, ensure you have the following installed:
     pnpm compose:down  # Stop local development server
     pnpm compose:cleanup # Remove all local development server data
     ```
-    To start a development server for a specific application you want to contribute to (e.g., `go-app`):
+    To start a development server for a specific application you want to contribute to (e.g., `go-standard`):
     ```bash
-    moon go-app:dev
+    moon go-standard:dev
     ```
 
 ---
@@ -75,7 +75,7 @@ This monorepo follows specific conventions to maintain consistency and ease of m
 ### App Naming
 
 All applications within the monorepo should follow the `template-{app-name}` format.
-**Example:** `template-go-app`, `template-react-app`
+**Example:** `template-go-standard`, `template-react-app`
 
 ### Development Folder (`apps/`)
 
@@ -83,7 +83,7 @@ The `apps/` directory is designated for active development. When you are develop
 
 ### Template Folders
 
-After development in `apps/` is complete and the application is stable and ready for wider use, the changes should be moved to the corresponding template folder (e.g., `templates/go-app` if it's a Go application). This ensures that new projects can be easily bootstrapped from stable, well-defined templates.
+After development in `apps/` is complete and the application is stable and ready for wider use, the changes should be moved to the corresponding template folder (e.g., `templates/go-standard` if it's a Go application). This ensures that new projects can be easily bootstrapped from stable, well-defined templates.
 
 ---
 
@@ -98,11 +98,11 @@ Helpful Resource:
 
 ### Contributing to an Existing Template
 
-Select an existing template or create an issue to address the required updates. Create a branch and perform the necessary development work. After completing the updates, migrate the code to existing template folder following the appropriate naming conventions (e.g., `template-{app-name}`, `template-go-app`).
+Select an existing template or create an issue to address the required updates. Create a branch and perform the necessary development work. After completing the updates, migrate the code to existing template folder following the appropriate naming conventions (e.g., `template-{app-name}`, `template-go-standard`).
 
 Subsequently, submit a pull request in accordance with the [Pull Request Guidelines](#pull-request-guidelines).
 
-**Note:** Ensure that all package names are updated accordingly. For example, after verifying the template, change the package name from `"go-app/internal/rest/middleware"` to `"{{ package_name }}/internal/rest/middleware"` within the template code.
+**Note:** Ensure that all package names are updated accordingly. For example, after verifying the template, change the package name from `"go-standard/internal/rest/middleware"` to `"{{ package_name }}/internal/rest/middleware"` within the template code.
 
 ---
 
@@ -110,12 +110,12 @@ Subsequently, submit a pull request in accordance with the [Pull Request Guideli
 
 **Adding helpful commands to `{template-folder}/moon.yml`:**
 
-For project-specific commands that are useful for contributors, consider adding them directly to the `moon.yml` file within the respective template folder (e.g., `templates/go-app/moon.yml`). This makes them easily discoverable and runnable by others using commands like `moon go-app:dev`.
+For project-specific commands that are useful for contributors, consider adding them directly to the `moon.yml` file within the respective template folder (e.g., `templates/go-standard/moon.yml`). This makes them easily discoverable and runnable by others using commands like `moon go-standard:dev`.
 
-**Example for `templates/go-app/moon.yml`:**
+**Example for `templates/go-standard/moon.yml`:**
 
 ```yaml
-# templates/go-app/moon.yml
+# templates/go-standard/moon.yml
 language: 'go'
 type: 'application' # or 'library'
 tasks:
@@ -125,7 +125,7 @@ tasks:
     options:
       persistent: true
   build:
-    command: 'go build -o dist/go-app ./cmd/server' # Example: command to build the Go app
+    command: 'go build -o dist/go-standard ./cmd/server' # Example: command to build the Go app
     inputs:
       - 'src/**/*.go'
       - 'go.mod'
