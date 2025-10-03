@@ -16,7 +16,7 @@
 		"build": "NODE_ENV=production vite build",
 		"storybook": "storybook dev -p 6006 --no-open",
 		"storybook-build": "storybook build -o storybook-static",
-		"cleanup": "pnpm dlx rimraf dist node_modules pnpm-lock.yaml storybook-static",
+		"cleanup": "pnpm dlx del-cli dist node_modules pnpm-lock.yaml storybook-static",
 		"start": "pnpm dlx local-web-server -p 6006 -d storybook-static",
 		"update-deps": "npm-check-updates --configFileName .ncurc.json",
 		"prepublishOnly": "pnpm run build:vite",

@@ -8,7 +8,7 @@
 		"build": "astro build",
 		"preview": "astro preview",
 		"start": "pnpm dlx serve dist -l {{ port_number }} -n -C",
-		"cleanup": "pnpm dlx rimraf node_modules dist .astro",
+		"cleanup": "pnpm dlx del-cli node_modules dist .astro",
 		"update-deps": "npm-check-updates --configFileName .ncurc.json",
 		"lint": "biome lint . --write",
 		"check": "biome check . --write",

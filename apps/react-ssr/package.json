@@ -7,7 +7,7 @@
 		"build": "react-router build",
 		"dev": "NODE_ENV=development node -r dotenv/config server.mjs",
 		"start": "node --no-warnings -r dotenv/config server.mjs",
-		"cleanup": "pnpm dlx rimraf node_modules build .react-router tests-results",
+		"cleanup": "pnpm dlx del-cli node_modules build .react-router tests-results",
 		"update-deps": "npm-check-updates --configFileName .ncurc.json",
 		"test-report": "pnpm dlx serve tests-results -l 9000 -s -n -C",
 		"test-coverage": "vitest run --coverage",
