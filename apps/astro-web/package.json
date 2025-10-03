@@ -1,5 +1,6 @@
 {
 	"name": "astro-web",
+	"description": "_CHANGE_ME_DESCRIPTION_",
 	"type": "module",
 	"private": true,
 	"scripts": {
@@ -8,19 +9,20 @@
 		"preview": "astro preview",
 		"start": "pnpm dlx serve dist -l 4321 -n -C",
 		"cleanup": "pnpm dlx rimraf node_modules dist .astro",
+		"update-deps": "npm-check-updates --configFileName .ncurc.json",
 		"lint": "biome lint . --write",
 		"check": "biome check . --write",
 		"astro": "astro"
 	},
 	"dependencies": {
-		"astro": "^5.14.0",
+		"astro": "^5.14.1",
 		"lucide-astro": "^0.544.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "catalog:",
-		"@tailwindcss/vite": "^4.1.13",
+		"@tailwindcss/vite": "^4.1.14",
 		"npm-check-updates": "catalog:",
 		"tailwindcss-motion": "^1.1.1",
-		"tailwindcss": "^4.1.13"
+		"tailwindcss": "^4.1.14"
 	}
 }

@@ -4,6 +4,7 @@
         "files": [
             ".github",
             "apps",
+            "builder",
             "docsite",
             "go.mod",
             "go.sum",
@@ -11,6 +12,7 @@
             "makezip.sh",
             "packages",
             "pnpm-lock.yaml",
+            "build-templates.sh",
             "README.md",
             "templates"
         ]

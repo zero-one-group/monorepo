@@ -1,30 +1,73 @@
 # syntax=docker/dockerfile:1.7
 
 # Arguments with default value (for build).
+ARG DISTROLESS_TAG=nonroot
 ARG PLATFORM=linux/amd64
 ARG NODE_VERSION=22
-ARG GO_VERSION=1.24
-
-FROM busybox:1.37-glibc as glibc
+ARG GO_VERSION=1.25
 
 # -----------------------------------------------------------------------------
 # Base image for building the Golang app.
 # -----------------------------------------------------------------------------
-FROM --platform=${PLATFORM} golang:${GO_VERSION}-bookworm AS base_go
-ENV MOON_TOOLCHAIN_FORCE_GLOBALS=1 MOON_INSTALL_DIR="/usr/bin"
-ENV PATH="$MOON_INSTALL_DIR:$PATH" LEFTHOOK=0 CI=true
-WORKDIR /srv
+FROM --platform=${PLATFORM} golang:${GO_VERSION}-trixie AS base_go
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0 COREPACK_INTEGRITY_KEYS=0
+ENV FNM_PATH=/usr/bin PNPM_HOME=/pnpm HOME=/root
+ENV PATH="$HOME/.local/share/fnm:$PNPM_HOME:$PATH"
+ENV PATH="/root/.moon/bin:$PATH"
+ARG NODE_VERSION=22.18
 
-# Install system dependencies and moon cli
-RUN apt-get update && apt-get -yqq --no-install-recommends install curl tini jq ca-certificates git
-RUN apt -yqq purge && update-ca-certificates && apt -yqq autoremove && apt -yqq clean
+# Install system dependencies
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
+    --mount=target=/var/cache/apt,type=cache,sharing=locked \
+    rm -f /etc/apt/apt.conf.d/docker-clean && apt-get update -y \
+    && apt-get -yqq --no-install-recommends install build-essential curl \
+       inotify-tools pkg-config libssl-dev git unzip ca-certificates jq \
+    && update-ca-certificates
+
+# Install Node.js and PNPM
+# We need to use bash as the default shell to load fnm function.
+SHELL ["/usr/bin/bash", "-c"]
+RUN echo -e "Installing Node.js $NODE_VERSION" && touch $HOME/.bashrc \
+    && curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell --install-dir $FNM_PATH \
+    && echo 'eval "$(fnm env --use-on-cd --shell bash)"' >> $HOME/.bashrc && . $HOME/.bashrc \
+    && fnm install ${NODE_VERSION} --corepack-enabled \
+    && fnm default ${NODE_VERSION} --corepack-enabled \
+    && corepack prepare pnpm@latest-10 --activate
+
+# Install required SDK
+RUN --mount=type=cache,id=go-sdk,target=/root/.cache/go-sdk \
+    go install github.com/swaggo/swag/cmd/swag@latest
+
+# Add tini for signal handling and zombie reaping
+RUN set -eux; \
+    TINI_DOWNLOAD_URL="https://github.com/krallin/tini/releases/download/v0.19.0" \
+    ARCH="$(dpkg --print-architecture)"; \
+    case "${ARCH}" in \
+      amd64|x86_64) TINI_BIN_URL="${TINI_DOWNLOAD_URL}/tini" ;; \
+      arm64|aarch64) TINI_BIN_URL="${TINI_DOWNLOAD_URL}/tini-arm64" ;; \
+      *) echo "unsupported architecture: ${ARCH}"; exit 1 ;; \
+    esac; \
+    curl -fsSL "${TINI_BIN_URL}" -o /usr/bin/tini; \
+    chmod +x /usr/bin/tini
+
+# Install Moonrepo CLI
 RUN curl -fsSL https://moonrepo.dev/install/moon.sh | bash
+
+WORKDIR /srv
 
 # -----------------------------------------------------------------------------
 # Scaffold the specific project.
 # -----------------------------------------------------------------------------
 FROM base_go AS skeleton
 COPY --link . .
+
+# Bash will load fnm function via .bashrc
+# since we're starting non-interactive shell,
+# we wil need to tell bash to load .bashrc manually
+SHELL ["/usr/bin/bash", "-c"]
+ENV BASH_ENV=$HOME/.bashrc
+
 RUN moon docker scaffold go-modular
 
 # -----------------------------------------------------------------------------
@@ -54,7 +97,7 @@ RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache m
 # -----------------------------------------------------------------------------
 # Production image, copy build output files and run the application (runner).
 # -----------------------------------------------------------------------------
-FROM --platform=${PLATFORM} gcr.io/distroless/cc-debian12 AS runner
+FROM --platform=${PLATFORM} gcr.io/distroless/cc-debian12:${DISTROLESS_TAG} AS runner
 
 # ----- Read application environment variables --------------------------------
 
@@ -99,19 +142,9 @@ ARG OTEL_TRACING_SAMPLE_RATE
 
 # ----- Read application environment variables --------------------------------
 
-# Copy the build output files from the installer stage.
-COPY --from=builder --chown=nonroot:nonroot /srv/apps/go-modular/build/go-modular /srv/go-modular
-
-# Copy some necessary system utilities from previous stage (~7MB).
-# To enhance security, consider avoiding the copying of sysutils.
-COPY --from=base_go /usr/bin/tini /usr/bin/tini
-COPY --from=glibc /usr/bin/env /usr/bin/env
-COPY --from=glibc /bin/clear /bin/clear
-COPY --from=glibc /bin/mkdir /bin/mkdir
-COPY --from=glibc /bin/which /bin/which
-COPY --from=glibc /bin/cat /bin/cat
-COPY --from=glibc /bin/ls /bin/ls
-COPY --from=glibc /bin/sh /bin/sh
+# Copy the build output files and necessary utilities from previous stage.
+COPY --from=builder --chown=nonroot:nonroot /srv/apps/go-modular/build/release/go-modular /srv/go-modular
+COPY --from=builder --chmod=775 /usr/bin/tini /usr/bin/tini
 
 # Define the host and port to listen on.
 ARG APP_MODE=production

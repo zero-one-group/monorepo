@@ -15,8 +15,8 @@
 
 // Basic Components
 export * from "./accordion/accordion";
-export * from "./alert-dialog/alert-dialog";
 export * from "./alert/alert";
+export * from "./alert-dialog/alert-dialog";
 export * from "./aspect-ratio/aspect-ratio";
 export * from "./avatar/avatar";
 export * from "./badge/badge";
@@ -25,6 +25,8 @@ export * from "./button/button";
 export * from "./calendar/calendar";
 export * from "./card/card";
 export * from "./carousel/carousel";
+// Visualizations
+export * from "./chart/chart";
 export * from "./checkbox/checkbox";
 export * from "./collapsible/collapsible";
 export * from "./command/command";
@@ -35,8 +37,8 @@ export * from "./dropdown-menu/dropdown-menu";
 export * from "./form/form";
 export * from "./heading/heading";
 export * from "./hover-card/hover-card";
-export * from "./input-otp/input-otp";
 export * from "./input/input";
+export * from "./input-otp/input-otp";
 export * from "./label/label";
 export * from "./pagination/pagination";
 export * from "./popover/popover";
@@ -47,6 +49,8 @@ export * from "./scroll-area/scroll-area";
 export * from "./select/select";
 export * from "./separator/separator";
 export * from "./sheet/sheet";
+// Layout Components
+export * from "./sidebar";
 export * from "./skeleton/skeleton";
 export * from "./slider/slider";
 export * from "./spinner/spinner";
@@ -57,12 +61,6 @@ export * from "./tabs/tabs";
 export * from "./text/text";
 export * from "./textarea/textarea";
 export * from "./toast/toast";
-export * from "./toggle-group/toggle-group";
 export * from "./toggle/toggle";
+export * from "./toggle-group/toggle-group";
 export * from "./tooltip/tooltip";
-
-// Layout Components
-export * from "./sidebar";
-
-// Visualizations
-export * from "./chart/chart";

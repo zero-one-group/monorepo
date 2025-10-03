@@ -17,13 +17,13 @@ Add the following to your `package.json` file:
 ```json
 {
     "dependencies": {
-        "@repo/shared-ui": "workspace:*"
+        "@repo/{{ package_name | kebab_case }}": "workspace:*"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.1.4",
         "tailwind-variants": "^1.0.0",
         "tailwindcss-motion": "^1.1.0",
-        "tailwindcss": "^4.1.4",
+        "tailwindcss": "^4.1.5",
     }
 }
 ```
@@ -32,7 +32,7 @@ Add the following to your `tsconfig.json` file:
 
 ```json
 {
-    "references": [{ "path": "../../packages/shared-ui" }]
+    "references": [{ "path": "../../packages/{{ package_name | kebab_case }}" }]
 }
 ```
 
@@ -43,20 +43,20 @@ export default defineConfig({
   // ...
   optimizeDeps: {
     // Do not optimize internal workspace dependencies.
-    exclude: ['@repo/shared-ui'],
+    exclude: ['@repo/{{ package_name | kebab_case }}'],
   },
 })
 ```
 
-Add `shared-ui` source list to `global.css`:
+Add `{{ package_name | kebab_case }}` source list to `global.css`:
 
 ```css
-@source "../../../../packages/shared-ui/**/*.{ts,tsx}";
+@source "../../../../packages/{{ package_name | kebab_case }}/**/*.{ts,tsx}";
 ```
 
 Finally, add the following to your `moon.yml` file:
 
 ```yaml
 dependsOn:
-  - 'shared-ui'
+  - '{{ package_name | kebab_case }}'
 ```

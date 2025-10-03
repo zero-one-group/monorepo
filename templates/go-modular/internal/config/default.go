@@ -8,7 +8,7 @@ func DefaultConfig() Config {
 			JWTSecretKey:       "_THIS_IS_DEFAULT_JWT_SECRET_KEY_",
 			JWTAlgorithm:       JWTAlgorithmHS256,
 			ServerHost:         "0.0.0.0",
-			ServerPort:         {{port_number}},
+			ServerPort:         {{ port_number }},
 			CORSOrigins:        []string{"*"},
 			CORSMaxAge:         300,
 			CORSCredentials:    true,

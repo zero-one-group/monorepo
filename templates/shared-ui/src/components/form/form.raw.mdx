@@ -1,0 +1,52 @@
+import { Canvas, Meta, Primary } from '@storybook/addon-docs/blocks';
+import * as Stories from './form.stories';
+
+<Meta of={Stories} />
+
+# Form
+
+Building forms with React Hook Form and form validation.
+
+## Example
+
+```tsx
+import { useForm } from 'react-hook-form'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@repo/{{ package_name | kebab_case }}/components'
+
+function FormDemo() {
+  const form = useForm()
+
+  return (
+    <Form {...form}>
+      <form>
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormDescription>Public display name</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </form>
+    </Form>
+  )
+}
+```
+
+## Preview
+
+<Primary />

@@ -1,36 +1,50 @@
 {
-	"$schema": "https://json.schemastore.org/tsconfig",
-	"compilerOptions": {
-		"allowJs": true,
-		"allowSyntheticDefaultImports": true,
-		"esModuleInterop": true,
-		"isolatedModules": true,
-		"jsx": "react-jsx",
-		"lib": ["DOM", "DOM.Iterable", "ES2023"],
-		"module": "ESNext",
-		"moduleResolution": "bundler",
-		"noEmit": true,
-		"resolveJsonModule": true,
-		"rootDirs": [".", "./.react-router/types"],
-		"skipLibCheck": true,
-		"strict": true,
-		"target": "ES2023",
-		"types": ["node", "vite/client", "@testing-library/jest-dom"],
-		"verbatimModuleSyntax": true,
-		"baseUrl": ".",
-		"paths": {
-			"#/*": ["./app/*"],
-			"react": ["./node_modules/@types/react/index.d.ts"],
-			"react-dom": ["./node_modules/@types/react-dom/index.d.ts"]
-		}
-	},
-	"include": [
-		"app/**/*",
-		"**/.server/**/*",
-		"**/.client/**/*",
-		".react-router/types/**/*",
-		"tests/**/*",
-		"tests-e2e/**/*"
-	],
-	"exclude": ["tests-results"]
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2023"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "rootDirs": [
+      ".",
+      "./.react-router/types"
+    ],
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2023",
+    "types": [
+      "node",
+      "vite/client",
+      "@testing-library/jest-dom"
+    ],
+    "verbatimModuleSyntax": true,
+    "baseUrl": ".",
+    "paths": {
+      "#/*": [
+        "./app/*"
+      ]
+    }
+  },
+  "include": [
+    "**/.client/**/*",
+    "**/.server/**/*",
+    ".react-router/types/**/*",
+    "app/**/*",
+    "tests/**/*",
+    "tests-e2e/**/*"
+  ],
+  "exclude": [
+    "tests-results"
+  ],
+  "references": []
 }

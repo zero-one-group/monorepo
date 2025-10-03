@@ -1,0 +1,19 @@
+all: false
+dir: "{{.InterfaceDir}}"
+filename: "{{.InterfaceName}}.go"
+force-file-write: true
+formatter: goimports
+include-auto-generated: false
+log-level: info
+structname: "{{.InterfaceName}}"
+pkgname: "{{.SrcPackageName}}"
+recursive: false
+require-template-schema-exists: true
+template: testify
+template-schema: "{{.Template}}.schema.json"
+packages:
+  {{ package_name | kebab_case }}/service:
+    config:
+      all: true
+      dir: "{{.InterfaceDir}}/mocks"
+      pkgname: "mocks"

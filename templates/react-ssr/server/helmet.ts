@@ -1,5 +1,10 @@
-import { cspConnectSource, cspFrameSource } from "./constants.js";
-import { cspFontSource, cspImgSources, cspScriptSource } from "./constants.js";
+import {
+	cspConnectSource,
+	cspFontSource,
+	cspFrameSource,
+	cspImgSources,
+	cspScriptSource,
+} from "./constants.js";
 
 export function generateCspDirectives() {
 	const connectSource =

@@ -15,7 +15,7 @@ Short brief description about the project.
 1. Create a new project using this template:
 
     ```bash
-    moon generate template-fastapi-ai
+    moon generate template-{{ package_name | kebab_case }}
     ```
 
 2. Set up environment variables:
@@ -33,18 +33,18 @@ Short brief description about the project.
 
 ### Available Commands
 
-| Command                                                                | Description                                                            |
-|------------------------------------------------------------------------|------------------------------------------------------------------------|
-| `moon {{ package_name \| kebab_case }}:sync`                           | Synchronize project dependencies using uv package manager              |
-| `moon {{ package_name \| kebab_case }}:dev`                            | Start FastAPI development server with hot reload on port 8080          |
-| `moon {{ package_name \| kebab_case }}:start`                          | Launch FastAPI production server on port 8080                          |
-| `moon {{ package_name \| kebab_case }}:migrate`                        | Apply pending Alembic database migrations                              |
-| `moon {{ package_name \| kebab_case }}:migrate-create -- "name"`       | Create a new empty Alembic migration file with the specified name      |
-| `moon {{ package_name \| kebab_case }}:migrate-autogenerate -- "name"` | Generate an Alembic migration by detecting model changes automatically |
-| `moon {{ package_name \| kebab_case }}:migrate-down`                   | Rollback the most recent database migration                            |
-| `moon {{ package_name \| kebab_case }}:migrate-reset`                  | Reset database by rolling back all migrations (useful for clean slate) |
-| `moon {{ package_name \| kebab_case }}:seed`                           | Populate database with dummy data using the seeder script              |
-| `moon {{ package_name \| kebab_case }}:check-in-dance`                 | Complete setup: sync, migrate, and seed in sequence                    |
+| Command                                          | Description                                                            |
+|--------------------------------------------------|------------------------------------------------------------------------|
+| `moon {{ package_name | kebab_case }}:sync`                           | Synchronize project dependencies using uv package manager              |
+| `moon {{ package_name | kebab_case }}:dev`                            | Start FastAPI development server with hot reload on port {{ port_number }}          |
+| `moon {{ package_name | kebab_case }}:start`                          | Launch FastAPI production server on port {{ port_number }}                          |
+| `moon {{ package_name | kebab_case }}:migrate`                        | Apply pending Alembic database migrations                              |
+| `moon {{ package_name | kebab_case }}:migrate-create -- "name"`       | Create a new empty Alembic migration file with the specified name      |
+| `moon {{ package_name | kebab_case }}:migrate-autogenerate -- "name"` | Generate an Alembic migration by detecting model changes automatically |
+| `moon {{ package_name | kebab_case }}:migrate-down`                   | Rollback the most recent database migration                            |
+| `moon {{ package_name | kebab_case }}:migrate-reset`                  | Reset database by rolling back all migrations (useful for clean slate) |
+| `moon {{ package_name | kebab_case }}:seed`                           | Populate database with dummy data using the seeder script              |
+| `moon {{ package_name | kebab_case }}:check-in-dance`                 | Complete setup: sync, migrate, and seed in sequence                    |
 
 ### Running the Application
 
@@ -98,7 +98,7 @@ Tracing is enabled exclusively in the production environment. Set `APP_ENVIRONME
 
 For instructions on customizing span tracing, please refer to the example located at:
 
-- `apps/ai-app/app/repository/openai/greeting.py`
+- `apps/{{ package_name | kebab_case }}/app/repository/openai/greeting.py`
 
 ### Error Handling
 

@@ -1,0 +1,35 @@
+import { Canvas, Meta, Primary } from '@storybook/addon-docs/blocks';
+import * as Stories from './collapsible.stories';
+
+<Meta of={Stories} />
+
+# Collapsible
+
+An interactive component that expands/collapses a panel.
+
+## Example
+
+```tsx
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@repo/{{ package_name | kebab_case }}/components'
+
+<Collapsible>
+  <CollapsibleTrigger>Toggle</CollapsibleTrigger>
+  <CollapsibleContent>
+    <div>Collapsible content</div>
+  </CollapsibleContent>
+</Collapsible>
+
+// With custom trigger
+<Collapsible>
+  <CollapsibleTrigger asChild>
+    <Button>Toggle</Button>
+  </CollapsibleTrigger>
+  <CollapsibleContent>
+    <div>Content</div>
+  </CollapsibleContent>
+</Collapsible>
+```
+
+## Preview
+
+<Primary />

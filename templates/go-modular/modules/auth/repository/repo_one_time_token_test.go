@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"go-modular/modules/auth/models"
-	"go-modular/pkg/apputils"
-	"go-modular/pkg/testutils"
+	"{{ package_name | kebab_case }}/modules/auth/models"
+	"{{ package_name | kebab_case }}/pkg/apputils"
+	"{{ package_name | kebab_case }}/pkg/testutils"
 
 	"github.com/gofrs/uuid/v5"
 	"github.com/stretchr/testify/assert"

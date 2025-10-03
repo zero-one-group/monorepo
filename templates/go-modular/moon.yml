@@ -7,7 +7,7 @@ language: go
 toolchain:
   default: null
 stack: backend
-tags: ["core-app"]
+tags: ["app", "backend"]
 
 # Overrides the name (identifier) of the project
 id: "{{ package_name | kebab_case }}"
@@ -106,51 +106,6 @@ tasks:
       internal: true
       outputStyle: none
 
-  docker-build:
-    script: |
-      DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
-      DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')"
-      docker build -f $projectRoot/Dockerfile . -t $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION \
-      && docker image list --filter reference=$DOCKER_IMAGE\\*
-    options:
-      mergeEnv: replace
-      runFromWorkspaceRoot: true
-      interactive: false
-      outputStyle: buffer-only-failure
-      runInCI: false
-      cache: false
-      shell: true
-
-  docker-run:
-    script: |
-      DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
-      DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
-      docker run --network=host --rm -it --env-file $projectRoot/.env \
-        --name $DOCKER_IMAGE $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION
-    options:
-      mergeEnv: replace
-      outputStyle: buffer-only-failure
-      runFromWorkspaceRoot: true
-      interactive: false
-      runInCI: false
-      cache: false
-      shell: true
-
-  docker-shell:
-    script: |
-      DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
-      DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
-      docker run --network=host --rm -it --env-file $projectRoot/.env \
-        --entrypoint /bin/sh $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION
-    options:
-      mergeEnv: replace
-      runFromWorkspaceRoot: true
-      outputStyle: buffer-only-failure
-      interactive: false
-      runInCI: false
-      cache: false
-      shell: true
-
   dump:
     script: |
       mkdir -p $workspaceRoot/tmp/db_dump
@@ -204,3 +159,48 @@ tasks:
       mergeOutputs: replace
       mergeArgs: replace
       envFile: ".env"
+
+  docker-build:
+    script: |
+      DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
+      DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
+      && docker build -f $projectRoot/Dockerfile . -t $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION \
+      && docker image list --filter reference=$DOCKER_IMAGE\*
+    options:
+      mergeEnv: replace
+      runFromWorkspaceRoot: true
+      interactive: false
+      outputStyle: buffer-only-failure
+      runInCI: false
+      cache: false
+      shell: true
+
+  docker-run:
+    script: |
+      DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
+      DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
+      && docker run --network=host --rm -it --env-file $projectRoot/.env \
+        --name $DOCKER_IMAGE $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION
+    options:
+      mergeEnv: replace
+      outputStyle: buffer-only-failure
+      runFromWorkspaceRoot: true
+      interactive: false
+      runInCI: false
+      cache: false
+      shell: true
+
+  docker-shell:
+    script: |
+      DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
+      DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
+      && docker run --network=host --rm -it --env-file $projectRoot/.env \
+        --entrypoint /bin/sh $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION
+    options:
+      mergeEnv: replace
+      runFromWorkspaceRoot: true
+      outputStyle: buffer-only-failure
+      interactive: false
+      runInCI: false
+      cache: false
+      shell: true

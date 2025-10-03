@@ -1,4 +1,4 @@
-import { type VariantProps, tv } from "tailwind-variants";
+import { tv, type VariantProps } from "tailwind-variants/lite";
 import { buttonStyles } from "../button/button.css";
 
 export const calendarStyles = tv({

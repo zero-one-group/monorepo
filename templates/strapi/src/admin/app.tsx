@@ -1,7 +1,7 @@
 /* @see: https://docs.strapi.io/dev-docs/admin-panel-customization */
 
 import type { StrapiApp } from "@strapi/strapi/admin";
-import consola from "consola";
+import { consola } from "consola";
 import brandIcon from "../assets/brand-icon.svg";
 
 export default {
