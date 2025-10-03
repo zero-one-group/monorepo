@@ -15,7 +15,7 @@ id: 'strapi-cms'
 
 project:
   name: strapi-cms
-  description: 'Strapi headless CMS'
+  description: '_CHANGE_ME_DESCRIPTION_'
 
 env:
   VITE_CJS_IGNORE_WARNING: 'true'

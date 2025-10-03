@@ -1,0 +1,41 @@
+# https://moonrepo.dev/docs/config/project
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+type: configuration
+language: unknown
+stack: infrastructure
+tags: ['config']
+
+# Overrides the name (identifier) of the project
+id: '{{ package_name | kebab_case }}'
+
+project:
+  name: '{{ package_name | kebab_case }}'
+  description: '{{ package_description }}'
+
+# Since this project can infer task from script (package.json), then you can run any script as moon task.
+# @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
+# Example: `moon {{ package_name | kebab_case }}:start`
+tasks:
+  bastion:
+    command: 'ansible-playbook -i inventory.ini hardening-bastion.yml'
+    options:
+      mergeEnv: replace
+      runFromWorkspaceRoot: false
+      interactive: false
+      outputStyle: buffer-only-failure
+      runInCI: false
+      cache: false
+      shell: true
+
+  swarm:
+    command: 'ansible-playbook -i inventory.ini hardening-swarm.yml'
+    options:
+      mergeEnv: replace
+      runFromWorkspaceRoot: false
+      interactive: false
+      outputStyle: buffer-only-failure
+      runInCI: false
+      cache: false
+      shell: true

@@ -1,0 +1,59 @@
+---
+- name: Install AWS ECR Credential Helper
+  hosts: swarm
+  become: yes
+  vars:
+    docker_config_path: "{% raw %}/home/{{ ansible_user }}/.docker{% endraw %}"
+    docker_config_file: "{% raw %}{{ docker_config_path }}/config.json{% endraw %}"
+
+  tasks:
+    - name: Install Go snap package
+      snap:
+        name: go
+        classic: yes
+
+    - name: Ensure .docker directory exists
+      file:
+        path: "{% raw %}{{ docker_config_path }}{% endraw %}"
+        state: directory
+        owner: "{% raw %}{{ ansible_user }}{% endraw %}"
+        group: "{% raw %}{{ ansible_user }}{% endraw %}"
+        mode: '0755'
+
+    - name: Install AWS ECR Credential Helper
+      shell: |
+        export GOPATH=/home/{% raw %}{{ ansible_user }}{% endraw %}/go
+        export PATH=$PATH:$GOPATH/bin
+        go install github.com/awslabs/amazon-ecr-credential-helper/ecr-login/cli/docker-credential-ecr-login@latest
+      environment:
+        GOPATH: "/home/{% raw %}{{ ansible_user }}{% endraw %}/go"
+        PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:/home/{% raw %}{{ ansible_user }}{% endraw %}/go/bin"
+      args:
+        chdir: "/home/{% raw %}{{ ansible_user }}{% endraw %}"
+      become: no
+
+    - name: Add Go bin path to user's PATH in .bashrc
+      lineinfile:
+        path: "/home/{% raw %}{{ ansible_user }}{% endraw %}/.bashrc"
+        line: 'export PATH=$PATH:/home/{% raw %}{{ ansible_user }}{% endraw %}/go/bin'
+        create: yes
+        owner: "{% raw %}{{ ansible_user }}{% endraw %}"
+        group: "{% raw %}{{ ansible_user }}{% endraw %}"
+      become: no
+
+    - name: Create symlink for docker-credential-ecr-login in /usr/local/bin
+      file:
+        src: "/home/{% raw %}{{ ansible_user }}{% endraw %}/go/bin/docker-credential-ecr-login"
+        dest: "/usr/local/bin/docker-credential-ecr-login"
+        state: link
+
+    - name: Create Docker config.json with ECR credential helper
+      copy:
+        content: |
+          {
+            "credsStore": "ecr-login"
+          }
+        dest: "{% raw %}{{ docker_config_file }}{% endraw %}"
+        owner: "{% raw %}{{ ansible_user }}{% endraw %}"
+        group: "{% raw %}{{ ansible_user }}{% endraw %}"
+        mode: '0644'

@@ -12,7 +12,7 @@ id: 'nextjs-app'
 
 project:
   name: 'nextjs-app'
-  description: 'Next.js application'
+  description: '_CHANGE_ME_DESCRIPTION_'
 
 env:
   PORT: '3200'

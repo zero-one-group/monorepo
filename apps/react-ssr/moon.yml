@@ -12,7 +12,7 @@ id: 'react-ssr'
 
 project:
   name: 'react-ssr'
-  description: 'SSR React application'
+  description: '_CHANGE_ME_DESCRIPTION_'
 
 dependsOn:
   - 'shared-ui'

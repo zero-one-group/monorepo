@@ -14,7 +14,7 @@ id: "go-clean"
 
 project:
   name: "go-clean"
-  description: "My backend application"
+  description: "_CHANGE_ME_DESCRIPTION_"
 
 tasks:
   dev:

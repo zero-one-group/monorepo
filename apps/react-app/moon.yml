@@ -12,7 +12,7 @@ id: 'react-app'
 
 project:
   name: react-app
-  description: 'Frontend application'
+  description: '_CHANGE_ME_DESCRIPTION_'
 
 dependsOn:
   - 'shared-ui'

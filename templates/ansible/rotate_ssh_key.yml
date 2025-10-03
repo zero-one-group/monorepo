@@ -1,0 +1,30 @@
+---
+- name: Rotate SSH Keys for Bastion Host
+  hosts: bastion
+  become: yes
+  vars:
+    new_user: sentinel
+    new_public_key_path: "{% raw %}{{ lookup('env','HOME') }}/.ssh/id_rsa.pub{% endraw %}"
+    old_public_key_path: "{% raw %}{{ lookup('env','HOME') }}/.ssh/new_id_rsa.pub{% endraw %}"
+
+  tasks:
+    - name: Read new public key content from local file
+      delegate_to: localhost
+      run_once: true
+      become: no
+      slurp:
+        src: "{% raw %}{{ new_public_key_path }}{% endraw %}"
+      register: new_pubkey_content
+
+    - name: Ensure the new public key is present in authorized_keys
+      authorized_key:
+        user: "{% raw %}{{ new_user }}{% endraw %}"
+        key: "{% raw %}{{ (new_pubkey_content.content | b64decode).strip() }}{% endraw %}"
+        state: present
+
+    - name: Remove the old public key from authorized_keys (if known)
+      authorized_key:
+        user: "{% raw %}{{ new_user }}{% endraw %}"
+        key: "{% raw %}{{ lookup('file', old_public_key_path) }}{% endraw %}"
+        state: absent
+      ignore_errors: yes

@@ -1,5 +1,6 @@
 {
 	"name": "strapi-cms",
+	"description": "_CHANGE_ME_DESCRIPTION_",
 	"private": true,
 	"scripts": {
 		"dev": "strapi develop",

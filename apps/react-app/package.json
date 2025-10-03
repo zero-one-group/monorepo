@@ -1,5 +1,6 @@
 {
 	"name": "react-app",
+	"description": "_CHANGE_ME_DESCRIPTION_",
 	"private": true,
 	"type": "module",
 	"scripts": {

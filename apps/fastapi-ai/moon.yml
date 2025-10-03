@@ -11,7 +11,7 @@ id: "fastapi-ai"
 
 project:
   name: "fastapi-ai"
-  description: "Artificial Intelligence App"
+  description: "_CHANGE_ME_DESCRIPTION_"
 
 # Since this project can infer task from script (package.json), then you can run any script as moon task.
 # @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts

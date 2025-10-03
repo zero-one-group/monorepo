@@ -1,5 +1,6 @@
 {
 	"name": "nextjs-app",
+	"description": "_CHANGE_ME_DESCRIPTION_",
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
