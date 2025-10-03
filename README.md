@@ -15,7 +15,7 @@ Zero One Group projects.
 1. **Create new monorepo project:**
    `pnpm dlx tiged zero-one-group/monorepo my-monorepo-project`
 2. **Install dependencies:**
-   `cd moon-project && pnpm install`
+   `cd my-monorepo-project && pnpm install`
 3. **Generate the application from template:**
    `moon generate TEMPLATE_NAME`
 4. **Configure your environment:**
