@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "check": "biome check . --write",
-    "cleanup": "pnpm dlx rimraf node_modules .{cache,data,next,tmp} dist tests-results",
+    "cleanup": "pnpm dlx del-cli node_modules .{cache,data,next,tmp} dist tests-results",
     "update-deps": "npm-check-updates --configFileName .ncurc.json",
     "test-report": "pnpm dlx serve tests-results -l 9000 -s -n -C",
     "test-coverage": "vitest run --coverage",

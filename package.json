@@ -7,29 +7,21 @@
         "lint": "moon :lint",
         "check": "moon :check",
         "format": "biome format . --write",
-        "cmd": "tsx --tsconfig tsconfig.json -r dotenv/config internal/cli.ts",
         "compose:cleanup": "docker compose -f compose.yaml down --remove-orphans --volumes",
         "compose:up": "docker compose -f compose.yaml up -d --remove-orphans",
         "compose:down": "docker compose -f compose.yaml down --remove-orphans && docker compose -f compose.yaml --profile instrumented down --remove-orphans",
         "compose:instrumented": "docker compose -f compose.yaml --profile instrumented up -d --remove-orphans",
         "update-deps": "npm-check-updates --configFileName .ncurc.json && moon :update-deps",
         "cleanup": "pnpm --stream --color \"/cleanup:(?!deps|cache)/\"",
-        "cleanup:deps": "pnpm dlx rimraf pnpm-lock.yaml node_modules",
-        "cleanup:cache": "pnpm dlx rimraf .moon/cache --verbose",
+        "cleanup:deps": "pnpm dlx del-cli pnpm-lock.yaml node_modules",
+        "cleanup:cache": "pnpm dlx del-cli .moon/cache --verbose",
         "cleanup:apps": "pnpm run -r --stream --color cleanup",
         "cleanup:store": "pnpm store prune --force",
         "typecheck": "moon :typecheck"
     },
     "devDependencies": {
         "@biomejs/biome": "catalog:",
-        "@clack/prompts": "^0.11.0",
-        "@noble/hashes": "^2.0.1",
-        "@types/node": "^24.6.2",
-        "citty": "^0.1.6",
-        "consola": "^3.4.2",
-        "dotenv": "^17.2.3",
-        "npm-check-updates": "catalog:",
-        "tsx": "^4.20.6"
+        "npm-check-updates": "catalog:"
     },
     "pnpm": {
         "onlyBuiltDependencies": [

@@ -1,6 +1,0 @@
-// Package models contains struct definitions related to the database layer for the user module.
-// This file defines models that map to database tables and are used for database operations.
-
-package models
-
-type Message string

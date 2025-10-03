@@ -1,8 +1,0 @@
-// Package models contains HTTP request/response schema definitions for the user module.
-// This file defines struct types used for HTTP payloads, validation, and OpenAPI documentation.
-
-package models
-
-type HelloResponse struct {
-	Content string `json:"content" validate:"required"`
-}
