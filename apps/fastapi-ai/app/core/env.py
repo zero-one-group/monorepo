@@ -10,7 +10,7 @@ class Env(BaseSettings):
     """
 
     ML_PREFIX_API: str
-    APP_NAME: str = "ai-app"
+    APP_NAME: str = "fastapi-ai"
     APP_ENVIRONMENT: str = "development"
     DATABASE_URL: str
     OPENAI_API_KEY: str
