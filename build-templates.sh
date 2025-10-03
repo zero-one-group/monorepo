@@ -75,6 +75,7 @@ bash ./builder/nextjs-app.sh
 bash ./builder/react-app.sh
 bash ./builder/react-ssr.sh
 bash ./builder/strapi-cms.sh
+bash ./builder/shared-ui.sh
 echo
 echo "All processes completed successfully."
 echo

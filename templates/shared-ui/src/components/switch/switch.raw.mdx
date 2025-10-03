@@ -1,0 +1,33 @@
+import { Canvas, Meta, Primary } from '@storybook/addon-docs/blocks';
+import * as Stories from './switch.stories';
+
+<Meta of={Stories} />
+
+# Switch
+
+A control that allows the user to toggle between checked and not checked.
+
+## Example
+
+```tsx
+import { Switch } from '@repo/{{ package_name | kebab_case }}/components'
+
+// Basic usage
+<Switch />
+
+// With label
+<div className="flex items-center gap-2">
+  <Switch id="airplane-mode" />
+  <Label htmlFor="airplane-mode">Airplane Mode</Label>
+</div>
+
+// Disabled state
+<Switch disabled />
+
+// Default checked
+<Switch defaultChecked />
+```
+
+## Preview
+
+<Primary />

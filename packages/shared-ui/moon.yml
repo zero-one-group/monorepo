@@ -11,7 +11,7 @@ id: 'shared-ui'
 
 project:
   name: shared-ui
-  description: 'Shared UI library'
+  description: 'Shared UI Components for React apps'
 
 # Since this project can infer task from script (package.json), then you can run any script as moon task.
 # @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts

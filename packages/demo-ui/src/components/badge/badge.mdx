@@ -1,0 +1,33 @@
+import { Canvas, Meta, Primary } from '@storybook/addon-docs/blocks';
+import * as Stories from './badge.stories';
+
+<Meta of={Stories} />
+
+# Badge
+
+Displays a badge or a component that looks like a badge.
+
+## Example
+
+```tsx
+import { Badge } from '@repo/{{ package_name | kebab_case }}/components'
+
+// Basic usage
+<Badge>New</Badge>
+
+// Different variants
+<Badge variant="success">Completed</Badge>
+<Badge variant="warning">Pending</Badge>
+<Badge variant="destructive">Failed</Badge>
+
+// Different sizes
+<Badge size="sm">Small</Badge>
+<Badge size="lg">Large</Badge>
+
+// Rounded variants
+<Badge rounded="full">Rounded Full</Badge>
+```
+
+## Preview
+
+<Primary />
