@@ -26,7 +26,7 @@ Templates are available for backend (Go, FastAPI), frontend (Astro, Next.js, Rea
 Each template is designed to follow best practices and comes with pre-configured tooling, recommended folder structures, and example code to get you up and running fast.
 You can generate new apps from these templates using provided commands, and customize them to fit your needs.
 
-For the full list of available templates, usage instructions, and customization options, please refer to the [documentation](https://oss.zero-one-group.com/monorepo/available-templates/).
+For the full list of available templates, and usage instructions, please refer to the [documentation](https://oss.zero-one-group.com/monorepo/available-templates/).
 
 ## Learn More
 
