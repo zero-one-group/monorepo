@@ -8,8 +8,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"go-clean/database"
-	"go-clean/internal/metrics"
+	"{{ package_name | kebab_case }}/database"
+	"{{ package_name | kebab_case }}/internal/metrics"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"

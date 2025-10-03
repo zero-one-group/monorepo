@@ -6,8 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
-	"go-clean/internal/logging"
-	"go-clean/seeders"
+	"{{ package_name | kebab_case }}/internal/logging"
+	"{{ package_name | kebab_case }}/seeders"
 )
 
 func runSeeder(db *sql.DB, target string) error {

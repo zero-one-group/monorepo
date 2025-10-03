@@ -1,7 +1,7 @@
 [project]
-name = "zog-ai-project-template"
+name = "fastapi-ai"
 version = "0.1.0"
-description = "Add your description here"
+description = "_CHANGE_ME_DESCRIPTION_"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@repo/shared-ui/components";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "#/app/link";
@@ -10,14 +9,13 @@ function SubmitButton() {
 	const { pending } = useFormStatus();
 
 	return (
-		<Button
+		<button
 			type="submit"
-			variant="default"
-			className="w-full"
+			className="w-full rounded-lg bg-blue-600 px-4 py-2 text-white font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
 			disabled={pending}
 		>
 			{pending ? "Signing in..." : "Sign in"}
-		</Button>
+		</button>
 	);
 }
 

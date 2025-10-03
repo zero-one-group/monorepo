@@ -10,15 +10,15 @@ import (
 	"syscall"
 	"time"
 
-	"go-modular/internal/adapter"
-	"go-modular/internal/config"
-	"go-modular/internal/notification"
+	"{{ package_name | kebab_case }}/internal/adapter"
+	"{{ package_name | kebab_case }}/internal/config"
+	"{{ package_name | kebab_case }}/internal/notification"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
-	appMiddleware "go-modular/internal/middleware"
-	templateFS "go-modular/templates"
+	appMiddleware "{{ package_name | kebab_case }}/internal/middleware"
+	templateFS "{{ package_name | kebab_case }}/templates"
 )
 
 // HTTPServer is the main HTTP server struct.

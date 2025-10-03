@@ -2,7 +2,7 @@ package rest
 
 import (
 	"context"
-	"go-clean/domain"
+	"{{ package_name | kebab_case }}/domain"
 	"net/http"
 
 	"github.com/labstack/echo/v4"

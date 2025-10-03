@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"go-modular/internal/config"
+	"{{ package_name | kebab_case }}/internal/config"
 
 	"github.com/labstack/echo/v4"
 	emw "github.com/labstack/echo/v4/middleware"

@@ -3,8 +3,8 @@ package postgres
 import (
 	"context"
 	"errors"
-	"go-clean/domain"
-	"go-clean/utils"
+	"{{ package_name | kebab_case }}/domain"
+	"{{ package_name | kebab_case }}/utils"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"

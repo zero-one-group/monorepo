@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	"go-clean/domain"
-	"go-clean/internal/logging"
+	"{{ package_name | kebab_case }}/domain"
+	"{{ package_name | kebab_case }}/internal/logging"
 
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel"

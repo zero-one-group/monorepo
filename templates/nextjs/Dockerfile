@@ -27,7 +27,7 @@ RUN curl -fsSL https://moonrepo.dev/install/moon.sh | bash
 # -----------------------------------------------------------------------------
 FROM base AS skeleton
 COPY --link . .
-RUN moon docker scaffold nextjs-app
+RUN moon docker scaffold {{ package_name | kebab_case }}
 
 # -----------------------------------------------------------------------------
 # Install dependencies and build the application.
@@ -48,7 +48,7 @@ COPY --from=skeleton /srv/.moon/docker/sources .
 COPY --from=skeleton /srv/.npmrc .
 
 # Build the application and prune the workspace (optional).
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run nextjs-app:build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run {{ package_name | kebab_case }}:build
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 
 # -----------------------------------------------------------------------------
@@ -57,15 +57,15 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 FROM base AS pruner
 
 # Copy only necessary files from builder stage
-COPY --from=builder /srv/apps/nextjs-app/.next/standalone /srv
-COPY --from=builder /srv/apps/nextjs-app/.next/static /srv/apps/nextjs-app/.next/static
-COPY --from=builder /srv/apps/nextjs-app/public /srv/apps/nextjs-app/public
+COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/.next/standalone /srv
+COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/.next/static /srv/apps/{{ package_name | kebab_case }}/.next/static
+COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/public /srv/apps/{{ package_name | kebab_case }}/public
 
 # Copy Next.js configuration files.
-COPY --from=skeleton /srv/apps/nextjs-app/next.config.mjs /srv/apps/nextjs-app/next.config.mjs
+COPY --from=skeleton /srv/apps/{{ package_name | kebab_case }}/next.config.mjs /srv/apps/{{ package_name | kebab_case }}/next.config.mjs
 
 # Set permissions for the public directory and the server.js file.
-RUN chmod -R 0775 /srv/apps/nextjs-app/public && chmod +x /srv/apps/nextjs-app/server.js
+RUN chmod -R 0775 /srv/apps/{{ package_name | kebab_case }}/public && chmod +x /srv/apps/{{ package_name | kebab_case }}/server.js
 
 # Cleanup uncessary files and install production dependencies
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm dlx \
@@ -98,11 +98,11 @@ COPY --from=glibc /bin/ls /bin/ls
 COPY --from=glibc /bin/sh /bin/sh
 
 # Define the host and port to listen on.
-ARG NODE_ENV=production HOSTNAME=0.0.0.0 PORT=3200
+ARG NODE_ENV=production HOSTNAME=0.0.0.0 PORT={{ port_number }}
 ENV NODE_ENV=$NODE_ENV HOSTNAME=$HOSTNAME PORT=$PORT
 ENV TINI_SUBREAPER=true NEXT_TELEMETRY_DISABLED=1
 
-WORKDIR /srv/apps/nextjs-app
+WORKDIR /srv/apps/{{ package_name | kebab_case }}
 USER nonroot:nonroot
 EXPOSE $PORT
 

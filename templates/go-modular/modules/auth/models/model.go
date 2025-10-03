@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gofrs/uuid/v5"
-	user_models "go-modular/modules/user/models"
+	user_models "{{ package_name | kebab_case }}/modules/user/models"
 )
 
 // -- MARK: UserPassword section

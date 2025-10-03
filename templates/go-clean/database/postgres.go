@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"go-clean/internal/logging"
+	"{{ package_name | kebab_case }}/internal/logging"
 
 	"github.com/exaring/otelpgx"
 	"github.com/jackc/pgx/v5/pgxpool"

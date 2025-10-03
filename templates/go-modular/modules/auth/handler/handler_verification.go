@@ -4,11 +4,11 @@ import (
 	"net/http"
 	"net/url"
 
-	"go-modular/modules/auth/models"
-	"go-modular/pkg/apputils"
+	"{{ package_name | kebab_case }}/modules/auth/models"
+	"{{ package_name | kebab_case }}/pkg/apputils"
 
 	"github.com/labstack/echo/v4"
-	"go-modular/modules/user/repository"
+	"{{ package_name | kebab_case }}/modules/user/repository"
 )
 
 // @Summary      Initiate email verification

@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
-	"go-clean/cmd/commands"
-	"go-clean/config"
-	"go-clean/internal/logging"
+	"{{ package_name | kebab_case }}/cmd/commands"
+	"{{ package_name | kebab_case }}/config"
+	"{{ package_name | kebab_case }}/internal/logging"
 	"os"
 )
 

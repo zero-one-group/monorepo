@@ -21,7 +21,7 @@
 	},
 	"servers": [
 		{
-			"url": "http://localhost:1337/api",
+			"url": "http://localhost:{{ port_number }}/api",
 			"description": "Development server"
 		}
 	],

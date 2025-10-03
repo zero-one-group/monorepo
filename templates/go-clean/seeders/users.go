@@ -3,7 +3,7 @@ package seeders
 import (
 	"database/sql"
 
-	"go-clean/utils"
+	"{{ package_name | kebab_case }}/utils"
 )
 
 func SeedUsers(db *sql.DB) error {

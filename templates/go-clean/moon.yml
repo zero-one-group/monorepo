@@ -10,11 +10,11 @@ stack: backend
 tags: ["app", "backend"]
 
 # Overrides the name (identifier) of the project
-id: "go-clean"
+id: "{{ package_name | kebab_case }}"
 
 project:
-  name: "go-clean"
-  description: "My backend application"
+  name: "{{ package_name | kebab_case }}"
+  description: "{{ package_description }}"
 
 tasks:
   dev:
@@ -24,12 +24,12 @@ tasks:
       envFile: "/.env"
 
   build:
-    command: "go build -o build/go-clean"
-    outputs: ["build/go-clean"]
+    command: "go build -o build/{{ package_name | kebab_case }}"
+    outputs: ["build/{{ package_name | kebab_case }}"]
     deps: [tidy]
 
   start:
-    command: "build/go-clean"
+    command: "build/{{ package_name | kebab_case }}"
 
   test:
     command: "go test ./... -count=1"
@@ -52,7 +52,7 @@ tasks:
 
   kill-port:
     # This is a hack for killing the listen port before starting the app
-    command: "pnpm --package=kill-port-process-cli dlx kill-port 8000"
+    command: "pnpm --package=kill-port-process-cli dlx kill-port {{ port_number }}"
     deps: [tidy]
     options:
       internal: true

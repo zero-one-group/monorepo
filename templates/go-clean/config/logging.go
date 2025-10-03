@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"go-clean/internal/rest/middleware"
+	"{{ package_name | kebab_case }}/internal/rest/middleware"
 
 	"github.com/lmittmann/tint"
 )

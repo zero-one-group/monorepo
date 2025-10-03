@@ -17,7 +17,7 @@ export default defineConfig({
 		tsconfigPaths(),
 		devtoolsJson(),
 	],
-	server: { port: 3000, host: false },
+	server: { port: {{ port_number }}, host: false },
 	publicDir: resolve("public"),
 	optimizeDeps: {
 		// Do not optimize internal workspace dependencies.

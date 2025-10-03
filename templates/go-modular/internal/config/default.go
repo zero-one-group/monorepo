@@ -4,11 +4,11 @@ func DefaultConfig() Config {
 	return Config{
 		App: AppConfig{
 			Mode:               "development",
-			BaseURL:            "http://localhost:8000",
+			BaseURL:            "http://localhost:{{ port_number }}",
 			JWTSecretKey:       "_THIS_IS_DEFAULT_JWT_SECRET_KEY_",
 			JWTAlgorithm:       JWTAlgorithmHS256,
 			ServerHost:         "0.0.0.0",
-			ServerPort:         8000,
+			ServerPort:         {{ port_number }},
 			CORSOrigins:        []string{"*"},
 			CORSMaxAge:         300,
 			CORSCredentials:    true,
@@ -50,7 +50,7 @@ func DefaultConfig() Config {
 			ExporterOTLPProtocol: "http/protobuf",
 			ExporterOTLPEndpoint: "http://localhost:4318",
 			ExporterOTLPHeaders:  "\"authorization=YOUR_INGESTION_API_KEY\"",
-			ServiceName:          "go-modular",
+			ServiceName:          "{{ package_name | kebab_case }}",
 			EnableTelemetry:      false,
 			InsecureMode:         false,
 			TracingSampleRate:    0.7,

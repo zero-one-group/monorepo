@@ -4,14 +4,14 @@ import (
 	"context"
 	"time"
 
-	"go-modular/internal/notification"
-	"go-modular/modules/auth/models"
-	"go-modular/modules/auth/repository"
+	"{{ package_name | kebab_case }}/internal/notification"
+	"{{ package_name | kebab_case }}/modules/auth/models"
+	"{{ package_name | kebab_case }}/modules/auth/repository"
 
 	"github.com/gofrs/uuid/v5"
 	"github.com/lestrrat-go/jwx/jwa"
 
-	svcUser "go-modular/modules/user/services"
+	svcUser "{{ package_name | kebab_case }}/modules/user/services"
 )
 
 // AuthServiceInterface defines the contract for user business logic.

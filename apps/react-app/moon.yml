@@ -14,8 +14,9 @@ project:
   name: react-app
   description: '_CHANGE_ME_DESCRIPTION_'
 
-dependsOn:
-  - 'shared-ui'
+# Uncomment to use shared UI library
+# dependsOn:
+#   - 'shared-ui'
 
 # Since this project can infer task from script (package.json), then you can run any script as moon task.
 # @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts

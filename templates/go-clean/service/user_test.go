@@ -3,9 +3,9 @@ package service_test
 import (
 	"context"
 	"errors"
-	"go-clean/domain"
-	"go-clean/service"
-	"go-clean/service/mocks"
+	"{{ package_name | kebab_case }}/domain"
+	"{{ package_name | kebab_case }}/service"
+	"{{ package_name | kebab_case }}/service/mocks"
 
 	"testing"
 

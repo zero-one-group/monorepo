@@ -8,16 +8,16 @@ import (
 	"os"
 	"os/signal"
 	"time"
-	"go-clean/internal/metrics"
+	"{{ package_name | kebab_case }}/internal/metrics"
 
-	"go-clean/config"
-	"go-clean/database"
-	"go-clean/domain"
-	"go-clean/internal/logging"
-	"go-clean/internal/repository/postgres"
-	"go-clean/internal/rest"
-	"go-clean/internal/rest/middleware"
-	"go-clean/service"
+	"{{ package_name | kebab_case }}/config"
+	"{{ package_name | kebab_case }}/database"
+	"{{ package_name | kebab_case }}/domain"
+	"{{ package_name | kebab_case }}/internal/logging"
+	"{{ package_name | kebab_case }}/internal/repository/postgres"
+	"{{ package_name | kebab_case }}/internal/rest"
+	"{{ package_name | kebab_case }}/internal/rest/middleware"
+	"{{ package_name | kebab_case }}/service"
 
 	"github.com/labstack/echo/v4"
 	echoSwagger "github.com/swaggo/echo-swagger"
@@ -96,10 +96,10 @@ func main() {
 		host = "127.0.0.1"
 	}
 
-	// Get port from environment variable, default to 8000 if not set
+	// Get port from environment variable, default to {{ port_number }} if not set
 	port := os.Getenv("APP_PORT")
 	if port == "" {
-		port = "8000"
+		port = "{{ port_number }}"
 	}
 
 	// Server address and port to listen on

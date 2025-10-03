@@ -3,7 +3,7 @@ package handler
 import (
 	"log/slog"
 
-	"go-modular/modules/auth/services"
+	"{{ package_name | kebab_case }}/modules/auth/services"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"

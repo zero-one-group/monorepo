@@ -7,7 +7,7 @@ import (
 
 	"github.com/gofrs/uuid/v5"
 	"github.com/jackc/pgx/v5"
-	"go-modular/modules/auth/models"
+	"{{ package_name | kebab_case }}/modules/auth/models"
 )
 
 // CreateSession inserts a new session into the database.

@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	"go-modular/docs"
-	"go-modular/internal/config"
-	"go-modular/web"
+	"{{ package_name | kebab_case }}/docs"
+	"{{ package_name | kebab_case }}/internal/config"
+	"{{ package_name | kebab_case }}/web"
 
 	"github.com/alexliesenfeld/health"
 	"github.com/jackc/pgx/v5/pgxpool"

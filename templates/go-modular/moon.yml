@@ -10,11 +10,11 @@ stack: backend
 tags: ["app", "backend"]
 
 # Overrides the name (identifier) of the project
-id: "go-modular"
+id: "{{ package_name | kebab_case }}"
 
 project:
-  name: "go-modular"
-  description: "Modular monolith Go application"
+  name: "{{ package_name | kebab_case }}"
+  description: "{{ package_description }}"
 
 tasks:
   dev:
@@ -99,7 +99,7 @@ tasks:
 
   kill-port:
     # This is a hack for killing the listen port before starting the app
-    command: "pnpm --package=kill-port-process-cli dlx kill-port 8000"
+    command: "pnpm --package=kill-port-process-cli dlx kill-port {{ port_number }}"
     deps: [tidy]
     options:
       envFile: ".env"

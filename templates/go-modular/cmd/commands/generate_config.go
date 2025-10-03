@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"go-modular/internal/config"
+	"{{ package_name | kebab_case }}/internal/config"
 )
 
 var forceOverwrite bool

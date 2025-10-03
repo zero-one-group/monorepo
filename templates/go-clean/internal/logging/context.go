@@ -3,7 +3,7 @@ package logging
 import (
 	"context"
 	"log/slog"
-	"go-clean/internal/rest/middleware"
+	"{{ package_name | kebab_case }}/internal/rest/middleware"
 )
 
 // UserInfo holds user context information for logging

@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	"go-clean/domain"
-	"go-clean/utils"
+	"{{ package_name | kebab_case }}/domain"
+	"{{ package_name | kebab_case }}/utils"
 )
 
 type AuthRepository interface {

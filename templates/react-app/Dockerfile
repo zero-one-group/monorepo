@@ -28,7 +28,7 @@ RUN curl -fsSL https://moonrepo.dev/install/moon.sh | bash
 # -----------------------------------------------------------------------------
 FROM base AS skeleton
 COPY --link . .
-RUN moon docker scaffold react-app
+RUN moon docker scaffold {{ package_name | kebab_case }}
 
 # -----------------------------------------------------------------------------
 # Install dependencies and build the application.
@@ -46,7 +46,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker setup
 COPY --from=skeleton /srv/.moon/docker/sources .
 
 # Build the application and prune the workspace (optional).
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run react-app:build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run {{ package_name | kebab_case }}:build
 
 # -----------------------------------------------------------------------------
 # Production image, copy build output files and run the application (runner).
@@ -60,7 +60,7 @@ ARG VITE_API_URL VITE_BASE_URL
 # ----- Read application environment variables --------------------------------
 
 # Copy the build output files from the installer stage.
-COPY --from=builder --chown=nonroot:nonroot /srv/apps/react-app/build/client /srv
+COPY --from=builder --chown=nonroot:nonroot /srv/apps/{{ package_name | kebab_case }}/build/client /srv
 
 # Copy the required binaries and configuration file.
 COPY --from=skeleton /srv/docker/sws-spa.toml /etc/sws.toml
@@ -78,7 +78,7 @@ COPY --from=base /usr/bin/tini /usr/bin/tini
 # COPY --from=glibc /bin/sh /bin/sh
 
 # Define the log level, host and port to listen on.
-ARG SERVER_LOG_LEVEL=info SERVER_HOST=0.0.0.0 SERVER_PORT=3000
+ARG SERVER_LOG_LEVEL=info SERVER_HOST=0.0.0.0 SERVER_PORT={{ port_number }}
 ENV SERVER_CONFIG_FILE=/etc/sws.toml SERVER_LOG_LEVEL=$SERVER_LOG_LEVEL
 ENV SERVER_HOST=$SERVER_HOST SERVER_PORT=$SERVER_PORT TINI_SUBREAPER=true
 STOPSIGNAL SIGQUIT

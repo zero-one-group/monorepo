@@ -1,5 +1,3 @@
-// FIXME: ERR_UNSUPPORTED_DIR_IMPORT use-sync-external-store/shim
-// import { Button } from '@repo/shared-ui/components'
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { Link } from "#/components/link";

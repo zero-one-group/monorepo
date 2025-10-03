@@ -68,7 +68,7 @@ COPY --link . .
 SHELL ["/usr/bin/bash", "-c"]
 ENV BASH_ENV=$HOME/.bashrc
 
-RUN moon docker scaffold go-clean
+RUN moon docker scaffold {{ package_name | kebab_case }}
 
 # -----------------------------------------------------------------------------
 # Install dependencies and build the application.
@@ -90,8 +90,8 @@ RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache m
 COPY --from=skeleton /srv/.moon/docker/sources .
 
 # Build the application and prune the workspace
-RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon run go-clean:tidy
-RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon run go-clean:build
+RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon run {{ package_name | kebab_case }}:tidy
+RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon run {{ package_name | kebab_case }}:build
 RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon docker prune
 
 # -----------------------------------------------------------------------------
@@ -118,11 +118,11 @@ ARG TRACING_SAMPLE_RATE
 # ----- Read application environment variables --------------------------------
 
 # Copy the build output files and necessary utilities from previous stage.
-COPY --from=builder --chown=nonroot:nonroot /srv/apps/go-clean/build/go-clean /srv/go-clean
+COPY --from=builder --chown=nonroot:nonroot /srv/apps/{{ package_name | kebab_case }}/build/{{ package_name | kebab_case }} /srv/{{ package_name | kebab_case }}
 COPY --from=builder --chmod=775 /usr/bin/tini /usr/bin/tini
 
 # Define the host and port to listen on.
-ARG HOST=0.0.0.0 PORT=8000
+ARG HOST=0.0.0.0 PORT={{ port_number }}
 ENV HOST=$HOST PORT=$PORT
 ENV TINI_SUBREAPER=true
 
@@ -131,4 +131,4 @@ USER nonroot:nonroot
 EXPOSE $PORT/tcp
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["/srv/go-clean"]
+CMD ["/srv/{{ package_name | kebab_case }}"]

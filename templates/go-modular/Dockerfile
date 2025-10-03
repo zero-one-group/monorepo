@@ -68,7 +68,7 @@ COPY --link . .
 SHELL ["/usr/bin/bash", "-c"]
 ENV BASH_ENV=$HOME/.bashrc
 
-RUN moon docker scaffold go-modular
+RUN moon docker scaffold {{ package_name | kebab_case }}
 
 # -----------------------------------------------------------------------------
 # Install dependencies and build the application.
@@ -90,8 +90,8 @@ RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache m
 COPY --from=skeleton /srv/.moon/docker/sources .
 
 # Build the application and prune the workspace
-RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon run go-modular:tidy
-RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon run go-modular:build
+RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon run {{ package_name | kebab_case }}:tidy
+RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon run {{ package_name | kebab_case }}:build
 RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache moon docker prune
 
 # -----------------------------------------------------------------------------
@@ -143,13 +143,13 @@ ARG OTEL_TRACING_SAMPLE_RATE
 # ----- Read application environment variables --------------------------------
 
 # Copy the build output files and necessary utilities from previous stage.
-COPY --from=builder --chown=nonroot:nonroot /srv/apps/go-modular/build/release/go-modular /srv/go-modular
+COPY --from=builder --chown=nonroot:nonroot /srv/apps/{{ package_name | kebab_case }}/build/release/{{ package_name | kebab_case }} /srv/{{ package_name | kebab_case }}
 COPY --from=builder --chmod=775 /usr/bin/tini /usr/bin/tini
 
 # Define the host and port to listen on.
 ARG APP_MODE=production
 ARG SERVER_HOST=0.0.0.0
-ARG SERVER_PORT=8000
+ARG SERVER_PORT={{ port_number }}
 ENV APP_MODE=$APP_MODE
 ENV SERVER_HOST=$SERVER_HOST
 ENV SERVER_PORT=$SERVER_PORT
@@ -160,4 +160,4 @@ USER nonroot:nonroot
 EXPOSE $SERVER_PORT/tcp
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["/srv/go-modular", "serve"]
+CMD ["/srv/{{ package_name | kebab_case }}", "serve"]

@@ -6,8 +6,8 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
-	"go-clean/domain"
-	"go-clean/internal/logging"
+	"{{ package_name | kebab_case }}/domain"
+	"{{ package_name | kebab_case }}/internal/logging"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"

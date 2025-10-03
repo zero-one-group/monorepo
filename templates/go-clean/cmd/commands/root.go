@@ -3,7 +3,7 @@ package commands
 import (
 	"errors"
 	"fmt"
-	"go-clean/database"
+	"{{ package_name | kebab_case }}/database"
 )
 
 func Execute(command string, args []string) error {

@@ -1,6 +1,12 @@
 #!/bin/bash
 echo
 
+# Check if jq is installed
+if ! command -v jq >/dev/null 2>&1; then
+    echo "Error: jq is not installed. Please install jq to continue."
+    exit 1
+fi
+
 # First, run code formatter
 echo "Running code formatter..."
 pnpm --silent run format
@@ -46,11 +52,13 @@ for i in "${!TGT_DIRS[@]}"; do
         rm -rf "$TGT_PATH/vendor"
         rm -rf "$TGT_PATH/build"
         rm -rf "$TGT_PATH/dist"
+        rm -rf "$TGT_PATH/uv.lock"
         rm -rf "$TGT_PATH/.react-router"
         rm -rf "$TGT_PATH/.astro"
         rm -rf "$TGT_PATH/.cache"
         rm -rf "$TGT_PATH/.strapi"
         rm -rf "$TGT_PATH/.next"
+        rm -rf "$TGT_PATH/.venv"
         rm -rf "$TGT_PATH/.env"
         find "$TGT_PATH" -type f -name ".DS_Store" -delete
     fi
@@ -60,13 +68,13 @@ echo
 
 echo "Scaffolding templates..."
 bash ./builder/astro.sh
-# bash ./builder/fastapi-ai.sh
-# bash ./builder/go-clean.sh
-# bash ./builder/go-modular.sh
-# bash ./builder/nextjs-app.sh
-# bash ./builder/react-app.sh
-# bash ./builder/react-ssr.sh
-# bash ./builder/strapi-cms.sh
+bash ./builder/fastapi-ai.sh
+bash ./builder/go-clean.sh
+bash ./builder/go-modular.sh
+bash ./builder/nextjs-app.sh
+bash ./builder/react-app.sh
+bash ./builder/react-ssr.sh
+bash ./builder/strapi-cms.sh
 echo
 echo "All processes completed successfully."
 echo

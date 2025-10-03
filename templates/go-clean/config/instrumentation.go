@@ -7,8 +7,8 @@ import (
 	"os"
 	"strconv"
 	"time"
-	"go-clean/internal/metrics"
-	"go-clean/internal/rest/middleware"
+	"{{ package_name | kebab_case }}/internal/metrics"
+	"{{ package_name | kebab_case }}/internal/rest/middleware"
 
 	"github.com/labstack/echo-contrib/echoprometheus"
 	"github.com/labstack/echo/v4"

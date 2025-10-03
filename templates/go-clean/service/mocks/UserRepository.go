@@ -6,7 +6,7 @@ package mocks
 
 import (
 	"context"
-	"go-clean/domain"
+	"{{ package_name | kebab_case }}/domain"
 
 	"github.com/google/uuid"
 	mock "github.com/stretchr/testify/mock"

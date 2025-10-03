@@ -27,7 +27,7 @@ RUN curl -fsSL https://moonrepo.dev/install/moon.sh | bash
 # -----------------------------------------------------------------------------
 FROM base AS skeleton
 COPY --link . .
-RUN moon docker scaffold react-ssr
+RUN moon docker scaffold {{ package_name | kebab_case }}
 
 # -----------------------------------------------------------------------------
 # Install dependencies and build the application.
@@ -46,7 +46,7 @@ COPY --from=skeleton /srv/.moon/docker/sources .
 COPY --from=skeleton /srv/.npmrc .
 
 # Build the application and prune the workspace (optional).
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run react-ssr:build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run {{ package_name | kebab_case }}:build
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 
 # -----------------------------------------------------------------------------
@@ -61,10 +61,10 @@ COPY --from=builder /srv/package.json /srv/package.json
 COPY --from=builder /srv/pnpm-lock.yaml /srv/pnpm-lock.yaml
 
 # Only copy the require files from builder stage
-COPY --from=builder /srv/apps/react-ssr/node_modules /srv/apps/react-ssr/node_modules
-COPY --from=builder /srv/apps/react-ssr/package.json /srv/apps/react-ssr/package.json
-COPY --from=builder /srv/apps/react-ssr/server.mjs /srv/apps/react-ssr/server.mjs
-COPY --from=builder /srv/apps/react-ssr/build /srv/apps/react-ssr/build
+COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/node_modules /srv/apps/{{ package_name | kebab_case }}/node_modules
+COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/package.json /srv/apps/{{ package_name | kebab_case }}/package.json
+COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/server.mjs /srv/apps/{{ package_name | kebab_case }}/server.mjs
+COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/build /srv/apps/{{ package_name | kebab_case }}/build
 
 # Cleanup uncessary files and set executable permissions for the server.
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod \
@@ -72,7 +72,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod \
     --ignore-scripts && pnpm dlx clean-modules clean --yes \
     "!**/sharp/**" "!**/@repo/**"
 
-RUN chmod +x /srv/apps/react-ssr/server.mjs
+RUN chmod +x /srv/apps/{{ package_name | kebab_case }}/server.mjs
 
 # -----------------------------------------------------------------------------
 # Production image, copy build output files and run the application (runner).
@@ -100,11 +100,11 @@ COPY --from=glibc /bin/ls /bin/ls
 COPY --from=glibc /bin/sh /bin/sh
 
 # Define the host and port to listen on.
-ARG NODE_ENV=production HOST=0.0.0.0 PORT=3100
+ARG NODE_ENV=production HOST=0.0.0.0 PORT={{ port_number }}
 ENV NODE_ENV=$NODE_ENV HOST=$HOST PORT=$PORT
 ENV TINI_SUBREAPER=true
 
-WORKDIR /srv/apps/react-ssr
+WORKDIR /srv/apps/{{ package_name | kebab_case }}
 USER nonroot:nonroot
 EXPOSE $PORT
 

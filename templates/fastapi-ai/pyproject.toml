@@ -1,7 +1,7 @@
 [project]
-name = "zog-ai-project-template"
+name = "{{ package_name | kebab_case }}"
 version = "0.1.0"
-description = "Add your description here"
+description = "{{ package_description }}"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

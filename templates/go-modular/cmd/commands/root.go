@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"go-modular/internal"
-	"go-modular/internal/config"
+	"{{ package_name | kebab_case }}/internal"
+	"{{ package_name | kebab_case }}/internal/config"
 
 	"github.com/spf13/cobra"
 )
@@ -15,7 +15,7 @@ var argVersionShort bool
 var argVersionSemantic bool
 
 var RootCmd = &cobra.Command{
-	Use:   "go-modular",
+	Use:   "{{ package_name | kebab_case }}",
 	Short: "Modular monolith Go application",
 	Long:  `Modular monolith Go application with a focus on simplicity and maintainability.`,
 	CompletionOptions: cobra.CompletionOptions{

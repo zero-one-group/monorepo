@@ -1229,7 +1229,7 @@ wheels = [
 ]
 
 [[package]]
-name = "zog-ai-project-template"
+name = "fastapi-ai"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

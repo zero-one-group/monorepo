@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/gofrs/uuid/v5"
-	"go-modular/modules/auth/models"
-	user_models "go-modular/modules/user/models"
-	"go-modular/pkg/apputils"
+	"{{ package_name | kebab_case }}/modules/auth/models"
+	user_models "{{ package_name | kebab_case }}/modules/user/models"
+	"{{ package_name | kebab_case }}/pkg/apputils"
 )
 
 // ErrInvalidCredentials is returned when authentication fails.

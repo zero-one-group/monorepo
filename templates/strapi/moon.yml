@@ -11,11 +11,11 @@ toolchain:
 tags: ['app']
 
 # Overrides the name (identifier) of the project
-id: 'strapi-cms'
+id: '{{ package_name | kebab_case }}'
 
 project:
-  name: strapi-cms
-  description: 'Strapi headless CMS'
+  name: {{ package_name | kebab_case }}
+  description: '{{ package_description }}'
 
 env:
   VITE_CJS_IGNORE_WARNING: 'true'
@@ -23,7 +23,7 @@ env:
 
 # Since this project can infer task from script (package.json), then you can run any script as moon task.
 # @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
-# Example: `moon strapi-cms:start`
+# Example: `moon {{ package_name | kebab_case }}:start`
 tasks:
   dev:
     command: 'pnpm run dev'

@@ -11,6 +11,7 @@ vcs:
     pre-commit:
       - 'moon run :format --affected --status=all'
       - 'moon run :lint --affected --status=staged'
+  syncHooks: false
 
 hasher:
   optimization: performance
@@ -28,7 +29,7 @@ docker:
     deleteVendorDirectories: false
 
 # Require a specific version of moon while running commands, otherwise fail.
-# versionConstraint: '>=1.0.0'
+versionConstraint: '>=1.41.1'
 
 # Extend and inherit an external configuration file. Must be a valid HTTPS URL or file system path.
 # extends: './shared/workspace.yml'
@@ -55,8 +56,8 @@ generator:
     # - 'https://oss.zero-one-group.com/monorepo/templates/astro.zip'
     # - 'https://oss.zero-one-group.com/monorepo/templates/fastapi-ai.zip'
     # - 'https://oss.zero-one-group.com/monorepo/templates/gitlab-cicd.zip'
+    # - 'https://oss.zero-one-group.com/monorepo/templates/go-clean.zip'
     # - 'https://oss.zero-one-group.com/monorepo/templates/go-modular.zip'
-    # - 'https://oss.zero-one-group.com/monorepo/templates/golang.zip'
     # - 'https://oss.zero-one-group.com/monorepo/templates/load-balancer.zip'
     # - 'https://oss.zero-one-group.com/monorepo/templates/monitoring.zip'
     # - 'https://oss.zero-one-group.com/monorepo/templates/nextjs.zip'

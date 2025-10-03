@@ -7,15 +7,15 @@ language: python
 tags: ["app"]
 
 # Overrides the name (identifier) of the project
-id: "fastapi-ai"
+id: "{{ package_name | kebab_case }}"
 
 project:
-  name: "fastapi-ai"
-  description: "Artificial Intelligence App"
+  name: "{{ package_name | kebab_case }}"
+  description: "{{ package_description }}"
 
 # Since this project can infer task from script (package.json), then you can run any script as moon task.
 # @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
-# Example: `moon fastapi-ai:start`
+# Example: `moon {{ package_name | kebab_case }}:start`
 tasks:
   # Install and synchronize all project dependencies using uv
   sync:
@@ -23,18 +23,18 @@ tasks:
 
   # Development server with hot reload
   # Starts FastAPI in development mode with automatic reloading on file changes
-  # Accessible at http://localhost:8080
+  # Accessible at http://localhost:{{ port_number }}
   dev:
-    command: "uv run fastapi dev app/main.py --port 8080"
+    command: "uv run fastapi dev app/main.py --port {{ port_number }}"
     deps: ["sync"]
     options:
       envFile: ".env"
 
   # Production server
   # Starts FastAPI in production mode (optimized for performance)
-  # Accessible at http://localhost:8080
+  # Accessible at http://localhost:{{ port_number }}
   start:
-    command: "uv run fastapi run app/main.py --port 8080"
+    command: "uv run fastapi run app/main.py --port {{ port_number }}"
     deps: ["sync"]
     options:
       envFile: ".env"
@@ -48,7 +48,7 @@ tasks:
       envFile: ".env"
 
   # Create a new empty migration file
-  # Usage: `moon fastapi-ai:migrate-create -- "your migration description"`
+  # Usage: `moon {{ package_name | kebab_case }}:migrate-create -- "your migration description"`
   # You'll need to manually write the migration logic
   migrate-create:
     command: "uv run alembic revision -m "
@@ -58,7 +58,7 @@ tasks:
 
   # Auto-generate migration from model changes
   # Compares current models with database schema and creates migration automatically
-  # Usage: `moon fastapi-ai:migrate-autogenerate -- "migration description"`
+  # Usage: `moon {{ package_name | kebab_case }}:migrate-autogenerate -- "migration description"`
   # ⚠️ Always review the generated migration before applying it!
   migrate-autogenerate:
     command: "uv run alembic revision --autogenerate -m "

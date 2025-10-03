@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/gofrs/uuid/v5"
-	"go-modular/modules/auth/models"
+	"{{ package_name | kebab_case }}/modules/auth/models"
 )
 
 // CreateSession creates a new session.

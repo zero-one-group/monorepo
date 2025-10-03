@@ -17,8 +17,9 @@ project:
 env:
   PORT: '3200'
 
-dependsOn:
-  - 'shared-ui'
+# Uncomment to use shared UI library
+# dependsOn:
+#   - 'shared-ui'
 
 # Since this project can infer task from script (package.json), then you can run any script as moon task.
 # @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts

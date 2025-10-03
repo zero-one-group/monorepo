@@ -5,7 +5,7 @@ import (
 	"os"
 	"strconv"
 	"time"
-	"go-clean/domain"
+	"{{ package_name | kebab_case }}/domain"
 
 	"github.com/golang-jwt/jwt/v5"
 )

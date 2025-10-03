@@ -6,16 +6,16 @@ import (
 	"os"
 	"time"
 
-	"go-modular/internal/notification"
-	"go-modular/modules/auth/handler"
-	"go-modular/modules/auth/repository"
+	"{{ package_name | kebab_case }}/internal/notification"
+	"{{ package_name | kebab_case }}/modules/auth/handler"
+	"{{ package_name | kebab_case }}/modules/auth/repository"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/labstack/echo/v4"
 	"github.com/lestrrat-go/jwx/jwa"
 
-	svcUser "go-modular/modules/auth/services"
-	svcAuth "go-modular/modules/user/services"
+	svcUser "{{ package_name | kebab_case }}/modules/auth/services"
+	svcAuth "{{ package_name | kebab_case }}/modules/user/services"
 )
 
 type Options struct {

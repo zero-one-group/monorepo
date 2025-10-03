@@ -3,7 +3,7 @@ package middleware
 import (
 	"net/http"
 	"strings"
-	"go-clean/utils"
+	"{{ package_name | kebab_case }}/utils"
 
 	"github.com/labstack/echo/v4"
 )

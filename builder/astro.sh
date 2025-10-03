@@ -16,16 +16,6 @@ if [ -d "$SOURCE_PATH" ] && [ "$TEMPLATE_SOURCE_NAME" != "$TEMPLATE_TARGET_NAME"
     mv "$SOURCE_PATH" "$TARGET_PATH"
 fi
 
-# Rename all files *.astro to *.raw.astro inside the target directory
-find "$TARGET_PATH" -type f -name "*.astro" | while read -r file; do
-    mv "$file" "${file%.astro}.raw.astro"
-done
-
-# Inject "---\nforce: true\n---" into *.astro files
-find "$TARGET_PATH" -type f -name "*.astro" | while read -r file; do
-    { echo -e "---\nforce: true\n---\n"; cat "$file"; } > "${file}.tmp" && mv "${file}.tmp" "$file"
-done
-
 # Function to replace string using sd or sed
 replace_string() {
     local file="$1"
@@ -43,19 +33,11 @@ replace_string() {
     fi
 }
 
-# Replace string "astro-web" with "{{ package_name | kebab_case }}" in moon.yml
 if [ -f "$TARGET_PATH/moon.yml" ]; then
-    replace_string "$TARGET_PATH/moon.yml" "astro-web" "{{ package_name | kebab_case }}"
-fi
-
-# Replace string "astro-web" with "{{ package_name | kebab_case }}" in Dockerfile
-if [ -f "$TARGET_PATH/Dockerfile" ]; then
-    replace_string "$TARGET_PATH/Dockerfile" "astro-web" "{{ package_name | kebab_case }}"
-fi
-
-# Replace string "astro-web" with "{{ package_name | kebab_case }}" in package.json
-if [ -f "$TARGET_PATH/package.json" ]; then
-    replace_string "$TARGET_PATH/package.json" "astro-web" "{{ package_name | kebab_case }}"
+    # Replace string "$TEMPLATE_SOURCE_NAME" with "{{ package_name | kebab_case }}" in moon.yml
+    replace_string "$TARGET_PATH/moon.yml" "$TEMPLATE_SOURCE_NAME" "{{ package_name | kebab_case }}"
+    # Replace string "_CHANGE_ME_DESCRIPTION_" with "{{ package_description }}" in moon.yml
+    replace_string "$TARGET_PATH/moon.yml" "_CHANGE_ME_DESCRIPTION_" "{{ package_description }}"
 fi
 
 # Replace string "4321" with "{{ port_number }}" in any files that contain it except "template.yml"
@@ -63,11 +45,22 @@ grep -rl "4321" "$TARGET_PATH" | grep -v "template.yml" | while read -r file; do
     replace_string "$file" "4321" "{{ port_number }}"
 done
 
-# Replace string "_CHANGE_ME_DESCRIPTION_" with "{{ package_description }}" in moon.yml and package.json
-if [ -f "$TARGET_PATH/moon.yml" ]; then
-    replace_string "$TARGET_PATH/moon.yml" "_CHANGE_ME_DESCRIPTION_" "{{ package_description }}"
-fi
+# Replace string "$TEMPLATE_SOURCE_NAME" with "{{ package_name | kebab_case }}" in any files that contain it except "template.yml"
+grep -rl "$TEMPLATE_SOURCE_NAME" "$TARGET_PATH" | grep -v "template.yml" | while read -r file; do
+    replace_string "$file" "$TEMPLATE_SOURCE_NAME" "{{ package_name | kebab_case }}"
+done
 
-if [ -f "$TARGET_PATH/package.json" ]; then
-    replace_string "$TARGET_PATH/package.json" "_CHANGE_ME_DESCRIPTION_" "{{ package_description }}"
-fi
+# Replace string "_CHANGE_ME_DESCRIPTION_" with "{{ package_description }}" in any files that contain it except "template.yml"
+grep -rl "_CHANGE_ME_DESCRIPTION_" "$TARGET_PATH" | grep -v "template.yml" | while read -r file; do
+    replace_string "$file" "_CHANGE_ME_DESCRIPTION_" "{{ package_description }}"
+done
+
+# Inject "---\nforce: true\n---" into *.astro files
+find "$TARGET_PATH" -type f -name "*.astro" | while read -r file; do
+    { echo -e "---\nforce: true\n---\n"; cat "$file"; } > "${file}.tmp" && mv "${file}.tmp" "$file"
+done
+
+# Rename all files *.astro to *.raw.astro inside the target directory
+find "$TARGET_PATH" -type f -name "*.astro" | while read -r file; do
+    mv "$file" "${file%.astro}.raw.astro"
+done

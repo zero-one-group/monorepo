@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"net/http"
 	"testing"
-	"go-clean/domain"
-	"go-clean/internal/repository/postgres"
-	"go-clean/internal/rest"
-	"go-clean/service"
+	"{{ package_name | kebab_case }}/domain"
+	"{{ package_name | kebab_case }}/internal/repository/postgres"
+	"{{ package_name | kebab_case }}/internal/rest"
+	"{{ package_name | kebab_case }}/service"
 
 	"github.com/stretchr/testify/require"
 )

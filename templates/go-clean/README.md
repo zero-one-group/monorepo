@@ -90,7 +90,7 @@ moon run seed -- {table_name}
 
 We use [mockery](https://github.com/vektra/mockery) to generate interface mocks. Make sure you have exactly v3.5.1:
 
-Option A – via moon command: `moon go-clean:install-mockery`
+Option A – via moon command: `moon {{ package_name | kebab_case }}:install-mockery`
 Option B – via GitHub binary
 
 Verify you have the right version:
@@ -102,7 +102,7 @@ mockery --version
 ##### 2. Run the test suite
 
 ```bash
-moon run go-clean:test
+moon run {{ package_name | kebab_case }}:test
 ```
 
 NOTE: Everytime test run, it will automatically generate mock
@@ -110,14 +110,14 @@ NOTE: Everytime test run, it will automatically generate mock
 ##### 3. Generate documentation
 
 ```bash
-moon run go-clean:generate-swagger
+moon run {{ package_name | kebab_case }}:generate-swagger
 ```
 
 ## Production
 
 ### Instrumentation
-Tracing is enabled exclusively in the production environment. Set `APP_ENVIRONMENT` to `production` to activate tracing. Alternatively, you may customize the tracing rules in `apps/go-clean/config/tracer.go`.
+Tracing is enabled exclusively in the production environment. Set `APP_ENVIRONMENT` to `production` to activate tracing. Alternatively, you may customize the tracing rules in `apps/{{ package_name | kebab_case }}/config/tracer.go`.
 
 For instructions on customizing span tracing, please refer to the example located at:
-- `apps/go-clean/internal/rest/user.go`
+- `apps/{{ package_name | kebab_case }}/internal/rest/user.go`
     - From rest layer all the way down to repository layer

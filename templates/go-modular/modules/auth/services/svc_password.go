@@ -5,8 +5,8 @@ import (
 	"errors"
 
 	"github.com/gofrs/uuid/v5"
-	"go-modular/modules/auth/models"
-	"go-modular/pkg/apputils"
+	"{{ package_name | kebab_case }}/modules/auth/models"
+	"{{ package_name | kebab_case }}/pkg/apputils"
 )
 
 // SetUserPassword creates a new user password (with hashing).

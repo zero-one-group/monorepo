@@ -2,7 +2,7 @@ package config
 
 import (
 	"context"
-	"go-clean/internal/logging"
+	"{{ package_name | kebab_case }}/internal/logging"
 
 	"github.com/joho/godotenv"
 )

@@ -22,7 +22,7 @@ ENV PATH="/root/.local/bin/:$PATH"
 # Set default environment variables
 ARG SERVER_ENV=production
 ARG HOST=0.0.0.0
-ARG PORT=8080
+ARG PORT={{ port_number }}
 ENV SERVER_ENV=${SERVER_ENV}
 ENV DEBUG=false
 

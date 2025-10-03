@@ -8,18 +8,19 @@ stack: frontend
 tags: ['app']
 
 # Overrides the name (identifier) of the project
-id: 'react-ssr'
+id: '{{ package_name | kebab_case }}'
 
 project:
-  name: 'react-ssr'
-  description: 'SSR React application'
+  name: '{{ package_name | kebab_case }}'
+  description: '{{ package_description }}'
 
-dependsOn:
-  - 'shared-ui'
+# Uncomment to use shared UI library
+# dependsOn:
+#   - 'shared-ui'
 
 # Since this project can infer task from script (package.json), then you can run any script as moon task.
 # @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
-# Example: `moon react-ssr:start`
+# Example: `moon {{ package_name | kebab_case }}:start`
 tasks:
   dev:
     command: 'pnpm run dev'

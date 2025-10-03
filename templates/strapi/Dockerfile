@@ -28,7 +28,7 @@ RUN curl -fsSL https://moonrepo.dev/install/moon.sh | bash
 # -----------------------------------------------------------------------------
 FROM base AS skeleton
 COPY . .
-RUN moon docker scaffold strapi-cms
+RUN moon docker scaffold {{ package_name | kebab_case }}
 
 # -----------------------------------------------------------------------------
 # Install dependencies and build the application.
@@ -46,7 +46,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker setup
 COPY --from=skeleton /srv/.moon/docker/sources .
 
 # Build the application and prune the workspace (optional).
-# RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run strapi-cms:build
+# RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run {{ package_name | kebab_case }}:build
 # RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 
 # -----------------------------------------------------------------------------
@@ -55,7 +55,7 @@ COPY --from=skeleton /srv/.moon/docker/sources .
 FROM base AS installer
 
 # Only copy the require files from builder stage
-COPY --from=builder /srv/apps/strapi-cms /srv
+COPY --from=builder /srv/apps/{{ package_name | kebab_case }} /srv
 
 # Fix sharp dependencies then build the Strapi application.
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --ignore-scripts
@@ -134,7 +134,7 @@ COPY --from=glibc /bin/head /bin/head
 COPY --from=glibc /bin/hostname /bin/hostname
 
 # Define the host and port to listen on.
-ARG NODE_ENV=production HOST=0.0.0.0 PORT=1337
+ARG NODE_ENV=production HOST=0.0.0.0 PORT={{ port_number }}
 ENV NODE_ENV=$NODE_ENV HOST=$HOST PORT=$PORT
 ENV STRAPI_TELEMETRY_DISABLED=false
 ENV TINI_SUBREAPER=true

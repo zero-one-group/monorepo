@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 
-	"go-modular/database/seeders"
+	"{{ package_name | kebab_case }}/database/seeders"
 )
 
 func (m *Migrator) SeedInitialData(ctx context.Context) error {

@@ -9,7 +9,7 @@ import { defineConfig, devices } from "@playwright/test";
 import { env, isCI } from "std-env";
 
 export const STORAGE_STATE = resolve(".playwright/user.json");
-const APP_PORT = env.PORT || 3000;
+const APP_PORT = env.PORT || {{ port_number }};
 
 export default defineConfig({
 	quiet: !!isCI,
@@ -53,7 +53,7 @@ export default defineConfig({
 	webServer: env.URL
 		? undefined
 		: {
-				command: "moon react-app:build && moon react-app:start",
+				command: "moon {{ package_name | kebab_case }}:build && moon {{ package_name | kebab_case }}:start",
 				reuseExistingServer: !isCI,
 				port: Number(APP_PORT),
 				timeout: 30_000,
