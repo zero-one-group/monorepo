@@ -1,6 +1,6 @@
 # Zero One Group Monorepo
 
-A unified foundation for building modern backend and frontend applications with TypeScript and Go.
+A unified foundation for building modern backend and frontend applications with TypeScript, Go, and Python.
 Powered by [moonrepo](https://moonrepo.dev/docs/install), this monorepo offers curated templates,
 shared UI libraries, and essential developer tools to accelerate development and foster best practices
 across teams.
