@@ -12,7 +12,7 @@ Zero One Group projects.
 
 ## Quick Start
 
-1. **Clone the repository:**
+1. **Create new monorepo project:**
    `pnpm dlx tiged zero-one-group/monorepo my-monorepo-project`
 2. **Install dependencies:**
    `cd moon-project && pnpm install`
