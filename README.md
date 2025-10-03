@@ -18,7 +18,7 @@ Zero One Group projects.
    `cd my-monorepo-project && pnpm install`
 3. **Generate the application from template:**
    `moon generate TEMPLATE_NAME`
-4. **Configure your environment:**
+4. **Configure the apps:**
    copy `.env.example` to `.env` and adjust as needed.
 5. **Start development:**
    run all by running command `moon :dev` or `moon '#app:dev'`
