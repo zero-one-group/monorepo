@@ -19,6 +19,7 @@ project:
 
 env:
   VITE_CJS_IGNORE_WARNING: 'true'
+  STRAPI_TELEMETRY_DISABLED: 'false'
 
 # Since this project can infer task from script (package.json), then you can run any script as moon task.
 # @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts

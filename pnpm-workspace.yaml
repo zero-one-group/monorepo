@@ -4,6 +4,6 @@ packages:
 - '!**/test/**'
 
 catalog:
-  '@biomejs/biome': ^2.2.4
+  '@biomejs/biome': ^2.2.5
   'npm-check-updates': ^19.0.0
   'typescript': ~5.8.3

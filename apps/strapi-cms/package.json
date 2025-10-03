@@ -31,14 +31,14 @@
 		"styled-components": "^6.1.19"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.2.4",
+		"@biomejs/biome": "^2.2.5",
 		"@strapi/typescript-utils": "5.25.0",
 		"@types/node": "^24.6.2",
 		"@types/pg": "^8.15.5",
 		"@types/react-dom": "~18.3.1",
 		"@types/react": "~18.3.1",
 		"npm-check-updates": "^19.0.0",
-		"typescript": "~5.8.3",
+		"typescript": "~5.9.3",
 		"vite": "^6.3.5"
 	},
 	"strapi": {}
