@@ -5,9 +5,9 @@ import (
 	"errors"
 	"net/http"
 
-	"{{ package_name | kebab_case }}/modules/auth/models"
-	"{{ package_name | kebab_case }}/modules/auth/services"
-	"{{ package_name | kebab_case }}/pkg/apputils"
+	"go-modular/modules/auth/models"
+	"go-modular/modules/auth/services"
+	"go-modular/pkg/apputils"
 
 	"github.com/labstack/echo/v4"
 )

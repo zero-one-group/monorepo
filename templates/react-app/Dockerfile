@@ -4,8 +4,8 @@
 ARG PLATFORM=linux/amd64
 ARG NODE_VERSION=22
 
-FROM busybox:1.37-glibc as glibc
-FROM joseluisq/static-web-server:2 as httpd
+FROM busybox:1.37-glibc AS glibc
+FROM joseluisq/static-web-server:2 AS httpd
 
 # -----------------------------------------------------------------------------
 # Base image with pnpm package manager.
@@ -13,8 +13,8 @@ FROM joseluisq/static-web-server:2 as httpd
 FROM --platform=${PLATFORM} node:${NODE_VERSION}-bookworm-slim AS base
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0 COREPACK_INTEGRITY_KEYS=0
 ENV LEFTHOOK=0 CI=true PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=true
-ENV MOON_TOOLCHAIN_FORCE_GLOBALS=1 MOON_INSTALL_DIR="/usr/bin"
-ENV PNPM_HOME="/pnpm" PATH="$PNPM_HOME:$MOON_INSTALL_DIR:$PATH"
+ENV MOON_TOOLCHAIN_FORCE_GLOBALS=1 MOON_INSTALL_DIR="/usr/bin" PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$MOON_INSTALL_DIR:$PATH"
 RUN corepack enable && corepack prepare pnpm@latest-10 --activate
 WORKDIR /srv
 
@@ -28,7 +28,7 @@ RUN curl -fsSL https://moonrepo.dev/install/moon.sh | bash
 # -----------------------------------------------------------------------------
 FROM base AS skeleton
 COPY --link . .
-RUN moon docker scaffold {{ package_name | kebab_case }}
+RUN moon docker scaffold react-app
 
 # -----------------------------------------------------------------------------
 # Install dependencies and build the application.
@@ -36,7 +36,7 @@ RUN moon docker scaffold {{ package_name | kebab_case }}
 FROM base AS builder
 
 # Copy workspace skeleton
-COPY --from=skeleton /root/.proto /root/.proto
+# COPY --from=skeleton /root/.proto /root/.proto
 COPY --from=skeleton /srv/.moon/docker/workspace .
 
 # Install toolchain and dependencies
@@ -46,12 +46,12 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker setup
 COPY --from=skeleton /srv/.moon/docker/sources .
 
 # Build the application and prune the workspace (optional).
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run {{ package_name | kebab_case }}:build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run react-app:build
 
 # -----------------------------------------------------------------------------
 # Production image, copy build output files and run the application (runner).
 # -----------------------------------------------------------------------------
-FROM --platform=${PLATFORM} gcr.io/distroless/base-nossl-debian12 as runner
+FROM --platform=${PLATFORM} gcr.io/distroless/base-nossl-debian12 AS runner
 
 # ----- Read application environment variables --------------------------------
 
@@ -60,7 +60,7 @@ ARG VITE_API_URL VITE_BASE_URL
 # ----- Read application environment variables --------------------------------
 
 # Copy the build output files from the installer stage.
-COPY --from=builder --chown=nonroot:nonroot /srv/apps/{{ package_name | kebab_case }}/build/client /srv
+COPY --from=builder --chown=nonroot:nonroot /srv/apps/react-app/build/client /srv
 
 # Copy the required binaries and configuration file.
 COPY --from=skeleton /srv/docker/sws-spa.toml /etc/sws.toml
@@ -78,7 +78,7 @@ COPY --from=base /usr/bin/tini /usr/bin/tini
 # COPY --from=glibc /bin/sh /bin/sh
 
 # Define the log level, host and port to listen on.
-ARG SERVER_LOG_LEVEL=info SERVER_HOST=0.0.0.0 SERVER_PORT={{ port_number }}
+ARG SERVER_LOG_LEVEL=info SERVER_HOST=0.0.0.0 SERVER_PORT=3000
 ENV SERVER_CONFIG_FILE=/etc/sws.toml SERVER_LOG_LEVEL=$SERVER_LOG_LEVEL
 ENV SERVER_HOST=$SERVER_HOST SERVER_PORT=$SERVER_PORT TINI_SUBREAPER=true
 STOPSIGNAL SIGQUIT

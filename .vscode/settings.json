@@ -20,9 +20,7 @@
         "**/.output": true,
         "**/.next": true,
         "**/build": true,
-        "**/dist": true,
-        "**/docs": true,
-        "/templates/": true
+        "**/dist": true
     },
     "tailwindCSS.experimental.classRegex": [
         // @ref: https://www.tailwind-variants.org/docs/getting-started
@@ -31,6 +29,9 @@
         ["classList={{([^;]*)}}", "\\s*?[\"'`]([^\"'`]*).*?:"]
     ],
     "tailwindCSS.files.exclude": ["**/.github/**", "**/*.{md,js,ts,json}"],
+    "[astro]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
     "[css]": {
         "editor.defaultFormatter": "biomejs.biome"
     },

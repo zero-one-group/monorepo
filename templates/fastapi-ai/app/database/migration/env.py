@@ -1,16 +1,8 @@
-import importlib
-import pkgutil
 from logging.config import fileConfig
 
-import app.model
 from alembic import context
-from app.core.database import Base
 from app.core.env import get_env
 from sqlalchemy import engine_from_config, pool
-
-# Dynamically import all modules in the `app.model` package
-for module in pkgutil.iter_modules(app.model.__path__):
-    importlib.import_module(f"app.model.{module.name}")
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -25,7 +17,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = Base.metadata
+target_metadata = None
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -75,7 +67,8 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
+        context.configure(connection=connection,
+                          target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

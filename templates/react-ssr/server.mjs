@@ -1,17 +1,17 @@
 #!/usr/bin/env node --no-warnings
 
 import os from "node:os";
+import { resolve } from "node:path";
 import compression from "compression";
-import consola from "consola";
+import { consola } from "consola";
 import express from "express";
 import rateLimit from "express-rate-limit";
 import morgan from "morgan";
-import { resolve } from "node:path";
 import { env, isDevelopment } from "std-env";
 
 // Short-circuit the type-checking of the built output.
 const BUILD_PATH = resolve("build/server/index.js");
-const PORT = Number.parseInt(env.PORT || "{{ port_number }}");
+const PORT = Number.parseInt(env.PORT || "3100");
 
 const app = express();
 

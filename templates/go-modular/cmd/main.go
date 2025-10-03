@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"{{ package_name | kebab_case }}/cmd/commands"
+	"go-modular/cmd/commands"
 )
 
 // @title	    Go Application API

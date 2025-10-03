@@ -1,5 +1,6 @@
 {
 	"name": "astro-web",
+	"description": "_CHANGE_ME_DESCRIPTION_",
 	"type": "module",
 	"private": true,
 	"scripts": {

@@ -1,5 +1,6 @@
 {
 	"name": "{{ package_name | kebab_case }}",
+	"description": "{{ package_description }}",
 	"type": "module",
 	"private": true,
 	"scripts": {

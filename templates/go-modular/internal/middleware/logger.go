@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
-	"{{ package_name | kebab_case }}/pkg/apputils"
+	"go-modular/pkg/apputils"
 )
 
 // LoggerMiddleware returns an Echo middleware that logs HTTP requests using slog.

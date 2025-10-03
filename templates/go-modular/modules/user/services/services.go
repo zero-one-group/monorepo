@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"{{ package_name | kebab_case }}/modules/user/models"
-	"{{ package_name | kebab_case }}/modules/user/repository"
+	"go-modular/modules/user/models"
+	"go-modular/modules/user/repository"
 
 	"github.com/gofrs/uuid/v5"
 )

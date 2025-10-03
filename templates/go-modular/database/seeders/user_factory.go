@@ -8,7 +8,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"{{ package_name | kebab_case }}/pkg/apputils"
+	"go-modular/pkg/apputils"
 )
 
 type UserSeed struct {

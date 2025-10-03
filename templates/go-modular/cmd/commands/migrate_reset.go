@@ -11,8 +11,8 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"{{ package_name | kebab_case }}/database"
-	"{{ package_name | kebab_case }}/internal/config"
+	"go-modular/database"
+	"go-modular/internal/config"
 )
 
 var forceReset bool

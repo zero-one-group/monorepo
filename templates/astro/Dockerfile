@@ -4,8 +4,8 @@
 ARG PLATFORM=linux/amd64
 ARG NODE_VERSION=22
 
-FROM busybox:1.37-glibc as glibc
-FROM joseluisq/static-web-server:2 as httpd
+FROM busybox:1.37-glibc AS glibc
+FROM joseluisq/static-web-server:2 AS httpd
 
 # -----------------------------------------------------------------------------
 # Base image with pnpm package manager.
@@ -36,7 +36,7 @@ RUN moon docker scaffold {{ package_name | kebab_case }}
 FROM base AS builder
 
 # Copy workspace skeleton
-COPY --from=skeleton /root/.proto /root/.proto
+# COPY --from=skeleton /root/.proto /root/.proto
 COPY --from=skeleton /srv/.moon/docker/workspace .
 
 # Install toolchain and dependencies
@@ -51,7 +51,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run {{ package_name | keb
 # -----------------------------------------------------------------------------
 # Production image, copy build output files and run the application (runner).
 # -----------------------------------------------------------------------------
-FROM --platform=${PLATFORM} gcr.io/distroless/base-nossl-debian12 as runner
+FROM --platform=${PLATFORM} gcr.io/distroless/base-nossl-debian12 AS runner
 
 # ----- Read application environment variables --------------------------------
 

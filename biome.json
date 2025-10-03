@@ -21,7 +21,7 @@
             "!**/.next",
             "!**/.react-router",
             "!infrastructure/*",
-            "!templates/**/*",
+            "!templates/*",
             "!docsite/*",
             "!.moon/*",
             "!.temp/*"

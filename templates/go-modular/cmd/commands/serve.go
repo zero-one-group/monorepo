@@ -3,10 +3,10 @@ package commands
 import (
 	"os"
 
-	"{{ package_name | kebab_case }}/database"
-	"{{ package_name | kebab_case }}/internal/config"
-	"{{ package_name | kebab_case }}/internal/observer/logger"
-	"{{ package_name | kebab_case }}/internal/server"
+	"go-modular/database"
+	"go-modular/internal/config"
+	"go-modular/internal/observer/logger"
+	"go-modular/internal/server"
 
 	"github.com/spf13/cobra"
 )
@@ -43,7 +43,7 @@ func init() {
 			}
 
 			// Initialize HTTP server
-			httpAddr := "0.0.0.0:{{ port_number }}"
+			httpAddr := "0.0.0.0:8000"
 			srv := server.NewHTTPServer(httpAddr, logger)
 			if err := srv.Start(); err != nil {
 				logger.Error("HTTP server exited with error", "err", err)

@@ -7,7 +7,7 @@ import (
 
 	"github.com/gofrs/uuid/v5"
 	"github.com/jackc/pgx/v5"
-	"{{ package_name | kebab_case }}/modules/auth/models"
+	"go-modular/modules/auth/models"
 )
 
 // FindAllOneTimeTokens returns all one time tokens in the database.

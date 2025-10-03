@@ -1,4 +1,4 @@
-module {{ package_name | kebab_case }}
+module go-modular
 
 go 1.25.0
 

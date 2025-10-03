@@ -12,7 +12,7 @@ id: 'astro-web'
 
 project:
   name: astro-web
-  description: 'Frontend application'
+  description: '_CHANGE_ME_DESCRIPTION_'
 
 # Uncomment to use shared UI library
 # dependsOn:

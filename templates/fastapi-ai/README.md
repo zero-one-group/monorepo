@@ -28,23 +28,23 @@ Short brief description about the project.
 3. Install dependencies:
 
     ```bash
-    moon {{ package_name | kebab_case }}:sync
+    moon fastapi-ai:sync
     ```
 
 ### Available Commands
 
-| Command                                                                | Description                                                            |
-|------------------------------------------------------------------------|------------------------------------------------------------------------|
-| `moon {{ package_name \| kebab_case }}:sync`                           | Synchronize project dependencies using uv package manager              |
-| `moon {{ package_name \| kebab_case }}:dev`                            | Start FastAPI development server with hot reload on port 8080          |
-| `moon {{ package_name \| kebab_case }}:start`                          | Launch FastAPI production server on port 8080                          |
-| `moon {{ package_name \| kebab_case }}:migrate`                        | Apply pending Alembic database migrations                              |
-| `moon {{ package_name \| kebab_case }}:migrate-create -- "name"`       | Create a new empty Alembic migration file with the specified name      |
-| `moon {{ package_name \| kebab_case }}:migrate-autogenerate -- "name"` | Generate an Alembic migration by detecting model changes automatically |
-| `moon {{ package_name \| kebab_case }}:migrate-down`                   | Rollback the most recent database migration                            |
-| `moon {{ package_name \| kebab_case }}:migrate-reset`                  | Reset database by rolling back all migrations (useful for clean slate) |
-| `moon {{ package_name \| kebab_case }}:seed`                           | Populate database with dummy data using the seeder script              |
-| `moon {{ package_name \| kebab_case }}:check-in-dance`                 | Complete setup: sync, migrate, and seed in sequence                    |
+| Command                                          | Description                                                            |
+|--------------------------------------------------|------------------------------------------------------------------------|
+| `moon fastapi-ai:sync`                           | Synchronize project dependencies using uv package manager              |
+| `moon fastapi-ai:dev`                            | Start FastAPI development server with hot reload on port 8080          |
+| `moon fastapi-ai:start`                          | Launch FastAPI production server on port 8080                          |
+| `moon fastapi-ai:migrate`                        | Apply pending Alembic database migrations                              |
+| `moon fastapi-ai:migrate-create -- "name"`       | Create a new empty Alembic migration file with the specified name      |
+| `moon fastapi-ai:migrate-autogenerate -- "name"` | Generate an Alembic migration by detecting model changes automatically |
+| `moon fastapi-ai:migrate-down`                   | Rollback the most recent database migration                            |
+| `moon fastapi-ai:migrate-reset`                  | Reset database by rolling back all migrations (useful for clean slate) |
+| `moon fastapi-ai:seed`                           | Populate database with dummy data using the seeder script              |
+| `moon fastapi-ai:check-in-dance`                 | Complete setup: sync, migrate, and seed in sequence                    |
 
 ### Running the Application
 
@@ -52,13 +52,13 @@ Short brief description about the project.
 
 ```bash
 # Start the development server with hot reloading
-moon {{ package_name | kebab_case }}:dev
+moon fastapi-ai:dev
 ```
 
 #### Production Mode
 
 ```bash
-moon {{ package_name | kebab_case }}:start
+moon fastapi-ai:start
 ```
 
 #### Using Custom App Name
@@ -66,7 +66,7 @@ moon {{ package_name | kebab_case }}:start
 If you've renamed your application, use:
 
 ```bash
-moon {{ package_name | kebab_case }}:dev
+moon fastapi-ai:dev
 ```
 
 ## Development
@@ -98,7 +98,7 @@ Tracing is enabled exclusively in the production environment. Set `APP_ENVIRONME
 
 For instructions on customizing span tracing, please refer to the example located at:
 
-- `apps/ai-app/app/repository/openai/greeting.py`
+- `apps/fastapi-ai/app/repository/openai/greeting.py`
 
 ### Error Handling
 

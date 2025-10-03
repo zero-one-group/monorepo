@@ -11,8 +11,8 @@ import (
 	"reflect"
 	"time"
 
-	"{{ package_name | kebab_case }}/modules/auth/models"
-	"{{ package_name | kebab_case }}/pkg/apputils"
+	"go-modular/modules/auth/models"
+	"go-modular/pkg/apputils"
 )
 
 // helper: try to detect if a user struct indicates the email is already verified.
@@ -306,7 +306,7 @@ func (s *AuthService) sendVerificationEmail(ctx context.Context, toEmail, rawTok
 	// Determine base URL:
 	// 1) prefer configured s.baseURL
 	// 2) fallback to environment SERVER_HOST/SERVER_PORT
-	// 3) final fallback to localhost:{{ port_number }}
+	// 3) final fallback to localhost:8000
 	base := s.baseURL
 	if base == "" {
 		host := os.Getenv("SERVER_HOST")
@@ -315,7 +315,7 @@ func (s *AuthService) sendVerificationEmail(ctx context.Context, toEmail, rawTok
 			host = "localhost"
 		}
 		if port == "" {
-			port = "{{ port_number }}"
+			port = "8000"
 		}
 		base = fmt.Sprintf("http://%s:%s", host, port)
 	}
@@ -329,7 +329,7 @@ func (s *AuthService) sendVerificationEmail(ctx context.Context, toEmail, rawTok
 			host = "localhost"
 		}
 		if port == "" {
-			port = "{{ port_number }}"
+			port = "8000"
 		}
 		u = &url.URL{Scheme: "http", Host: fmt.Sprintf("%s:%s", host, port)}
 	}

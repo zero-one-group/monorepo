@@ -4,9 +4,9 @@ import (
 	"log/slog"
 	"net/http"
 
-	"{{ package_name | kebab_case }}/modules/user/models"
-	"{{ package_name | kebab_case }}/modules/user/services"
-	"{{ package_name | kebab_case }}/pkg/apputils"
+	"go-modular/modules/user/models"
+	"go-modular/modules/user/services"
+	"go-modular/pkg/apputils"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"

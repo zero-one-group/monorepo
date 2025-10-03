@@ -1,6 +1,12 @@
 import "./styles/global.css";
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
-import { isRouteErrorResponse } from "react-router";
+import {
+	isRouteErrorResponse,
+	Links,
+	Meta,
+	Outlet,
+	Scripts,
+	ScrollRestoration,
+} from "react-router";
 import NotFound from "#/components/errors/404";
 import InternalError from "#/components/errors/500";
 import type { Route } from "./+types/root";

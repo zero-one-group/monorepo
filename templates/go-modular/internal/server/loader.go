@@ -1,15 +1,15 @@
 package server
 
 import (
-	"{{ package_name | kebab_case }}/internal/adapter"
-	"{{ package_name | kebab_case }}/internal/config"
-	"{{ package_name | kebab_case }}/internal/middleware"
-	"{{ package_name | kebab_case }}/internal/notification"
+	"go-modular/internal/adapter"
+	"go-modular/internal/config"
+	"go-modular/internal/middleware"
+	"go-modular/internal/notification"
 
 	"github.com/labstack/echo/v4"
 
-	modAuth "{{ package_name | kebab_case }}/modules/auth"
-	modUser "{{ package_name | kebab_case }}/modules/user"
+	modAuth "go-modular/modules/auth"
+	modUser "go-modular/modules/user"
 )
 
 // registerModules registers application modules, injects middleware and attaches routes.

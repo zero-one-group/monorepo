@@ -4,9 +4,9 @@ import (
 	"log/slog"
 	"os"
 
-	"{{ package_name | kebab_case }}/modules/user/handler"
-	"{{ package_name | kebab_case }}/modules/user/repository"
-	"{{ package_name | kebab_case }}/modules/user/services"
+	"go-modular/modules/user/handler"
+	"go-modular/modules/user/repository"
+	"go-modular/modules/user/services"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/labstack/echo/v4"

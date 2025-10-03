@@ -11,7 +11,7 @@ import (
 	"github.com/gofrs/uuid/v5"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"{{ package_name | kebab_case }}/modules/user/models"
+	"go-modular/modules/user/models"
 )
 
 // Sentinel error for not found

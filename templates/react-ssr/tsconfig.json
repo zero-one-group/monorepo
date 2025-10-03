@@ -20,17 +20,23 @@
 		"baseUrl": ".",
 		"paths": {
 			"#/*": ["./app/*"],
-			"react": ["./node_modules/@types/react/index.d.ts"],
-			"react-dom": ["./node_modules/@types/react-dom/index.d.ts"]
+			"react": ["./node_modules/@types/react"],
+			"react-dom": ["./node_modules/@types/react-dom"]
 		}
 	},
 	"include": [
 		"app/**/*",
+		"server/**/*",
 		"**/.server/**/*",
 		"**/.client/**/*",
 		".react-router/types/**/*",
 		"tests/**/*",
 		"tests-e2e/**/*"
 	],
-	"exclude": ["tests-results"]
+	"exclude": ["tests-results"],
+	"references": [
+		{
+			"path": "../../packages/shared-ui"
+		}
+	]
 }

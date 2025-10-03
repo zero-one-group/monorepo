@@ -4,7 +4,7 @@
 ARG PLATFORM=linux/amd64
 ARG NODE_VERSION=22
 
-FROM busybox:1.37-glibc as glibc
+FROM busybox:1.37-glibc AS glibc
 
 # -----------------------------------------------------------------------------
 # Base image with pnpm package manager.
@@ -12,8 +12,8 @@ FROM busybox:1.37-glibc as glibc
 FROM --platform=${PLATFORM} node:${NODE_VERSION}-bookworm-slim AS base
 ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0 COREPACK_INTEGRITY_KEYS=0
 ENV LEFTHOOK=0 CI=true PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=true
-ENV MOON_TOOLCHAIN_FORCE_GLOBALS=1 MOON_INSTALL_DIR="/usr/bin"
-ENV PNPM_HOME="/pnpm" PATH="$PNPM_HOME:$MOON_INSTALL_DIR:$PATH"
+ENV MOON_TOOLCHAIN_FORCE_GLOBALS=1 MOON_INSTALL_DIR="/usr/bin" PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$MOON_INSTALL_DIR:$PATH"
 RUN corepack enable && corepack prepare pnpm@latest-10 --activate
 WORKDIR /srv
 
@@ -27,16 +27,17 @@ RUN curl -fsSL https://moonrepo.dev/install/moon.sh | bash
 # -----------------------------------------------------------------------------
 FROM base AS skeleton
 COPY --link . .
-RUN moon docker scaffold {{ package_name | kebab_case }}
+RUN moon docker scaffold nextjs-app
 
 # -----------------------------------------------------------------------------
 # Install dependencies and build the application.
 # -----------------------------------------------------------------------------
 FROM base AS builder
+ARG NODE_ENV=production
 ENV NODE_ENV=$NODE_ENV NEXT_TELEMETRY_DISABLED=1
 
 # Copy workspace skeleton
-COPY --from=skeleton /root/.proto /root/.proto
+# COPY --from=skeleton /root/.proto /root/.proto
 COPY --from=skeleton /srv/.moon/docker/workspace .
 
 # Install toolchain and dependencies
@@ -47,7 +48,7 @@ COPY --from=skeleton /srv/.moon/docker/sources .
 COPY --from=skeleton /srv/.npmrc .
 
 # Build the application and prune the workspace (optional).
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run {{ package_name | kebab_case }}:build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run nextjs-app:build
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 
 # -----------------------------------------------------------------------------
@@ -56,15 +57,15 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon docker prune
 FROM base AS pruner
 
 # Copy only necessary files from builder stage
-COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/.next/standalone /srv
-COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/.next/static /srv/apps/{{ package_name | kebab_case }}/.next/static
-COPY --from=builder /srv/apps/{{ package_name | kebab_case }}/public /srv/apps/{{ package_name | kebab_case }}/public
+COPY --from=builder /srv/apps/nextjs-app/.next/standalone /srv
+COPY --from=builder /srv/apps/nextjs-app/.next/static /srv/apps/nextjs-app/.next/static
+COPY --from=builder /srv/apps/nextjs-app/public /srv/apps/nextjs-app/public
 
 # Copy Next.js configuration files.
-COPY --from=skeleton /srv/apps/{{ package_name | kebab_case }}/next.config.mjs /srv/apps/{{ package_name | kebab_case }}/next.config.mjs
+COPY --from=skeleton /srv/apps/nextjs-app/next.config.mjs /srv/apps/nextjs-app/next.config.mjs
 
 # Set permissions for the public directory and the server.js file.
-RUN chmod -R 0775 /srv/apps/{{ package_name | kebab_case }}/public && chmod +x /srv/apps/{{ package_name | kebab_case }}/server.js
+RUN chmod -R 0775 /srv/apps/nextjs-app/public && chmod +x /srv/apps/nextjs-app/server.js
 
 # Cleanup uncessary files and install production dependencies
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm dlx \
@@ -97,11 +98,11 @@ COPY --from=glibc /bin/ls /bin/ls
 COPY --from=glibc /bin/sh /bin/sh
 
 # Define the host and port to listen on.
-ARG NODE_ENV=production HOSTNAME=0.0.0.0 PORT={{ port_number }}
+ARG NODE_ENV=production HOSTNAME=0.0.0.0 PORT=3200
 ENV NODE_ENV=$NODE_ENV HOSTNAME=$HOSTNAME PORT=$PORT
 ENV TINI_SUBREAPER=true NEXT_TELEMETRY_DISABLED=1
 
-WORKDIR /srv/apps/{{ package_name | kebab_case }}
+WORKDIR /srv/apps/nextjs-app
 USER nonroot:nonroot
 EXPOSE $PORT
 

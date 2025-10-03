@@ -18,10 +18,10 @@ type ContextKey string
 
 const (
 	// HeadersContextKey is used to store request headers map in context (map[string]string).
-	HeadersContextKey ContextKey = "{{ package_name | kebab_case }}.headers"
+	HeadersContextKey ContextKey = "go-modular.headers"
 
 	// JWTClaimsContextKey is used to store parsed JWT claims in context (map[string]any).
-	JWTClaimsContextKey ContextKey = "{{ package_name | kebab_case }}.jwt_claims"
+	JWTClaimsContextKey ContextKey = "go-modular.jwt_claims"
 )
 
 // JWTConfig holds configuration for JWT generation and validation.

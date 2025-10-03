@@ -5,6 +5,8 @@
 @plugin "tailwindcss-motion";
 @variant dark (&:where([data-theme="dark"] *));
 
+@source "../../../../packages/shared-ui/**/*.{ts,tsx}";
+
 @theme {
 	/* Base Colors */
 	--color-black: #0b0c0e;

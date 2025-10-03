@@ -8,7 +8,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/lestrrat-go/jwx/jwa"
-	"{{ package_name | kebab_case }}/pkg/apputils"
+	"go-modular/pkg/apputils"
 )
 
 // JWTMiddleware verifies a Bearer JWT and stores the parsed token claims in echo.Context.

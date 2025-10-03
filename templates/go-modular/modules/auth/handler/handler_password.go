@@ -4,8 +4,8 @@ import (
 	"log/slog"
 	"net/http"
 
-	"{{ package_name | kebab_case }}/modules/auth/models"
-	"{{ package_name | kebab_case }}/pkg/apputils"
+	"go-modular/modules/auth/models"
+	"go-modular/pkg/apputils"
 
 	"github.com/gofrs/uuid/v5"
 	"github.com/labstack/echo/v4"
