@@ -12,8 +12,8 @@ Zero One Group projects.
 
 ## Quick Start
 
-1. **Create new monorepo project:**
-   `pnpm dlx moci create my-project`
+1. **Initialize new monorepo project:**
+   `pnpm dlx moci init my-project`
 2. **Generate the application from template:**
    `moon generate TEMPLATE_NAME`
 3. **Configure the apps:**
