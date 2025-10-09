@@ -13,14 +13,12 @@ Zero One Group projects.
 ## Quick Start
 
 1. **Create new monorepo project:**
-   `pnpm dlx tiged zero-one-group/monorepo my-monorepo-project`
-2. **Install dependencies:**
-   `cd my-monorepo-project && pnpm install`
-3. **Generate the application from template:**
+   `pnpm dlx moci create my-project`
+2. **Generate the application from template:**
    `moon generate TEMPLATE_NAME`
-4. **Configure the apps:**
+3. **Configure the apps:**
    copy `.env.example` to `.env` and adjust as needed.
-5. **Start development:**
+4. **Start development:**
    run all by running command `moon :dev` or `moon '#app:dev'`
 
 ## Templates
