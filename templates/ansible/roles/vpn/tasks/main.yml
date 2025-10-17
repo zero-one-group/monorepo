@@ -1,0 +1,38 @@
+---
+# tasks file for vpn
+- name: Create vpn directory
+  file:
+    path: "{{ path }}/vpn"
+    state: directory
+    owner: "{{ ansible_user }}"
+
+- name: Create mongodb directory
+  file:
+    path: "{{ path }}/vpn/mongodb"
+    state: directory
+    owner: "{{ ansible_user }}"
+
+- name: Create pritunl directory
+  file:
+    path: "{{ path }}/vpn/pritunl"
+    state: directory
+    owner: "{{ ansible_user }}"
+
+- name: Create pritunl.conf file
+  file:
+    path: "{{ path }}/vpn/pritunl.conf"
+    state: touch
+    owner: "{{ ansible_user }}"
+
+- name: Copy vpn.yml to VM
+  copy:
+    src: "vpn.yml"
+    dest: "{{ path }}/vpn/vpn.yml"
+    owner: "{{ ansible_user }}"
+
+- name: Deploy Pritunl  VPN
+  command: docker compose -f vpn.yml up -d
+  args:
+    chdir: "{{ path }}/vpn"
+  become: true
+
