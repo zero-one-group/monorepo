@@ -73,22 +73,22 @@ function RootDocument({ children }: { children: React.ReactNode }) {
                             <nav className="flex items-center gap-5 text-sm">
                                 <Link
                                     to="/"
-                                    activeOptions={{ exact: true }}
-                                    activeProps={{ className: "text-foreground" }}
+                                    activeOptions={ { exact: true } }
+                                    activeProps={ { className: "text-foreground" } }
                                     className="text-muted-foreground hover:text-foreground"
                                 >
                                     Home
                                 </Link>
                                 <Link
                                     to="/dashboard"
-                                    activeProps={{ className: "text-foreground" }}
+                                    activeProps={ { className: "text-foreground" } }
                                     className="text-muted-foreground hover:text-foreground"
                                 >
                                     Dashboard
                                 </Link>
                                 <Link
                                     to="/login"
-                                    activeProps={{ className: "text-foreground" }}
+                                    activeProps={ { className: "text-foreground" } }
                                     className="text-muted-foreground hover:text-foreground"
                                 >
                                     Sign In
