@@ -1,15 +1,9 @@
 import React from "react";
-import { act, create } from "react-test-renderer";
+import { renderAsync, screen } from "@testing-library/react-native";
 
 import { MonoText } from "#/components/StyledText";
 
-test("MonoText renders children", () => {
-	let rendered: ReturnType<typeof create> | null = null;
-
-	act(() => {
-		rendered = create(<MonoText>hello</MonoText>);
-	});
-
-	expect(rendered).not.toBeNull();
-	expect((rendered as any).toJSON()).toBeTruthy();
+test("MonoText renders children", async () => {
+	await renderAsync(<MonoText>Hello World</MonoText>);
+	expect(screen.getByText("Hello World")).toBeOnTheScreen();
 });
