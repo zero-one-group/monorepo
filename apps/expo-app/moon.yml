@@ -1,0 +1,46 @@
+# https://moonrepo.dev/docs/config/project
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+type: application
+language: typescript
+stack: frontend
+tags: ['app']
+
+id: 'expo-app'
+
+project:
+  name: expo-app
+  description: '_CHANGE_ME_DESCRIPTION_'
+
+tasks:
+  dev:
+    command: 'pnpm run dev'
+    options:
+      runDepsInParallel: false
+      envFile: '.env'
+
+  build:
+    command: 'pnpm run build'
+    options:
+      cache: true
+
+  test:
+    command: 'pnpm run test'
+    options:
+      cache: false
+
+  typecheck:
+    command: 'pnpm run typecheck'
+    options:
+      cache: true
+
+  lint:
+    command: 'pnpm run lint'
+    options:
+      cache: false
+
+  check:
+    command: 'pnpm run check'
+    options:
+      cache: false
