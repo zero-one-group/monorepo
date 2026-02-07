@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="168" height="40" viewBox="0 0 168 40">
+  <rect width="168" height="40" rx="10" fill="#0b0c0e" />
+  <path d="M18 14h16v4h-6v14h-4V18h-6z" fill="#ffffff" opacity="0.92" />
+  <text x="44" y="26" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto" font-size="14" fill="#ffffff" opacity="0.92">TanStack Start</text>
+</svg>
