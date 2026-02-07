@@ -1,0 +1,46 @@
+# https://moonrepo.dev/docs/config/project
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+type: application
+language: typescript
+stack: frontend
+tags: ['app']
+
+id: '{{ package_name | kebab_case }}'
+
+project:
+  name: {{ package_name | kebab_case }}
+  description: '{{ package_description }}'
+
+tasks:
+  dev:
+    command: 'pnpm run dev'
+    options:
+      runDepsInParallel: false
+      envFile: '.env'
+
+  build:
+    command: 'pnpm run build'
+    options:
+      cache: true
+
+  test:
+    command: 'pnpm run test'
+    options:
+      cache: false
+
+  typecheck:
+    command: 'pnpm run typecheck'
+    options:
+      cache: true
+
+  lint:
+    command: 'pnpm run lint'
+    options:
+      cache: false
+
+  check:
+    command: 'pnpm run check'
+    options:
+      cache: false
