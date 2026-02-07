@@ -1,0 +1,27 @@
+# https://moonrepo.dev/docs/config/template
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/template.json
+$schema: 'https://moonrepo.dev/schemas/template.json'
+
+title: 'TanStack Start Application'
+description: 'TanStack Start application preconfigured with TanStack Router and Tailwind CSS'
+
+destination: 'apps/[package_name]'
+
+variables:
+  package_name:
+    type: 'string'
+    default: 'tanstack-start'
+    prompt: 'Package name (identifier)?'
+    required: true
+
+  package_description:
+    type: 'string'
+    default: 'TanStack Start application'
+    prompt: 'Package description?'
+    required: true
+
+  port_number:
+    type: 'number'
+    default: 3300
+    prompt: 'Port number?'
+    required: true

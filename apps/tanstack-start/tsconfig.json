@@ -1,0 +1,30 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"compilerOptions": {
+		"allowJs": true,
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"isolatedModules": true,
+		"jsx": "react-jsx",
+		"lib": ["DOM", "DOM.Iterable", "ES2023"],
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"noEmit": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"strict": true,
+		"target": "ES2023",
+		"types": ["node", "vite/client", "@testing-library/jest-dom"],
+		"baseUrl": ".",
+		"paths": {
+			"#/*": ["./src/*"]
+		}
+	},
+	"include": ["src/**/*", "tests/**/*", "tests-e2e/**/*"],
+	"exclude": ["tests-results", ".output", ".vinxi", "dist"],
+	"references": [
+		{
+			"path": "../../packages/shared-ui"
+		}
+	]
+}

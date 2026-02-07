@@ -1,0 +1,99 @@
+@layer utilities {
+    :root {
+        --background: oklch(1 0 0);
+        --foreground: oklch(0.25 0.008 255.21);
+        --primary: oklch(0.55 0.191 263.8);
+        --primary-foreground: oklch(0.98 0.003 252.11);
+        --secondary: oklch(0.95 0.005 252.11);
+        --secondary-foreground: oklch(0.25 0.008 252.11);
+        --destructive: oklch(0.589 0.199 27.84);
+        --destructive-foreground: oklch(0.99 0.001 253.77);
+        --card: oklch(1 0 0);
+        --card-foreground: oklch(0.15 0.011 252.11);
+        --popover: oklch(1 0 0);
+        --popover-foreground: oklch(0.15 0.011 252.11);
+        --muted: oklch(0.95 0.005 252.11);
+        --muted-foreground: oklch(0.55 0.015 252.11);
+        --accent: oklch(0.95 0.005 252.11);
+        --accent-foreground: oklch(0.25 0.008 252.11);
+        --border: oklch(0.89 0.008 252.11);
+        --input: oklch(0.89 0.008 252.11);
+        --ring: oklch(0.25 0.008 252.11);
+
+        /* Sidebar Colors */
+        --sidebar-background: oklch(0.98 0.003 252.11);
+        --sidebar-foreground: oklch(0.35 0.015 252.11);
+        --sidebar-primary: oklch(0.25 0.008 252.11);
+        --sidebar-primary-foreground: oklch(0.98 0.003 252.11);
+        --sidebar-accent: oklch(0.95 0.005 252.11);
+        --sidebar-accent-foreground: oklch(0.25 0.008 252.11);
+        --sidebar-border: oklch(0.89 0.015 251.27);
+        --sidebar-ring: oklch(0.65 0.191 263.8);
+
+        /* Chart Colors */
+        --chart-1: oklch(0.639 0.199 27.84);
+        --chart-2: oklch(0.513 0.128 194.68);
+        --chart-3: oklch(0.329 0.082 220.93);
+        --chart-4: oklch(0.689 0.193 85.59);
+        --chart-5: oklch(0.689 0.224 44.94);
+
+        /* Status colors */
+        --success: oklch(0.571 0.191 143.8);
+        --success-foreground: oklch(0.98 0.003 253.77);
+        --info: oklch(0.571 0.191 263.8);
+        --info-foreground: oklch(0.98 0.003 253.77);
+        --warning: oklch(0.571 0.191 83.8);
+        --warning-foreground: oklch(0.98 0.003 253.77);
+        --error: oklch(0.589 0.199 27.84);
+        --error-foreground: oklch(0.98 0.003 252.11);
+
+        &:where([data-theme="dark"], [data-theme="dark"] *) {
+            --background: oklch(0.15 0.011 252.11);
+            --foreground: oklch(0.98 0.003 252.11);
+            --primary: oklch(0.679 0.211 263.8);
+            --primary-foreground: oklch(0.25 0.008 252.11);
+            --secondary: oklch(0.28 0.008 252.11);
+            --secondary-foreground: oklch(0.98 0.003 252.11);
+            --destructive: oklch(0.589 0.199 27.84);
+            --destructive-foreground: oklch(0.99 0.001 253.77);
+            --card: oklch(0.15 0.011 252.11);
+            --card-foreground: oklch(0.98 0.003 252.11);
+            --popover: oklch(0.15 0.011 252.11);
+            --popover-foreground: oklch(0.98 0.003 252.11);
+            --muted: oklch(0.28 0.008 252.11);
+            --muted-foreground: oklch(0.65 0.015 252.11);
+            --accent: oklch(0.28 0.008 252.11);
+            --accent-foreground: oklch(0.98 0.003 252.11);
+            --border: oklch(0.28 0.008 252.11);
+            --input: oklch(0.28 0.008 252.11);
+            --ring: oklch(0.85 0.008 252.11);
+
+            /* Sidebar Colors */
+            --sidebar-background: oklch(0.18 0.003 252.11);
+            --sidebar-foreground: oklch(0.95 0.005 252.11);
+            --sidebar-primary: oklch(0.55 0.191 263.8);
+            --sidebar-primary-foreground: oklch(1 0 0);
+            --sidebar-accent: oklch(0.28 0.008 252.11);
+            --sidebar-accent-foreground: oklch(0.95 0.005 252.11);
+            --sidebar-border: oklch(0.28 0.008 252.11);
+            --sidebar-ring: oklch(0.65 0.191 263.8);
+
+            /* Chart Colors */
+            --chart-1: oklch(0.571 0.191 263.8);
+            --chart-2: oklch(0.571 0.128 194.68);
+            --chart-3: oklch(0.571 0.199 27.84);
+            --chart-4: oklch(0.571 0.161 14.18);
+            --chart-5: oklch(0.571 0.193 85.59);
+
+            /* Status colors */
+            --success: oklch(0.521 0.161 143.8);
+            --success-foreground: oklch(0.25 0.008 252.11);
+            --info: oklch(0.521 0.161 263.8);
+            --info-foreground: oklch(0.25 0.008 252.11);
+            --warning: oklch(0.521 0.161 83.8);
+            --warning-foreground: oklch(0.25 0.008 252.11);
+            --error: oklch(0.589 0.199 27.84);
+            --error-foreground: oklch(0.25 0.008 252.11);
+        }
+    }
+}
