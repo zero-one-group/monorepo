@@ -3,8 +3,6 @@ title: Introduction
 slug: "introduction"
 ---
 
-# Welcome to Zero One Group Monorepo
-
 The Zero One Group Monorepo is a unified foundation designed to accelerate the development of modern web and backend applications. It provides a structured, scalable, and opinionated environment for building software using **TypeScript**, **Go**, and **Python**.
 
 Powered by [moonrepo](https://moonrepo.dev), this monorepo streamlines workspace management, task orchestration, and build caching, ensuring that teams can collaborate efficiently and deliver high-quality software with speed.

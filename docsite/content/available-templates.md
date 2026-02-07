@@ -41,7 +41,7 @@ The monorepo comes with a variety of templates to kickstart your development. Th
 - **`postgresql`**: PostgreSQL database configuration.
 - **`squidproxy`**: Squid proxy configuration.
 - **`swarm`**: Docker Swarm configuration.
-- **`terragrunt`**: Terragrunt infrastructure as code code.
+- **`terragrunt`**: Terragrunt infrastructure as code.
 
 ## Libraries
 
