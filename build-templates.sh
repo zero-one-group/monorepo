@@ -21,8 +21,8 @@ APPS_DIR="./apps"
 mkdir -p $TEMPLATE_DIR
 
 # Mapping apps dir to template dir (parallel arrays)
-SRC_DIRS=("astro-web" "fastapi-ai" "go-clean" "go-modular" "nextjs-app" "react-app" "react-ssr" "strapi-cms")
-TGT_DIRS=("astro"     "fastapi-ai" "go-clean" "go-modular" "nextjs"     "react-app" "react-ssr" "strapi")
+SRC_DIRS=("astro-web" "expo-app" "fastapi-ai" "go-clean" "go-modular" "nextjs-app" "react-app" "react-ssr" "strapi-cms")
+TGT_DIRS=("astro"     "expo"     "fastapi-ai" "go-clean" "go-modular" "nextjs"     "react-app" "react-ssr" "strapi")
 
 echo "Copying template files with mapping and path validation..."
 for i in "${!SRC_DIRS[@]}"; do
@@ -52,6 +52,7 @@ for i in "${!TGT_DIRS[@]}"; do
         rm -rf "$TGT_PATH/vendor"
         rm -rf "$TGT_PATH/build"
         rm -rf "$TGT_PATH/dist"
+        rm -rf "$TGT_PATH/.expo"
         rm -rf "$TGT_PATH/uv.lock"
         rm -rf "$TGT_PATH/.react-router"
         rm -rf "$TGT_PATH/.astro"
@@ -68,6 +69,7 @@ echo
 
 echo "Scaffolding templates..."
 bash ./builder/astro.sh
+bash ./builder/expo-app.sh
 bash ./builder/fastapi-ai.sh
 bash ./builder/go-clean.sh
 bash ./builder/go-modular.sh
