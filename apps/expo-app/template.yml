@@ -1,0 +1,20 @@
+# https://moonrepo.dev/docs/config/template
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/template.json
+$schema: 'https://moonrepo.dev/schemas/template.json'
+
+title: 'Expo Application'
+description: 'React Native + Expo application preconfigured with Expo Router, Jest, and Biome'
+destination: 'apps/[package_name]'
+
+variables:
+  package_name:
+    type: 'string'
+    default: 'expo-app'
+    prompt: 'Package name (identifier)?'
+    required: true
+
+  package_description:
+    type: 'string'
+    default: 'React Native application (Expo)'
+    prompt: 'Package description?'
+    required: true
