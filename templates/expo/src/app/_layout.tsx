@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "react-native";
+import { AuthProvider } from "#/state/auth";
 
 export {
 	// Catch any errors thrown by the Layout component.
@@ -53,11 +54,14 @@ function RootLayoutNav() {
 	const colorScheme = useColorScheme();
 
 	return (
-		<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-			<Stack>
-				<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-				<Stack.Screen name="modal" options={{ presentation: "modal" }} />
-			</Stack>
-		</ThemeProvider>
+		<AuthProvider>
+			<ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+				<Stack>
+					<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+					<Stack.Screen name="login" options={{ title: "Sign in" }} />
+					<Stack.Screen name="modal" options={{ presentation: "modal" }} />
+				</Stack>
+			</ThemeProvider>
+		</AuthProvider>
 	);
 }

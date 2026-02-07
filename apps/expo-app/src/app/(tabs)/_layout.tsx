@@ -47,6 +47,15 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
+				name="dashboard"
+				options={{
+					title: "Dashboard",
+					tabBarIcon: ({ color }) => (
+						<TabBarIcon name="tachometer" color={color} />
+					),
+				}}
+			/>
+			<Tabs.Screen
 				name="settings"
 				options={{
 					title: "Settings",
