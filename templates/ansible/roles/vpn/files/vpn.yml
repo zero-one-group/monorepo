@@ -1,0 +1,23 @@
+services:
+  pritunl:
+    container_name: pritunl
+    image: ghcr.io/jippi/docker-pritunl
+    restart: unless-stopped
+    privileged: true
+    network_mode: bridge
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    dns:
+        - 127.0.0.1
+    volumes:
+        - './pritunl.conf:/etc/pritunl.conf'
+        - './pritunl:/var/lib/pritunl'
+        - './mongodb:/var/lib/mongodb'
+    ports:
+      - 80:80
+      - 443:443
+      - 1500:1500
+      - 1500:1500/udp
+      - 1510:1510/udp
+    environment:
+      - TZ=UTC
