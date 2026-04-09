@@ -1,0 +1,27 @@
+# https://moonrepo.dev/docs/config/template
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/template.json
+$schema: "https://moonrepo.dev/schemas/template.json"
+
+title: "Rust Modular Application"
+description: "NestJS-style modular Rust/axum service with auth, JWT, SMTP, and OpenAPI."
+
+destination: "apps/[package_name]"
+
+variables:
+  package_name:
+    type: "string"
+    default: "my-modular-app"
+    prompt: "Package name (identifier)?"
+    required: true
+
+  package_description:
+    type: "string"
+    default: "Modular Rust application"
+    prompt: "Package description?"
+    required: true
+
+  port_number:
+    type: "number"
+    default: 8080
+    prompt: "Port number?"
+    required: true

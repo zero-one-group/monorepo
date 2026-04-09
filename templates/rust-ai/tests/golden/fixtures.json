@@ -1,0 +1,69 @@
+{
+    "version": 1,
+    "captured_at": "2026-04-09",
+    "captured_from": "python fastapi-ai service (app/main.py) running locally against postgres 16-alpine + OpenRouter (gpt-4.1-mini)",
+    "notes": [
+        "The root and health-check fixtures are exact-match: the Python service returns deterministic JSON so the Rust port must match byte-for-byte after whitespace normalization.",
+        "The openai_greetings fixture is SCHEMA-MATCH only: the LLM output varies per call (different languages and greetings), so golden tests assert structure rather than exact content. The sample_response field is an example capture and is NOT expected to be returned verbatim."
+    ],
+    "fixtures": [
+        {
+            "name": "root",
+            "description": "GET / welcome message — deterministic",
+            "method": "GET",
+            "path": "/",
+            "expected_status": 200,
+            "expected_content_type": "application/json",
+            "match_mode": "exact",
+            "expected_body": {
+                "message": "Welcome to the Machine Learning API"
+            }
+        },
+        {
+            "name": "health_check_ok",
+            "description": "GET /health-check happy path — database reachable",
+            "method": "GET",
+            "path": "/health-check",
+            "expected_status": 200,
+            "expected_content_type": "application/json",
+            "match_mode": "exact",
+            "expected_body": {
+                "status": "ok",
+                "database": "connected"
+            }
+        },
+        {
+            "name": "openai_greetings",
+            "description": "GET /openai/greetings happy path — LLM output shape, content varies",
+            "method": "GET",
+            "path": "/openai/greetings",
+            "expected_status": 200,
+            "expected_content_type": "application/json",
+            "match_mode": "schema",
+            "schema_assertions": {
+                "top_level_keys": ["success", "message", "data"],
+                "success_is_true": true,
+                "message_equals": "Operation successful",
+                "data_response_greetings_is_array": true,
+                "greetings_min_length": 1,
+                "greetings_max_length": 32,
+                "greeting_item_required_keys": ["language", "greeting"]
+            },
+            "sample_response": {
+                "success": true,
+                "message": "Operation successful",
+                "data": {
+                    "response": {
+                        "greetings": [
+                            {"language": "English", "greeting": "Hello"},
+                            {"language": "Spanish", "greeting": "Hola"},
+                            {"language": "French", "greeting": "Bonjour"},
+                            {"language": "German", "greeting": "Hallo"},
+                            {"language": "Japanese", "greeting": "こんにちは"}
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

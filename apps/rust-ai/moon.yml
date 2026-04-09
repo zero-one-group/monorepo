@@ -1,0 +1,145 @@
+# https://moonrepo.dev/docs/config/project
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
+$schema: "https://moonrepo.dev/schemas/project.json"
+
+# Phase B: this project is now a Rust crate. moon doesn't have a
+# first-class rust toolchain entry, so the language is "unknown" and
+# tasks shell out to cargo directly.
+layer: application
+language: unknown
+tags: ["app", "rust"]
+
+# Overrides the name (identifier) of the project
+id: "rust-ai"
+
+project:
+  title: "rust-ai"
+  description: "_CHANGE_ME_DESCRIPTION_"
+
+tasks:
+  # Build the binary in dev mode for fast iteration.
+  build:
+    command: "cargo build -p rust-ai"
+    options:
+      runFromWorkspaceRoot: true
+
+  # Build the release binary for production deployment.
+  build-release:
+    command: "cargo build -p rust-ai --release"
+    options:
+      runFromWorkspaceRoot: true
+
+  # Development server.
+  dev:
+    command: "cargo run -p rust-ai"
+    options:
+      runFromWorkspaceRoot: true
+      envFile: "apps/rust-ai/.env"
+
+  # Production server (release build).
+  start:
+    command: "cargo run -p rust-ai --release"
+    options:
+      runFromWorkspaceRoot: true
+      envFile: "apps/rust-ai/.env"
+
+  # Run unit + integration tests for this crate.
+  test:
+    command: "cargo test -p rust-ai"
+    options:
+      runFromWorkspaceRoot: true
+
+  # Lint via clippy with workspace lint settings.
+  lint:
+    command: "cargo clippy -p rust-ai --all-targets -- -D warnings"
+    options:
+      runFromWorkspaceRoot: true
+
+  # Format check (CI gate).
+  fmt-check:
+    command: "cargo fmt -p rust-ai --check"
+    options:
+      runFromWorkspaceRoot: true
+
+  # Apply all pending database migrations via sqlx-cli.
+  # Requires `cargo install sqlx-cli --no-default-features --features postgres`.
+  migrate:
+    command: "sqlx migrate run --source apps/rust-ai/migrations"
+    options:
+      runFromWorkspaceRoot: true
+      envFile: "apps/rust-ai/.env"
+
+  # Create a new empty migration file.
+  # Usage: `moon run rust-ai:migrate-create -- "your migration description"`
+  migrate-create:
+    command: "sqlx migrate add --source apps/rust-ai/migrations"
+    options:
+      runFromWorkspaceRoot: true
+      envFile: "apps/rust-ai/.env"
+
+  # Rollback the last migration.
+  migrate-down:
+    command: "sqlx migrate revert --source apps/rust-ai/migrations"
+    options:
+      runFromWorkspaceRoot: true
+      envFile: "apps/rust-ai/.env"
+
+  # Reset database to initial state (rolls back all migrations).
+  # WARNING: This will destroy all data!
+  migrate-reset:
+    command: "sqlx database reset --source apps/rust-ai/migrations -y"
+    options:
+      runFromWorkspaceRoot: true
+      envFile: "apps/rust-ai/.env"
+
+  # First-time setup: build, migrate, then sanity-check the binary.
+  check-in-dance:
+    command: 'echo "All is good, ready to go!"'
+    deps: ["build", "migrate"]
+    options:
+      shell: true
+
+  docker-build:
+    script: |
+      DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
+      DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
+      && docker build -f $projectRoot/Dockerfile . -t $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION \
+      && docker image list --filter reference=$DOCKER_IMAGE\*
+    options:
+      mergeEnv: replace
+      runFromWorkspaceRoot: true
+      interactive: false
+      outputStyle: stream
+      runInCI: false
+      cache: false
+      shell: true
+
+  docker-run:
+    script: |
+      DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
+      DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
+      && docker run --network=host --rm -it --env-file $projectRoot/.env \
+        --name $DOCKER_IMAGE $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION
+    options:
+      mergeEnv: replace
+      outputStyle: stream
+      runFromWorkspaceRoot: true
+      interactive: true
+      runInCI: false
+      cache: false
+      shell: true
+
+  docker-shell:
+    script: |
+      DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
+      DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
+      && docker run --network=host --rm -it --env-file $projectRoot/.env \
+        --entrypoint sh $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION
+    options:
+      mergeEnv: replace
+      runFromWorkspaceRoot: true
+      outputStyle: stream
+      interactive: true
+      runInCI: false
+      cache: false
+      shell: true

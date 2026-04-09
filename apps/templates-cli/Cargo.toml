@@ -1,0 +1,41 @@
+[package]
+name         = "templates-cli"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace      = true
+repository.workspace   = true
+publish.workspace      = true
+description  = "Rust replacement for the monorepo's bash template pipeline (build-templates.sh, builder/*.sh, makezip.sh)"
+
+[[bin]]
+name = "templates-cli"
+path = "src/main.rs"
+
+[lib]
+name = "templates_cli"
+path = "src/lib.rs"
+
+[dependencies]
+anyhow             = { workspace = true }
+thiserror          = { workspace = true }
+clap               = { workspace = true }
+serde              = { workspace = true }
+serde_json         = { workspace = true }
+walkdir            = { workspace = true }
+fs-err             = { workspace = true }
+zip                = { workspace = true }
+glob               = { workspace = true }
+chrono             = { workspace = true }
+indexmap           = { workspace = true }
+tracing            = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+[dev-dependencies]
+insta             = { workspace = true }
+rstest            = { workspace = true }
+tempfile          = { workspace = true }
+pretty_assertions = { workspace = true }
+
+[lints]
+workspace = true

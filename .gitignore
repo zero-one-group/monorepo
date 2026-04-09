@@ -135,3 +135,7 @@ TODO.md
 
 # Expo
 .expo
+
+# Rust
+/target/
+**/target/

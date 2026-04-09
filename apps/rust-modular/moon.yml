@@ -1,0 +1,140 @@
+# https://moonrepo.dev/docs/config/project
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
+$schema: "https://moonrepo.dev/schemas/project.json"
+
+# Phase D: this project is now a Rust crate. moon doesn't have a
+# first-class rust toolchain entry, so the language is "unknown" and
+# tasks shell out to cargo directly.
+layer: application
+language: unknown
+tags: ["app", "rust"]
+
+id: "rust-modular"
+
+project:
+  title: "rust-modular"
+  description: "Corrected-port Rust rewrite of the Zero One Group rust-modular service (Phase D)."
+
+tasks:
+  build:
+    command: "cargo build -p rust-modular"
+    options:
+      runFromWorkspaceRoot: true
+
+  build-release:
+    command: "cargo build -p rust-modular --release"
+    options:
+      runFromWorkspaceRoot: true
+
+  dev:
+    command: "cargo run -p rust-modular -- serve"
+    options:
+      runFromWorkspaceRoot: true
+      envFile: "apps/rust-modular/.env"
+
+  start:
+    command: "cargo run -p rust-modular --release -- serve"
+    options:
+      runFromWorkspaceRoot: true
+      envFile: "apps/rust-modular/.env"
+
+  test:
+    command: "cargo test -p rust-modular"
+    options:
+      runFromWorkspaceRoot: true
+
+  smoke:
+    command: "cargo test -p rust-modular --test smoke_boot"
+    options:
+      runFromWorkspaceRoot: true
+
+  lint:
+    command: "cargo clippy -p rust-modular --all-targets -- -D warnings"
+    options:
+      runFromWorkspaceRoot: true
+
+  fmt-check:
+    command: "cargo fmt -p rust-modular --check"
+    options:
+      runFromWorkspaceRoot: true
+
+  # Apply all pending database migrations via the in-process CLI.
+  migrate:
+    command: "cargo run -p rust-modular -- migrate run"
+    options:
+      runFromWorkspaceRoot: true
+      envFile: "apps/rust-modular/.env"
+
+  migrate-create:
+    command: "cargo run -p rust-modular -- migrate create"
+    options:
+      runFromWorkspaceRoot: true
+      envFile: "apps/rust-modular/.env"
+
+  migrate-reset:
+    command: "cargo run -p rust-modular -- migrate reset"
+    options:
+      runFromWorkspaceRoot: true
+      envFile: "apps/rust-modular/.env"
+
+  seed:
+    command: "cargo run -p rust-modular -- seed"
+    options:
+      runFromWorkspaceRoot: true
+      envFile: "apps/rust-modular/.env"
+
+  generate-config:
+    command: "cargo run -p rust-modular -- generate-config"
+    options:
+      runFromWorkspaceRoot: true
+
+  check-in-dance:
+    command: 'echo "All is good, ready to go!"'
+    deps: ["build", "migrate"]
+    options:
+      shell: true
+
+  docker-build:
+    script: |
+      DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
+      DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
+      && docker build -f $projectRoot/Dockerfile . -t $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION \
+      && docker image list --filter reference=$DOCKER_IMAGE\*
+    options:
+      mergeEnv: replace
+      runFromWorkspaceRoot: true
+      interactive: false
+      outputStyle: stream
+      runInCI: false
+      cache: false
+      shell: true
+
+  docker-run:
+    script: |
+      DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
+      DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
+      && docker run --network=host --rm -it --env-file $projectRoot/.env \
+        --name $DOCKER_IMAGE $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION
+    options:
+      mergeEnv: replace
+      outputStyle: stream
+      runFromWorkspaceRoot: true
+      interactive: true
+      runInCI: false
+      cache: false
+      shell: true
+
+  docker-shell:
+    script: |
+      DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
+      DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
+      && docker run --network=host --rm -it --env-file $projectRoot/.env \
+        --entrypoint sh $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION
+    options:
+      mergeEnv: replace
+      runFromWorkspaceRoot: true
+      outputStyle: stream
+      interactive: true
+      runInCI: false
+      cache: false
+      shell: true

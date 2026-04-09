@@ -1,0 +1,138 @@
+[workspace]
+resolver = "2"
+members = [
+    "apps/templates-cli",
+    "apps/rust-ai",
+    "apps/rust-clean",
+    "apps/rust-modular",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.90"
+license = "MIT"
+repository = "https://github.com/zero-one-group/monorepo"
+publish = false
+
+# Workspace-level dependency pins. Every version below was verified against
+# https://docs.rs/<crate>/latest/. NEVER add a new crate here without
+# first verifying the version on docs.rs.
+[workspace.dependencies]
+# Phase A (templates-cli) base
+anyhow      = "1.0.102"
+thiserror   = "2.0.18"
+clap        = { version = "4.6.0", features = ["derive"] }
+serde       = { version = "1.0", features = ["derive"] }
+serde_json  = { version = "1.0.149", features = ["preserve_order"] }
+walkdir     = "2.5.0"
+fs-err      = "3.3.0"
+tempfile    = "3.27.0"
+zip         = { version = "8.5.1", default-features = false, features = ["deflate"] }
+glob        = "0.3.3"
+chrono      = { version = "0.4", default-features = false, features = ["std", "clock", "serde"] }
+indexmap    = { version = "2", features = ["serde"] }
+tracing     = "0.1.44"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt", "json"] }
+
+# Phase B (fastapi-ai) HTTP/runtime/DB
+axum        = { version = "0.8.8", features = ["macros", "tokio"] }
+tokio       = { version = "1.51.0", features = ["full"] }
+tower       = "0.5"
+tower-http  = { version = "0.6.8", features = ["cors", "request-id", "trace", "util", "compression-gzip", "set-header", "timeout"] }
+sqlx        = { version = "0.8.6", default-features = false, features = ["postgres", "runtime-tokio-rustls", "uuid", "chrono", "macros", "migrate"] }
+http        = "1"
+async-trait = "0.1"
+
+# Phase B config / env
+figment     = { version = "0.10.19", features = ["env", "toml"] }
+dotenvy     = "0.15.7"
+uuid        = { version = "1.23.0", features = ["v4", "v7", "serde"] }
+
+# Phase B observability
+opentelemetry              = "0.31.0"
+opentelemetry_sdk          = { version = "0.31.0", features = ["rt-tokio"] }
+opentelemetry-otlp         = { version = "0.31.0", features = ["grpc-tonic", "trace"] }
+tracing-opentelemetry      = "0.32.1"
+prometheus                 = "0.14.0"
+
+# Phase B AI/LLM
+# 0.34.0 ships everything behind feature flags; chat-completion is the
+# minimal set that enables Client + OpenAIConfig + the chat types we use.
+async-openai = { version = "0.34.0", features = ["chat-completion", "rustls"] }
+
+# Phase B OpenAPI docs
+utoipa             = { version = "5.4.0", features = ["axum_extras", "chrono", "uuid"] }
+utoipa-axum        = "0.2.0"
+utoipa-swagger-ui  = { version = "9", features = ["axum"] }
+
+# Phase C (go-clean) additions — JWT + bcrypt + rate limiting.
+# Every version below was verified against docs.rs on 2026-04-09.
+jsonwebtoken       = { version = "10.3.0", default-features = false, features = ["rust_crypto"] }
+bcrypt             = "0.19.0"
+tower_governor     = "0.8.0"
+
+# Phase D (go-modular) additions — argon2 password hashing + askama
+# email templates + lettre SMTP + validator for DTOs. Every version
+# below was verified against docs.rs on 2026-04-09.
+#
+# Gotcha: argon2 0.5.x pins against password-hash 0.5 transitively.
+# Do NOT add password-hash as a direct workspace dep — access via
+# `argon2::password_hash::{SaltString, PasswordHash, rand_core::OsRng}`.
+#
+# lettre feature flags: smtp-transport + tokio1 + tokio1-rustls-tls +
+# builder + hostname + pool. STARTTLS support is in the default rustls
+# transport path; port 465 (implicit TLS) uses Tls::Wrapper explicitly.
+argon2             = "0.5.3"
+askama             = "0.15.6"
+lettre             = { version = "0.11.21", default-features = false, features = ["smtp-transport", "tokio1", "tokio1-rustls-tls", "builder", "hostname", "pool"] }
+validator          = { version = "0.20.0", features = ["derive"] }
+# sha2 for token hashing (SHA-256 of refresh/access/one-time tokens).
+# hex used by the `sha256_hex` helper for one_time_tokens.token_hash
+# (TEXT column). Both docs.rs-verified 2026-04-09.
+sha2               = "0.11.0"
+hex                = "0.4.3"
+
+# Post-Phase-D follow-ups (verified docs.rs 2026-04-09):
+# - criterion 0.8.2: perf benchmarks. Supports `b.to_async(&runtime).iter(...)`
+#   via AsyncBencher, plus iter_batched for shared state across iterations.
+# - moka 0.12.15: async LRU cache with TTL for the optional session-check
+#   middleware cache. Requires the `future` feature for the async API.
+# - reqwest was already in test dev-deps; we reuse it for the perf test.
+criterion          = { version = "0.8.2", features = ["async_tokio"] }
+moka               = { version = "0.12.15", features = ["future"] }
+
+# Test-only
+insta       = "1.47.2"
+rstest      = "0.23"
+pretty_assertions = "1.4"
+reqwest     = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+# testcontainers 0.27.2 is the base runtime; testcontainers-modules 0.15.0
+# is the community module crate that re-exports it at an aligned version.
+# Both were verified on docs.rs on 2026-04-09. The postgres feature enables
+# the Postgres image module used by the fastapi-ai golden tests.
+testcontainers = "0.27.2"
+testcontainers-modules = { version = "0.15.0", features = ["postgres"] }
+# wiremock 0.6.5 — HTTP mock server for black-box testing. Used to mock
+# the OpenAI chat completions endpoint in the fastapi-ai golden tests
+# so they don't hit a real API key. Verified on docs.rs on 2026-04-09.
+wiremock    = "0.6.5"
+
+[profile.release]
+codegen-units = 1
+lto = "thin"
+strip = "debuginfo"
+
+[profile.dev]
+opt-level = 0
+
+# Clippy lints enforced workspace-wide
+[workspace.lints.clippy]
+all = { level = "deny", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+# Relaxations — pragmatic for a templating CLI
+module_name_repetitions = "allow"
+missing_errors_doc       = "allow"
+missing_panics_doc       = "allow"
+must_use_candidate       = "allow"
+too_many_lines           = "allow"

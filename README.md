@@ -1,6 +1,6 @@
 # Zero One Group Monorepo
 
-A unified foundation for building modern backend and frontend applications with TypeScript, Go, and Python.
+A unified foundation for building modern backend and frontend applications with TypeScript, Go, Python, and Rust.
 Powered by [moonrepo](https://moonrepo.dev/docs/install), this monorepo offers curated templates,
 shared UI libraries, and essential developer tools to accelerate development and foster best practices
 across teams.
@@ -24,8 +24,13 @@ Zero One Group projects.
 ## Templates
 
 This monorepo includes a wide range of templates to help you start new projects quickly and consistently.
-Templates are available for backend (Go, FastAPI), frontend (Astro, Next.js, React), and infrastructure
+Templates are available for backend (Go, FastAPI, Rust), frontend (Astro, Next.js, React), and infrastructure
 (Strapi, shared UI libraries).
+
+Rust templates:
+- **rust-ai** — Axum AI service with OpenAI integration, OTel tracing, and Prometheus metrics
+- **rust-clean** — Axum clean architecture REST API with JWT auth and PostgreSQL
+- **rust-modular** — NestJS-style modular Axum service with full auth system (19 endpoints), SMTP mailer, and OpenAPI docs
 
 Each template is designed to follow best practices and comes with pre-configured tooling, recommended
 folder structures, and example code to get you up and running fast. You can generate new apps from these

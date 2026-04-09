@@ -1,0 +1,105 @@
+[package]
+name         = "{{ package_name | kebab_case }}"
+version.workspace      = true
+edition.workspace      = true
+rust-version.workspace = true
+license.workspace      = true
+repository.workspace   = true
+publish.workspace      = true
+description  = "{{ package_description }}"
+
+[[bin]]
+name = "{{ package_name | kebab_case }}"
+path = "src/main.rs"
+
+[lib]
+name = "{{ package_name | snake_case }}"
+path = "src/lib.rs"
+
+[dependencies]
+# Core
+anyhow             = { workspace = true }
+thiserror          = { workspace = true }
+serde              = { workspace = true }
+serde_json         = { workspace = true }
+chrono             = { workspace = true }
+tracing            = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+# Web / runtime
+axum               = { workspace = true }
+tokio              = { workspace = true }
+tower              = { workspace = true }
+tower-http         = { workspace = true }
+http               = { workspace = true }
+async-trait        = { workspace = true }
+
+# Database
+sqlx               = { workspace = true }
+
+# Config
+figment            = { workspace = true }
+dotenvy            = { workspace = true }
+uuid               = { workspace = true }
+
+# Observability
+opentelemetry              = { workspace = true }
+opentelemetry_sdk          = { workspace = true }
+opentelemetry-otlp         = { workspace = true }
+tracing-opentelemetry      = { workspace = true }
+prometheus                 = { workspace = true }
+
+# Auth
+jsonwebtoken       = { workspace = true }
+tower_governor     = { workspace = true }
+
+# Phase D additions (argon2 password hashing + askama email templates).
+# Both verified on docs.rs on 2026-04-09.
+# Gotcha: argon2 0.5.x pins against password-hash 0.5 transitively; do NOT
+# add password-hash as a direct workspace dep or the tree duplicates.
+# Access SaltString / PasswordHash via argon2::password_hash::*.
+argon2             = { workspace = true }
+askama             = { workspace = true }
+
+# SHA-256 for refresh/access/one-time token hashing (D-OPEN-1).
+sha2               = { workspace = true }
+hex                = { workspace = true }
+
+# moka intentionally NOT listed as a direct dep: the D-IT-4 perf
+# bench measured the uncached middleware at 539 µs mean (well under
+# the 5 ms target), so the moka LRU fallback is unnecessary. The
+# crate remains verified on docs.rs and pinned in workspace deps
+# in case the perf budget ever tightens.
+
+# CLI (clap subcommands for serve, migrate, seed, generate-config)
+clap               = { workspace = true }
+
+# Validation (input DTOs)
+validator          = { workspace = true }
+
+# OpenAPI surface
+utoipa             = { workspace = true }
+utoipa-axum        = { workspace = true }
+utoipa-swagger-ui  = { workspace = true }
+
+# SMTP mailer with STARTTLS (D-SMTP-1)
+lettre             = { workspace = true }
+
+[dev-dependencies]
+insta                   = { workspace = true }
+rstest                  = { workspace = true }
+pretty_assertions       = { workspace = true }
+reqwest                 = { workspace = true }
+tokio                   = { workspace = true }
+testcontainers          = { workspace = true }
+testcontainers-modules  = { workspace = true }
+tower                   = { workspace = true }
+http-body-util          = "0.1"
+criterion               = { workspace = true }
+
+[[bench]]
+name = "session_middleware"
+harness = false
+
+[lints]
+workspace = true

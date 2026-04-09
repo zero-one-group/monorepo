@@ -1,0 +1,68 @@
+[package]
+name         = "rust-ai"
+version.workspace      = true
+edition.workspace      = true
+rust-version.workspace = true
+license.workspace      = true
+repository.workspace   = true
+publish.workspace      = true
+description  = "Behavior-equivalent Rust port of the Zero One Group fastapi-ai service (Phase B)."
+
+[[bin]]
+name = "rust-ai"
+path = "src/main.rs"
+
+[lib]
+name = "rust_ai"
+path = "src/lib.rs"
+
+[dependencies]
+anyhow             = { workspace = true }
+thiserror          = { workspace = true }
+serde              = { workspace = true }
+serde_json         = { workspace = true }
+chrono             = { workspace = true }
+tracing            = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+axum               = { workspace = true }
+tokio              = { workspace = true }
+tower              = { workspace = true }
+tower-http         = { workspace = true }
+http               = { workspace = true }
+async-trait        = { workspace = true }
+
+sqlx               = { workspace = true }
+figment            = { workspace = true }
+dotenvy            = { workspace = true }
+uuid               = { workspace = true }
+
+opentelemetry              = { workspace = true }
+opentelemetry_sdk          = { workspace = true }
+opentelemetry-otlp         = { workspace = true }
+tracing-opentelemetry      = { workspace = true }
+prometheus                 = { workspace = true }
+
+async-openai       = { workspace = true }
+
+utoipa             = { workspace = true }
+utoipa-axum        = { workspace = true }
+utoipa-swagger-ui  = { workspace = true }
+
+[dev-dependencies]
+insta             = { workspace = true }
+rstest            = { workspace = true }
+pretty_assertions = { workspace = true }
+reqwest           = { workspace = true }
+tokio             = { workspace = true }
+testcontainers          = { workspace = true }
+testcontainers-modules  = { workspace = true }
+wiremock                = { workspace = true }
+# `tower` is already a runtime dep via workspace, but the golden tests
+# use `tower::ServiceExt::oneshot` to call the router without binding a
+# listener. Re-declaring here keeps the dev-dep set explicit.
+tower             = { workspace = true }
+http-body-util    = "0.1"
+
+[lints]
+workspace = true
