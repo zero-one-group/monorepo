@@ -1,0 +1,30 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig",
+	"compilerOptions": {
+		"allowJs": true,
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"isolatedModules": true,
+		"jsx": "preserve",
+		"jsxImportSource": "vue",
+		"lib": ["DOM", "DOM.Iterable", "ESNext"],
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"noEmit": true,
+		"preserveSymlinks": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"strict": true,
+		"target": "esnext",
+		"types": ["node", "vite/client"],
+		"verbatimModuleSyntax": true,
+		"ignoreDeprecations": "6.0",
+		"baseUrl": ".",
+		"paths": {
+			"#/*": ["./src/*"]
+		}
+	},
+	"include": ["src/**/*", "tests/**/*", "tests-e2e/**/*"],
+	"exclude": ["tests-results"],
+	"references": []
+}

@@ -1,0 +1,26 @@
+# https://moonrepo.dev/docs/config/template
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/template.json
+$schema: 'https://moonrepo.dev/schemas/template.json'
+
+title: 'Vue Application'
+description: 'Vue Router application preconfigured with Tailwind CSS'
+destination: 'apps/[package_name]'
+
+variables:
+  package_name:
+    type: 'string'
+    default: 'vue-app'
+    prompt: 'Package name (identifier)?'
+    required: true
+
+  package_description:
+    type: 'string'
+    default: 'SPA Vue application'
+    prompt: 'Package description?'
+    required: true
+
+  port_number:
+    type: 'number'
+    default: 3000
+    prompt: 'Port number?'
+    required: true
