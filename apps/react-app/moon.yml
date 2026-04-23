@@ -29,6 +29,16 @@ tasks:
       runDepsInParallel: false
       envFile: '.env'
 
+  lint:
+    command: 'biome lint'
+    options:
+      affectedFiles: true
+
+  format:
+    command: 'biome check --write'
+    options:
+      affectedFiles: true
+
   build:
     command: 'pnpm run build'
     deps: ['prebuild']
