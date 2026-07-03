@@ -7,8 +7,8 @@
     "dev": "react-router dev",
     "build": "react-router build",
     "start": "vite preview --port {{ port_number }}",
-    "lint": "biome lint . --write",
-    "check": "biome check . --write",
+		"lint": "oxlint --fix .",
+		"check": "oxlint --fix . && oxfmt .",
     "cleanup": "pnpm dlx del-cli node_modules build .react-router tests-results",
     "update-deps": "npm-check-updates --configFileName .ncurc.json",
     "test-report": "pnpm dlx serve tests-results -l 9000 -s -n -C",
@@ -39,7 +39,8 @@
     "tailwind-variants": "^3.1.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "catalog:",
+		"oxfmt": "catalog:",
+		"oxlint": "catalog:",
     "@playwright/test": "^1.55.1",
     "@react-router/dev": "^7.9.3",
     "@tailwindcss/vite": "^4.1.14",

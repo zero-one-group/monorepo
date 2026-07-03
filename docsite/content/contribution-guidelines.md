@@ -146,9 +146,10 @@ tasks:
 
 ## 5. Code Style and Standards
 
-We use **Biome** for code formatting and linting. Please ensure your code adheres to the configured standards by running the appropriate moon commands (e.g., `moon run :format`, `moon run :lint`) before submitting your changes.
+We use **Oxc** (Oxlint + Oxfmt) for code linting and formatting. Please ensure your code adheres to the configured standards by running the appropriate moon commands (e.g., `moon run :format`, `moon run :lint`) before submitting your changes.
 
-*   Biome Documentation: [https://biomejs.dev/](https://biomejs.dev/)
+*   Oxlint Documentation: [https://oxc.rs/docs/guide/usage/linter.html](https://oxc.rs/docs/guide/usage/linter.html)
+*   Oxfmt Documentation: [https://oxc.rs/docs/guide/usage/formatter.html](https://oxc.rs/docs/guide/usage/formatter.html)
 
 ---
 

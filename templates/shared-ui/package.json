@@ -20,8 +20,8 @@
 		"start": "pnpm dlx local-web-server -p 6006 -d storybook-static",
 		"update-deps": "npm-check-updates --configFileName .ncurc.json",
 		"prepublishOnly": "pnpm run build:vite",
-		"lint": "biome lint . --write",
-		"check": "biome check . --write",
+		"lint": "oxlint --fix .",
+		"check": "oxlint --fix . && oxfmt .",
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
@@ -45,7 +45,8 @@
 		"zod": "^4.3.6"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "catalog:",
+		"oxfmt": "catalog:",
+		"oxlint": "catalog:",
 		"@hookform/resolvers": "^5.2.2",
 		"@storybook/addon-a11y": "10.3.3",
 		"@storybook/addon-links": "10.3.3",

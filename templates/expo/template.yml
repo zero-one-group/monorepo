@@ -3,7 +3,7 @@
 $schema: 'https://moonrepo.dev/schemas/template.json'
 
 title: 'Expo Application'
-description: 'React Native + Expo application preconfigured with Expo Router, Jest, and Biome'
+description: 'React Native + Expo application preconfigured with Expo Router, Jest, and Oxc'
 destination: 'apps/[package_name]'
 
 variables:

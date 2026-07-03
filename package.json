@@ -4,9 +4,9 @@
     "private": true,
     "scripts": {
         "prepare": "moon setup",
-        "lint": "moon :lint",
-        "check": "moon :check",
-        "format": "biome format . --write",
+        "lint": "moon run :lint",
+        "check": "moon run :check",
+        "format": "oxfmt .",
         "compose:up": "docker compose -f compose.yaml up -d --remove-orphans",
         "compose:down": "docker compose -f compose.yaml down --remove-orphans && docker compose -f compose.yaml --profile instrumented down --remove-orphans",
         "compose:cleanup": "docker compose -f compose.yaml down --remove-orphans --volumes",
@@ -17,20 +17,23 @@
         "cleanup:cache": "pnpm dlx del-cli .moon/cache --verbose",
         "cleanup:apps": "pnpm run -r --stream --color cleanup",
         "cleanup:store": "pnpm store prune --force",
-        "typecheck": "moon :typecheck"
+        "typecheck": "moon :typecheck",
+        "format:staged": "git diff --cached --name-only --diff-filter=ACM | grep -E '\\.(js|jsx|ts|tsx|mjs|cjs|mts|cts|json)$' | xargs oxfmt"
     },
     "devDependencies": {
-        "@biomejs/biome": "catalog:",
-        "npm-check-updates": "catalog:"
+        "npm-check-updates": "catalog:",
+        "oxfmt": "catalog:",
+        "oxlint": "catalog:"
     },
+    "packageManager": "pnpm@10.30.0",
     "pnpm": {
         "onlyBuiltDependencies": [
-            "@biomejs/biome",
+            "oxfmt",
+            "oxlint",
             "@swc/core",
             "core-js-pure",
             "esbuild",
             "sharp"
         ]
-    },
-    "packageManager": "pnpm@10.30.0"
+    }
 }

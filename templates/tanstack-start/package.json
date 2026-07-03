@@ -13,8 +13,8 @@
         "test-coverage": "pnpm run typegen && vitest run --coverage",
         "test-ui": "pnpm run typegen && vitest --ui",
         "test": "pnpm run typegen && vitest --run",
-        "lint": "biome lint . --write",
-        "check": "biome check . --write",
+		"lint": "oxlint --fix .",
+		"check": "oxlint --fix . && oxfmt .",
         "e2e-install": "playwright install --with-deps",
         "e2e-chrome": "playwright test --headed --project Chromium",
         "e2e-firefox": "playwright test --headed --project Firefox",
@@ -38,7 +38,8 @@
 		"tailwind-variants": "^3.2.2"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "catalog:",
+		"oxfmt": "catalog:",
+		"oxlint": "catalog:",
 		"@playwright/test": "^1.58.2",
 		"@tailwindcss/vite": "^4.1.18",
 		"@tanstack/router-cli": "1.158.4",

@@ -1,6 +1,6 @@
 {
-    "biome.enabled": true,
-    "editor.defaultFormatter": "biomejs.biome",
+    "oxc.enable": true,
+    "editor.defaultFormatter": "oxc.oxc-vscode",
     "files.associations": {
         "*.css": "css",
         "*.toml.example": "toml",
@@ -30,16 +30,16 @@
     ],
     "tailwindCSS.files.exclude": ["**/.github/**", "**/*.{md,js,ts,json}"],
     "[astro]": {
-        "editor.defaultFormatter": "biomejs.biome"
+        "editor.defaultFormatter": "oxc.oxc-vscode"
     },
     "[css]": {
-        "editor.defaultFormatter": "biomejs.biome"
+        "editor.defaultFormatter": "oxc.oxc-vscode"
     },
     "[dockerfile]": {
         "editor.defaultFormatter": "docker.docker"
     },
     "[json]": {
-        "editor.defaultFormatter": "biomejs.biome"
+        "editor.defaultFormatter": "oxc.oxc-vscode"
     },
     "[jsonc]": {
         "editor.defaultFormatter": "vscode.json-language-features"
@@ -56,16 +56,15 @@
         "editor.formatOnSave": false
     },
     "[tailwindcss]": {
-        "editor.defaultFormatter": "biomejs.biome"
+        "editor.defaultFormatter": "oxc.oxc-vscode"
     },
     "[typescript][typescriptreact][javascript]": {
         "editor.formatOnPaste": true,
         "editor.formatOnSave": true,
-        "editor.defaultFormatter": "biomejs.biome",
+        "editor.formatOnSaveMode": "file",
+        "editor.defaultFormatter": "oxc.oxc-vscode",
         "editor.codeActionsOnSave": {
-            "source.fixAll": "explicit",
-            "quickfix.biome": "explicit",
-            "source.organizeImports.biome": "explicit"
+            "source.fixAll": "explicit"
         }
     }
 }

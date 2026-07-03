@@ -10,8 +10,8 @@
 		"ios": "expo start --ios",
 		"web": "expo start --web",
 		"build": "expo export -p web",
-		"lint": "biome check . --write",
-		"check": "biome check . --write",
+		"lint": "oxlint --fix . && oxfmt .",
+		"check": "oxlint --fix . && oxfmt .",
 		"cleanup": "pnpm dlx del-cli node_modules dist web-build .expo",
 		"update-deps": "npm-check-updates --configFileName .ncurc.json",
 		"test": "jest --ci",
@@ -39,7 +39,8 @@
 		"react-native-worklets": "0.5.1"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "catalog:",
+		"oxfmt": "catalog:",
+		"oxlint": "catalog:",
 		"@testing-library/react-native": "^13.3.3",
 		"@types/jest": "^29.5.14",
 		"@types/react": "~19.1.10",
