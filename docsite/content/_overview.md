@@ -18,7 +18,7 @@ Additionally, the following tools and libraries are included:
 - **Radix UI** for accessible, unstyled UI components.
 - **Vitest** for fast unit testing.
 - **Playwright** for end-to-end testing.
-- **Biome** for code formatting and linting.
+- **Oxc** for code formatting and linting.
 
 ## Quick Start
 

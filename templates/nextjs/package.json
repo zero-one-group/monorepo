@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "check": "biome check . --write",
+		"check": "oxfmt .",
     "cleanup": "pnpm dlx del-cli node_modules .{cache,data,next,tmp} dist tests-results",
     "update-deps": "npm-check-updates --configFileName .ncurc.json",
     "test-report": "pnpm dlx serve tests-results -l 9000 -s -n -C",
@@ -33,7 +33,8 @@
     "std-env": "^4.0.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "catalog:",
+		"oxfmt": "catalog:",
+		"oxlint": "catalog:",
     "@eslint/eslintrc": "^3.3.5",
     "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4.2.2",

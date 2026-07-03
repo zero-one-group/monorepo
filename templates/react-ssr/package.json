@@ -13,8 +13,8 @@
     "test-coverage": "vitest run --coverage",
     "test-ui": "vitest --ui",
     "test": "vitest --run",
-    "lint": "biome lint . --write",
-    "check": "biome check . --write",
+		"lint": "oxlint --fix .",
+		"check": "oxlint --fix . && oxfmt .",
     "e2e-install": "playwright install --with-deps",
     "e2e-chrome": "playwright test --headed --project Chromium",
     "e2e-firefox": "playwright test --headed --project Firefox",
@@ -45,7 +45,8 @@
     "tailwind-variants": "^3.2.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "catalog:",
+		"oxfmt": "catalog:",
+		"oxlint": "catalog:",
     "@playwright/test": "^1.59.1",
     "@react-router/dev": "^7.13.2",
     "@tailwindcss/vite": "^4.2.2",
