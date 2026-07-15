@@ -1,0 +1,74 @@
+{
+    "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "plugins": ["react", "typescript", "import", "jsx-a11y"],
+    "categories": {
+        "correctness": "error",
+        "suspicious": "warn"
+    },
+    "ignorePatterns": [
+        "**/build/*",
+        "**/dist/*",
+        "**/out/*",
+        "**/infra/*",
+        "**/vendor/*",
+        "**/temp/*",
+        "**/tmp/*",
+        "**/.astro",
+        "**/.next",
+        "**/.react-router",
+        "infrastructure/*",
+        "templates/*",
+        "docsite/*",
+        ".moon/*",
+        ".temp/*"
+    ],
+    "rules": {
+        "no-console": [
+            "warn",
+            {
+                "allow": ["assert", "error", "info", "warn", "debug", "time", "timeEnd", "timeLog"]
+            }
+        ],
+        "no-debugger": "off",
+        "no-param-reassign": "warn",
+        "default-param-last": "error",
+        "import/no-unassigned-import": [
+            "warn",
+            {
+                "allow": ["**/*.css"]
+            }
+        ],
+        "jsx-a11y/anchor-has-content": "off",
+        "jsx-a11y/heading-has-content": "off",
+        "jsx-a11y/prefer-tag-over-role": "off",
+        "no-else-return": "error",
+        "no-empty": "warn",
+        "no-unused-vars": [
+            "warn",
+            {
+                "ignoreRestSiblings": true
+            }
+        ],
+        "react/jsx-key": "error",
+        "react/no-array-index-key": "warn",
+        "react/no-danger": "off",
+        "react/no-children-prop": "off",
+        "react/jsx-no-useless-fragment": "warn",
+        "react/react-in-jsx-scope": "off",
+        "react/self-closing-comp": "error",
+        "typescript/no-non-null-assertion": "off",
+        "typescript/no-explicit-any": "off",
+        "typescript/no-inferrable-types": "error",
+        "typescript/array-type": "warn",
+        "typescript/consistent-type-exports": "warn",
+        "typescript/consistent-type-imports": "off"
+    },
+    "overrides": [
+        {
+            "files": ["**/*.astro"],
+            "rules": {
+                "no-unused-vars": "off"
+            }
+        }
+    ]
+}

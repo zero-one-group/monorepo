@@ -12,7 +12,7 @@ export default function HomeScreen() {
 			<View style={styles.container}>
 				<Text style={styles.title}>Expo + React Native</Text>
 				<Text style={styles.subtitle}>
-					Template skeleton with Expo Router, Jest, and Biome.
+					Template skeleton with Expo Router, Jest, and Oxc.
 				</Text>
 				<Text style={styles.status}>
 					{user ? `Signed in as ${user.email}` : "Not signed in"}

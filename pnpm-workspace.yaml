@@ -4,7 +4,8 @@ packages:
   - '!**/test/**'
 
 catalog:
-  '@biomejs/biome': ~2.4.10
+  oxfmt: ^0.57.0
+  oxlint: ^1.72.0
   npm-check-updates: ^20.0.0
   typescript: ~6.0.2
 
