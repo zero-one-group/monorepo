@@ -112,6 +112,7 @@ terraform.tfvars*
 # moon
 .moon/cache
 .moon/docker
+.moon/hooks
 
 # python
 __pycache__/

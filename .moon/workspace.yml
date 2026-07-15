@@ -12,8 +12,10 @@ vcs:
   # @see: https://moonrepo.dev/docs/config/workspace#hooks
   hooks:
     pre-commit:
-      - moon run :format --affected --status=all
       - moon run :lint --affected --status=staged
+      - moon run :format --affected --status=all
+    commit-msg:
+      - 'if ! grep -qE "^(feat|fix|chore|docs|style|refactor|perf|test|build|ci|revert)(\(.+\))?!?: .+" "$1"; then echo ""; echo "ERROR: Invalid commit message format."; echo "Expected: <type>(<optional-scope>): <description>"; echo "Types: feat, fix, chore, docs, style, refactor, perf, test, build, ci, revert"; echo ""; exit 1; fi'
   sync: false
 
 hasher:
