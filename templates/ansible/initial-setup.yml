@@ -1,0 +1,4 @@
+- hosts: vpn
+  become: true
+  roles:
+    - { role: vpn, tags: ["vpn"] }
