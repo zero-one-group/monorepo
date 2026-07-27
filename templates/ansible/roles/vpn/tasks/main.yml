@@ -30,6 +30,36 @@
     dest: "{{ path }}/vpn/vpn.yml"
     owner: "{{ ansible_user }}"
 
+- name: Load legacy iptables kernel modules for Pritunl
+  modprobe:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - ip_tables
+    - iptable_filter
+    - iptable_nat
+    - iptable_mangle
+    - ip6_tables
+    - ip6table_filter
+    - ip6table_nat
+  become: true
+
+- name: Persist legacy iptables modules on boot
+  copy:
+    dest: /etc/modules-load.d/pritunl-iptables.conf
+    content: |
+      ip_tables
+      iptable_filter
+      iptable_nat
+      iptable_mangle
+      ip6_tables
+      ip6table_filter
+      ip6table_nat
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+
 - name: Deploy Pritunl  VPN
   command: docker compose -f vpn.yml up -d
   args:

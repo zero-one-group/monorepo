@@ -21,3 +21,10 @@ Run the following command to execute the playbook with the VPN setup tag:
 ```sh
 ansible-playbook -i inventory.ini initial-setup.yml --tags vpn
 ```
+
+## 📝 Notes
+
+On Ubuntu 26.04 the legacy iptables kernel modules are no longer loaded by default
+(the kernel defaults to nftables), which breaks Pritunl's NAT and filter rules.
+This role loads them on the target host and persists the list in
+`/etc/modules-load.d/pritunl-iptables.conf` so they survive a reboot.
