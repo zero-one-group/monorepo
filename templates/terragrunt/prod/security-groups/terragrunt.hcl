@@ -271,5 +271,20 @@ inputs = {
         }
       ]
     }
+
+    ecs = {
+      name        = "${local.project_name}-${local.environment}-ecs"
+      description = "Security group for ECS Fargate tasks in production"
+      ingress_rule = []
+      egress_rule = [
+        {
+          protocol    = "-1"
+          from_port   = 0
+          to_port     = 0
+          cidr_blocks = ["0.0.0.0/0"]
+          description = "Allow all outbound traffic"
+        }
+      ]
+    }
   }
 }

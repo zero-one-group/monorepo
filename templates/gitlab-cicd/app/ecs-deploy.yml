@@ -1,0 +1,123 @@
+# ECS Fargate deployment pipeline (Terragrunt apply).
+#
+# Requires the ECS Fargate modules from the terragrunt template to be applied
+# first. Each job:
+#   1. Converts the app .env (GitLab CI variable) to YAML and writes it to
+#      infra/terragrunt/shared/variables/ecs/env/<environment>/<service>.yml
+#   2. Sets ECS_IMAGE_TAG so the task definition points at the image pushed by
+#      the build jobs (<tag>-{{ app_name }}). Passed via env var instead of
+#      editing variables.yaml so parallel dev/staging/prod deploys never race
+#      on the same file.
+#   3. Runs terragrunt apply targeted at the service's task definition + ECS
+#      service only.
+#
+# Configure the following CI/CD variables in your project:
+#   - AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY / AWS_DEFAULT_REGION
+#   - ECR_HOST / REPOSITORY_NAME (already used by the build jobs)
+#   - APP_ENV_FILE: the app .env content to inject into the task definition
+#   - AWS_ECS_TASK_DEF_PREFIX: optional, the task definition family prefix
+#     (usually the terragrunt project_name) to clean up old revisions
+
+.deploy:ecs:{{ app_name }}:
+  image:
+    name: alpine:3.21
+    entrypoint: [""]
+  interruptible: true
+  before_script:
+    - apk add --no-cache curl bash sed grep
+    # Install OpenTofu
+    - curl -sL https://get.opentofu.org/install-opentofu.sh | sh -s -- --install-method standalone --skip-verify
+    # Install Terragrunt
+    - curl -sL https://github.com/gruntwork-io/terragrunt/releases/download/v0.77.22/terragrunt_linux_amd64 -o /usr/local/bin/terragrunt && chmod +x /usr/local/bin/terragrunt
+  script:
+    - |
+      set -euo pipefail
+
+      echo "Deploying ECS service: ${ECS_SERVICE_NAME} (${DEPLOY_ENVIRONMENT})"
+      echo "Image: $ECR_HOST/$REPOSITORY_NAME:${TAGGING}-{{ app_name }}"
+
+      # 1. Convert .env to YAML and place in the per-environment env directory
+      ENV_DIR="${CI_PROJECT_DIR}/infra/terragrunt/shared/variables/ecs/env/${DEPLOY_ENVIRONMENT}"
+      mkdir -p "$ENV_DIR"
+      if [ -n "${APP_ENV_FILE:-}" ]; then
+        printf '%s' "$APP_ENV_FILE" | grep -v '^\s*#' | grep -v '^\s*$' | \
+          sed 's/"/\\"/g; s/=\(.*\)/: "\1"/' > "${ENV_DIR}/${ECS_SERVICE_NAME}.yml"
+        echo "Wrote ${ENV_DIR}/${ECS_SERVICE_NAME}.yml ($(wc -l < "${ENV_DIR}/${ECS_SERVICE_NAME}.yml") vars)"
+      else
+        echo "{}" > "${ENV_DIR}/${ECS_SERVICE_NAME}.yml"
+        echo "No APP_ENV_FILE, using empty environment"
+      fi
+
+      # 2. Run terragrunt apply for this environment, targeting only this
+      #    service's task definition + ECS service
+      cd "${CI_PROJECT_DIR}/infra/terragrunt/${DEPLOY_ENVIRONMENT}/ecs"
+      TF_TARGET="-target=aws_ecs_task_definition.services[\"${ECS_SERVICE_NAME}\"] -target=aws_ecs_service.services[\"${ECS_SERVICE_NAME}\"]"
+      ECS_IMAGE_TAG="${TAGGING}" terragrunt apply --auto-approve --non-interactive $TF_TARGET
+
+      echo "ECS deploy complete"
+
+      # 3. Cleanup old task definition revisions (keep latest 2) - only when
+      #    AWS_ECS_TASK_DEF_PREFIX is set
+      if [ -n "${AWS_ECS_TASK_DEF_PREFIX:-}" ]; then
+        apk add --no-cache aws-cli >/dev/null 2>&1
+        FAMILY="${AWS_ECS_TASK_DEF_PREFIX}-${ECS_SERVICE_NAME}"
+        echo "Cleaning up old task definitions for ${FAMILY}..."
+        REVISIONS=$(aws ecs list-task-definitions \
+          --family-prefix "${FAMILY}" \
+          --sort DESC \
+          --query 'taskDefinitionArns' \
+          --output text | tr '\t' '\n' | tail -n +3)
+        for REV in $REVISIONS; do
+          aws ecs deregister-task-definition --task-definition "$REV" --query 'taskDefinition.taskDefinitionArn' --output text
+        done
+        CLEANED=$(echo "$REVISIONS" | grep -c . || true)
+        echo "Deregistered ${CLEANED} old revisions (kept latest 2)"
+      fi
+
+deploy:development:ecs:
+  stage: deploy:development
+  interruptible: true
+  extends:
+    - .deploy:ecs:{{ app_name }}
+    - .rules:development-ecs
+  variables:
+    TAGGING: $CI_COMMIT_SHORT_SHA
+    DEPLOY_ENVIRONMENT: "dev"
+    ECS_SERVICE_NAME: "{{ app_name }}"
+  environment:
+    name: 'development'
+    action: 'prepare'
+  needs:
+    - 'build:development-docker'
+
+deploy:staging:ecs:
+  stage: deploy:staging
+  interruptible: true
+  extends:
+    - .deploy:ecs:{{ app_name }}
+    - .rules:ecs-staging
+  variables:
+    TAGGING: $CI_COMMIT_REF_NAME
+    DEPLOY_ENVIRONMENT: "staging"
+    ECS_SERVICE_NAME: "{{ app_name }}"
+  environment:
+    name: 'staging'
+    action: 'prepare'
+  needs:
+    - 'build:staging-docker'
+
+deploy:production:ecs:
+  stage: deploy:production
+  interruptible: true
+  extends:
+    - .deploy:ecs:{{ app_name }}
+    - .rules:ecs-prod
+  variables:
+    TAGGING: $CI_COMMIT_REF_NAME
+    DEPLOY_ENVIRONMENT: "prod"
+    ECS_SERVICE_NAME: "{{ app_name }}"
+  environment:
+    name: 'production'
+    action: 'prepare'
+  needs:
+    - 'build:production-docker'
