@@ -218,7 +218,16 @@ resource "aws_ecs_task_definition" "services" {
           }
         }
       },
-      length(each.value.command) > 0 ? { command = each.value.command } : {}
+      length(each.value.command) > 0 ? { command = each.value.command } : {},
+      each.value.enable_alb ? {
+        portMappings = [
+          {
+            containerPort = each.value.container_port
+            hostPort      = each.value.container_port
+            protocol      = "tcp"
+          }
+        ]
+      } : {}
     )
   ])
 
