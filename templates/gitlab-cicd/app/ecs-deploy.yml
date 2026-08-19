@@ -3,7 +3,7 @@
 # Requires the ECS Fargate modules from the terragrunt template to be applied
 # first. Each job:
 #   1. Converts the app .env (GitLab CI variable) to YAML and writes it to
-#      infra/terragrunt/shared/variables/ecs/env/<environment>/<service>.yml
+#      infra/terragrunt/variables/ecs/env/<environment>/<service>.yml
 #   2. Sets ECS_IMAGE_TAG so the task definition points at the image pushed by
 #      the build jobs (<tag>-{{ app_name }}). Passed via env var instead of
 #      editing variables.yaml so parallel dev/staging/prod deploys never race
@@ -37,7 +37,7 @@
       echo "Image: $ECR_HOST/$REPOSITORY_NAME:${TAGGING}-{{ app_name }}"
 
       # 1. Convert .env to YAML and place in the per-environment env directory
-      ENV_DIR="${CI_PROJECT_DIR}/infra/terragrunt/shared/variables/ecs/env/${DEPLOY_ENVIRONMENT}"
+      ENV_DIR="${CI_PROJECT_DIR}/infra/terragrunt/variables/ecs/env/${DEPLOY_ENVIRONMENT}"
       mkdir -p "$ENV_DIR"
       if [ -n "${APP_ENV_FILE:-}" ]; then
         printf '%s' "$APP_ENV_FILE" | grep -v '^\s*#' | grep -v '^\s*$' | \

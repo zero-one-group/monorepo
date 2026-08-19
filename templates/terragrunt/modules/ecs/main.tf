@@ -8,8 +8,7 @@ locals {
   ssm_entries        = { for k, v in local.all_entries : k => v if length(v.ssm_parameter_paths) > 0 }
   discovery_services = { for k, v in var.services : k => v if v.enable_service_discovery }
   dns_namespace_name = coalesce(var.dns_namespace_name, "${var.project_name}.local")
-  alb_services       = { for k, v in var.services : k => v if v.enable_alb }
-  alb_enabled        = length(local.alb_services) > 0
+  alb_services       = { for k, v in var.services : k => v if v.alb_target_group_arn != null }
 }
 
 # --- Service discovery (Cloud Map): lets ECS tasks reach each other by a stable
@@ -66,9 +65,9 @@ resource "aws_cloudwatch_log_group" "this" {
 ####### IAM #######
 ###################
 
-# --- Execution role: shared by every task definition (ECR pull + logs).
-# AmazonECSTaskExecutionRolePolicy already grants the ECR read permissions
-# needed to pull images from an ECR repository. ---
+# --- Execution role: shared by every task definition. Least privilege —
+# scoped to pulling images from this project's ECR repository and writing
+# logs only to the log groups created by this module. ---
 
 resource "aws_iam_role" "execution" {
   name = "${var.project_name}-ecs-execution"
@@ -87,12 +86,44 @@ resource "aws_iam_role" "execution" {
   tags = var.common_tags
 }
 
-resource "aws_iam_role_policy_attachment" "execution_managed" {
-  role       = aws_iam_role.execution.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+resource "aws_iam_role_policy" "execution" {
+  role = aws_iam_role.execution.name
+  name = "${var.project_name}-ecs-execution-scoped"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "EcrPullFromProjectRepository"
+        Effect = "Allow"
+        Action = [
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "ecr:BatchCheckLayerAvailability"
+        ]
+        Resource = var.ecr_repository_arn
+      },
+      {
+        Sid    = "EcrGetAuthorizationToken"
+        Effect = "Allow"
+        Action = ["ecr:GetAuthorizationToken"]
+        # GetAuthorizationToken is not resource-scopeable; needed to auth ECR.
+        Resource = "*"
+      },
+      {
+        Sid    = "LogsForProjectLogGroups"
+        Effect = "Allow"
+        Action = ["logs:CreateLogStream", "logs:PutLogEvents"]
+        Resource = [
+          for k, v in aws_cloudwatch_log_group.this : "${v.arn}:*"
+        ]
+      }
+    ]
+  })
 }
 
-# --- Task roles: one per service/job entry ---
+# --- Task roles: one per service/job entry. Empty by default; the module
+# only adds the S3/SSM permissions explicitly requested per entry. ---
 
 resource "aws_iam_role" "services_task" {
   for_each = var.services
@@ -146,6 +177,7 @@ resource "aws_iam_role_policy" "s3_policy" {
     Version = "2012-10-17"
     Statement = [
       {
+        Sid    = "S3ScopedToRequestedBuckets"
         Effect = "Allow"
         Action = [
           "s3:ListBucket",
@@ -171,13 +203,13 @@ resource "aws_iam_role_policy" "ssm_policy" {
     Version = "2012-10-17"
     Statement = [
       {
+        Sid    = "SsmScopedToRequestedPaths"
         Effect = "Allow"
         Action = [
           "ssm:DescribeParameters",
           "ssm:GetParameter",
           "ssm:GetParameters",
-          "ssm:GetParametersByPath",
-          "ssm:PutParameter"
+          "ssm:GetParametersByPath"
         ]
         Resource = [
           for path in each.value.ssm_parameter_paths :
@@ -219,7 +251,7 @@ resource "aws_ecs_task_definition" "services" {
         }
       },
       length(each.value.command) > 0 ? { command = each.value.command } : {},
-      each.value.enable_alb ? {
+      each.value.alb_target_group_arn != null ? {
         portMappings = [
           {
             containerPort = each.value.container_port
@@ -281,7 +313,7 @@ resource "aws_ecs_service" "services" {
 
   network_configuration {
     subnets          = var.subnet_ids
-    security_groups  = concat(var.security_group_ids, each.value.enable_alb ? [aws_security_group.tasks_alb[0].id] : [])
+    security_groups  = var.security_group_ids
     assign_public_ip = each.value.assign_public_ip
   }
 
@@ -293,142 +325,13 @@ resource "aws_ecs_service" "services" {
   }
 
   dynamic "load_balancer" {
-    for_each = each.value.enable_alb ? [1] : []
+    for_each = each.value.alb_target_group_arn != null ? [1] : []
     content {
-      target_group_arn = aws_lb_target_group.services[each.key].arn
+      target_group_arn = each.value.alb_target_group_arn
       container_name   = each.key
       container_port   = each.value.container_port
     }
   }
 
   tags = var.common_tags
-}
-
-################
-####### ALB ########
-################
-
-# --- Optional Application Load Balancer, created once per module instance.
-# Any service with enable_alb = true gets a target group + listener rule.
-# The module owns the ALB + task security groups so there is no circular
-# dependency with the external security-group module. ---
-
-resource "aws_security_group" "alb" {
-  count       = local.alb_enabled ? 1 : 0
-  name        = "${var.project_name}-ecs-alb"
-  description = "Security group for the ECS Application Load Balancer"
-  vpc_id      = var.vpc_id
-
-  dynamic "ingress" {
-    for_each = var.alb_ingress_cidr_blocks
-    content {
-      from_port   = var.alb_listener_port
-      to_port     = var.alb_listener_port
-      protocol    = "tcp"
-      cidr_blocks = [ingress.value]
-      description = "ALB listener ingress"
-    }
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow all outbound traffic"
-  }
-
-  tags = var.common_tags
-}
-
-resource "aws_security_group" "tasks_alb" {
-  count       = local.alb_enabled ? 1 : 0
-  name        = "${var.project_name}-ecs-alb-tasks"
-  description = "Allows traffic from the ECS Application Load Balancer into ECS tasks"
-  vpc_id      = var.vpc_id
-
-  dynamic "ingress" {
-    for_each = local.alb_services
-    content {
-      from_port       = ingress.value.container_port
-      to_port         = ingress.value.container_port
-      protocol        = "tcp"
-      security_groups = [aws_security_group.alb[0].id]
-      description     = "Traffic from the ALB on container port ${ingress.value.container_port}"
-    }
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow all outbound traffic"
-  }
-
-  tags = var.common_tags
-}
-
-resource "aws_lb" "this" {
-  count              = local.alb_enabled ? 1 : 0
-  name               = "${var.project_name}-ecs-alb"
-  internal           = var.alb_internal
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.alb[0].id]
-  subnets            = var.alb_subnet_ids
-  idle_timeout       = var.alb_idle_timeout
-  tags               = var.common_tags
-}
-
-resource "aws_lb_listener" "this" {
-  count             = local.alb_enabled ? 1 : 0
-  load_balancer_arn = aws_lb.this[0].arn
-  port              = var.alb_listener_port
-  protocol          = "HTTP"
-
-  default_action {
-    type = "fixed-response"
-    fixed_response {
-      content_type = "text/plain"
-      message_body = "Not Found"
-      status_code  = "404"
-    }
-  }
-}
-
-resource "aws_lb_target_group" "services" {
-  for_each    = local.alb_services
-  name        = "${var.project_name}-${each.key}"
-  port        = each.value.container_port
-  protocol    = "HTTP"
-  vpc_id      = var.vpc_id
-  target_type = "ip"
-
-  health_check {
-    path                = each.value.alb_health_check_path
-    healthy_threshold   = 2
-    unhealthy_threshold = 3
-    timeout             = 5
-    interval            = 30
-    matcher             = "200-399"
-  }
-
-  tags = var.common_tags
-}
-
-resource "aws_lb_listener_rule" "services" {
-  for_each     = local.alb_services
-  listener_arn = aws_lb_listener.this[0].arn
-  priority     = index(keys(local.alb_services), each.key) + 100
-
-  action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.services[each.key].arn
-  }
-
-  condition {
-    path_pattern {
-      values = [each.value.alb_path_pattern]
-    }
-  }
 }

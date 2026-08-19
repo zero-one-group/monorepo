@@ -1,20 +1,20 @@
 variable "instances" {
   description = "Map of EC2 instance configurations"
   type = map(object({
-    ami_instance           = string
-    instance_type          = string
-    subnet_id              = string
-    security_group_ids     = list(string)
-    user_data_filename     = string
-    user_data_vars         = optional(map(string), {})
-    volume_size            = number
-    volume_type            = optional(string, "gp3")
-    enable_eip             = optional(bool, false)
-    eip_allocation_id      = optional(string, "")
-    hostname               = optional(string, "")
-    s3_bucket_arns         = optional(list(string), [])
-    ssm_parameter_paths    = optional(list(string), [])
-    cluster_identifier     = optional(string, "default-cluster")
+    ami_instance        = string
+    instance_type       = string
+    subnet_id           = string
+    security_group_ids  = list(string)
+    user_data_filename  = string
+    user_data_vars      = optional(map(string), {})
+    volume_size         = number
+    volume_type         = optional(string, "gp3")
+    enable_eip          = optional(bool, false)
+    eip_allocation_id   = optional(string, "")
+    hostname            = optional(string, "")
+    s3_bucket_arns      = optional(list(string), [])
+    ssm_parameter_paths = optional(list(string), [])
+    cluster_identifier  = optional(string, "default-cluster")
   }))
 }
 

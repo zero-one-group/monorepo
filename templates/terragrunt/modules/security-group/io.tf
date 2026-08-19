@@ -4,25 +4,25 @@
 
 variable "security_groups" {
   type = map(object({
-    name         = string
-    description  = string
+    name        = string
+    description = string
     ingress_rule = list(object({
-      description                = optional(string, "Ingress Rule")
-      from_port                  = optional(number, 0)
-      to_port                    = optional(number, 0)
-      protocol                   = optional(string, "-1")
-      cidr_blocks                = optional(list(string), null)
-      source_security_group_id   = optional(string, null)
-      source_security_group_key  = optional(string, null)  # New field for self-references
+      description               = optional(string, "Ingress Rule")
+      from_port                 = optional(number, 0)
+      to_port                   = optional(number, 0)
+      protocol                  = optional(string, "-1")
+      cidr_blocks               = optional(list(string), null)
+      source_security_group_id  = optional(string, null)
+      source_security_group_key = optional(string, null) # New field for self-references
     }))
     egress_rule = list(object({
-      description                = optional(string, "Egress Rule")
-      from_port                  = optional(number, 0)
-      to_port                    = optional(number, 0)
-      protocol                   = optional(string, "-1")
-      cidr_blocks                = optional(list(string), ["0.0.0.0/0"])
-      source_security_group_id   = optional(string, null)
-      source_security_group_key  = optional(string, null)  # New field for self-references
+      description               = optional(string, "Egress Rule")
+      from_port                 = optional(number, 0)
+      to_port                   = optional(number, 0)
+      protocol                  = optional(string, "-1")
+      cidr_blocks               = optional(list(string), ["0.0.0.0/0"])
+      source_security_group_id  = optional(string, null)
+      source_security_group_key = optional(string, null) # New field for self-references
     }))
   }))
   description = "Map of security groups to create with their rules"

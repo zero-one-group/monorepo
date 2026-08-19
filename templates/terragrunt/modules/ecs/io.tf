@@ -29,18 +29,23 @@ variable "vpc_id" {
 
 variable "subnet_ids" {
   type        = list(string)
-  description = "Subnet IDs tasks are placed in"
+  description = "Private subnet IDs tasks are placed in"
 }
 
 variable "security_group_ids" {
   type        = list(string)
-  description = "Security group IDs attached to tasks"
+  description = "Security group IDs attached to tasks. Include the ALB tasks security group (modules/alb output tasks_security_group_id) for services behind the ALB."
   default     = []
 }
 
 variable "ecr_repository_url" {
   type        = string
   description = "ECR repository URL images are pulled from"
+}
+
+variable "ecr_repository_arn" {
+  type        = string
+  description = "ARN of the ECR repository, used to scope the execution role to this repository only"
 }
 
 variable "image_tag" {
@@ -55,7 +60,7 @@ variable "dns_namespace_name" {
 }
 
 variable "services" {
-  description = "Always-on workloads: task definition + ECS service. Optional service discovery and/or ALB per service (set enable_alb = true with container_port)."
+  description = "Always-on workloads: task definition + ECS service. To expose a service through the ALB, set alb_target_group_arn (from the modules/alb output) and container_port."
   type = map(object({
     image                    = optional(string)
     command                  = optional(list(string), [])
@@ -64,10 +69,8 @@ variable "services" {
     environment              = optional(map(string), {})
     assign_public_ip         = optional(bool, false)
     enable_service_discovery = optional(bool, false)
-    enable_alb               = optional(bool, false)
+    alb_target_group_arn     = optional(string)
     container_port           = optional(number)
-    alb_path_pattern         = optional(string, "/*")
-    alb_health_check_path    = optional(string, "/")
     desired_count            = optional(number, 1)
     s3_bucket_arns           = optional(list(string), [])
     ssm_parameter_paths      = optional(list(string), [])
@@ -88,36 +91,6 @@ variable "jobs" {
     ssm_parameter_paths = optional(list(string), [])
   }))
   default = {}
-}
-
-variable "alb_internal" {
-  type        = bool
-  description = "Whether the ALB is internal (false = internet-facing)"
-  default     = false
-}
-
-variable "alb_subnet_ids" {
-  type        = list(string)
-  description = "Subnet IDs the ALB is placed in. Required when any service has enable_alb = true."
-  default     = []
-}
-
-variable "alb_ingress_cidr_blocks" {
-  type        = list(string)
-  description = "CIDR blocks allowed to reach the ALB listener port"
-  default     = ["0.0.0.0/0"]
-}
-
-variable "alb_listener_port" {
-  type        = number
-  description = "ALB HTTP listener port"
-  default     = 80
-}
-
-variable "alb_idle_timeout" {
-  type        = number
-  description = "ALB idle timeout in seconds"
-  default     = 60
 }
 
 ###################
@@ -152,24 +125,4 @@ output "job_task_definition_families" {
 output "service_discovery_dns_names" {
   description = "Map of service key to its Cloud Map DNS name (only for services with enable_service_discovery = true)"
   value       = { for k in keys(aws_service_discovery_service.this) : k => "${k}.${local.dns_namespace_name}" }
-}
-
-output "alb_arn" {
-  description = "ARN of the ALB. Empty unless at least one service has enable_alb = true."
-  value       = local.alb_enabled ? aws_lb.this[0].arn : null
-}
-
-output "alb_dns_name" {
-  description = "DNS name of the ALB (route traffic here). Empty unless at least one service has enable_alb = true."
-  value       = local.alb_enabled ? aws_lb.this[0].dns_name : null
-}
-
-output "alb_security_group_id" {
-  description = "ID of the ALB security group. Empty unless at least one service has enable_alb = true."
-  value       = local.alb_enabled ? aws_security_group.alb[0].id : null
-}
-
-output "alb_target_group_arns" {
-  description = "Map of service key to target group ARN for services with enable_alb = true"
-  value       = { for k, v in aws_lb_target_group.services : k => v.arn }
 }

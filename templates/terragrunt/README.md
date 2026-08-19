@@ -7,28 +7,33 @@ Provisioning infrastructure as code via [Terragrunt](https://terragrunt.gruntwor
 ```text
 .
 ├── modules/                # Reusable Terraform modules
-│   ├── ec2/                # EC2 instances (Swarm, monitoring, etc.)
+│   ├── acm/                # ACM certificates (placeholder - not implemented yet)
+│   ├── alb/                # Application Load Balancer (public/private, HTTP/HTTPS)
+│   ├── ec2/                # EC2 instances (Swarm, monitoring, etc. - legacy)
 │   ├── ecr/                # ECR repositories
-│   ├── ecs/                # ECS cluster, task definitions, services, IAM, ALB
-│   ├── full-vpc/           # Full VPC creation (non-production)
+│   ├── ecs/                # ECS Fargate cluster, task definitions, services, IAM
+│   ├── elastic-ip/         # Elastic IPs
 │   ├── keypair/            # SSH key pair
+│   ├── rds-cluster/        # RDS Aurora cluster (placeholder - not implemented yet)
+│   ├── rds-single/         # RDS single instance (placeholder - not implemented yet)
 │   ├── s3/                 # S3 buckets
 │   ├── security-group/     # Security groups
-│   ├── vpc/                # Public subnets for a specific environment
-│   └── vpc-base/           # References the existing base VPC and IGW
-├── shared/                 # Configuration shared across environments
-│   ├── ecr/                # ECR repository for application images
-│   ├── elastic-ip/         # Elastic IPs
-│   ├── s3/                 # Shared buckets
-│   ├── variables/          # Shared variables (ec2, ecs)
-│   └── vpc-base/           # Base VPC reference
-├── dev/ staging/ prod/     # Per-environment units
-│   ├── ec2/                # EC2 instances
-│   ├── ec2-worker/         # Additional workers
-│   ├── ecs/                # ECS Fargate cluster + services for the environment
-│   ├── keypair/            # SSH key pair
-│   ├── security-groups/    # Environment security groups
-│   └── vpc/                # Environment subnets
+│   └── vpc/                # VPC with public + private subnets and NAT gateway
+├── variables/              # Shared variables (ec2, ecs)
+├── ecr/                    # ECR repository for application images
+├── envs/                   # Per-environment units
+│   ├── dev/  staging/  prod/
+│   │   ├── acm/            # (placeholder - not implemented yet)
+│   │   ├── alb/            # ALB for the environment
+│   │   ├── ec2/            # EC2 instances (legacy)
+│   │   ├── ec2-worker/     # Additional workers (dev only)
+│   │   ├── ecs/            # ECS Fargate cluster + services for the environment
+│   │   ├── elastic-ip/     # Elastic IPs
+│   │   ├── keypair/        # SSH key pair
+│   │   ├── rds-cluster/    # (placeholder - not implemented yet)
+│   │   ├── rds-single/     # (placeholder - not implemented yet)
+│   │   ├── security-groups/# Environment security groups
+│   │   └── vpc/            # Environment VPC (public + private subnets, NAT)
 ├── root.hcl                # Root configuration (remote state, provider, common inputs)
 └── template.yml            # Moon generator template configuration
 ```
@@ -36,41 +41,49 @@ Provisioning infrastructure as code via [Terragrunt](https://terragrunt.gruntwor
 ## ECS Fargate
 
 Everything runs through a single module, **`modules/ecs`**, one instance per
-environment (`dev/ecs`, `staging/ecs`, `prod/ecs`):
+environment (`envs/dev/ecs`, `envs/staging/ecs`, `envs/prod/ecs`):
 
 - ECS cluster with Fargate/Fargate Spot capacity providers.
-- Per-entry task definitions, ECS services, IAM task roles (with optional
-  S3/SSM access) and CloudWatch log groups.
+- Per-entry task definitions, ECS services, IAM roles (execution + per-entry
+  task roles, least-privilege) and CloudWatch log groups.
+- Tasks run in the **private subnets** of the environment VPC; outbound
+  internet access goes through the NAT gateway.
+- **Public traffic** reaches services through the environment **ALB**
+  (`envs/<env>/alb` + `modules/alb`): the ALB unit creates the load balancer
+  and one target group per service, and the ECS unit wires each service to its
+  target group via `alb_target_group_arn`. The tasks security group only opens
+  the service's container port to the ALB security group.
 - **`services`** map: always-on workloads (task definition + ECS service).
   Each service can optionally enable:
-  - **ALB** (`enable_alb = true` + `container_port`) — the module creates one
-    ALB, a target group, a listener rule and the task/ALB security groups, so
-    no separate ALB unit is needed.
+  - **ALB** (`alb_target_group_arn` + `container_port`) — the module attaches
+    the service to the target group created by the ALB unit.
   - **Service discovery** (`enable_service_discovery = true`) — a private Cloud
     Map namespace so tasks reach each other by a stable DNS name, e.g.
     `<service>.<dns_namespace_name>`.
 - **`jobs`** map: on-demand workloads (task definition only, no ECS service),
   launched with `ecs:RunTask` when needed.
-- Images are pulled from the **ECR** repository created by `shared/ecr`
+- Images are pulled from the **ECR** repository created by the `ecr/` unit
   (`${project_name}-app`). The default image reference is
   `<ecr_repository_url>:<image_tag>-<service>`, matching the
   `<tag>-{{ app_name }}` tag pushed by the build pipeline.
 
 ### Applying
 
-Apply the units in order:
+Apply the units in order (states live under `envs/<env>/` and `ecr/` in the
+state bucket):
 
 ```bash
-terragrunt apply --terragrunt-working-dir shared/vpc-base
-terragrunt apply --terragrunt-working-dir dev/vpc
-terragrunt apply --terragrunt-working-dir shared/ecr
-terragrunt apply --terragrunt-working-dir dev/security-groups
-terragrunt apply --terragrunt-working-dir dev/ecs
+terragrunt apply --working-dir envs/dev/vpc
+terragrunt apply --working-dir ecr
+terragrunt apply --working-dir envs/dev/security-groups
+terragrunt apply --working-dir envs/dev/elastic-ip
+terragrunt apply --working-dir envs/dev/alb
+terragrunt apply --working-dir envs/dev/ecs
 ```
 
 ### Customizing
 
-Tunables live in `shared/variables/ecs/variables.yaml`:
+Tunables live in `variables/ecs/variables.yaml`:
 
 | Key | Description |
 | --- | --- |
@@ -79,13 +92,15 @@ Tunables live in `shared/variables/ecs/variables.yaml`:
 | `image_tag` | Default image tag; overridden by CI via `ECS_IMAGE_TAG` |
 
 Per-service environment variables come from
-`shared/variables/ecs/env/<environment>/<service>.yml` (git-ignored, populated
+`variables/ecs/env/<environment>/<service>.yml` (git-ignored, populated
 by the CI pipeline). The per-env `ecs/terragrunt.hcl` reads them with a `try()`
 guard, so a missing file just means an empty environment. A service can use the
 `image` field to override the auto-built image reference.
 
 Note: service keys must match the image tag suffix your build pushes
-(`<tag>-<service>`). The example uses `{{ app_name }}`.
+(`<tag>-<service>`). The example uses `{{ app_name }}`. The same key must exist
+in the `envs/<env>/alb` unit with the service's `container_port`, so the ECS
+unit can pick up the matching `target_group_arns["<service>"]`.
 
 ### CI/CD
 
