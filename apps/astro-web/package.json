@@ -15,15 +15,15 @@
         "astro": "astro"
     },
     "dependencies": {
-        "astro": "^6.0.8",
+        "astro": "^7.2.4",
         "lucide-astro": "^0.556.0"
     },
     "devDependencies": {
-        "@tailwindcss/vite": "^4.2.2",
+        "@tailwindcss/vite": "^4.3.3",
         "npm-check-updates": "catalog:",
         "oxfmt": "catalog:",
         "oxlint": "catalog:",
-        "tailwindcss": "^4.2.2",
+        "tailwindcss": "^4.3.3",
         "tailwindcss-motion": "^1.1.1"
     }
 }
