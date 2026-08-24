@@ -22,16 +22,16 @@
 name: myorg
 
 networks:
-  myorg_network:
-    name: myorg_network
-    driver: bridge
+    myorg_network:
+        name: myorg_network
+        driver: bridge
 
 # @see: https://docs.docker.com/compose/how-tos/multiple-compose-files/include/
 
 include:
-  - ./docker/_stacks_/postgres.yaml           # 5432
-  - ./docker/_stacks_/mailpit.yaml            # 1025,8025
-  - ./docker/_stacks_/instrumentation.yaml    # 6831,6832,5778,16686,14268,14250,4317
-  # - ./docker/_stacks_/minio.yaml              # 9100,9101,8010
-  # - ./docker/_stacks_/clickhouse.yaml         # 8123,9000
-  # - ./docker/_stacks_/redis.yaml              # 6379
+    - ./docker/_stacks_/postgres.yaml # 5432
+    - ./docker/_stacks_/mailpit.yaml # 1025,8025
+    - ./docker/_stacks_/instrumentation.yaml # 6831,6832,5778,16686,14268,14250,4317
+    # - ./docker/_stacks_/minio.yaml              # 9100,9101,8010
+    # - ./docker/_stacks_/clickhouse.yaml         # 8123,9000
+    # - ./docker/_stacks_/redis.yaml              # 6379

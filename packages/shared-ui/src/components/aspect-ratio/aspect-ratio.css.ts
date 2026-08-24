@@ -1,7 +1,7 @@
-import { tv, type VariantProps } from "tailwind-variants/lite";
+import { tv, type VariantProps } from 'tailwind-variants/lite'
 
 export const aspectRatioStyles = tv({
-	base: "relative",
-});
+  base: 'relative',
+})
 
-export type AspectRatioVariants = VariantProps<typeof aspectRatioStyles>;
+export type AspectRatioVariants = VariantProps<typeof aspectRatioStyles>

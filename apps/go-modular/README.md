@@ -3,6 +3,7 @@
 This template already pre-configured basic auth, take a look at `apps/go-modular/database/seeders/user_factory.go`.
 
 ## Common Tasks
+
 ```sh
 moon go-modular:dev                  # Run development
 moon go-modular:run                  # Execute `go run`
@@ -22,6 +23,7 @@ moon go-modular:generate-mock        # Generate Mock
 ```
 
 ## Migration Tasks
+
 ```sh
 # Initiate or reset migrations and seed
 moon go-modular:run -- migrate:reset --up --seed --force
@@ -37,6 +39,7 @@ moon go-modular:run -- migrate:seed
 ```
 
 ## Generate Sample Configuration
+
 This command will generate `.env.example` from `apps/go-modular/internal/config/default.go`:
 
 ```sh
@@ -44,6 +47,7 @@ moon go-modular:run -- generate:config
 ```
 
 ## Scaffold New Module
+
 ```sh
 mkdir -p apps/go-modular/modules/dummy
 mkdir -p apps/go-modular/modules/dummy/handler

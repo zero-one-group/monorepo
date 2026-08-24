@@ -8,20 +8,20 @@ description: 'TanStack Start application preconfigured with TanStack Router and 
 destination: 'apps/[package_name]'
 
 variables:
-  package_name:
-    type: 'string'
-    default: 'tanstack-start'
-    prompt: 'Package name (identifier)?'
-    required: true
+    package_name:
+        type: 'string'
+        default: 'tanstack-start'
+        prompt: 'Package name (identifier)?'
+        required: true
 
-  package_description:
-    type: 'string'
-    default: 'TanStack Start application'
-    prompt: 'Package description?'
-    required: true
+    package_description:
+        type: 'string'
+        default: 'TanStack Start application'
+        prompt: 'Package description?'
+        required: true
 
-  port_number:
-    type: 'number'
-    default: 3300
-    prompt: 'Port number?'
-    required: true
+    port_number:
+        type: 'number'
+        default: 3300
+        prompt: 'Port number?'
+        required: true

@@ -10,10 +10,10 @@ indent_style = space
 indent_size = 4
 max_line_length = 100
 
-[*.{prettierrc,json,jsonc,plist,rs}]
+[*.{prettierrc,json,jsonc,plist,go,rs}]
 max_line_length = off
 
-[*.{js,cjs,mjs,jsx,ts,mts,tsx,css,html,txt,toml,yml,yaml,astro}]
+[*.{js,cjs,mjs,jsx,ts,mts,tsx,html,txt,astro}]
 indent_size = 2
 
 [*.txt]

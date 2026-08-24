@@ -11,12 +11,12 @@ tags: ['app']
 id: 'shared-ui'
 
 project:
-  title: shared-ui
-  description: Shared UI Components for React apps
+    title: shared-ui
+    description: Shared UI Components for React apps
 
 tasks:
-  storybook-upgrade:
-    command: pnpm dlx storybook@latest upgrade
-    options:
-      runDepsInParallel: false
-      cache: false
+    storybook-upgrade:
+        command: pnpm dlx storybook@latest upgrade
+        options:
+            runDepsInParallel: false
+            cache: false

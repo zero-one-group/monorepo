@@ -1,18 +1,13 @@
-import * as React from "react";
-import { type SkeletonVariants, skeletonStyles } from "./skeleton.css";
+import * as React from 'react'
 
-export interface SkeletonProps
-	extends React.ComponentPropsWithoutRef<"div">,
-		SkeletonVariants {}
+import { type SkeletonVariants, skeletonStyles } from './skeleton.css'
 
-const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(
-	({ className, ...props }, ref) => {
-		return (
-			<div ref={ref} className={skeletonStyles({ className })} {...props} />
-		);
-	},
-);
+export interface SkeletonProps extends React.ComponentPropsWithoutRef<'div'>, SkeletonVariants {}
 
-Skeleton.displayName = "Skeleton";
+const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(({ className, ...props }, ref) => {
+  return <div ref={ref} className={skeletonStyles({ className })} {...props} />
+})
 
-export { Skeleton };
+Skeleton.displayName = 'Skeleton'
+
+export { Skeleton }

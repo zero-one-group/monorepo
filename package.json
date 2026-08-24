@@ -25,15 +25,5 @@
         "oxfmt": "catalog:",
         "oxlint": "catalog:"
     },
-    "packageManager": "pnpm@10.30.0",
-    "pnpm": {
-        "onlyBuiltDependencies": [
-            "oxfmt",
-            "oxlint",
-            "@swc/core",
-            "core-js-pure",
-            "esbuild",
-            "sharp"
-        ]
-    }
+    "packageManager": "pnpm@10.30.0"
 }

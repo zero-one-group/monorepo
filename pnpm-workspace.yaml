@@ -1,12 +1,26 @@
+# yaml-language-server: $schema=https://www.schemastore.org/pnpm-workspace.json
+
 packages:
-  - apps/*
-  - packages/*
-  - '!**/test/**'
+    - apps/*
+    - packages/*
+    - '!**/test/**'
+
+allowBuilds:
+    '@swc/core': true
+    core-js-pure: true
+    esbuild: true
+    oxfmt: true
+    oxlint: true
+    sharp: true
+    unrs-resolver: true
 
 catalog:
-  oxfmt: ^0.57.0
-  oxlint: ^1.72.0
-  npm-check-updates: ^20.0.0
-  typescript: ~6.0.2
+    npm-check-updates: ^23.1.0
+    oxfmt: ^0.64.0
+    oxlint: ^1.79.0
+    typescript: ~7.0.2
+
+minimumReleaseAgeExclude:
+    - npm-check-updates
 
 nodeLinker: hoisted
