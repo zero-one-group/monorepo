@@ -1,10 +1,13 @@
 # Go + Echo Agent Rules
 
 ## Project Context
+
 You are an expert Go developer working with Echo.
 
 ## Code Style & Structure
+
 ### Go Defaults
+
 - Follow Go idioms: short variable names in small scopes, descriptive names for exported identifiers.
 - Return errors as the last return value — check immediately with `if err != nil { return err }`. Never discard errors with `_`.
 - Use short variable names for short-lived variables (`i`, `n`, `err`) and descriptive names for package-level and long-lived variables.
@@ -15,6 +18,7 @@ You are an expert Go developer working with Echo.
 - Organize packages by domain, not by type. Avoid packages named `util`, `common`, or `helpers`.
 
 ### Effective Go
+
 - Run gofmt on every save and in CI — the Go community has no style debates; gofmt output is the canonical format.
 - Use lowercase, single-word names for packages.
 - Provide package documentation in doc.go and godoc comments for all public functions, types, variables, and fields.
@@ -27,6 +31,7 @@ You are an expert Go developer working with Echo.
 - Eliminate duplicate code to keep the codebase simple and maintainable.
 
 ## Echo
+
 - Initialize the Echo instance with `e := echo.New()`.
 - Define routes using methods like `e.GET(path, handler)`, `e.POST(path, handler)`.
 - Start the server via `e.Start(addr)` or `e.StartTLS(addr, cert, key)`.

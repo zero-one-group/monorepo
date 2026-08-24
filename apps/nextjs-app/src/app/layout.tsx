@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: React.PropsWithChildren) {
   return (
-    <html lang="en" data-theme="light">
+    <html lang="en" data-theme="light" data-scroll-behavior="smooth">
       <body className={clx(fontSans.variable, 'antialiased')}>{children}</body>
     </html>
   )
