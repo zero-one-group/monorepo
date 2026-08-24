@@ -54,7 +54,7 @@ for i in "${!TGT_DIRS[@]}"; do
         rm -rf "$TGT_PATH/dist"
         rm -rf "$TGT_PATH/.expo"
         rm -rf "$TGT_PATH/uv.lock"
-        rm -rf "$TGT_PATH/.react-router"
+        rm -rf "$TGT_PATH/.tanstack"
         rm -rf "$TGT_PATH/.astro"
         rm -rf "$TGT_PATH/.cache"
         rm -rf "$TGT_PATH/.strapi"

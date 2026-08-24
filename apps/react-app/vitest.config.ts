@@ -2,7 +2,7 @@ import { isCI } from 'std-env'
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
-  plugins: [],
+  resolve: { tsconfigPaths: true },
   test: {
     environment: 'happy-dom',
     exclude: ['node_modules', 'tests-e2e'],

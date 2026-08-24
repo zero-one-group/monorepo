@@ -62,7 +62,6 @@ dist-ssr/
 .output
 .client
 .build
-.react-router
 .wrangler
 .tanstack/
 *.gen.ts

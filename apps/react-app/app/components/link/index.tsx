@@ -1,45 +1,38 @@
 /**
- * A custom Link component that extends the functionality of the React Router Link component.
- * It adds support for opening links in a new tab and applies a consistent set of styles.
+ * A custom Link component that wraps TanStack Router's Link. It supports both
+ * internal routes (via `href`) and external/hash links (rendered as plain anchors).
  *
- * @param props - The props for the Link component, including the standard Link props from React Router.
+ * @param props.href - Internal path (e.g. "/login") or external/hash URL.
  * @param props.newTab - Whether to open the link in a new tab.
- * @param props.className - Additional CSS classes to apply to the link.
- * @param ref - A ref to the underlying anchor element.
- * @returns A React Router Link component with the custom functionality and styles applied.
- *
- * Example usage:
- * ```tsx
- * <Link href="/path" className="custom-class">Link Text</Link>
- * ```
  */
 
+import { Link as RouterLink } from '@tanstack/react-router'
 import * as React from 'react'
-import { Link as RouterLink, type LinkProps as RouterLinkProps } from 'react-router'
 
-interface LinkProps extends Omit<RouterLinkProps, 'to'> {
+// TanStack Link expects a typed `to`; we accept a plain string `href` instead.
+const RouterLinkCmp = RouterLink as unknown as React.ComponentType<
+  React.ComponentPropsWithRef<'a'> & { to: string }
+>
+
+interface LinkProps extends Omit<React.ComponentPropsWithoutRef<'a'>, 'href'> {
   href: string
   newTab?: boolean
 }
 
-const Link = React.forwardRef(function Component(
-  props: LinkProps & React.ComponentPropsWithoutRef<'a'>,
-  ref: React.ForwardedRef<HTMLAnchorElement>
-) {
-  const { className, newTab, ...rest } = props
-  const NEW_TAB_REL = 'noopener noreferrer'
-  const NEW_TAB_TARGET = '_blank'
-  const DEFAULT_TARGET = '_self'
+const Link = React.forwardRef<HTMLAnchorElement, LinkProps>(function Component(props, ref) {
+  const { className, newTab, href, ...rest } = props
+
+  const isExternal = /^https?:\/\//.test(href) || href.startsWith('mailto:')
+  const isHash = href.startsWith('#')
+  const target = newTab ? '_blank' : undefined
+  const rel = newTab ? 'noopener noreferrer' : undefined
+
+  if (isExternal || isHash) {
+    return <a href={href} className={className} target={target} rel={rel} ref={ref} {...rest} />
+  }
 
   return (
-    <RouterLink
-      to={props.href}
-      className={className}
-      rel={newTab ? NEW_TAB_REL : undefined}
-      target={newTab ? NEW_TAB_TARGET : DEFAULT_TARGET}
-      ref={ref}
-      {...rest}
-    />
+    <RouterLinkCmp to={href} className={className} target={target} rel={rel} ref={ref} {...rest} />
   )
 })
 

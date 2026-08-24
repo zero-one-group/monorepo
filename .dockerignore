@@ -7,7 +7,7 @@ _data/
 .dist
 .build
 .output
-.react-router
+.tanstack
 .wrangler
 .cache
 .github

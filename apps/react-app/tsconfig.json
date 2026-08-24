@@ -12,7 +12,7 @@
         "noEmit": true,
         "preserveSymlinks": true,
         "resolveJsonModule": true,
-        "rootDirs": [".", "./.react-router/types"],
+        "rootDirs": ["."],
         "skipLibCheck": true,
         "strict": true,
         "target": "esnext",
@@ -23,14 +23,7 @@
             "#/*": ["./app/*"]
         }
     },
-    "include": [
-        "**/.client/**/*",
-        "**/.server/**/*",
-        ".react-router/types/**/*",
-        "app/**/*",
-        "tests/**/*",
-        "tests-e2e/**/*"
-    ],
+    "include": ["app/**/*", "tests/**/*", "tests-e2e/**/*"],
     "exclude": ["tests-results"],
     "references": [
         {

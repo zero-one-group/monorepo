@@ -71,7 +71,7 @@ Current available templates are:
 | Template Name                                        | Description                                            |
 |------------------------------------------------------|--------------------------------------------------------|
 | [`template-golang`](./template-golang)               | Basic Go application for backend                       |
-| [`template-react-app`](./template-react-app)         | SPA React Router application with Tailwind CSS         |
+| [`template-react-app`](./template-react-app)         | SPA TanStack application with Tailwind CSS         |
 | [`template-shared-ui`](./template-shared-ui)         | Collections of UI components based on `shadcn/ui`      |
 | [`template-nextjs`](./template-nextjs)               | Next.js application with Tailwind CSS                  |
 | [`template-strapi`](./template-strapi)               | Strapi headless CMS with PostgreSQL and Nodemailer     |

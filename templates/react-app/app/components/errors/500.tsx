@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import { useNavigate } from '@tanstack/react-router'
 
 import { Link } from '#/components/link'
 
@@ -16,9 +16,9 @@ export default function InternalError({ message, details, stack }: InternalError
 
   const handleBack = () => {
     if (window.history.length > 1) {
-      navigate(-1)
+      window.history.back()
     } else {
-      navigate('/')
+      navigate({ to: '/' })
     }
   }
 

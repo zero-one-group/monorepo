@@ -6,7 +6,7 @@ $schema: 'https://moonrepo.dev/schemas/template.json'
 title: 'React Application'
 
 # REQUIRED: Description of what the template is for and other relevant information.
-description: 'React Router application preconfigured with Tailwind CSS'
+description: 'TanStack Router application preconfigured with Tailwind CSS'
 
 # Destination path for the package.
 destination: 'apps/[package_name]'

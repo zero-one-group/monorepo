@@ -3,7 +3,7 @@ import { useFormStatus } from 'react-dom'
 
 import { Link } from '#/components/link'
 
-import { type LoginState, loginAction } from './action'
+import { type LoginState, loginAction } from './-action'
 
 function SubmitButton() {
   const { pending } = useFormStatus()
