@@ -16,7 +16,7 @@ const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(
   ({ className, variant, size, children, ...props }, ref) => {
     const Root = ToggleGroupPrimitive.Root
     return (
-      // @ts-expect-error - Radix toggle group types don't include children in union
+      // @ts-expect-error - hoisted Radix types resolve children with React 18 ReactNode (bigint not assignable)
       <Root ref={ref} className={toggleGroupStyles({ className })} {...props}>
         <ToggleGroupContext.Provider value={{ variant, size }}>
           {children}
@@ -39,8 +39,8 @@ const ToggleGroupItem = React.forwardRef<HTMLButtonElement, ToggleGroupItemProps
 
     const Item = ToggleGroupPrimitive.Item
     return (
-      // @ts-expect-error - Radix toggle group item types don't include children
       <Item ref={ref} className={styles} {...props}>
+        {/* @ts-expect-error - hoisted Radix types resolve children with React 18 ReactNode (bigint not assignable) */}
         {children}
       </Item>
     )

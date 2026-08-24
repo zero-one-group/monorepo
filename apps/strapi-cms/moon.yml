@@ -4,10 +4,6 @@ $schema: 'https://moonrepo.dev/schemas/v2/project.json'
 
 layer: library
 language: typescript
-toolchains:
-    node:
-        # Strapi doesn't support Node.js 22 yet, using 20.19 as a workaround
-        version: '22.23'
 tags: ['app']
 
 # Overrides the name (identifier) of the project
