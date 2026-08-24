@@ -60,7 +60,6 @@ generator:
     - 'https://oss.zero-one-group.com/monorepo/templates/phoenix.zip'
     - 'https://oss.zero-one-group.com/monorepo/templates/postgresql.zip'
     - 'https://oss.zero-one-group.com/monorepo/templates/react-app.zip'
-    - 'https://oss.zero-one-group.com/monorepo/templates/react-ssr.zip'
     - 'https://oss.zero-one-group.com/monorepo/templates/tanstack-start.zip'
     - 'https://oss.zero-one-group.com/monorepo/templates/shared-ui.zip'
     - 'https://oss.zero-one-group.com/monorepo/templates/squidproxy.zip'

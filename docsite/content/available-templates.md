@@ -11,7 +11,6 @@ The monorepo comes with a variety of templates to kickstart your development. Th
 - **`astro`**: Astro website template.
 - **`nextjs`**: Next.js application template.
 - **`react-app`**: React Single Page Application (SPA) template.
-- **`react-ssr`**: React Server-Side Rendering (SSR) template.
 - **`tanstack-start`**: TanStack Start template.
 
 ### Mobile

@@ -25,5 +25,5 @@
         "oxfmt": "catalog:",
         "oxlint": "catalog:"
     },
-    "packageManager": "pnpm@10.30.0"
+    "packageManager": "pnpm@11.23.0"
 }
