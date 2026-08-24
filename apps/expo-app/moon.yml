@@ -17,6 +17,7 @@ project:
 tasks:
     dev:
         command: 'pnpm run dev'
+        deps: [kill-port]
         options:
             runDepsInParallel: false
             envFile: '.env'
@@ -45,3 +46,8 @@ tasks:
         command: 'pnpm run check'
         options:
             cache: false
+
+    kill-port:
+        command: 'pnpm --package=kill-port-process-cli dlx kill-port 8081'
+        options:
+            internal: true

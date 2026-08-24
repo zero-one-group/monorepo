@@ -128,13 +128,7 @@ const ExternalCopyButton = ({ onCopy }: ExternalCopyButtonProps) => (
   <TooltipProvider>
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          onClick={onCopy}
-          className="shrink-0"
-        >
+        <Button type="button" variant="outline" size="icon" onClick={onCopy} className="shrink-0">
           <Lucide.Copy className="size-4" strokeWidth={2} />
         </Button>
       </TooltipTrigger>
