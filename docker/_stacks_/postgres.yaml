@@ -10,7 +10,7 @@ services:
             - ../postgres/pg-multidb.sh:/docker-entrypoint-initdb.d/multidb.sh:ro
             - ../postgres/postgresql.conf:/etc/postgresql/postgresql.conf:rw
             - ../postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf:rw
-            - pgsql_data:/var/lib/postgresql/data:rw
+            - pgsql_data:/var/lib/postgresql/18/docker:rw
         environment:
             POSTGRES_DB: postgres
             POSTGRES_USER: postgres
