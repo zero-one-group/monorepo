@@ -47,3 +47,8 @@ done
 grep -rl "_CHANGE_ME_DESCRIPTION_" "$TARGET_PATH" | grep -v "template.yml" | while read -r file; do
     replace_string "$file" "_CHANGE_ME_DESCRIPTION_" "{{ package_description }}"
 done
+
+# Rename all files *.tsx to *.raw.tsx inside the target directory
+find "$TARGET_PATH" -type f -name "*.tsx" | while read -r file; do
+    mv "$file" "${file%.tsx}.raw.tsx"
+done
