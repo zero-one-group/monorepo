@@ -148,7 +148,7 @@ export const IconShowcase: Story = {
         Email
       </Button>
       <Button {...args} variant="outline">
-        <Lucide.Github className="-ml-0.5" />
+        <Lucide.Code className="-ml-0.5" />
         Github
       </Button>
       <Button {...args} size="icon" variant="ghost">

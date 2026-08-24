@@ -73,11 +73,8 @@ const SidebarMenuButton = React.forwardRef<
       return button
     }
 
-    if (typeof tooltip === 'string') {
-      tooltip = {
-        children: tooltip,
-      }
-    }
+    const tooltipContent =
+      typeof tooltip === 'string' ? { children: tooltip } : tooltip
 
     return (
       <Tooltip>
@@ -86,7 +83,7 @@ const SidebarMenuButton = React.forwardRef<
           side="right"
           align="center"
           hidden={state !== 'collapsed' || isMobile}
-          {...tooltip}
+          {...tooltipContent}
         />
       </Tooltip>
     )
@@ -134,10 +131,9 @@ const SidebarMenuSkeleton = React.forwardRef<
     showIcon?: boolean
   }
 >(({ className, showIcon = false, ...props }, ref) => {
-  // Random width between 50 to 90%.
-  const width = React.useMemo(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`
-  }, [])
+  // Fixed skeleton width to keep render pure (no Math.random during render,
+  // which avoids hydration mismatches).
+  const width = '60%'
 
   const styles = sidebarStyles()
 
