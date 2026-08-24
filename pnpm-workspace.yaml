@@ -21,8 +21,27 @@ catalog:
     typescript: ~5.9.3
 
 minimumReleaseAgeExclude:
+    - '@expo/cli'
+    - '@expo/config-plugins'
+    - '@expo/config'
+    - '@expo/fingerprint'
+    - '@expo/image-utils'
+    - '@expo/metro-config'
+    - '@expo/metro-file-map'
+    - '@expo/metro-runtime'
+    - '@expo/prebuild-config'
+    - '@expo/require-utils'
+    - '@expo/ui'
     - '@lucide/astro'
     - '@types/react-dom'
+    - babel-preset-expo
+    - expo-asset
+    - expo-constants
+    - expo-modules-autolinking
+    - expo-modules-core
+    - expo-router
+    - expo-splash-screen
+    - expo
     - lucide-react
     - npm-check-updates
 
