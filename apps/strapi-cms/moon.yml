@@ -31,6 +31,17 @@ tasks:
         options:
             cache: true
 
+    # Clean reinstall to purge orphaned/stale nested node_modules dirs left behind
+    # by `node-linker: hoisted` after dependency version bumps (these shadow the
+    # correct versions during rollup bundling and break the build).
+    # @see pnpm-workspace.yaml -> nodeLinker
+    reinstall:
+        script: 'pnpm dlx del-cli node_modules && pnpm install'
+        options:
+            cache: false
+            runInCI: false
+            shell: true
+
     docker-build:
         script: |
             DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
