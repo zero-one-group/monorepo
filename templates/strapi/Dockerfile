@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1.7
 
 # Arguments with default value (for build).
-ARG MOON_VERSION=2.1.1
+ARG MOON_VERSION=2.5.3
 ARG NODE_ENV=production
-ARG NODE_VERSION=22
+ARG NODE_VERSION=24
 ARG DISTROLESS_TAG=nonroot
 
 # -----------------------------------------------------------------------------

@@ -10,7 +10,7 @@ go:
   installDependencies: true
 
 node:
-  version: '22.23'
+  version: '24.19'
   installDependencies: true
 
 javascript:

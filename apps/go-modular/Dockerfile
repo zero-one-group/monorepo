@@ -2,8 +2,8 @@
 
 # Arguments with default value (for build).
 ARG DISTROLESS_TAG=nonroot
-ARG MOON_VERSION=2.1.1
-ARG NODE_VERSION=22
+ARG MOON_VERSION=2.5.3
+ARG NODE_VERSION=24
 ARG GO_VERSION=1.26
 
 # -----------------------------------------------------------------------------
@@ -14,7 +14,7 @@ ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0 COREPACK_INTEGRITY_KEYS=0
 ENV FNM_PATH=/usr/bin PNPM_HOME=/pnpm HOME=/root
 ENV PATH="$HOME/.local/share/fnm:$PNPM_HOME:$PATH"
 ENV PATH="/root/.moon/bin:$PATH"
-ARG NODE_VERSION=22
+ARG NODE_VERSION=24
 
 # Install system dependencies
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections

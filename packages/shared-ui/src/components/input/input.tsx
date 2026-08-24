@@ -43,7 +43,13 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               ref={ref}
               {...props}
             />
-            {type === 'password' && <PasswordToggle />}
+            {type === 'password' && (
+              <PasswordToggle
+                showPassword={showPassword}
+                onToggle={togglePassword}
+                toggleButtonClass={styles.toggleButton()}
+              />
+            )}
           </div>
           <ExternalCopyButton onCopy={handleCopy} />
         </div>
