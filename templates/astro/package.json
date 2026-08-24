@@ -1,29 +1,29 @@
 {
-	"name": "{{ package_name | kebab_case }}",
-	"description": "{{ package_description }}",
-	"type": "module",
-	"private": true,
-	"scripts": {
-		"dev": "astro dev",
-		"build": "astro build",
-		"preview": "astro preview",
-		"start": "pnpm dlx serve dist -l {{ port_number }} -n -C",
-		"cleanup": "pnpm dlx del-cli node_modules dist .astro",
-		"update-deps": "npm-check-updates --configFileName .ncurc.json",
-		"lint": "oxlint --fix .",
-		"check": "oxlint --fix . && oxfmt .",
-		"astro": "astro"
-	},
-	"dependencies": {
-		"astro": "^6.0.8",
-		"lucide-astro": "^0.556.0"
-	},
-	"devDependencies": {
-		"oxfmt": "catalog:",
-		"oxlint": "catalog:",
-		"@tailwindcss/vite": "^4.2.2",
-		"npm-check-updates": "catalog:",
-		"tailwindcss-motion": "^1.1.1",
-		"tailwindcss": "^4.2.2"
-	}
+    "name": "{{ package_name | kebab_case }}",
+    "private": true,
+    "description": "{{ package_description }}",
+    "type": "module",
+    "scripts": {
+        "dev": "astro dev",
+        "build": "astro build",
+        "preview": "astro preview",
+        "start": "pnpm dlx serve dist -l {{ port_number }} -n -C",
+        "cleanup": "pnpm dlx del-cli node_modules dist .astro",
+        "update-deps": "npm-check-updates --configFileName .ncurc.json",
+        "lint": "oxlint --fix .",
+        "check": "oxlint --fix . && oxfmt .",
+        "astro": "astro"
+    },
+    "dependencies": {
+        "@lucide/astro": "^1.34.0",
+        "astro": "^7.2.4"
+    },
+    "devDependencies": {
+        "@tailwindcss/vite": "^4.3.3",
+        "npm-check-updates": "catalog:",
+        "oxfmt": "catalog:",
+        "oxlint": "catalog:",
+        "tailwindcss": "^4.3.3",
+        "tailwindcss-motion": "^1.1.1"
+    }
 }

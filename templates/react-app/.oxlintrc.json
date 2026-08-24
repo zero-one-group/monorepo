@@ -1,3 +1,19 @@
 {
-	"extends": ["../../.oxlintrc.json"]
+    "extends": ["../../.oxlintrc.json"],
+    "rules": {
+        "import/no-unassigned-import": [
+            "warn",
+            {
+                "allow": ["**/*.css", "@testing-library/jest-dom/vitest", "dotenv/config"]
+            }
+        ],
+        "eslint/no-unused-vars": [
+            "warn",
+            {
+                "ignoreRestSiblings": true,
+                "argsIgnorePattern": "^_",
+                "varsIgnorePattern": "^_"
+            }
+        ]
+    }
 }

@@ -1,15 +1,15 @@
-import { isProduction } from "std-env";
+import { isProduction } from 'std-env'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-	output: "standalone",
-	cleanDistDir: true,
-	reactStrictMode: true,
-	poweredByHeader: false,
-	productionBrowserSourceMaps: false,
-	images: { remotePatterns: [{ protocol: "https", hostname: "**" }] },
-	typescript: { ignoreBuildErrors: isProduction },
-	logging: { fetches: { fullUrl: true } },
-};
+  output: 'standalone',
+  cleanDistDir: true,
+  reactStrictMode: true,
+  poweredByHeader: false,
+  productionBrowserSourceMaps: false,
+  images: { remotePatterns: [{ protocol: 'https', hostname: '**' }] },
+  typescript: { ignoreBuildErrors: isProduction },
+  logging: { fetches: { fullUrl: true } },
+}
 
-export default nextConfig;
+export default nextConfig

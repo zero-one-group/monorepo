@@ -1,5 +1,5 @@
-import { Canvas, Meta, Primary } from '@storybook/addon-docs/blocks';
-import * as Stories from './toast.stories';
+import { Canvas, Meta, Primary } from '@storybook/addon-docs/blocks'
+import * as Stories from './toast.stories'
 
 <Meta of={Stories} />
 
@@ -14,12 +14,12 @@ import { toast, Toaster } from '@repo/{{ package_name | kebab_case }}/components
 
 // Add Toaster to your app
 function App() {
-  return (
-    <>
-      {/* Your app content */}
-      <Toaster />
-    </>
-  )
+    return (
+        <>
+            {/* Your app content */}
+            <Toaster />
+        </>
+    )
 }
 
 // Show basic toast
@@ -27,7 +27,7 @@ toast('Event has been created')
 
 // Toast with description
 toast('Event has been created', {
-  description: 'Sunday, December 03, 2023 at 9:00 AM',
+    description: 'Sunday, December 03, 2023 at 9:00 AM',
 })
 
 // Success toast
@@ -38,9 +38,9 @@ toast.error('Error occurred')
 
 // Promise toast
 toast.promise(saveData(), {
-  loading: 'Saving...',
-  success: 'Successfully saved',
-  error: 'Error saving data',
+    loading: 'Saving...',
+    success: 'Successfully saved',
+    error: 'Error saving data',
 })
 ```
 

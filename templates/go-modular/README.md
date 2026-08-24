@@ -3,6 +3,7 @@
 This template already pre-configured basic auth, take a look at `apps/{{ package_name | kebab_case }}/database/seeders/user_factory.go`.
 
 ## Common Tasks
+
 ```sh
 moon {{ package_name | kebab_case }}:dev                  # Run development
 moon {{ package_name | kebab_case }}:run                  # Execute `go run`
@@ -22,6 +23,7 @@ moon {{ package_name | kebab_case }}:generate-mock        # Generate Mock
 ```
 
 ## Migration Tasks
+
 ```sh
 # Initiate or reset migrations and seed
 moon {{ package_name | kebab_case }}:run -- migrate:reset --up --seed --force
@@ -37,6 +39,7 @@ moon {{ package_name | kebab_case }}:run -- migrate:seed
 ```
 
 ## Generate Sample Configuration
+
 This command will generate `.env.example` from `apps/{{ package_name | kebab_case }}/internal/config/default.go`:
 
 ```sh
@@ -44,6 +47,7 @@ moon {{ package_name | kebab_case }}:run -- generate:config
 ```
 
 ## Scaffold New Module
+
 ```sh
 mkdir -p apps/{{ package_name | kebab_case }}/modules/dummy
 mkdir -p apps/{{ package_name | kebab_case }}/modules/dummy/handler

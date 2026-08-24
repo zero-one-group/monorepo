@@ -99,46 +99,6 @@ RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache m
 # -----------------------------------------------------------------------------
 FROM gcr.io/distroless/cc-debian12:${DISTROLESS_TAG} AS runner
 
-# Read application environment variables
-ARG APP_BASE_URL
-ARG CORS_CREDENTIALS
-ARG CORS_MAX_AGE
-ARG CORS_ORIGINS
-ARG ENABLE_API_DOCS
-ARG JWT_ALGORITHM
-ARG JWT_SECRET_KEY
-ARG RATE_LIMIT_BURST_SIZE
-ARG RATE_LIMIT_ENABLED
-ARG RATE_LIMIT_REQUESTS
-ARG DATABASE_URL
-ARG PG_MAX_POOL_SIZE
-ARG PG_MAX_RETRIES
-ARG SMTP_HOST
-ARG SMTP_PASSWORD
-ARG SMTP_PORT
-ARG SMTP_SECURE
-ARG SMTP_SENDER_EMAIL
-ARG SMTP_SENDER_NAME
-ARG SMTP_USERNAME
-ARG PUBLIC_ASSETS_URL
-ARG S3_ACCESS_KEY
-ARG S3_BUCKET_NAME
-ARG S3_ENDPOINT
-ARG S3_FORCE_PATH_STYLE
-ARG S3_REGION
-ARG S3_SECRET_KEY
-ARG S3_USE_SSL
-ARG LOG_FORMAT
-ARG LOG_LEVEL
-ARG LOG_NO_COLOR
-ARG OTEL_ENABLE_TELEMETRY
-ARG OTEL_EXPORTER_OTLP_ENDPOINT
-ARG OTEL_EXPORTER_OTLP_HEADERS
-ARG OTEL_EXPORTER_OTLP_PROTOCOL
-ARG OTEL_INSECURE_MODE
-ARG OTEL_SERVICE_NAME
-ARG OTEL_TRACING_SAMPLE_RATE
-
 # Copy build output files and required binaries from previous stage
 COPY --from=builder --chown=nonroot:nonroot /srv/apps/{{ package_name | kebab_case }}/build/release/{{ package_name | kebab_case }} /srv/{{ package_name | kebab_case }}
 COPY --from=builder --chmod=775 /usr/bin/tini /usr/bin/tini

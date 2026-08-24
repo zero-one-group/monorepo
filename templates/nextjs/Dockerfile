@@ -97,14 +97,6 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm dlx \
 # -----------------------------------------------------------------------------
 FROM gcr.io/distroless/nodejs${NODE_VERSION}-debian13:${DISTROLESS_TAG} AS runner
 
-# Read application environment variables
-ARG DATABASE_URL
-ARG SMTP_HOST
-ARG SMTP_PORT
-ARG SMTP_USERNAME
-ARG SMTP_PASSWORD
-ARG SMTP_EMAIL_FROM
-
 # Copy build output files and required binaries from previous stage
 COPY --from=pruner --chown=nonroot:nonroot /srv /srv
 COPY --from=base /usr/bin/tini /usr/bin/tini

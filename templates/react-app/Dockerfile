@@ -73,9 +73,6 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run {{ package_name | keb
 # -----------------------------------------------------------------------------
 FROM gcr.io/distroless/base-nossl-debian12 AS runner
 
-# Read application environment variables
-ARG VITE_API_URL VITE_BASE_URL
-
 # Copy build output files and required binaries from previous stage
 COPY --from=builder --chown=nonroot:nonroot /srv/apps/{{ package_name | kebab_case }}/build/client /srv
 COPY --from=skeleton /srv/docker/sws-spa.toml /etc/sws.toml

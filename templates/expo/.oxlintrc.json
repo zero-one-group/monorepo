@@ -1,3 +1,17 @@
 {
-	"extends": ["../../.oxlintrc.json"]
+    "extends": ["../../.oxlintrc.json"],
+    "rules": {
+        "react/set-state-in-effect": "off",
+        "react/no-unstable-nested-components": "off",
+        "import/no-unassigned-import": [
+            "warn",
+            {
+                "allow": [
+                    "**/*.css",
+                    "@testing-library/react-native/matchers",
+                    "react-native-reanimated"
+                ]
+            }
+        ]
+    }
 }
