@@ -1,3 +1,11 @@
 {
-    "extends": ["../../.oxlintrc.json"]
+    "extends": ["../../.oxlintrc.json"],
+    "rules": {
+        "import/no-unassigned-import": [
+            "warn",
+            {
+                "allow": ["**/*.css", "@testing-library/jest-dom/vitest", "dotenv/config"]
+            }
+        ]
+    }
 }

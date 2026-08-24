@@ -8,5 +8,13 @@
         "restriction": "off",
         "style": "off",
         "suspicious": "off"
+    },
+    "rules": {
+        "import/no-unassigned-import": [
+            "warn",
+            {
+                "allow": ["**/*.css", "@testing-library/jest-dom/vitest", "dotenv/config"]
+            }
+        ]
     }
 }
