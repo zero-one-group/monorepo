@@ -1,15 +1,15 @@
+import { createFileRoute } from '@tanstack/react-router'
 import * as Lucide from 'lucide-react'
 
 import { Link } from '#/components/link'
 
-import type { Route } from './+types/page'
-import { LoginForm } from './form'
+import { LoginForm } from './-form'
 
-export function meta(_props: Route.MetaArgs) {
-  return [{ title: 'Sign in | React Router App' }]
-}
+export const Route = createFileRoute('/login/')({
+  component: LoginComponent,
+})
 
-export default function Page() {
+function LoginComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8 dark:bg-gray-900">
       <div className="w-full max-w-md space-y-8">

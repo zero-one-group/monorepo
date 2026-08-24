@@ -39,7 +39,7 @@
         "**/tmp/*",
         "**/.astro",
         "**/.next",
-        "**/.react-router",
+        "**/.tanstack",
         "infrastructure/*",
         "templates/*",
         "docsite/*",

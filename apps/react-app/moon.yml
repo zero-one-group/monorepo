@@ -48,6 +48,12 @@ tasks:
         options:
             cache: true
 
+    test:
+        command: 'pnpm run test'
+        deps: ['typegen']
+        options:
+            cache: false
+
     prebuild:
         deps: ['shared-ui:build', 'typegen']
         options:

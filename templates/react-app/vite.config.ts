@@ -29,6 +29,5 @@ export default defineConfig({
     emptyOutDir: true,
     manifest: true,
     terserOptions: { format: { comments: false } },
-  },
-  esbuild: { legalComments: 'none' },
+  }
 })

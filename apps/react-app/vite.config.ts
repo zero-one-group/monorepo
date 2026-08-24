@@ -1,7 +1,8 @@
 import { resolve } from 'node:path'
 
-import { reactRouter } from '@react-router/dev/vite'
 import tailwindcss from '@tailwindcss/vite'
+import { tanstackRouter } from '@tanstack/router-plugin/vite'
+import react from '@vitejs/plugin-react'
 import { env, isProduction } from 'std-env'
 import { defineConfig } from 'vite'
 import devtoolsJson from 'vite-plugin-devtools-json'
@@ -12,7 +13,19 @@ const isTestOrStorybook = env.VITEST || process.argv[1]?.includes('storybook')
 
 export default defineConfig({
   envPrefix: 'VITE_' /* Prefix for environment variables */,
-  plugins: [tailwindcss(), !isTestOrStorybook && reactRouter(), tsconfigPaths(), devtoolsJson()],
+  plugins: [
+    tailwindcss(),
+    !isTestOrStorybook &&
+      tanstackRouter({
+        target: 'react',
+        autoCodeSplitting: true,
+        routesDirectory: './app/routes',
+        generatedRouteTree: './app/routeTree.gen.ts',
+      }),
+    react(),
+    tsconfigPaths(),
+    devtoolsJson(),
+  ],
   server: { port: 3000, host: false },
   preview: { host: '127.0.0.1' },
   publicDir: resolve('public'),
@@ -21,14 +34,14 @@ export default defineConfig({
     exclude: ['@repo/shared-ui'],
   },
   build: {
+    outDir: 'build/client',
+    emptyOutDir: true,
     ssr: false,
     minify: isProduction,
     cssMinify: isProduction,
     chunkSizeWarningLimit: 1024 * 2,
     reportCompressedSize: false,
-    emptyOutDir: true,
     manifest: true,
     terserOptions: { format: { comments: false } },
   },
-  esbuild: { legalComments: 'none' },
 })
