@@ -1,18 +1,17 @@
 # https://moonrepo.dev/docs/config/toolchain
-# yaml-language-server: $schema=https://moonrepo.dev/schemas/toolchain.json
-$schema: 'https://moonrepo.dev/schemas/toolchain.json'
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/v2/toolchains.json
+$schema: 'https://moonrepo.dev/schemas/v2/toolchains.json'
 
 proto:
-  version: 0.58.1
+  version: 0.61.1
 
 go:
-  version: '1.26.1'
+  version: '1.27.0'
   installDependencies: true
 
 node:
   version: '22.22'
   installDependencies: true
-  syncVersionManagerConfig: null            # Sync `node.version` to a 3rd-party version manager's config file.
 
 javascript:
   packageManager: pnpm                      # Defines which package manager to utilize.
@@ -24,7 +23,7 @@ javascript:
   dependencyVersionFormat: workspace        # Uses workspace:*, which resolves to "1.2.3". Requires package workspaces.
 
 pnpm:
-  version: 10.30.0
+  version: 11.23.0
 
 unstable_python:
   version: '3.14'
@@ -33,14 +32,3 @@ unstable_python:
 
 unstable_uv:
   version: 0.8.17
-
-# Configures Rust within the toolchain.
-# rust:
-#   version: '1.90'
-#   syncToolchainConfig: true
-#   targets:
-#     - 'aarch64-apple-darwin'
-#     - 'x86_64-apple-darwin'
-#     - 'x86_64-pc-windows-msvc'
-#   # List of Cargo binaries to install globally and make available to tasks.
-#   bins: ['cargo-nextest', 'cargo-generate', 'cargo-make', 'cargo-watch', 'cargo-px']

@@ -1,9 +1,9 @@
 # https://moonrepo.dev/docs/config/workspace
-# yaml-language-server: $schema=https://moonrepo.dev/schemas/workspace.json
-$schema: 'https://moonrepo.dev/schemas/workspace.json'
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/v2/workspace.json
+$schema: 'https://moonrepo.dev/schemas/v2/workspace.json'
 
 # Require a specific version of moon while running commands, otherwise fail.
-versionConstraint: '>=2.1.0'
+versionConstraint: '>=2.5.3'
 
 vcs:
   client: git
@@ -16,7 +16,7 @@ vcs:
       - moon run :format --affected --status=all
     commit-msg:
       - 'if ! grep -qE "^(feat|fix|chore|docs|style|refactor|perf|test|build|ci|revert)(\(.+\))?!?: .+" "$1"; then echo ""; echo "ERROR: Invalid commit message format."; echo "Expected: <type>(<optional-scope>): <description>"; echo "Types: feat, fix, chore, docs, style, refactor, perf, test, build, ci, revert"; echo ""; exit 1; fi'
-  sync: false
+  sync: true
 
 hasher:
   optimization: performance
