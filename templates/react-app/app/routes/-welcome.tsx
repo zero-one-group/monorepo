@@ -16,10 +16,10 @@ const cards = [
     href: 'https://github.com/zero-one-group/monorepo',
   },
   {
-    title: 'Master React Router',
+    title: 'Master TanStack Router',
     description:
-      'Build powerful client-side navigation with our in-depth React Router guides and best practices.',
-    href: 'https://reactrouter.com/start/framework/routing',
+      'Build powerful client-side navigation with our in-depth TanStack Router guides and best practices.',
+    href: 'https://tanstack.com/router',
   },
   {
     title: 'Star Our Repository',

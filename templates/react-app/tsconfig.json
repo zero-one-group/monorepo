@@ -17,8 +17,7 @@
     "preserveSymlinks": true,
     "resolveJsonModule": true,
     "rootDirs": [
-      ".",
-      "./.react-router/types"
+      "."
     ],
     "skipLibCheck": true,
     "strict": true,
@@ -37,9 +36,6 @@
     }
   },
   "include": [
-    "**/.client/**/*",
-    "**/.server/**/*",
-    ".react-router/types/**/*",
     "app/**/*",
     "tests/**/*",
     "tests-e2e/**/*"
