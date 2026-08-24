@@ -1,26 +1,29 @@
 # yaml-language-server: $schema=https://www.schemastore.org/pnpm-workspace.json
 
 packages:
-    - apps/*
-    - packages/*
-    - '!**/test/**'
+  - apps/*
+  - packages/*
+  - '!**/test/**'
 
 allowBuilds:
-    '@swc/core': true
-    core-js-pure: true
-    esbuild: true
-    oxfmt: true
-    oxlint: true
-    sharp: true
-    unrs-resolver: true
+  '@swc/core': true
+  core-js-pure: true
+  esbuild: true
+  oxfmt: true
+  oxlint: true
+  sharp: true
+  unrs-resolver: true
 
 catalog:
-    npm-check-updates: ^23.1.0
-    oxfmt: ^0.64.0
-    oxlint: ^1.79.0
-    typescript: ~7.0.2
+  npm-check-updates: ^23.1.0
+  oxfmt: ^0.64.0
+  oxlint: ^1.79.0
+  typescript: ~7.0.2
 
 minimumReleaseAgeExclude:
-    - npm-check-updates
+  - '@types/react-dom'
+  - lucide-react
+  - npm-check-updates
+  - '@lucide/astro@1.34.0'
 
 nodeLinker: hoisted
