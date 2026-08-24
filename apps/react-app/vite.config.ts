@@ -14,6 +14,7 @@ export default defineConfig({
   envPrefix: 'VITE_' /* Prefix for environment variables */,
   plugins: [tailwindcss(), !isTestOrStorybook && reactRouter(), tsconfigPaths(), devtoolsJson()],
   server: { port: 3000, host: false },
+  preview: { host: '127.0.0.1' },
   publicDir: resolve('public'),
   optimizeDeps: {
     // Do not optimize internal workspace dependencies.

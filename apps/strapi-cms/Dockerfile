@@ -76,6 +76,7 @@ FROM base AS installer
 
 # Only copy the require files from builder stage
 COPY --from=builder /srv/apps/strapi-cms /srv
+COPY --from=builder /srv/pnpm-workspace.yaml /srv/pnpm-workspace.yaml
 
 # Fix sharp dependencies then build the Strapi application.
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --ignore-scripts
@@ -95,6 +96,7 @@ COPY --from=installer /srv/favicon.png /srv/favicon.png
 COPY --from=installer /srv/server.cjs /srv/server.cjs
 COPY --from=installer /srv/public /srv/public
 COPY --from=installer /srv/dist /srv/dist
+COPY --from=installer /srv/pnpm-workspace.yaml /srv/pnpm-workspace.yaml
 
 # Copy migrations and the generated files from Strapi plugins
 COPY --from=installer /srv/src/extensions /srv/src/extensions
@@ -104,7 +106,7 @@ COPY --from=installer /srv/database /srv/database
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod \
     --frozen-lockfile --ignore-scripts && pnpm approve-builds && pnpm \
     prune --prod --ignore-scripts && pnpm dlx clean-modules clean --yes \
-    "!**/sharp/**" "**/codecov*"
+    "!**/sharp/**" "**/codecov*" "!**/ee/**"
 
 # Set permissions for server.cjs and uploads directories
 RUN mkdir -p /srv/public/uploads && chmod -R 0775 /srv/public
@@ -115,24 +117,6 @@ RUN chmod +x /srv/server.cjs
 # Production image, copy build output files and run the application (runner).
 # -----------------------------------------------------------------------------
 FROM gcr.io/distroless/nodejs${NODE_VERSION}-debian13:${DISTROLESS_TAG} AS runner
-
-# Read application environment variables
-ARG APP_KEYS
-ARG API_TOKEN_SALT
-ARG ADMIN_JWT_SECRET
-ARG TRANSFER_TOKEN_SALT
-ARG JWT_SECRET
-ARG DATABASE_URL
-ARG DATABASE_SSL
-ARG SMTP_HOST
-ARG SMTP_PORT
-ARG SMTP_USERNAME
-ARG SMTP_PASSWORD
-ARG AWS_ACCESS_KEY_ID
-ARG AWS_ACCESS_SECRET
-ARG AWS_REGION
-ARG AWS_BUCKET
-ARG S3_PATH_PREFIX
 
 # Copy build output files and required binaries from previous stage
 COPY --from=pruner --chown=nonroot:nonroot /srv /srv

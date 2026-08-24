@@ -20,6 +20,14 @@ catalog:
     oxlint: ^1.79.0
     typescript: ~5.9.3
 
+# Disable the minimumReleaseAge supply-chain policy. It is enforced by default
+# in pnpm 10 (used inside Docker builds via `pnpm@latest-10`) but is off in
+# pnpm 11 (local). `minimumReleaseAgeExclude` below is a pnpm 11-only feature
+# ignored by pnpm 10, so leaving the policy on breaks Docker builds for apps
+# that depend on freshly-published packages (e.g. Expo SDK 57). Set this to a
+# positive value only after aligning the Docker pnpm version with pnpm 11.
+minimumReleaseAge: 0
+
 minimumReleaseAgeExclude:
     - '@expo/cli'
     - '@expo/config-plugins'

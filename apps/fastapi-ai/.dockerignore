@@ -1,0 +1,16 @@
+.venv
+logs
+node_modules
+__pycache__
+*.pyc
+*.pyo
+.env
+.env.example
+.git
+.gitignore
+.moon
+*.sqlite*
+*.sqlite3*
+*.db
+*.log
+.DS_Store

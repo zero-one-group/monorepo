@@ -73,9 +73,6 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run astro-web:build
 # -----------------------------------------------------------------------------
 FROM gcr.io/distroless/base-nossl-debian12 AS runner
 
-# Read application environment variables
-ARG PUBLIC_BASE_URL
-
 # Copy build output files and required binaries from previous stage
 COPY --from=builder --chown=nonroot:nonroot /srv/apps/astro-web/dist /srv
 COPY --from=skeleton /srv/docker/sws-mpa.toml /etc/sws.toml

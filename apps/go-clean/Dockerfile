@@ -99,21 +99,6 @@ RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache m
 # -----------------------------------------------------------------------------
 FROM gcr.io/distroless/cc-debian12:${DISTROLESS_TAG} AS runner
 
-# Read application environment variables
-ARG APP_ENVIRONMENT
-ARG APP_HOST
-ARG APP_PORT
-ARG CORS_ALLOW_ORIGINS
-ARG DATABASE_URL
-ARG ENABLE_INSTRUMENTATION
-ARG ENABLE_SWAGGER
-ARG JWT_SECRET
-ARG JWT_TOKEN_EXPIRY_MINUTES
-ARG LOG_LEVEL
-ARG OTEL_EXPORTER_OTLP_ENDPOINT
-ARG SERVICE_NAME
-ARG TRACING_SAMPLE_RATE
-
 # Copy build output files and required binaries from previous stage
 COPY --from=builder --chown=nonroot:nonroot /srv/apps/go-clean/build/go-clean /srv/go-clean
 COPY --from=builder --chmod=775 /usr/bin/tini /usr/bin/tini
