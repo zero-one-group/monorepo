@@ -1,5 +1,5 @@
-import { Canvas, Meta, Primary } from '@storybook/addon-docs/blocks';
-import * as Stories from './drawer.stories';
+import { Canvas, Meta, Primary } from '@storybook/addon-docs/blocks'
+import * as Stories from './drawer.stories'
 
 <Meta of={Stories} />
 
@@ -11,29 +11,27 @@ A panel that slides out from the edge of the screen.
 
 ```tsx
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
+    Drawer,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
 } from '@repo/{{ package_name | kebab_case }}/components'
 
-<Drawer>
-  <DrawerTrigger>Open</DrawerTrigger>
-  <DrawerContent>
-    <DrawerHeader>
-      <DrawerTitle>Edit Profile</DrawerTitle>
-      <DrawerDescription>
-        Make changes to your profile here.
-      </DrawerDescription>
-    </DrawerHeader>
-    <div>Content</div>
-    <DrawerFooter>
-      <Button>Save changes</Button>
-    </DrawerFooter>
-  </DrawerContent>
+;<Drawer>
+    <DrawerTrigger>Open</DrawerTrigger>
+    <DrawerContent>
+        <DrawerHeader>
+            <DrawerTitle>Edit Profile</DrawerTitle>
+            <DrawerDescription>Make changes to your profile here.</DrawerDescription>
+        </DrawerHeader>
+        <div>Content</div>
+        <DrawerFooter>
+            <Button>Save changes</Button>
+        </DrawerFooter>
+    </DrawerContent>
 </Drawer>
 ```
 

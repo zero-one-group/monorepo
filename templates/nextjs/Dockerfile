@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1.7
 
 # Arguments with default value (for build).
-ARG MOON_VERSION=2.1.1
-ARG NODE_VERSION=22
+ARG MOON_VERSION=2.5.3
+ARG NODE_VERSION=24
 ARG DISTROLESS_TAG=nonroot
 
 # -----------------------------------------------------------------------------
@@ -96,14 +96,6 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm dlx \
 # Production image, copy build output files and run the application (runner).
 # -----------------------------------------------------------------------------
 FROM gcr.io/distroless/nodejs${NODE_VERSION}-debian13:${DISTROLESS_TAG} AS runner
-
-# Read application environment variables
-ARG DATABASE_URL
-ARG SMTP_HOST
-ARG SMTP_PORT
-ARG SMTP_USERNAME
-ARG SMTP_PASSWORD
-ARG SMTP_EMAIL_FROM
 
 # Copy build output files and required binaries from previous stage
 COPY --from=pruner --chown=nonroot:nonroot /srv /srv

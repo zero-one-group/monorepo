@@ -1,5 +1,5 @@
-import { Canvas, Meta, Primary } from '@storybook/addon-docs/blocks';
-import * as Stories from './command.stories';
+import { Canvas, Meta, Primary } from '@storybook/addon-docs/blocks'
+import * as Stories from './command.stories'
 
 <Meta of={Stories} />
 
@@ -11,32 +11,32 @@ Fast, composable, unstyled command menu for React.
 
 ```tsx
 import {
-  Command,
-  CommandInput,
-  CommandList,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandSeparator,
-  CommandShortcut,
+    Command,
+    CommandInput,
+    CommandList,
+    CommandEmpty,
+    CommandGroup,
+    CommandItem,
+    CommandSeparator,
+    CommandShortcut,
 } from '@repo/{{ package_name | kebab_case }}/components'
 
-<Command>
-  <CommandInput placeholder="Type a command..." />
-  <CommandList>
-    <CommandEmpty>No results found.</CommandEmpty>
-    <CommandGroup heading="Suggestions">
-      <CommandItem>Calendar</CommandItem>
-      <CommandItem>Search Emoji</CommandItem>
-    </CommandGroup>
-    <CommandSeparator />
-    <CommandGroup heading="Settings">
-      <CommandItem>
-        Profile
-        <CommandShortcut>⌘P</CommandShortcut>
-      </CommandItem>
-    </CommandGroup>
-  </CommandList>
+;<Command>
+    <CommandInput placeholder="Type a command..." />
+    <CommandList>
+        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandGroup heading="Suggestions">
+            <CommandItem>Calendar</CommandItem>
+            <CommandItem>Search Emoji</CommandItem>
+        </CommandGroup>
+        <CommandSeparator />
+        <CommandGroup heading="Settings">
+            <CommandItem>
+                Profile
+                <CommandShortcut>⌘P</CommandShortcut>
+            </CommandItem>
+        </CommandGroup>
+    </CommandList>
 </Command>
 ```
 

@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1.7
 
 # Arguments with default value (for build).
-ARG MOON_VERSION=2.1.1
-ARG NODE_VERSION=22
+ARG MOON_VERSION=2.5.3
+ARG NODE_VERSION=24
 ARG DISTROLESS_TAG=nonroot
 
 # -----------------------------------------------------------------------------
@@ -78,6 +78,10 @@ FROM base AS pruner
 COPY --from=builder /srv/node_modules /srv/node_modules
 COPY --from=builder /srv/package.json /srv/package.json
 COPY --from=builder /srv/pnpm-lock.yaml /srv/pnpm-lock.yaml
+# Workspace file carries `minimumReleaseAge: 0`; without it the pruner falls
+# back to pnpm 10's global default (1 day) and rejects freshly-published
+# packages (e.g. Expo SDK 57) recorded in the lockfile.
+COPY --from=builder /srv/pnpm-workspace.yaml /srv/pnpm-workspace.yaml
 
 # Only copy required files from builder stage
 COPY --from=builder /srv/apps/tanstack-start/node_modules /srv/apps/tanstack-start/node_modules

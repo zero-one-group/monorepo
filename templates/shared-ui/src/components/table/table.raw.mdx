@@ -1,5 +1,5 @@
-import { Canvas, Meta, Primary } from '@storybook/addon-docs/blocks';
-import * as Stories from './table.stories';
+import { Canvas, Meta, Primary } from '@storybook/addon-docs/blocks'
+import * as Stories from './table.stories'
 
 <Meta of={Stories} />
 
@@ -11,33 +11,33 @@ A responsive table component for displaying tabular data.
 
 ```tsx
 import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from '@repo/{{ package_name | kebab_case }}/components'
 
-<Table>
-  <TableCaption>A list of your recent invoices.</TableCaption>
-  <TableHeader>
-    <TableRow>
-      <TableHead>Invoice</TableHead>
-      <TableHead>Status</TableHead>
-      <TableHead>Method</TableHead>
-      <TableHead>Amount</TableHead>
-    </TableRow>
-  </TableHeader>
-  <TableBody>
-    <TableRow>
-      <TableCell>INV001</TableCell>
-      <TableCell>Paid</TableCell>
-      <TableCell>Credit Card</TableCell>
-      <TableCell>$250.00</TableCell>
-    </TableRow>
-  </TableBody>
+;<Table>
+    <TableCaption>A list of your recent invoices.</TableCaption>
+    <TableHeader>
+        <TableRow>
+            <TableHead>Invoice</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Method</TableHead>
+            <TableHead>Amount</TableHead>
+        </TableRow>
+    </TableHeader>
+    <TableBody>
+        <TableRow>
+            <TableCell>INV001</TableCell>
+            <TableCell>Paid</TableCell>
+            <TableCell>Credit Card</TableCell>
+            <TableCell>$250.00</TableCell>
+        </TableRow>
+    </TableBody>
 </Table>
 ```
 

@@ -1,6 +1,6 @@
 # https://moonrepo.dev/docs/config/project
-# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
-$schema: 'https://moonrepo.dev/schemas/project.json'
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/v2/project.json
+$schema: 'https://moonrepo.dev/schemas/v2/project.json'
 
 layer: application
 language: typescript
@@ -11,11 +11,11 @@ tags: ['app']
 id: 'nextjs-app'
 
 project:
-  title: 'nextjs-app'
-  description: '_CHANGE_ME_DESCRIPTION_'
+    title: 'nextjs-app'
+    description: '_CHANGE_ME_DESCRIPTION_'
 
 env:
-  PORT: '3200'
+    PORT: '3200'
 
 # Uncomment to use shared UI library
 # dependsOn:
@@ -25,86 +25,86 @@ env:
 # @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
 # Example: `moon nextjs-app:start`
 tasks:
-  dev:
-    command: 'pnpm run dev'
-    deps: ['shared-ui:build']
-    options:
-      runDepsInParallel: false
-      envFile: '.env'
-      cache: false
+    dev:
+        command: 'pnpm run dev'
+        deps: ['shared-ui:build']
+        options:
+            runDepsInParallel: false
+            envFile: '.env'
+            cache: false
 
-  build:
-    command: 'pnpm run build'
-    deps: ['shared-ui:build']
-    options:
-      runDepsInParallel: false
-      envFile: '.env'
-      cache: true
+    build:
+        command: 'pnpm run build'
+        deps: ['shared-ui:build']
+        options:
+            runDepsInParallel: false
+            envFile: '.env'
+            cache: true
 
-  start-node:
-    env:
-      NODE_ENV: 'production'
-    command: 'node --no-warnings .next/standalone/apps/nextjs-app/server.js'
-    deps: ['build-standalone']
-    options:
-      runDepsInParallel: false
-      envFile: '.env'
-      cache: true
+    start-node:
+        env:
+            NODE_ENV: 'production'
+        command: 'node --no-warnings .next/standalone/apps/nextjs-app/server.js'
+        deps: ['build-standalone']
+        options:
+            runDepsInParallel: false
+            envFile: '.env'
+            cache: true
 
-  build-standalone:
-    script: >
-      rm -fr $projectRoot/dist
-      && mkdir -p $projectRoot/dist/{.next,public}
-      && cp -r .next/standalone/apps/nextjs-app/ dist
-      && cp -r .next/static dist/.next/static
-      && cp -r public/* dist/public/
-    deps: ['build']
-    options:
-      runDepsInParallel: false
-      envFile: '.env'
-      cache: true
+    build-standalone:
+        script: >
+            rm -fr $projectRoot/dist
+            && mkdir -p $projectRoot/dist/{.next,public}
+            && cp -r .next/standalone/apps/nextjs-app/ dist
+            && cp -r .next/static dist/.next/static
+            && cp -r public/* dist/public/
+        deps: ['build']
+        options:
+            runDepsInParallel: false
+            envFile: '.env'
+            cache: true
 
-  docker-build:
-    script: |
-      DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
-      DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
-      && docker build -f $projectRoot/Dockerfile . -t $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION \
-      && docker image list --filter reference=$DOCKER_IMAGE\*
-    options:
-      mergeEnv: replace
-      runFromWorkspaceRoot: true
-      interactive: false
-      outputStyle: stream
-      runInCI: false
-      cache: false
-      shell: true
+    docker-build:
+        script: |
+            DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
+            DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
+            && docker build -f $projectRoot/Dockerfile . -t $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION \
+            && docker image list --filter reference=$DOCKER_IMAGE\*
+        options:
+            mergeEnv: replace
+            runFromWorkspaceRoot: true
+            interactive: false
+            outputStyle: stream
+            runInCI: false
+            cache: false
+            shell: true
 
-  docker-run:
-    script: |
-      DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
-      DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
-      && docker run --network=host --rm -it --env-file $projectRoot/.env \
-        --name $DOCKER_IMAGE $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION
-    options:
-      mergeEnv: replace
-      outputStyle: stream
-      runFromWorkspaceRoot: true
-      interactive: true
-      runInCI: false
-      cache: false
-      shell: true
+    docker-run:
+        script: |
+            DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
+            DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
+            && docker run --network=host --rm -it --env-file $projectRoot/.env \
+              --name $DOCKER_IMAGE $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION
+        options:
+            mergeEnv: replace
+            outputStyle: stream
+            runFromWorkspaceRoot: true
+            interactive: true
+            runInCI: false
+            cache: false
+            shell: true
 
-  docker-shell:
-    script: |
-      DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
-      DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
-      && docker run --network=host --rm -it --env-file $projectRoot/.env \
-        --entrypoint sh $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION
-    options:
-      mergeEnv: replace
-      runFromWorkspaceRoot: true
-      outputStyle: stream
-      interactive: true
-      runInCI: false
-      cache: false
-      shell: true
+    docker-shell:
+        script: |
+            DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
+            DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
+            && docker run --network=host --rm -it --env-file $projectRoot/.env \
+              --entrypoint sh $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION
+        options:
+            mergeEnv: replace
+            runFromWorkspaceRoot: true
+            outputStyle: stream
+            interactive: true
+            runInCI: false
+            cache: false
+            shell: true

@@ -1,3 +1,17 @@
 {
-    "extends": ["../../.oxlintrc.json"]
+    "extends": ["../../.oxlintrc.json"],
+    "rules": {
+        "react/set-state-in-effect": "off",
+        "eslint/no-shadow": "off",
+        "react/no-unstable-nested-components": "off",
+        "unicorn/consistent-function-scoping": "off",
+        "eslint/no-unused-vars": [
+            "warn",
+            {
+                "ignoreRestSiblings": true,
+                "argsIgnorePattern": "^_",
+                "varsIgnorePattern": "^_"
+            }
+        ]
+    }
 }

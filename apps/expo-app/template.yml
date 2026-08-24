@@ -7,14 +7,14 @@ description: 'React Native + Expo application preconfigured with Expo Router, Je
 destination: 'apps/[package_name]'
 
 variables:
-  package_name:
-    type: 'string'
-    default: 'expo-app'
-    prompt: 'Package name (identifier)?'
-    required: true
+    package_name:
+        type: 'string'
+        default: 'expo-app'
+        prompt: 'Package name (identifier)?'
+        required: true
 
-  package_description:
-    type: 'string'
-    default: 'React Native application (Expo)'
-    prompt: 'Package description?'
-    required: true
+    package_description:
+        type: 'string'
+        default: 'React Native application (Expo)'
+        prompt: 'Package description?'
+        required: true

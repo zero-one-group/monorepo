@@ -14,20 +14,20 @@ destination: 'apps/[package_name]'
 # Mapping of variables that will be interpolated and rendered within template files.
 # Users will be prompted to provide a value when running the generator.
 variables:
-  package_name:
-    type: 'string'
-    default: 'website'
-    prompt: 'Package name (identifier)?'
-    required: true
+    package_name:
+        type: 'string'
+        default: 'website'
+        prompt: 'Package name (identifier)?'
+        required: true
 
-  package_description:
-    type: 'string'
-    default: 'My Astro website'
-    prompt: 'Package description?'
-    required: true
+    package_description:
+        type: 'string'
+        default: 'My Astro website'
+        prompt: 'Package description?'
+        required: true
 
-  port_number:
-    type: 'number'
-    default: 4321
-    prompt: 'Port number?'
-    required: true
+    port_number:
+        type: 'number'
+        default: 4321
+        prompt: 'Port number?'
+        required: true

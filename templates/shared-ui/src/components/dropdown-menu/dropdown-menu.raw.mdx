@@ -1,5 +1,5 @@
-import { Canvas, Meta, Primary } from '@storybook/addon-docs/blocks';
-import * as Stories from './dropdown-menu.stories';
+import { Canvas, Meta, Primary } from '@storybook/addon-docs/blocks'
+import * as Stories from './dropdown-menu.stories'
 
 <Meta of={Stories} />
 
@@ -11,23 +11,23 @@ Displays a menu to the user triggered by a button.
 
 ```tsx
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
 } from '@repo/{{ package_name | kebab_case }}/components'
 
-<DropdownMenu>
-  <DropdownMenuTrigger>Open</DropdownMenuTrigger>
-  <DropdownMenuContent>
-    <DropdownMenuLabel>My Account</DropdownMenuLabel>
-    <DropdownMenuSeparator />
-    <DropdownMenuItem>Profile</DropdownMenuItem>
-    <DropdownMenuItem>Settings</DropdownMenuItem>
-    <DropdownMenuItem>Logout</DropdownMenuItem>
-  </DropdownMenuContent>
+;<DropdownMenu>
+    <DropdownMenuTrigger>Open</DropdownMenuTrigger>
+    <DropdownMenuContent>
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>Profile</DropdownMenuItem>
+        <DropdownMenuItem>Settings</DropdownMenuItem>
+        <DropdownMenuItem>Logout</DropdownMenuItem>
+    </DropdownMenuContent>
 </DropdownMenu>
 ```
 

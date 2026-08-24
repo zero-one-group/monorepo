@@ -1,81 +1,88 @@
 # https://moonrepo.dev/docs/config/project
-# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
-$schema: 'https://moonrepo.dev/schemas/project.json'
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/v2/project.json
+$schema: 'https://moonrepo.dev/schemas/v2/project.json'
 
 layer: library
 language: typescript
-toolchains:
-  node:
-    # Strapi doesn't support Node.js 22 yet
-    version: '20.19'
 tags: ['app']
 
 # Overrides the name (identifier) of the project
 id: '{{ package_name | kebab_case }}'
 
 project:
-  title: {{ package_name | kebab_case }}
-  description: '{{ package_description }}'
+    title: {{ package_name | kebab_case }}
+    description: '{{ package_description }}'
 
 env:
-  VITE_CJS_IGNORE_WARNING: 'true'
-  STRAPI_TELEMETRY_DISABLED: 'false'
+    VITE_CJS_IGNORE_WARNING: 'true'
+    STRAPI_TELEMETRY_DISABLED: 'false'
 
 # Since this project can infer task from script (package.json), then you can run any script as moon task.
 # @see: https://moonrepo.dev/api/types/interface/NodeConfig#inferTasksFromScripts
 # Example: `moon {{ package_name | kebab_case }}:start`
 tasks:
-  dev:
-    command: 'pnpm run dev'
-    options:
-      envFile: '.env'
+    dev:
+        command: 'pnpm run dev'
+        options:
+            envFile: '.env'
 
-  build:
-    command: 'pnpm run build'
-    options:
-      cache: true
+    build:
+        command: 'pnpm run build'
+        options:
+            cache: true
 
-  docker-build:
-    script: |
-      DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
-      DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
-      && docker build -f $projectRoot/Dockerfile . -t $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION \
-      && docker image list --filter reference=$DOCKER_IMAGE\*
-    options:
-      mergeEnv: replace
-      runFromWorkspaceRoot: true
-      interactive: false
-      outputStyle: stream
-      runInCI: false
-      cache: false
-      shell: true
+    # Clean reinstall to purge orphaned/stale nested node_modules dirs left behind
+    # by `node-linker: hoisted` after dependency version bumps (these shadow the
+    # correct versions during rollup bundling and break the build).
+    # @see pnpm-workspace.yaml -> nodeLinker
+    reinstall:
+        script: 'pnpm dlx del-cli node_modules && pnpm install'
+        options:
+            cache: false
+            runInCI: false
+            shell: true
 
-  docker-run:
-    script: |
-      DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
-      DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
-      && docker run --network=host --rm -it --env-file $projectRoot/.env \
-        --name $DOCKER_IMAGE $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION
-    options:
-      mergeEnv: replace
-      outputStyle: stream
-      runFromWorkspaceRoot: true
-      interactive: true
-      runInCI: false
-      cache: false
-      shell: true
+    docker-build:
+        script: |
+            DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
+            DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
+            && docker build -f $projectRoot/Dockerfile . -t $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION \
+            && docker image list --filter reference=$DOCKER_IMAGE\*
+        options:
+            mergeEnv: replace
+            runFromWorkspaceRoot: true
+            interactive: false
+            outputStyle: stream
+            runInCI: false
+            cache: false
+            shell: true
 
-  docker-shell:
-    script: |
-      DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
-      DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
-      && docker run --network=host --rm -it --env-file $projectRoot/.env \
-        --entrypoint sh $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION
-    options:
-      mergeEnv: replace
-      runFromWorkspaceRoot: true
-      outputStyle: stream
-      interactive: true
-      runInCI: false
-      cache: false
-      shell: true
+    docker-run:
+        script: |
+            DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
+            DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
+            && docker run --network=host --rm -it --env-file $projectRoot/.env \
+              --name $DOCKER_IMAGE $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION
+        options:
+            mergeEnv: replace
+            outputStyle: stream
+            runFromWorkspaceRoot: true
+            interactive: true
+            runInCI: false
+            cache: false
+            shell: true
+
+    docker-shell:
+        script: |
+            DOCKER_IMAGE="$(jq -r .name <$workspaceRoot'/package.json')-$project" \
+            DOCKER_IMAGE_VERSION="$(jq -r .version <$workspaceRoot'/package.json')" \
+            && docker run --network=host --rm -it --env-file $projectRoot/.env \
+              --entrypoint sh $DOCKER_IMAGE:$DOCKER_IMAGE_VERSION
+        options:
+            mergeEnv: replace
+            runFromWorkspaceRoot: true
+            outputStyle: stream
+            interactive: true
+            runInCI: false
+            cache: false
+            shell: true

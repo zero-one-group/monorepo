@@ -1,12 +1,65 @@
+# yaml-language-server: $schema=https://www.schemastore.org/pnpm-workspace.json
+
 packages:
-  - apps/*
-  - packages/*
-  - '!**/test/**'
+    - apps/*
+    - packages/*
+    - '!**/test/**'
+
+allowBuilds:
+    '@swc/core': true
+    core-js-pure: true
+    esbuild: true
+    oxfmt: true
+    oxlint: true
+    sharp: true
+    unrs-resolver: true
 
 catalog:
-  oxfmt: ^0.57.0
-  oxlint: ^1.72.0
-  npm-check-updates: ^20.0.0
-  typescript: ~6.0.2
+    npm-check-updates: ^23.1.0
+    oxfmt: ^0.64.0
+    oxlint: ^1.79.0
+    typescript: ~5.9.3
+
+# Disable the minimumReleaseAge supply-chain policy. It is enforced by default
+# in pnpm 10 (used inside Docker builds via `pnpm@latest-10`) but is off in
+# pnpm 11 (local). `minimumReleaseAgeExclude` below is a pnpm 11-only feature
+# ignored by pnpm 10, so leaving the policy on breaks Docker builds for apps
+# that depend on freshly-published packages (e.g. Expo SDK 57). Set this to a
+# positive value only after aligning the Docker pnpm version with pnpm 11.
+minimumReleaseAge: 0
+
+minimumReleaseAgeExclude:
+    - '@expo/cli'
+    - '@expo/config-plugins'
+    - '@expo/config'
+    - '@expo/fingerprint'
+    - '@expo/image-utils'
+    - '@expo/metro-config'
+    - '@expo/metro-file-map'
+    - '@expo/metro-runtime'
+    - '@expo/prebuild-config'
+    - '@expo/require-utils'
+    - '@expo/ui'
+    - '@lucide/astro'
+    - '@types/react-dom'
+    - babel-preset-expo
+    - expo-asset
+    - expo-constants
+    - expo-modules-autolinking
+    - expo-modules-core
+    - expo-router
+    - expo-splash-screen
+    - expo
+    - lucide-react
+    - npm-check-updates
+
+# Force a single @types/react (React 19) inside shared-ui's tree.
+# Without this, a hoisted @types/react@18 (pulled by strapi's tree) shadows
+# the React 19 types for files under node_modules/@radix-ui/*, which makes
+# vite-plugin-dts emit "bigint is not assignable to ReactNode" errors.
+# Scoped to @repo/shared-ui so strapi (React 18) is unaffected.
+overrides:
+    '@repo/shared-ui>@types/react': ^19.2.14
+    '@repo/shared-ui>@types/react-dom': ^19.2.5
 
 nodeLinker: hoisted

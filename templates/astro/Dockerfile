@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1.7
 
 # Arguments with default value (for build).
-ARG MOON_VERSION=2.1.1
-ARG NODE_VERSION=22
+ARG MOON_VERSION=2.5.3
+ARG NODE_VERSION=24
 
 FROM joseluisq/static-web-server:2 AS httpd
 
@@ -72,9 +72,6 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store moon run {{ package_name | keb
 # Production image, copy build output files and run the application (runner).
 # -----------------------------------------------------------------------------
 FROM gcr.io/distroless/base-nossl-debian12 AS runner
-
-# Read application environment variables
-ARG PUBLIC_BASE_URL
 
 # Copy build output files and required binaries from previous stage
 COPY --from=builder --chown=nonroot:nonroot /srv/apps/{{ package_name | kebab_case }}/dist /srv

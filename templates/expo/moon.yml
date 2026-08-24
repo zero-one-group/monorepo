@@ -1,6 +1,6 @@
 # https://moonrepo.dev/docs/config/project
-# yaml-language-server: $schema=https://moonrepo.dev/schemas/project.json
-$schema: 'https://moonrepo.dev/schemas/project.json'
+# yaml-language-server: $schema=https://moonrepo.dev/schemas/v2/project.json
+$schema: 'https://moonrepo.dev/schemas/v2/project.json'
 
 layer: application
 language: typescript
@@ -11,37 +11,43 @@ tags: ['mobile']
 id: '{{ package_name | kebab_case }}'
 
 project:
-  title: {{ package_name | kebab_case }}
-  description: '{{ package_description }}'
+    title: {{ package_name | kebab_case }}
+    description: '{{ package_description }}'
 
 tasks:
-  dev:
-    command: 'pnpm run dev'
-    options:
-      runDepsInParallel: false
-      envFile: '.env'
+    dev:
+        command: 'pnpm run dev'
+        deps: [kill-port]
+        options:
+            runDepsInParallel: false
+            envFile: '.env'
 
-  build:
-    command: 'pnpm run build'
-    options:
-      cache: true
+    build:
+        command: 'pnpm run build'
+        options:
+            cache: true
 
-  test:
-    command: 'pnpm run test'
-    options:
-      cache: false
+    test:
+        command: 'pnpm run test'
+        options:
+            cache: false
 
-  typecheck:
-    command: 'pnpm run typecheck'
-    options:
-      cache: true
+    typecheck:
+        command: 'pnpm run typecheck'
+        options:
+            cache: true
 
-  lint:
-    command: 'pnpm run lint'
-    options:
-      cache: false
+    lint:
+        command: 'pnpm run lint'
+        options:
+            cache: false
 
-  check:
-    command: 'pnpm run check'
-    options:
-      cache: false
+    check:
+        command: 'pnpm run check'
+        options:
+            cache: false
+
+    kill-port:
+        command: 'pnpm --package=kill-port-process-cli dlx kill-port 8081'
+        options:
+            internal: true

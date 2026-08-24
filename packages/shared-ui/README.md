@@ -23,7 +23,7 @@ Add the following to your `package.json` file:
         "@tailwindcss/vite": "^4.1.4",
         "tailwind-variants": "^1.0.0",
         "tailwindcss-motion": "^1.1.0",
-        "tailwindcss": "^4.1.5",
+        "tailwindcss": "^4.1.5"
     }
 }
 ```
@@ -40,11 +40,11 @@ Exclude internal packages from optimization, add the following to your `vite.con
 
 ```ts
 export default defineConfig({
-  // ...
-  optimizeDeps: {
-    // Do not optimize internal workspace dependencies.
-    exclude: ['@repo/shared-ui'],
-  },
+    // ...
+    optimizeDeps: {
+        // Do not optimize internal workspace dependencies.
+        exclude: ['@repo/shared-ui'],
+    },
 })
 ```
 
@@ -58,5 +58,5 @@ Finally, add the following to your `moon.yml` file:
 
 ```yaml
 dependsOn:
-  - 'shared-ui'
+    - 'shared-ui'
 ```

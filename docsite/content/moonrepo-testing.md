@@ -33,16 +33,6 @@ moon react-app:docker-shell
 moon react-app:docker-run
 ```
 
-## Template React SSR
-
-```sh
-moon react-ssr:build
-moon react-ssr:start
-moon react-ssr:docker-build
-moon react-ssr:docker-shell
-moon react-ssr:docker-run
-```
-
 ## Template Strapi
 
 ```sh

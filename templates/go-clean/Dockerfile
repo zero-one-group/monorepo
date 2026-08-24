@@ -2,8 +2,8 @@
 
 # Arguments with default value (for build).
 ARG DISTROLESS_TAG=nonroot
-ARG MOON_VERSION=2.1.1
-ARG NODE_VERSION=22
+ARG MOON_VERSION=2.5.3
+ARG NODE_VERSION=24
 ARG GO_VERSION=1.26
 
 # -----------------------------------------------------------------------------
@@ -14,7 +14,7 @@ ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0 COREPACK_INTEGRITY_KEYS=0
 ENV FNM_PATH=/usr/bin PNPM_HOME=/pnpm HOME=/root
 ENV PATH="$HOME/.local/share/fnm:$PNPM_HOME:$PATH"
 ENV PATH="/root/.moon/bin:$PATH"
-ARG NODE_VERSION=22
+ARG NODE_VERSION=24
 
 # Install system dependencies
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
@@ -98,21 +98,6 @@ RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache m
 # Production image, copy build output files and run the application (runner).
 # -----------------------------------------------------------------------------
 FROM gcr.io/distroless/cc-debian12:${DISTROLESS_TAG} AS runner
-
-# Read application environment variables
-ARG APP_ENVIRONMENT
-ARG APP_HOST
-ARG APP_PORT
-ARG CORS_ALLOW_ORIGINS
-ARG DATABASE_URL
-ARG ENABLE_INSTRUMENTATION
-ARG ENABLE_SWAGGER
-ARG JWT_SECRET
-ARG JWT_TOKEN_EXPIRY_MINUTES
-ARG LOG_LEVEL
-ARG OTEL_EXPORTER_OTLP_ENDPOINT
-ARG SERVICE_NAME
-ARG TRACING_SAMPLE_RATE
 
 # Copy build output files and required binaries from previous stage
 COPY --from=builder --chown=nonroot:nonroot /srv/apps/{{ package_name | kebab_case }}/build/{{ package_name | kebab_case }} /srv/{{ package_name | kebab_case }}

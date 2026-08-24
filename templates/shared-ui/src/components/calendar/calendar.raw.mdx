@@ -1,5 +1,5 @@
-import { Canvas, Meta, Primary } from '@storybook/addon-docs/blocks';
-import * as Stories from './calendar.stories';
+import { Canvas, Meta, Primary } from '@storybook/addon-docs/blocks'
+import * as Stories from './calendar.stories'
 
 <Meta of={Stories} />
 
@@ -10,20 +10,20 @@ Calendar component for date selection with various modes and styles.
 ## Example
 
 ```tsx
-import * as React from "react"
-import { Calendar } from "@repo/{{ package_name | kebab_case }}"
+import * as React from 'react'
+import { Calendar } from '@repo/{{ package_name | kebab_case }}'
 
 export function CalendarDemo() {
-  const [date, setDate] = React.useState<Date | undefined>(new Date())
+    const [date, setDate] = React.useState<Date | undefined>(new Date())
 
-  return (
-    <Calendar
-      mode="single"
-      selected={date}
-      onSelect={setDate}
-      className="rounded-md border shadow"
-    />
-  )
+    return (
+        <Calendar
+            mode="single"
+            selected={date}
+            onSelect={setDate}
+            className="rounded-md border shadow"
+        />
+    )
 }
 ```
 

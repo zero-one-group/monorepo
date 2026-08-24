@@ -6,6 +6,10 @@
     - export PATH="$HOME/.moon/bin:$PATH"
     - corepack enable
     - corepack prepare pnpm@latest-10 --activate
+    # Clean reinstall to avoid stale/orphaned nested node_modules dirs left behind by
+    # `node-linker: hoisted` after dependency version bumps. Such orphans shadow the
+    # correct versions during rollup bundling and break builds (e.g. strapi admin panel).
+    - rm -rf node_modules
     - pnpm install --frozen-lockfile
 
 .base_mobile:

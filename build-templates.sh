@@ -21,8 +21,8 @@ APPS_DIR="./apps"
 mkdir -p $TEMPLATE_DIR
 
 # Mapping apps dir to template dir (parallel arrays)
-SRC_DIRS=("astro-web" "expo-app" "fastapi-ai" "go-clean" "go-modular" "nextjs-app" "react-app" "react-ssr" "strapi-cms")
-TGT_DIRS=("astro"     "expo"     "fastapi-ai" "go-clean" "go-modular" "nextjs"     "react-app" "react-ssr" "strapi")
+SRC_DIRS=("astro-web" "expo-app" "fastapi-ai" "go-clean" "go-modular" "nextjs-app" "react-app" "strapi-cms")
+TGT_DIRS=("astro" "expo" "fastapi-ai" "go-clean" "go-modular" "nextjs" "react-app" "strapi")
 
 echo "Copying template files with mapping and path validation..."
 for i in "${!SRC_DIRS[@]}"; do
@@ -75,7 +75,6 @@ bash ./builder/go-clean.sh
 bash ./builder/go-modular.sh
 bash ./builder/nextjs-app.sh
 bash ./builder/react-app.sh
-bash ./builder/react-ssr.sh
 bash ./builder/strapi-cms.sh
 bash ./builder/shared-ui.sh
 echo

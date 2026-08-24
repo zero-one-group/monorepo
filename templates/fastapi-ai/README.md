@@ -34,7 +34,7 @@ Short brief description about the project.
 ### Available Commands
 
 | Command                                              | Description                                                            |
-|------------------------------------------------------|------------------------------------------------------------------------|
+| ---------------------------------------------------- | ---------------------------------------------------------------------- |
 | `moon run {{ package_name | kebab_case }}:sync`                           | Synchronize project dependencies using uv package manager              |
 | `moon run {{ package_name | kebab_case }}:dev`                            | Start FastAPI development server with hot reload on port {{ port_number }}          |
 | `moon run {{ package_name | kebab_case }}:start`                          | Launch FastAPI production server on port {{ port_number }}                          |
@@ -105,36 +105,36 @@ For instructions on customizing span tracing, please refer to the example locate
 - We’ve set up a global exception handler in `app/main.py`. It catches every `AppError` raised anywhere in your code and turns it into a structured JSON error response with the correct HTTP status.
 - To trigger an error response, simply raise an `AppError` from `app/core/exceptions.py` at any layer (repository, service, or even directly in a route).
 
-  ```python
-  from app.core.exceptions import AppError
+    ```python
+    from app.core.exceptions import AppError
 
-  # inside repository or service
-  if something_went_wrong:
-      raise AppError(
-          message="Invalid user ID",
-          status_code=400,
-          code="INVALID_ID",
-          data={"user_id": supplied_id}
-      )
-  ```
+    # inside repository or service
+    if something_went_wrong:
+        raise AppError(
+            message="Invalid user ID",
+            status_code=400,
+            code="INVALID_ID",
+            data={"user_id": supplied_id}
+        )
+    ```
 
 - The global handler will produce a response like:
 
-  ```json
-  {
-    "success": false,
-    "message": "Invalid user ID",
-    "error_code": "INVALID_ID",
-    "data": { "user_id": 123 }
-  }
-  ```
+    ```json
+    {
+        "success": false,
+        "message": "Invalid user ID",
+        "error_code": "INVALID_ID",
+        "data": { "user_id": 123 }
+    }
+    ```
 
 - No further wiring is needed—just raise `AppError` and FastAPI does the rest.
 
 ### Useful Links
 
 - [FastAPI Dependency Injection](https://fastapi.tiangolo.com/tutorial/dependencies/)
-  - TL;DR: Declare your dependencies as function parameters, and FastAPI will resolve and inject them for you automatically, no manual wiring required.
-  - For more details, see any dependency.py in your layers (e.g. app/repository/dependency.py).
+    - TL;DR: Declare your dependencies as function parameters, and FastAPI will resolve and inject them for you automatically, no manual wiring required.
+    - For more details, see any dependency.py in your layers (e.g. app/repository/dependency.py).
 - [FastAPI Deployment](https://fastapi.tiangolo.com/deployment/)
 - [FastAPI Handling Errors](https://fastapi.tiangolo.com/tutorial/handling-errors/#install-custom-exception-handlers)
