@@ -2,6 +2,7 @@ package adapter
 
 import (
 	"context"
+	"strings"
 	"testing"
 	"time"
 
@@ -150,4 +151,48 @@ func TestPostgres_WithTestEnv(t *testing.T) {
 		// If TestConnection helper exists it should succeed; call if available.
 		_ = cfg
 	})
+}
+
+func TestPgxSpanNameFunc(t *testing.T) {
+	tests := []struct {
+		name string
+		stmt string
+		want string
+	}{
+		{
+			name: "sqlc annotated statement uses the query name",
+			stmt: "-- name: GetUserByEmail :one\nSELECT * FROM users WHERE email = $1",
+			want: "GetUserByEmail",
+		},
+		{
+			name: "plain statement falls back to the leading keyword",
+			stmt: "SELECT id FROM users WHERE id = $1",
+			want: "SELECT",
+		},
+		{
+			// Raw string literals routinely start on the next line. The name must
+			// not carry the surrounding whitespace into the span.
+			stmt: "\n\t\tSELECT id, email\n\t\tFROM users\n\t",
+			name: "leading newline and indentation are trimmed",
+			want: "SELECT",
+		},
+		{
+			name: "single token statement is returned as-is",
+			stmt: "COMMIT",
+			want: "COMMIT",
+		},
+		{
+			name: "empty statement yields an empty name",
+			stmt: "   \n\t",
+			want: "",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := pgxSpanNameFunc(tt.stmt)
+			assert.Equal(t, tt.want, got)
+			assert.Equal(t, strings.TrimSpace(got), got, "span name must not contain surrounding whitespace")
+		})
+	}
 }

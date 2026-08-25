@@ -38,6 +38,12 @@ func newEcho(cfg *config.Config, log *slog.Logger) *echo.Echo {
 		},
 	}))
 	e.Use(appMiddleware.RequestIDMiddleware())
+	// Runs before the remaining middleware so their work is captured inside the
+	// request span. Renames the auto-instrumented span to include the matched
+	// route; see internal/middleware/tracer.go.
+	if cfg.IsTelemetryEnabled() {
+		e.Use(appMiddleware.TracingMiddleware(cfg.OTel.ServiceName))
+	}
 	e.Use(appMiddleware.SecurityHeadersMiddleware())
 	e.Use(appMiddleware.TimeoutMiddleware(30 * time.Second))
 	e.Use(appMiddleware.LoggerMiddleware(log))

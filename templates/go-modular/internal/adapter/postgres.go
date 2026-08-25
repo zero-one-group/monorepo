@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/exaring/otelpgx"
 	"github.com/jackc/pgx/v5"
@@ -253,12 +254,25 @@ func NewSingleConnection(cfg PostgresConfig) (*pgx.Conn, error) {
 	return conn, nil
 }
 
-// pgxSpanNameFunc trims "-- name: " prefix and returns the statement name for tracing
+// pgxSpanNameFunc derives a span name from a SQL statement.
+//
+// For sqlc-style statements ("-- name: GetUser :one\nSELECT ...") it returns the
+// query name, which is the most readable label available. For plain SQL it falls
+// back to the leading keyword ("SELECT", "INSERT", ...) so that span names stay
+// low-cardinality — the full text is still recorded in db.query.text.
+//
+// Splitting on any whitespace matters: statements are commonly written as raw
+// string literals that begin with a newline, and cutting on a space alone would
+// emit names like "query \n" that carry the newline into the span name.
 func pgxSpanNameFunc(stmt string) string {
-	// If stmt is of the sqlc form "-- name: Example :one\n...",
-	// extract "Example". Otherwise, leave as-is.
-	stmt = strings.TrimPrefix(stmt, "-- name: ")
-	if i := strings.IndexByte(stmt, ' '); i != -1 {
+	stmt = strings.TrimSpace(stmt)
+
+	// sqlc form: "-- name: Example :one\n..." -> "Example"
+	if rest, ok := strings.CutPrefix(stmt, "-- name: "); ok {
+		stmt = strings.TrimSpace(rest)
+	}
+
+	if i := strings.IndexFunc(stmt, unicode.IsSpace); i != -1 {
 		return stmt[:i]
 	}
 	return stmt

@@ -31,11 +31,11 @@ this service. It ships an instrumentation for `net/http`, but not for Echo or
 pgx, so out of the box every request collapses into a single span named `GET`
 with no database activity attached. Three layers are therefore combined:
 
-| Layer | Provides | Why it is needed |
-| --- | --- | --- |
-| `otelc` (compile-time) | SDK bootstrap, `net/http` client+server spans, `log/slog` correlation, Go runtime metrics | Installs and configures the SDK with no code changes |
-| `otelecho` middleware | Renames the span to include the matched route | `otelc` hooks `net/http` and cannot see Echo's routing table |
-| `otelpgx` tracer | `pool.acquire`, `prepare` and `query` spans | Only `database/sql` is auto-instrumented; this service uses pgx |
+| Layer                  | Provides                                                                                  | Why it is needed                                                |
+| ---------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `otelc` (compile-time) | SDK bootstrap, `net/http` client+server spans, `log/slog` correlation, Go runtime metrics | Installs and configures the SDK with no code changes            |
+| `otelecho` middleware  | Renames the span to include the matched route                                             | `otelc` hooks `net/http` and cannot see Echo's routing table    |
+| `otelpgx` tracer       | `pool.acquire`, `prepare` and `query` spans                                               | Only `database/sql` is auto-instrumented; this service uses pgx |
 
 A verified trace for `POST /api/v1/auth/signin/email` looks like this:
 
@@ -75,14 +75,14 @@ The `build` / `start` tasks remain uninstrumented. Use `build-otel` /
 Configured entirely through standard `OTEL_*` environment variables (see
 `.env.example`).
 
-| Variable | Purpose |
-| --- | --- |
-| `OTEL_ENABLE_TELEMETRY` | Application switch for the Echo and pgx tracers. Does **not** install the SDK. |
-| `OTEL_SERVICE_NAME` | Service name shown in Jaeger. |
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | Collector endpoint. |
-| `OTEL_EXPORTER_OTLP_PROTOCOL` | `http/protobuf` (port 4318) or `grpc` (port 4317). |
-| `OTEL_TRACES_SAMPLER` / `_ARG` | Sampling. `always_on` is convenient locally. |
-| `OTEL_METRICS_EXPORTER` / `OTEL_LOGS_EXPORTER` | Set to `none`; Jaeger ingests traces only. |
+| Variable                                       | Purpose                                                                        |
+| ---------------------------------------------- | ------------------------------------------------------------------------------ |
+| `OTEL_ENABLE_TELEMETRY`                        | Application switch for the Echo and pgx tracers. Does **not** install the SDK. |
+| `OTEL_SERVICE_NAME`                            | Service name shown in Jaeger.                                                  |
+| `OTEL_EXPORTER_OTLP_ENDPOINT`                  | Collector endpoint.                                                            |
+| `OTEL_EXPORTER_OTLP_PROTOCOL`                  | `http/protobuf` (port 4318) or `grpc` (port 4317).                             |
+| `OTEL_TRACES_SAMPLER` / `_ARG`                 | Sampling. `always_on` is convenient locally.                                   |
+| `OTEL_METRICS_EXPORTER` / `OTEL_LOGS_EXPORTER` | Set to `none`; Jaeger ingests traces only.                                     |
 
 ### Endpoint and protocol must agree
 

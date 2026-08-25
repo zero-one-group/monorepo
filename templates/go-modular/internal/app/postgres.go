@@ -52,7 +52,13 @@ func connectPostgresWithRetry(cfg *config.Config, log *slog.Logger) (*adapter.Po
 	attempt := 1
 
 	for {
-		pg, err := adapter.NewPostgres(adapter.PostgresConfig{URL: cfg.GetDatabaseURL()})
+		// EnableOTel installs the otelpgx tracer on the pool. Auto-instrumentation
+		// only covers database/sql, and this app talks to Postgres through pgx,
+		// so without this the traces have no query spans at all.
+		pg, err := adapter.NewPostgres(adapter.PostgresConfig{
+			URL:        cfg.GetDatabaseURL(),
+			EnableOTel: cfg.IsTelemetryEnabled(),
+		})
 		if err == nil {
 			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 			pingErr := pg.Ping(ctx)

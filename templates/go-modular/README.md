@@ -20,7 +20,24 @@ moon {{ package_name | kebab_case }}:dump                 # Dump the database
 moon {{ package_name | kebab_case }}:install-mockery      # Install mockery
 moon {{ package_name | kebab_case }}:generate-swagger     # Generate Swagger OpenAPI docs
 moon {{ package_name | kebab_case }}:generate-mock        # Generate Mock
+moon {{ package_name | kebab_case }}:install-otelc        # Install compile-time instrumentation toolchain
+moon {{ package_name | kebab_case }}:build-otel           # Build with OpenTelemetry auto-instrumentation
+moon {{ package_name | kebab_case }}:start-otel           # Start the instrumented build
 ```
+
+## Observability
+
+Distributed tracing uses OpenTelemetry compile-time auto-instrumentation, with
+Jaeger as the local backend:
+
+```sh
+pnpm run compose:instrumented        # Start Jaeger (UI at http://localhost:16686)
+moon {{ package_name | kebab_case }}:install-otelc        # Once
+moon {{ package_name | kebab_case }}:start-otel           # Requires OTEL_ENABLE_TELEMETRY=true in .env
+```
+
+See [docs/OBSERVABILITY.md](docs/OBSERVABILITY.md) for the architecture, the
+configuration reference and troubleshooting.
 
 ## Migration Tasks
 
