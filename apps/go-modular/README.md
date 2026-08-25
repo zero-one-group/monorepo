@@ -20,7 +20,24 @@ moon go-modular:dump                 # Dump the database
 moon go-modular:install-mockery      # Install mockery
 moon go-modular:generate-swagger     # Generate Swagger OpenAPI docs
 moon go-modular:generate-mock        # Generate Mock
+moon go-modular:install-otelc        # Install compile-time instrumentation toolchain
+moon go-modular:build-otel           # Build with OpenTelemetry auto-instrumentation
+moon go-modular:start-otel           # Start the instrumented build
 ```
+
+## Observability
+
+Distributed tracing uses OpenTelemetry compile-time auto-instrumentation, with
+Jaeger as the local backend:
+
+```sh
+pnpm run compose:instrumented        # Start Jaeger (UI at http://localhost:16686)
+moon go-modular:install-otelc        # Once
+moon go-modular:start-otel           # Requires OTEL_ENABLE_TELEMETRY=true in .env
+```
+
+See [docs/OBSERVABILITY.md](docs/OBSERVABILITY.md) for the architecture, the
+configuration reference and troubleshooting.
 
 ## Migration Tasks
 

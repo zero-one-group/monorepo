@@ -51,6 +51,48 @@ tasks:
             mergeArgs: append
             envFile: '.env'
 
+    # Installs the compile-time auto-instrumentation toolchain.
+    # Run once before `build-otel`; it is a no-op if otelc is already on PATH.
+    install-otelc:
+        command: 'go install go.opentelemetry.io/otelc/tool/cmd/otelc@v1.1.0'
+        options:
+            cache: false
+            runInCI: false
+
+    # Same build as `build`, wrapped in otelc so the OpenTelemetry SDK and the
+    # net/http, log/slog and runtime instrumentations are injected at compile
+    # time. No application source depends on this — a plain `build` still works
+    # and simply produces an uninstrumented binary.
+    #
+    # `-buildmode=pie` is deliberately omitted: otelc rewrites the build graph
+    # and PIE offers no benefit for a locally traced binary.
+    build-otel:
+        env:
+            LDFLAGS_BUILD_HASH: '-X $project/internal.BuildHash=$vcsRevision'
+            LDFLAGS_BUILD_DATE: '-X $project/internal.BuildDate=$datetime'
+        script: |
+            otelc go build -tags prod -trimpath -buildvcs=false \
+              --ldflags="$LDFLAGS_BUILD_DATE $LDFLAGS_BUILD_HASH \
+              -X $project/internal.Version=$(jq -r .version <$workspaceRoot'/package.json')" \
+              -o $projectRoot/build/release/$project-otel $projectRoot/cmd/
+        deps: [tidy, generate-swagger]
+        options:
+            mergeArgs: append
+            envFile: '.env'
+            cache: false
+
+    # Runs the instrumented binary. Requires Jaeger:
+    #   pnpm run compose:instrumented   (UI on http://localhost:16686)
+    start-otel:
+        command: 'build/release/$project-otel'
+        args: ['serve']
+        deps: [kill-port, build-otel]
+        options:
+            cache: false
+            outputStyle: stream
+            mergeArgs: replace
+            envFile: '.env'
+
     start:
         command: 'build/release/$project'
         args: ['serve']

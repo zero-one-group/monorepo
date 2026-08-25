@@ -14,7 +14,8 @@ services:
             - '16686:16686' # UI
             - '14268:14268' # collector (HTTP)
             - '14250:14250' # collector (gRPC)
-            - '4317:4317' # OTLP gRPC (if you want OTLP→Jaeger)
+            - '4317:4317' # OTLP gRPC
+            - '4318:4318' # OTLP HTTP (default for OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf)
         environment:
             # enable OTLP endpoint if you wish to send OTLP directly to Jaeger
             COLLECTOR_OTLP_ENABLED: 'true'
