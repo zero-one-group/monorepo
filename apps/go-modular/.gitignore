@@ -1,4 +1,6 @@
 build/
+# Scratch directory written by `otelc go build` (compile-time instrumentation)
+.otelc-build/
 docs/docs.go
 docs/swagger.json
 docs/swagger.yaml
