@@ -47,6 +47,12 @@ moon generate react-app
 
 Follow the interactive prompts to configure your new application, such as setting the project name and description.
 
+> [!WARNING]
+> moon caches downloaded templates in `~/.moon/templates/archive/` and never
+> re-downloads them. If you have generated from a template before, delete that
+> directory first so you get the current version. See
+> [Troubleshooting]({{< ref "troubleshooting.md" >}}) for details.
+
 ## 3. Configure Your Application
 
 After generation, you may need to perform some initial configuration:
