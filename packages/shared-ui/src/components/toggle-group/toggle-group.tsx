@@ -10,13 +10,47 @@ const ToggleGroupContext = React.createContext<ToggleVariants>({
   variant: 'default',
 })
 
-type ToggleGroupProps = React.ComponentPropsWithoutRef<'div'> & ToggleVariants
+/**
+ * Radix ToggleGroup props, redeclared locally instead of derived via
+ * `React.ComponentPropsWithoutRef<typeof ToggleGroupPrimitive.Root>`.
+ *
+ * Deriving them triggers TS2742 when emitting declarations: the inferred type
+ * references `@types/react` hoisted under `@radix-ui/*` (React 18), which is not
+ * portable from this package. Keep this union in sync with
+ * `ToggleGroupSingleProps` / `ToggleGroupMultipleProps` from
+ * `@radix-ui/react-toggle-group`.
+ */
+type ToggleGroupValueProps =
+  | {
+      type: 'single'
+      value?: string
+      defaultValue?: string
+      onValueChange?: (value: string) => void
+    }
+  | {
+      type: 'multiple'
+      value?: string[]
+      defaultValue?: string[]
+      onValueChange?: (value: string[]) => void
+    }
+
+type ToggleGroupProps = Omit<
+  React.ComponentPropsWithoutRef<'div'>,
+  'defaultValue' | 'dir'
+> &
+  ToggleGroupValueProps &
+  ToggleVariants & {
+    disabled?: boolean
+    rovingFocus?: boolean
+    loop?: boolean
+    orientation?: 'horizontal' | 'vertical'
+    dir?: 'ltr' | 'rtl'
+  }
 
 const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(
   ({ className, variant, size, children, ...props }, ref) => {
     const Root = ToggleGroupPrimitive.Root
     return (
-      // @ts-expect-error - hoisted Radix types resolve children with React 18 ReactNode (bigint not assignable)
       <Root ref={ref} className={toggleGroupStyles({ className })} {...props}>
         <ToggleGroupContext.Provider value={{ variant, size }}>
           {children}
@@ -26,7 +60,10 @@ const ToggleGroup = React.forwardRef<HTMLDivElement, ToggleGroupProps>(
   }
 )
 
-type ToggleGroupItemProps = React.ComponentPropsWithoutRef<'button'> & ToggleVariants
+type ToggleGroupItemProps = React.ComponentPropsWithoutRef<'button'> &
+  ToggleVariants & {
+    value: string
+  }
 
 const ToggleGroupItem = React.forwardRef<HTMLButtonElement, ToggleGroupItemProps>(
   ({ className, children, variant, size, ...props }, ref) => {
@@ -51,3 +88,4 @@ ToggleGroup.displayName = ToggleGroupPrimitive.Root.displayName
 ToggleGroupItem.displayName = ToggleGroupPrimitive.Item.displayName
 
 export { ToggleGroup, ToggleGroupItem }
+export type { ToggleGroupItemProps, ToggleGroupProps }
