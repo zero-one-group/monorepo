@@ -34,10 +34,7 @@ type ToggleGroupValueProps =
       onValueChange?: (value: string[]) => void
     }
 
-type ToggleGroupProps = Omit<
-  React.ComponentPropsWithoutRef<'div'>,
-  'defaultValue' | 'dir'
-> &
+type ToggleGroupProps = Omit<React.ComponentPropsWithoutRef<'div'>, 'defaultValue' | 'dir'> &
   ToggleGroupValueProps &
   ToggleVariants & {
     disabled?: boolean
