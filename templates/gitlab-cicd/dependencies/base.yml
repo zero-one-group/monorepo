@@ -1,11 +1,11 @@
+# The image (docker/ci/Dockerfile in zero-one-group/monorepo, public on Docker Hub) already
+# carries proto → moon / Go / Node / pnpm at the monorepo's pinned versions plus swag, gotestsum
+# and mockery, so a job only installs workspace dependencies. Bump the tag together with any
+# change to .moon/toolchains.yml; the tag encodes the pins (moon<M>-go<G>-node<N>-pnpm<P>).
 .setup:
-  image: node:24-trixie-slim
+  image: docker.io/01group/moon-ci:moon2.5.3-go1.27-node24-pnpm11
   before_script:
-    - apt-get update && apt-get install curl git -y
-    - bash <(curl -fsSL https://moonrepo.dev/install/moon.sh)
-    - export PATH="$HOME/.moon/bin:$PATH"
-    - corepack enable
-    - corepack prepare pnpm@latest-10 --activate
+    - moon --version && node --version && pnpm --version && go version
     # Clean reinstall to avoid stale/orphaned nested node_modules dirs left behind by
     # `node-linker: hoisted` after dependency version bumps. Such orphans shadow the
     # correct versions during rollup bundling and break builds (e.g. strapi admin panel).
