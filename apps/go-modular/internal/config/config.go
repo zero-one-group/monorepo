@@ -36,6 +36,10 @@ func Load(configEnvPath string) (*Config, error) {
 		return nil, fmt.Errorf("failed to unmarshal config: %w", err)
 	}
 
+	// Env values are strings: accept "*", "a,b" and the bracketed "[a, b]" form the
+	// example generator used to emit, so a literal "[*]" never becomes the only allowed origin.
+	config.App.CORSOrigins = normalizeList(config.App.CORSOrigins)
+
 	// Validate critical configuration
 	if err := validateConfig(&config); err != nil {
 		return nil, fmt.Errorf("config validation failed: %w", err)
@@ -182,7 +186,15 @@ func GenerateExampleEnvFile(path string) error {
 						envName := strings.SplitN(envTag, ",", 2)[0]
 						if envName != "" {
 							if _, exists := envs[section][envName]; !exists {
-								envs[section][envName] = fmt.Sprintf("%v", field.Interface())
+								if field.Kind() == reflect.Slice {
+									parts := make([]string, field.Len())
+									for k := 0; k < field.Len(); k++ {
+										parts[k] = fmt.Sprintf("%v", field.Index(k).Interface())
+									}
+									envs[section][envName] = strings.Join(parts, ",")
+								} else {
+									envs[section][envName] = fmt.Sprintf("%v", field.Interface())
+								}
 							}
 						}
 					}
@@ -216,4 +228,21 @@ func GenerateExampleEnvFile(path string) error {
 	}
 
 	return os.WriteFile(path, buf.Bytes(), 0600)
+}
+
+// normalizeList flattens slice values that arrived as one bracketed or comma-separated
+// string ("[a, b]", "a,b") into clean elements, dropping blanks.
+func normalizeList(in []string) []string {
+	out := make([]string, 0, len(in))
+	for _, raw := range in {
+		raw = strings.TrimSpace(raw)
+		raw = strings.TrimPrefix(raw, "[")
+		raw = strings.TrimSuffix(raw, "]")
+		for _, part := range strings.Split(raw, ",") {
+			if v := strings.TrimSpace(part); v != "" {
+				out = append(out, v)
+			}
+		}
+	}
+	return out
 }

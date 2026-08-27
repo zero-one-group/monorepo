@@ -22,7 +22,7 @@ type CreateSessionRequest struct {
 	DeviceName        *string `json:"device_name,omitempty"`
 	DeviceFingerprint *string `json:"device_fingerprint,omitempty"`
 	IPAddress         *string `json:"ip_address,omitempty" example:"192.168.1.1"`
-	ExpiresAt         string  `json:"expires_at" validate:"required,datetime" example:"2025-12-31T23:59:59Z"`
+	ExpiresAt         string  `json:"expires_at" validate:"required,datetime=2006-01-02T15:04:05Z07:00" example:"2025-12-31T23:59:59Z"`
 }
 
 type UpdateSessionRequest struct {
@@ -42,7 +42,7 @@ type CreateRefreshTokenRequest struct {
 	TokenHash string  `json:"token_hash" validate:"required"`
 	IPAddress *string `json:"ip_address,omitempty" example:"192.168.1.1"`
 	UserAgent *string `json:"user_agent,omitempty"`
-	ExpiresAt string  `json:"expires_at" validate:"required,datetime" example:"2025-12-31T23:59:59Z"`
+	ExpiresAt string  `json:"expires_at" validate:"required,datetime=2006-01-02T15:04:05Z07:00" example:"2025-12-31T23:59:59Z"`
 }
 
 type UpdateRefreshTokenRequest struct {

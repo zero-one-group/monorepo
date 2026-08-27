@@ -68,9 +68,10 @@ func (s *AuthService) signinWithCredentials(
 		Issuer:             s.baseURL,
 	})
 
-	// Determine audience for the token, default to "client-app"
+	// Determine audience for the token, default to "client-app". The handler stores
+	// the request headers under apputils.HeadersContextKey (typed key, not a bare string).
 	audience := "client-app"
-	if md, ok := ctx.Value("headers").(map[string]string); ok {
+	if md, ok := ctx.Value(apputils.HeadersContextKey).(map[string]string); ok {
 		if aud, exists := md["X-App-Audience"]; exists && aud != "" {
 			audience = aud
 		}
