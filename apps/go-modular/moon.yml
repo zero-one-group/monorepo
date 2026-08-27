@@ -106,7 +106,9 @@ tasks:
     test:
         script: 'gotestsum --format short-verbose --'
         args: ['-count=1', '-v', './internal/...', './modules/...', './pkg/...']
-        deps: ['tidy']
+        # docs/swagger.json is embedded and gitignored; tests compile it in, so a clean
+        # checkout (CI) must generate it first.
+        deps: ['tidy', 'generate-swagger']
         options:
             cache: false
             runFromWorkspaceRoot: false
@@ -117,10 +119,21 @@ tasks:
 
     coverage:
         script: |
-            gotestsum --format testname -- -coverprofile=build/coverage.out ./internal/... ./modules/... ./pkg/...
+            mkdir -p $projectRoot/build # gitignored; absent on a clean checkout and go test will not create it
+            gotestsum --format testname -- -coverprofile=$projectRoot/build/coverage.out ./internal/... ./modules/... ./pkg/...
             go tool cover -html=$projectRoot/build/coverage.out -o $projectRoot/build/coverage.html
-            go tool cover -func=$projectRoot/build/coverage.out | tail -1
-        deps: ['tidy']
+            bash $projectRoot/scripts/coverage-gate.sh $projectRoot/build/coverage.out
+        deps: ['tidy', 'generate-swagger']
+        env:
+            # Coverage floors (statement %). 0 = report only. Ratchet: once your project has a
+            # baseline, set each to (measured - 5) and only ever raise it; keep the history here:
+            #   YYYY-MM-DD <what landed>: overall X → floor Y, modules X → floor Y
+            COVERAGE_MIN: '0'
+            COVERAGE_MIN_MODULES: '0'
+            COVERAGE_MIN_CRITICAL: '0'
+            # Comma-separated path prefixes of the packages that must never regress
+            # (payments, webhooks, ...). Empty = tier disabled.
+            COVERAGE_CRITICAL_PACKAGES: ''
         options:
             shell: true
             cache: false
@@ -128,6 +141,18 @@ tasks:
             mergeOutputs: replace
             outputStyle: buffer
             mergeArgs: replace
+            envFile: '.env'
+
+    test-contract:
+        # Replays recorded third-party fixtures (testdata/contract); see pkg/testutils/contract.
+        script: |
+            go test -tags contract -count=1 ./modules/... ./pkg/testutils/contract/... | grep -v "no test files" || true
+            go test -tags contract -count=1 ./modules/... ./pkg/testutils/contract/... >/dev/null
+        deps: ['tidy', 'generate-swagger']
+        options:
+            shell: true
+            cache: false
+            runFromWorkspaceRoot: false
             envFile: '.env'
 
     format:
