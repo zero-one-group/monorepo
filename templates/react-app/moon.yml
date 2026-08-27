@@ -54,6 +54,21 @@ tasks:
         options:
             cache: false
 
+    # Explicit so moon knows what typegen produces: it can restore the file from cache or
+    # rerun, instead of reporting the inferred task as cached with nothing on disk.
+    typegen:
+        command: 'pnpm run typegen'
+        inputs: ['app/routes/**/*', 'tsr.config.json']
+        outputs: ['app/routeTree.gen.ts']
+
+    # Explicit (not inferred from package.json) so the generated route tree exists on a
+    # clean CI checkout.
+    test-coverage:
+        command: 'pnpm run test-coverage'
+        deps: ['typegen']
+        options:
+            cache: false
+
     prebuild:
         deps: ['shared-ui:build', 'typegen']
         options:
