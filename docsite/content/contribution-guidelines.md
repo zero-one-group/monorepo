@@ -160,7 +160,7 @@ To ensure your contributions can be reviewed and merged efficiently, please foll
 *   **Create an Issue:** We encourage you to first create an issue describing the feature or bug you plan to work on. You can optionally tag the relevant maintainer(s) in the issue.
 *   **Branch Naming:** Use descriptive branch names following a convention (e.g., `feat/new-feature-name`, `fix/bug-description`, `docs/update-readme`).
 *   **Commit Messages:** Follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for clear and concise commit messages. This helps with automated changelog generation and understanding the history.
-*   **Tests:** Ensure your changes are covered by appropriate tests (unit, integration, E2E). New features should have tests, and bug fixes should include a test that reproduces the bug.
+*   **Tests:** Work test-first — see [Testing]({{< ref "moonrepo-testing.md" >}}) for the loop, which test to write first per layer, and the coverage ratchet. New features need tests; bug fixes include the test that reproduces the bug. Before pushing changes to `moon.yml` tasks or CI files, reproduce a clean checkout locally (`MOON_CACHE=off moon run :lint :typecheck :build`, then `git clean -fdX && pnpm install` and the coverage tasks) — inferred tasks and generated inputs behave differently without a warm cache.
 *   **Documentation:** Update relevant documentation for any new features, significant changes, or breaking changes.
 *   **Review:** All pull requests require at least one approval from a designated reviewer before merging.
 

@@ -1,10 +1,134 @@
-test:
+# Test stage: runs exactly the gates that live in the repo, so CI and a local `moon run …` agree.
+#   - moon run :lint :typecheck :build         → oxlint / tsc / go build (+ swagger)
+#   - moon run <api>:coverage                  → go test (testcontainers) + scripts/coverage-gate.sh
+#   - moon run <spa>:test-coverage             → vitest + coverage.thresholds in vitest.config.ts
+# Any gate below its floor exits 1 and fails the job.
+#
+# Replace CHANGEME_API_APP / CHANGEME_WEB_APP with your project ids (apps/<id>), or delete the
+# jobs you do not need.
+
+variables:
+  GIT_DEPTH: "0" # full history: moon diffs against CI_MERGE_REQUEST_DIFF_BASE_SHA, which a shallow clone may not contain
+  # Workspace-level files that invalidate every project. When one of these changes the jobs run
+  # everything instead of only affected projects (moon sees no project as affected by them).
+  WORKSPACE_CONFIG_RE: '^(\.moon/|\.prototools|pnpm-lock\.yaml|pnpm-workspace\.yaml|package\.json|\.gitlab-ci\.yml|\.oxlintrc\.json|\.oxfmtrc\.json|\.npmrc|infra/)'
+  MOON_CACHE: "off" # hashes are per-runner; rely on the GitLab caches instead
+  GOMODCACHE: $CI_PROJECT_DIR/.cache/go-mod
+  GOCACHE: $CI_PROJECT_DIR/.cache/go-build
+  GOFLAGS: -buildvcs=false
+  PNPM_HOME: $CI_PROJECT_DIR/.cache/pnpm
+
+.test-cache:
+  cache:
+    - key:
+        files: [pnpm-lock.yaml]
+      paths: [.cache/pnpm, node_modules]
+    - key:
+        files: [apps/CHANGEME_API_APP/go.sum]
+      paths: [.cache/go-mod, .cache/go-build]
+
+# ---------------------------------------------------------------------------
+# Everything that must pass before review starts.
+# ---------------------------------------------------------------------------
+lint-typecheck-build:
   stage: test
   interruptible: true
   extends:
+    - .setup
+    - .test-cache
     - .rules:merge-request
-  script:
-    - echo "Running test..."
   variables:
-    GIT_DEPTH: 1
-    AUTH_TIMEOUT: 10
+    MOON_BASE: $CI_MERGE_REQUEST_DIFF_BASE_SHA # moon --affected compares HEAD against this
+  script:
+    # Only projects touched by the MR (plus their dependents' tasks) — unless a workspace-level
+    # file changed, in which case everything runs. `moon --affected` alone would run nothing then.
+    - |
+      if git diff --name-only "$CI_MERGE_REQUEST_DIFF_BASE_SHA"...HEAD | grep -qE "$WORKSPACE_CONFIG_RE"; then
+        echo "workspace config changed → running all projects"; AFFECTED=""
+      else
+        echo "running affected projects only (base $CI_MERGE_REQUEST_DIFF_BASE_SHA)"; AFFECTED="--affected --downstream deep"
+      fi
+      moon run :lint :typecheck :build $AFFECTED
+    # oxlint runs with --fix; a diff here means someone committed unlinted code.
+    - git diff --exit-code -- . ':(exclude)pnpm-lock.yaml' || { echo "lint --fix changed files; run 'moon run :lint :format' and commit"; exit 1; }
+
+# ---------------------------------------------------------------------------
+# Coverage-gated suites, one job per project so failures are attributable.
+# ---------------------------------------------------------------------------
+test-api:
+  stage: test
+  interruptible: true
+  extends:
+    - .setup
+    - .test-cache
+  needs: [lint-typecheck-build]
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - apps/CHANGEME_API_APP/**/*
+        - .moon/**/*
+        - .prototools
+        - .gitlab-ci.yml
+        - infra/**/*
+    - when: never
+  services:
+    - name: docker:27-dind
+      alias: docker
+      command: ["--tls=false"]
+  variables:
+    # testcontainers-go talks to the dind service over TCP; ryuk needs privileged
+    # containers and is unnecessary for short-lived CI jobs.
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+    TESTCONTAINERS_HOST_OVERRIDE: docker
+    TESTCONTAINERS_RYUK_DISABLED: "true"
+    GOTESTSUM_JUNITFILE: $CI_PROJECT_DIR/apps/CHANGEME_API_APP/build/junit.xml # gotestsum writes JUnit for the MR test tab
+  script:
+    - cp -n apps/CHANGEME_API_APP/.env.example apps/CHANGEME_API_APP/.env
+    - moon run CHANGEME_API_APP:coverage # runs scripts/coverage-gate.sh → exit 1 below any tier floor
+  # GitLab reads the job's coverage % from the gate's "overall" line.
+  coverage: '/^\s*overall\s+(\d+\.\d+)%/'
+  artifacts:
+    when: always
+    expire_in: 1 week
+    paths:
+      - apps/CHANGEME_API_APP/build/coverage.out
+      - apps/CHANGEME_API_APP/build/coverage.html
+    reports:
+      junit: apps/CHANGEME_API_APP/build/junit.xml
+
+.test-frontend:
+  stage: test
+  interruptible: true
+  extends:
+    - .setup
+    - .test-cache
+  needs: [lint-typecheck-build]
+  script:
+    - moon run ${APP}:test-coverage # vitest --coverage; thresholds in vitest.config.ts → exit 1 below floor
+  coverage: '/^\s*Lines\s*:\s*(\d+\.\d+)%/'
+  artifacts:
+    when: always
+    expire_in: 1 week
+    paths:
+      - apps/${APP}/tests-results
+    reports:
+      junit: apps/${APP}/tests-results/junit.xml
+
+# One job per SPA: copy this block and change APP + the changes: list.
+test-web:
+  extends: .test-frontend
+  variables: { APP: CHANGEME_WEB_APP }
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - apps/CHANGEME_WEB_APP/**/*
+        - packages/shared-ui/**/*
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
+        - package.json
+        - .moon/**/*
+        - .prototools
+        - .gitlab-ci.yml
+        - infra/**/*
+    - when: never
