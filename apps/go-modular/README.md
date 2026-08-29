@@ -10,7 +10,8 @@ moon go-modular:run                  # Execute `go run`
 moon go-modular:build                # Build the application
 moon go-modular:start                # Start application from build
 moon go-modular:test                 # Run testing
-moon go-modular:coverage             # Run test coverage
+moon go-modular:coverage             # Tests + tiered coverage gate (scripts/coverage-gate.sh)
+moon go-modular:test-contract        # Contract tests (-tags contract), replay recorded fixtures
 moon go-modular:format               # Run code formatting
 moon go-modular:tidy                 # Install dependencies
 moon go-modular:docker-build         # Build docker image
@@ -24,6 +25,26 @@ moon go-modular:install-otelc        # Install compile-time instrumentation tool
 moon go-modular:build-otel           # Build with OpenTelemetry auto-instrumentation
 moon go-modular:start-otel           # Start the instrumented build
 ```
+
+## Testing
+
+```sh
+moon go-modular:test                 # Unit + integration tests (testcontainers needs Docker)
+moon go-modular:coverage             # Same, plus build/coverage.html and the coverage gate
+```
+
+The gate (`scripts/coverage-gate.sh`) reports three tiers — overall, `modules/...`, and
+the packages named in `COVERAGE_CRITICAL_PACKAGES` — against the `COVERAGE_MIN*` floors
+in `moon.yml`. Floors ship at 0 (report only); once your project has a baseline, set
+each to measured − 5 and only ever raise it.
+
+- `pkg/testutils` — Postgres/Redis testcontainers + migration runner (`TestEnv`).
+- `pkg/testutils/webhook` — replay captured provider webhooks and assert idempotency,
+  late-event handling and signature checks. Fixtures live in `testdata/webhooks/`.
+- `pkg/testutils/contract` — record/replay third-party HTTP responses behind the
+  `contract` build tag (`moon go-modular:test-contract`). Fixtures in `testdata/contract/`.
+- `internal/app/app_integration_test.go` — the end-to-end wiring test (real Postgres,
+  seeded admin sign-in, JWT-guarded route). Copy its shape for new modules.
 
 ## Observability
 

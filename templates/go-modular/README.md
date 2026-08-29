@@ -10,7 +10,8 @@ moon {{ package_name | kebab_case }}:run                  # Execute `go run`
 moon {{ package_name | kebab_case }}:build                # Build the application
 moon {{ package_name | kebab_case }}:start                # Start application from build
 moon {{ package_name | kebab_case }}:test                 # Run testing
-moon {{ package_name | kebab_case }}:coverage             # Run test coverage
+moon {{ package_name | kebab_case }}:coverage             # Tests + tiered coverage gate (scripts/coverage-gate.sh)
+moon {{ package_name | kebab_case }}:test-contract        # Contract tests (-tags contract), replay recorded fixtures
 moon {{ package_name | kebab_case }}:format               # Run code formatting
 moon {{ package_name | kebab_case }}:tidy                 # Install dependencies
 moon {{ package_name | kebab_case }}:docker-build         # Build docker image
@@ -24,6 +25,26 @@ moon {{ package_name | kebab_case }}:install-otelc        # Install compile-time
 moon {{ package_name | kebab_case }}:build-otel           # Build with OpenTelemetry auto-instrumentation
 moon {{ package_name | kebab_case }}:start-otel           # Start the instrumented build
 ```
+
+## Testing
+
+```sh
+moon {{ package_name | kebab_case }}:test                 # Unit + integration tests (testcontainers needs Docker)
+moon {{ package_name | kebab_case }}:coverage             # Same, plus build/coverage.html and the coverage gate
+```
+
+The gate (`scripts/coverage-gate.sh`) reports three tiers — overall, `modules/...`, and
+the packages named in `COVERAGE_CRITICAL_PACKAGES` — against the `COVERAGE_MIN*` floors
+in `moon.yml`. Floors ship at 0 (report only); once your project has a baseline, set
+each to measured − 5 and only ever raise it.
+
+- `pkg/testutils` — Postgres/Redis testcontainers + migration runner (`TestEnv`).
+- `pkg/testutils/webhook` — replay captured provider webhooks and assert idempotency,
+  late-event handling and signature checks. Fixtures live in `testdata/webhooks/`.
+- `pkg/testutils/contract` — record/replay third-party HTTP responses behind the
+  `contract` build tag (`moon {{ package_name | kebab_case }}:test-contract`). Fixtures in `testdata/contract/`.
+- `internal/app/app_integration_test.go` — the end-to-end wiring test (real Postgres,
+  seeded admin sign-in, JWT-guarded route). Copy its shape for new modules.
 
 ## Observability
 

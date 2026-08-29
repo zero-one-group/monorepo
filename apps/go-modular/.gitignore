@@ -7,3 +7,6 @@ docs/swagger.yaml
 release/
 temp/
 tmp/
+
+# Recorded webhook/contract fixtures are real test assets; the workspace .gitignore drops testdata/ globally.
+!testdata/
