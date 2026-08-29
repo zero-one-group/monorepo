@@ -36,3 +36,18 @@ We use `.env` files to manage environment-specific configurations.
 ## Package Scripts
 
 While moonrepo is the primary task runner, we also use `package.json` scripts for standard Node.js workflows. Moon is configured to infer tasks from these scripts automatically where appropriate.
+
+## CI Image
+
+`docker/ci/Dockerfile` builds `docker.io/01group/moon-ci`, a public image with the toolchain
+this monorepo pins (proto → moon, Go, Node, pnpm) plus `swag`, `gotestsum` and `mockery`.
+Pipelines that use it skip the apt/proto/download setup (3–4 minutes per job).
+
+- The immutable tag is derived from the pins — `moon<M>-go<G>-node<N>-pnpm<P>`, e.g.
+  `moon2.5.3-go1.27-node24-pnpm11` — by `.github/workflows/ci-image.yaml`, which rebuilds on
+  every push to `main` touching `docker/ci/**` or the toolchain files.
+- The `gitlab-cicd` template's `.setup` job uses it. When you bump a pin in
+  `.moon/toolchains.yml`, bump the tag in `templates/gitlab-cicd/dependencies/base.yml` in the
+  same change.
+- See `docker/ci/README.md` for manual builds and how to verify a tag.
+

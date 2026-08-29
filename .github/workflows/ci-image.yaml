@@ -1,0 +1,90 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+# Builds and pushes docker.io/01group/moon-ci (docker/ci/Dockerfile).
+# The immutable tag is derived from the toolchain pins so it can never disagree with them:
+#   moon<M>-go<G.major.minor>-node<N.major>-pnpm<P.major>   e.g. moon2.5.3-go1.27-node24-pnpm11
+
+name: CI Image
+
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - 'docker/ci/**'
+            - '.moon/toolchains.yml'
+            - '.moon/workspace.yml'
+            - '.github/workflows/ci-image.yaml'
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+concurrency:
+    group: ci-image
+    cancel-in-progress: true
+
+defaults:
+    run:
+        shell: bash
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        env:
+            IMAGE: docker.io/01group/moon-ci
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v7
+
+            - name: Derive versions from the pins
+              id: pins
+              run: |
+                  set -euo pipefail
+                  # First `version:` under the top-level key `$1` in .moon/toolchains.yml.
+                  pin() { awk -v k="$1" '$0 ~ "^"k":" {f=1; next} f && /^[^[:space:]#]/ {f=0} f && /^[[:space:]]+version:/ {v=$2; gsub(/[^0-9.]/, "", v); print v; exit}' .moon/toolchains.yml; }
+                  MOON=$(sed -nE "s/^versionConstraint:[[:space:]]*'?>=?([0-9.]+).*/\1/p" .moon/workspace.yml)
+                  PROTO=$(pin proto); GO=$(pin go); NODE=$(pin node); PNPM=$(pin pnpm)
+                  for v in MOON PROTO GO NODE PNPM; do [ -n "${!v}" ] || { echo "could not read $v pin"; exit 1; }; done
+                  # Go image tags need major.minor.patch; the toolchains file may pin major.minor.
+                  case "$GO" in *.*.*) ;; *) GO="$GO.0" ;; esac
+                  TAG="moon${MOON}-go${GO%.*}-node${NODE%%.*}-pnpm${PNPM%%.*}"
+                  echo "moon=$MOON proto=$PROTO go=$GO node=$NODE pnpm=$PNPM → $TAG"
+                  {
+                    echo "moon=$MOON"; echo "proto=$PROTO"; echo "go=$GO"
+                    echo "node=${NODE%%.*}"; echo "pnpm=$PNPM"; echo "tag=$TAG"
+                  } >> "$GITHUB_OUTPUT"
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+
+            - name: Login to Docker Hub
+              uses: docker/login-action@v3
+              with:
+                  username: ${{ secrets.DOCKERHUB_USERNAME }}
+                  password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+            - name: Build and push
+              uses: docker/build-push-action@v6
+              with:
+                  context: docker/ci
+                  file: docker/ci/Dockerfile
+                  platforms: linux/amd64
+                  push: true
+                  provenance: false
+                  build-args: |
+                      MOON_VERSION=${{ steps.pins.outputs.moon }}
+                      PROTO_VERSION=${{ steps.pins.outputs.proto }}
+                      GO_VERSION=${{ steps.pins.outputs.go }}
+                      NODE_VERSION=${{ steps.pins.outputs.node }}
+                      PNPM_VERSION=${{ steps.pins.outputs.pnpm }}
+                  tags: |
+                      ${{ env.IMAGE }}:${{ steps.pins.outputs.tag }}
+                      ${{ env.IMAGE }}:latest
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
+
+            - name: Smoke test
+              run: |
+                  docker run --rm ${{ env.IMAGE }}:${{ steps.pins.outputs.tag }} \
+                    bash -lc 'moon --version && go version && node --version && pnpm --version && swag --version && gotestsum --version'
