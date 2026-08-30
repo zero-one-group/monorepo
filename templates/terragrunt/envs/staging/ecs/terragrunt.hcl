@@ -19,7 +19,7 @@ dependency "alb" {
 }
 
 dependency "ecr" {
-  config_path = "../../ecr"
+  config_path = "../../../ecr"
 }
 
 locals {
