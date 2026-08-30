@@ -2,15 +2,15 @@
 variable "buckets" {
   description = "Map of bucket configurations"
   type = map(object({
-    bucket_name            = string
-    enable_versioning      = optional(bool, false)
-    enable_lifecycle_rule  = optional(bool, false)
-    transition_days        = optional(number, 30)
-    expiration_days        = optional(number, 90)
-    enable_lb_logging      = optional(bool, false)
-    access_logs_prefix     = optional(string, "")
+    bucket_name           = string
+    enable_versioning     = optional(bool, false)
+    enable_lifecycle_rule = optional(bool, false)
+    transition_days       = optional(number, 30)
+    expiration_days       = optional(number, 90)
+    enable_lb_logging     = optional(bool, false)
+    access_logs_prefix    = optional(string, "")
     cors_origin           = optional(list(string), [])
-    enable_public_read     = optional(bool, false)
+    enable_public_read    = optional(bool, false)
     custom_policy         = optional(string, "")
     allow_public_policy   = optional(bool, false)
   }))

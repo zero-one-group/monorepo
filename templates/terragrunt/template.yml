@@ -6,7 +6,7 @@ $schema: 'https://moonrepo.dev/schemas/template.json'
 title: 'Terragrunt'
 
 # REQUIRED: Description of what the template is for and other relevant information.
-description: 'Provisioning IAC via Terragrunt'
+description: 'Provisioning IAC via Terragrunt (including ECS Fargate modules)'
 
 # Destination path for the package.
 destination: 'infra/[package_name]'
@@ -22,7 +22,7 @@ variables:
 
   package_description:
     type: 'string'
-    default: 'Terragrunt configuration IAC'
+    default: 'Terragrunt configuration IAC (including ECS Fargate modules)'
     prompt: 'Package description?'
     required: true
 
@@ -30,6 +30,12 @@ variables:
     type: 'string'
     default: 'CHANGEME_PROJECT_NAME'
     prompt: 'Project name (you can change it later)?'
+    required: false
+
+  app_name:
+    type: 'string'
+    default: 'CHANGEME_APP_NAME'
+    prompt: 'App name (used as the ECS service key and image tag suffix, must match the app_name of the gitlab-cicd template)?'
     required: false
 
   region:

@@ -34,13 +34,13 @@ The monorepo comes with a variety of templates to kickstart your development. Th
 ## Infrastructure & DevOps
 
 - **`ansible`**: Ansible playbooks and configuration.
-- **`gitlab-cicd`**: GitLab CI/CD pipeline configurations.
+- **`gitlab-cicd`**: GitLab CI/CD pipeline configurations (including ECS Fargate deployment).
 - **`load-balancer`**: Load balancer configuration.
 - **`monitoring`**: Monitoring stack (Prometheus, Grafana, etc.).
 - **`postgresql`**: PostgreSQL database configuration.
 - **`squidproxy`**: Squid proxy configuration.
 - **`swarm`**: Docker Swarm configuration.
-- **`terragrunt`**: Terragrunt infrastructure as code.
+- **`terragrunt`**: Terragrunt infrastructure as code (including a single ECS Fargate module for cluster, services, jobs, ALB, and service discovery).
 
 ## Libraries
 

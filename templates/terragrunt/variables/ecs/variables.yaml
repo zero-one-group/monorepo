@@ -1,0 +1,25 @@
+# variables.yaml
+# Fargate cpu/memory units: cpu is in vCPU-1024ths (256 = 0.25 vCPU), memory is in MiB.
+# See: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-cpu-memory-error.html
+# Keys must match ECS service keys in each env/ecs/terragrunt.hcl - the default
+# image reference is built as <ecr_repository_url>:<image_tag>-<key>, so the key
+# must equal the tag suffix your build pipeline pushes (e.g. <tag>-{{ app_name }}).
+task_sizes:
+  # {{ app_name }} is filled in when the template is generated.
+  "{{ app_name }}":
+    cpu: 512
+    memory: 1024
+  # Example: add one entry per additional ECS service.
+  # worker:
+  #   cpu: 512
+  #   memory: 1024
+
+# Private DNS namespace (Cloud Map) for ECS task-to-task service discovery.
+# Only used by services with enable_service_discovery = true.
+dns_namespace_name: "CHANGEME_APP.local"
+
+# Default image tag prefixed to <ecr_repository_url>:<image_tag>-<service>.
+# CI/CD overrides this per deployment via the ECS_IMAGE_TAG environment
+# variable (see infra/app/ecs-deploy.yml) so dev/staging/prod never race on
+# this file. Update here only when running terragrunt manually.
+image_tag: "latest"

@@ -6,7 +6,7 @@ $schema: 'https://moonrepo.dev/schemas/template.json'
 title: 'Gitlab'
 
 # REQUIRED: Description of what the template is for and other relevant information.
-description: 'Gitlab CI/CD'
+description: 'Gitlab CI/CD (including ECS Fargate deployment)'
 
 # Destination path for the package.
 destination: 'infra/[package_name]'
@@ -22,7 +22,7 @@ variables:
 
   package_description:
     type: 'string'
-    default: 'Gitlab CI/CD'
+    default: 'Gitlab CI/CD (including ECS Fargate deployment)'
     prompt: 'Package description?'
     required: true
 

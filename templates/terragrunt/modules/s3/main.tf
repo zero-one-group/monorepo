@@ -35,10 +35,10 @@ resource "aws_s3_bucket_public_access_block" "this" {
   for_each = var.buckets
   bucket   = aws_s3_bucket.this[each.key].id
 
-  block_public_acls       = true
+  block_public_acls = true
   # Allow public policy if explicitly enabled OR if custom policy is provided OR if public read is enabled
-  block_public_policy     = each.value.enable_public_read || each.value.allow_public_policy || each.value.custom_policy != "" ? false : true
-  ignore_public_acls      = true
+  block_public_policy = each.value.enable_public_read || each.value.allow_public_policy || each.value.custom_policy != "" ? false : true
+  ignore_public_acls  = true
   # Allow public access only if public read is explicitly enabled
   restrict_public_buckets = each.value.enable_public_read ? false : true
 }
@@ -130,7 +130,7 @@ resource "aws_s3_bucket_policy" "allow_access_from_bucket" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
+        Effect    = "Allow"
         Principal = "*"
         Action = [
           "s3:GetObject"

@@ -48,12 +48,12 @@ output "eip_bastion_public_ip" {
   value       = lookup(aws_eip.this, "bastion", null) != null ? aws_eip.this["bastion"].public_ip : null
 }
 
-output "eip_nginx_dev_staging_id" {
-  description = "ID of the nginx Elastic IP Dev/Staging if created"
-  value       = lookup(aws_eip.this, "nginx-dev-staging", null) != null ? aws_eip.this["nginx-dev-staging"].id : null
+output "eip_nginx_id" {
+  description = "ID of the nginx Elastic IP if created"
+  value       = lookup(aws_eip.this, "nginx", null) != null ? aws_eip.this["nginx"].id : null
 }
 
-output "eip_nginx_dev_staging_public_ip" {
-  description = "Public IP of the nginx Elastic IP Dev/Staging if created"
-  value       = lookup(aws_eip.this, "nginx-dev-staging", null) != null ? aws_eip.this["nginx-dev-staging"].public_ip : null
+output "eip_nginx_public_ip" {
+  description = "Public IP of the nginx Elastic IP if created"
+  value       = lookup(aws_eip.this, "nginx", null) != null ? aws_eip.this["nginx"].public_ip : null
 }

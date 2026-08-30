@@ -1,0 +1,4 @@
+# Ignore actual env YAML files (contain secrets).
+# Only README.md should be committed.
+*.yml
+!README.md

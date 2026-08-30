@@ -40,6 +40,11 @@
     - <<: *on-schedule
     - <<: *on-mr
 
+.rules:development:
+  rules:
+    - <<: *on-schedule
+    - <<: *on-main
+
 .rules:development-api:
   rules:
     - <<: *on-schedule
@@ -85,3 +90,20 @@
 .rules:mobile-production:
   rules:
     - <<: *on-mobile-prod
+
+.rules:development-ecs:
+  rules:
+    - <<: *on-schedule
+    - <<: *on-main
+      changes:
+        - apps/{{ app_name }}/**/*
+        - infra/terragrunt/**/*
+        - infra/pipelines/**/*
+
+.rules:ecs-staging:
+  rules:
+    - <<: *on-api-staging
+
+.rules:ecs-prod:
+  rules:
+    - <<: *on-api-prod

@@ -127,7 +127,7 @@ resource "aws_iam_role_policy" "ssm_policy" {
           "arn:aws:ssm:${var.region}:${var.aws_account_id}:parameter${path}"
         ] : ["*"]
       }
-    ], length(each.value.ssm_parameter_paths) > 0 ? [
+      ], length(each.value.ssm_parameter_paths) > 0 ? [
       {
         Effect = "Allow"
         Action = [
@@ -158,9 +158,9 @@ resource "aws_instance" "instances" {
   user_data = templatefile(
     "${path.module}/templates/${each.value.user_data_filename}",
     merge(each.value.user_data_vars, {
-      hostname   = coalesce(each.value.hostname, each.key)
-      aws_region = var.region
-      project_name = var.project_name
+      hostname           = coalesce(each.value.hostname, each.key)
+      aws_region         = var.region
+      project_name       = var.project_name
       cluster_identifier = each.value.cluster_identifier
     })
   )
