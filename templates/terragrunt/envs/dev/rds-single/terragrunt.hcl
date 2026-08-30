@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "../../modules/rds-single"
+  source = "../../../modules/rds-single"
 }
 
 inputs = {

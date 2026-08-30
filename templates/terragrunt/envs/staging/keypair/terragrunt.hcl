@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "../../modules/keypair"
+  source = "../../../modules/keypair"
 }
 
 locals {

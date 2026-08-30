@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "../../modules/security-group"
+  source = "../../../modules/security-group"
 }
 
 dependency "vpc" {
