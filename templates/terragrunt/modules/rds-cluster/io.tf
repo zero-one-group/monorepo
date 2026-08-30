@@ -1,3 +1,8 @@
+variable "region" {
+  description = "AWS region (required by the generated provider config, even while this module is a placeholder)"
+  type        = string
+}
+
 variable "enabled" {
   description = "Set to true once the module is implemented"
   type        = bool
