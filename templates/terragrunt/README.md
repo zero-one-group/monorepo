@@ -20,8 +20,10 @@ Provisioning infrastructure as code via [Terragrunt](https://terragrunt.gruntwor
 │   ├── security-group/     # Security groups
 │   └── vpc/                # VPC with public + private subnets and NAT gateway
 ├── variables/              # Shared variables (ec2, ecs)
-├── ecr/                    # ECR repository for application images
 ├── envs/                   # Per-environment units
+│   ├── shared/             # Cross-environment units (not tied to one env)
+│   │   ├── ecr/            # ECR repository for application images
+│   │   └── s3/             # S3 buckets (monitoring, public/private assets)
 │   ├── dev/  staging/  prod/
 │   │   ├── acm/            # (placeholder - not implemented yet)
 │   │   ├── alb/            # ALB for the environment
@@ -62,19 +64,20 @@ environment (`envs/dev/ecs`, `envs/staging/ecs`, `envs/prod/ecs`):
     `<service>.<dns_namespace_name>`.
 - **`jobs`** map: on-demand workloads (task definition only, no ECS service),
   launched with `ecs:RunTask` when needed.
-- Images are pulled from the **ECR** repository created by the `ecr/` unit
-  (`${project_name}-app`). The default image reference is
+- Images are pulled from the **ECR** repository created by the
+  `envs/shared/ecr` unit (`${project_name}-app`). The default image reference is
   `<ecr_repository_url>:<image_tag>-<service>`, matching the
   `<tag>-{{ app_name }}` tag pushed by the build pipeline.
 
 ### Applying
 
-Apply the units in order (states live under `envs/<env>/` and `ecr/` in the
-state bucket):
+Apply the units in order (states live under `envs/` in the state bucket).
+`envs/shared/` holds units that are not tied to a single environment, so they
+are applied once and reused by every environment:
 
 ```bash
 terragrunt apply --working-dir envs/dev/vpc
-terragrunt apply --working-dir ecr
+terragrunt apply --working-dir envs/shared/ecr
 terragrunt apply --working-dir envs/dev/security-groups
 terragrunt apply --working-dir envs/dev/elastic-ip
 terragrunt apply --working-dir envs/dev/alb

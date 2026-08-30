@@ -3,7 +3,7 @@ include "root" {
 }
 
 terraform {
-  source = "../modules/ecr"
+  source = "../../../modules/ecr"
 }
 
 locals {
