@@ -50,7 +50,7 @@
 
       # 2. Run terragrunt apply for this environment, targeting only this
       #    service's task definition + ECS service
-      cd "${CI_PROJECT_DIR}/infra/terragrunt/${DEPLOY_ENVIRONMENT}/ecs"
+      cd "${CI_PROJECT_DIR}/infra/terragrunt/envs/${DEPLOY_ENVIRONMENT}/ecs"
       TF_TARGET="-target=aws_ecs_task_definition.services[\"${ECS_SERVICE_NAME}\"] -target=aws_ecs_service.services[\"${ECS_SERVICE_NAME}\"]"
       ECS_IMAGE_TAG="${TAGGING}" terragrunt apply --auto-approve --non-interactive $TF_TARGET
 
